@@ -5,17 +5,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RoleType {
+public enum TeamType {
     Open("O"),Invite("I");
 
     private final String code;
 
-    public static RoleType of(String code) {
-        for (RoleType type : RoleType.values()) {
+    public static TeamType of(String code) {
+        for (TeamType type : TeamType.values()) {
             if(type.getCode().equals(code)) {
                 return type;
             }
         }
-        return RoleType.Open;
+        return TeamType.Open;
     }
 }
