@@ -6,15 +6,12 @@ import com.meetup.backend.entity.*;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Team extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     private String name;
@@ -22,10 +19,10 @@ public class Team extends BaseEntity {
     private String displayName;
 
     @Enumerated(EnumType.STRING)
-    private RoleType type;
+    private TeamType type;
 
     @Builder
-    public Team(String id, String name, String displayName, RoleType type) {
+    public Team(String id, String name, String displayName, TeamType type) {
         this.id = id;
         this.name = name;
         this.displayName = displayName;
