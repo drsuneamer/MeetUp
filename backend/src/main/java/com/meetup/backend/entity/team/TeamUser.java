@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Getter
 public class TeamUser extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @ManyToOne
