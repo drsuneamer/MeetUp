@@ -1,7 +1,6 @@
 package com.meetup.backend.entity.channel;
 
 import com.meetup.backend.entity.BaseEntity;
-import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+/**
+ * created by myeongseok on 2022/10/20
+ */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -31,7 +32,6 @@ public class ChannelUser extends BaseEntity {
     public ChannelUser(User user, Channel channel) {
         this.user = user;
         this.channel = channel;
-
     }
 
 }
