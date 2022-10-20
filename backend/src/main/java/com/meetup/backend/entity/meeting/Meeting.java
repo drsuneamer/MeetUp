@@ -1,6 +1,7 @@
 package com.meetup.backend.entity.meeting;
 
 import com.meetup.backend.entity.BaseEntity;
+import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,13 +41,18 @@ public class Meeting extends BaseEntity {
     @JoinColumn(name = "applicant_id")
     private User applicant;
 
+    @ManyToOne
+    @JoinColumn(name = "meetup_id")
+    private Meetup meetup;
+
     @Builder
-    public Meeting(Date start, Date end, String title, String content, User manager, User applicant) {
+    public Meeting(Date start, Date end, String title, String content, User manager, User applicant, Meetup meetup) {
         this.start = start;
         this.end = end;
         this.title = title;
         this.content = content;
         this.manager = manager;
         this.applicant = applicant;
+        this.meetup = meetup;
     }
 }
