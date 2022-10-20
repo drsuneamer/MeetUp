@@ -1,19 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Admin from './pages/Admin';
+import AdminLogin from './pages/AdminLogin';
+import CreateChannel from './pages/CreateChannel';
+import EditChannel from './pages/EditChannel';
+import Login from './pages/Login';
+import MeetUp from './pages/MeetUp';
+import NotFound from './pages/NotFound';
+import Tutorial from './pages/Tutorial';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MeetUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<NotFound />} />
+          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/create-channel" element={<CreateChannel />} />
+          <Route path="/edit-channel" element={<EditChannel />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
