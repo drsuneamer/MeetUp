@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
+/**
+ * created by myeongseok on 2022/10/20
+ */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -30,7 +32,6 @@ public class ChannelUser extends BaseEntity {
     public ChannelUser(User user, Channel channel) {
         this.user = user;
         this.channel = channel;
-
     }
 
 }
