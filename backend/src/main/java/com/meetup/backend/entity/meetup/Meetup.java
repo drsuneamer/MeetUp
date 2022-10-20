@@ -1,13 +1,13 @@
 package com.meetup.backend.entity.meetup;
 
 import com.meetup.backend.entity.BaseEntity;
+import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * created by seongmin on 2022/10/20
@@ -18,18 +18,19 @@ import javax.persistence.Id;
 public class Meetup extends BaseEntity {
 
     @Id
-    private String id;
-
-    private String url;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String title;
 
     private String color;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private User manager;
+
     @Builder
-    public Meetup(String id, String url, String title, String color) {
-        this.id = id;
-        this.url = url;
+    public Meetup(String title, String color) {
         this.title = title;
         this.color = color;
     }
