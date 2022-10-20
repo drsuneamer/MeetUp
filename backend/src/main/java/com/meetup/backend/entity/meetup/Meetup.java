@@ -30,8 +30,9 @@ public class Meetup extends BaseEntity {
     private User manager;
 
     @Builder
-    public Meetup(String title, String color) {
+    public Meetup(String title, String color, User manager) {
         this.title = title;
         this.color = color;
+        this.manager = manager;
     }
 }
