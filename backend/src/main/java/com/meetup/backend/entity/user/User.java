@@ -1,5 +1,6 @@
 package com.meetup.backend.entity.user;
 
+import com.meetup.backend.entity.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "USERS")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     private String id;
