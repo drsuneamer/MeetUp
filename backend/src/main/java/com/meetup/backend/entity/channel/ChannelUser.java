@@ -1,7 +1,6 @@
 package com.meetup.backend.entity.channel;
 
 import com.meetup.backend.entity.BaseEntity;
-import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
