@@ -15,14 +15,13 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "CHANNELS")
 public class Channel extends BaseEntity {
     @Id
     private String id;
 
     private String name;
 
-    private String displyName;
+    private String displayName;
 
     private String URL;
 
@@ -34,9 +33,10 @@ public class Channel extends BaseEntity {
     private Team team;
 
     @Builder
-    public Channel(String name, String displyName, ChannelType type, Team team) {
+    public Channel(String id, String name, String displyName, ChannelType type, Team team) {
+        this.id = id;
         this.name = name;
-        this.displyName = displyName;
+        this.displayName = displyName;
         this.type = type;
         this.team = team;
     }
