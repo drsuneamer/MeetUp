@@ -1,7 +1,7 @@
 package com.meetup.backend.jwt;
 
 import com.meetup.backend.entity.user.User;
-import com.meetup.backend.repository.UserRepository;
+import com.meetup.backend.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
