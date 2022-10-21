@@ -6,24 +6,28 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * created by seungyoung on 2022/10/20
+ * updated by seongmin on 2022/10/21
+ */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TeamUser extends BaseEntity{
+public class TeamUser extends BaseEntity {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public TeamUser(String id, Team team, User user) {
-        this.id = id;
+    public TeamUser(Team team, User user) {
         this.team = team;
         this.user = user;
     }

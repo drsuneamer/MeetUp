@@ -1,4 +1,4 @@
-package com.meetup.backend.repository;
+package com.meetup.backend.repository.user;
 
 import com.meetup.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
