@@ -6,17 +6,16 @@ import java.util.logging.Level;
 
 /**
  * created by seungyong on 2022/10/21
+ * updated by seongmin on 2022/10/23
  */
 public class Client {
 
-    public static MattermostClient getClient(String sessionToken){
-        MattermostClient client= MattermostClient.builder()
+    public static MattermostClient getClient() {
+        return MattermostClient.builder()
                 .url("https://meeting.ssafy.com")
                 .logLevel(Level.INFO)
                 .ignoreUnknownProperties()
                 .build();
-        client.setAccessToken(sessionToken);
-        return client;
     }
 
 }
