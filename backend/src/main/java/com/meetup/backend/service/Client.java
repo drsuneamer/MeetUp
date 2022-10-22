@@ -6,7 +6,7 @@ import java.util.logging.Level;
 
 /**
  * created by seungyong on 2022/10/21
- * updated by seungyong on 2022/10/23
+ * updated by seongmin on 2022/10/23
  */
 public class Client {
 
