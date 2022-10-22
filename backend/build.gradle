@@ -64,6 +64,7 @@ dependencies {
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '3.0.4'
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '3.0.4'
 
+	implementation group: 'javax.annotation', name: 'javax.annotation-api'
 }
 
 tasks.named('test') {
