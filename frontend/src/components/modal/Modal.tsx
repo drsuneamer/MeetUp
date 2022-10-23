@@ -1,22 +1,28 @@
-import React from 'react';
-interface props {
-  isOpen: boolean;
-  isClose: () => void; // 함수 타입 정의
+import React, { PropsWithChildren }from 'react';
+interface ModalDefaultType {
+  onClickToggleModal: () => void;  // 함수 타입 정의
 }
-const Modal = (props: props): React.ReactElement => {
-  const { isOpen, isClose } = props;
 
+function Modal({
+  onClickToggleModal,
+}: PropsWithChildren<ModalDefaultType>) {
   return (
-    <div>
-      <div className={isOpen ? 'bg' : ''} />
-      <div className={isOpen ? 'modal active' : 'modal'}>
-        {isOpen ? (
-          <div>
-             <button className="close" onClick={isClose}> x </button>
-          </div>
-        ) : null}
-      </div>
+    <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
+      <div className="w-[600px] h-[600px] flex flex-col items-center bg-body z-10">
+        <div onClick={onClickToggleModal}>x</div>
+        어쩌고저쩌고
+        </div>
+      <div
+        className='w-[100%] h-[100%] fixed top:0 z-9 bg-title'
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+
+          if (onClickToggleModal) {
+            onClickToggleModal();
+          }
+        }}
+      />
     </div>
   );
-};
+}
 export default Modal;
