@@ -31,6 +31,7 @@ module.exports = {
       m: '20px', // modal title
       l: '25px', // calendar title(month/date/day)
       xl: '30px', // sidebar title
+      '2xl': '100px',
     },
     screens: {
       // responsive breakpoint
