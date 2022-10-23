@@ -1,7 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
+import calendarReducer from './calendar';
+import scheduleReducer from './schedule';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    calendar: calendarReducer,
+    schedule: scheduleReducer,
+  },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
