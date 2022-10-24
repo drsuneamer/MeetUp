@@ -1,5 +1,7 @@
 package com.meetup.backend.dto.meetup;
 
+import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,12 +20,15 @@ import javax.validation.constraints.NotNull;
 public class MeetupRequestDto {
 
     @NotBlank
-    private String teamName;
+    private String title;
 
     @NotBlank
-    private String channelName;
+    private String color;
 
     @NotBlank
-    private String meetupColor;
+    private String userId;
+
+    @NotBlank
+    private String channelId;
 
 }

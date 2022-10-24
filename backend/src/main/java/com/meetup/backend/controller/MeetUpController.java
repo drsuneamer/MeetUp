@@ -5,6 +5,7 @@ import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.team.TeamDto;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.service.channel.ChannelService;
+import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +34,11 @@ public class MeetUpController {
     private final TeamUserService teamUserService;
     @Autowired
     private final ChannelService channelService;
+    @Autowired
+    private final MeetupService meetupService;
 
     @GetMapping("/team/{userId}")
     public ResponseEntity<?> getTeamByUserId(@PathVariable("userId") String userId){
-        System.out.println("==============================================");
         log.info("getUserId = {}", userId);
 
         List<TeamDto> teamDtoList=teamUserService.getTeamByUser(userId);
@@ -55,6 +57,9 @@ public class MeetUpController {
 
     @PostMapping
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto){
+        log.info("meetupRequestDto = {}",meetupRequestDto);
+        meetupService.registerMeetUp(meetupRequestDto);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
