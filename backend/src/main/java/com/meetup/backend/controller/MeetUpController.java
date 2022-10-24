@@ -43,7 +43,7 @@ public class MeetUpController {
 
         teamService.registerTeamFromMattermost();
 
-        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("");
+        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
 
         return ResponseEntity.status(OK).body(teamResponseDtoList);
     }
