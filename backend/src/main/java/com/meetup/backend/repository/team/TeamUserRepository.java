@@ -11,7 +11,6 @@ import java.util.List;
  * created by seongmin on 2022/10/21
  * updated by seungyong on 2022/10/22
  */
-@Repository
 public interface TeamUserRepository extends JpaRepository<TeamUser, Long> {
 
     List<TeamUser> findByUser(User user);

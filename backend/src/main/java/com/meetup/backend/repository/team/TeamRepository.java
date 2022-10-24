@@ -10,9 +10,7 @@ import java.util.Optional;
  * created by seongmin on 2022/10/21
  * updated by seungyong on 2022/10/22
  */
-@Repository
 public interface TeamRepository extends JpaRepository<Team, String> {
 
-    Optional<Team> findById(String id);
 
 }
