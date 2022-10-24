@@ -99,9 +99,9 @@ const SingleSelect = ({
               key={`${list[valueKey]}${index}`}
               className={`${
                 selected !== null && selected[valueKey] === list[valueKey]
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white'
-              } p-1 hover:bg-gray-200 transition cursor-pointer`}
+                  ? 'bg-title text-background'
+                  : 'bg-background'
+              } p-1 hover:bg-label transition cursor-pointer`}
               onClick={e => {
                 e.stopPropagation();
                 handleSelectedClick(index);

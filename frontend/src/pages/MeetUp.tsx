@@ -6,9 +6,11 @@ import EventModal from '../components/EventModal';
 
 const MeetUp = () => {
   return (
-    <div className={'h-screen flex flex-col overflow-hidden'}>
+    <div className={'h-screen flex flex-col overflow-hidden m-3'}>
       <main className={'flex flex-1'}>
-        <Sidebar />
+        <div className={'flex basis-3/12'}>
+          <Sidebar />
+        </div>
         <Calendar />
         <EventModal />
       </main>
