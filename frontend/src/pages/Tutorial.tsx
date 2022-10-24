@@ -1,6 +1,6 @@
 function Tutorial() {
   return (
-    <div className="Tutorial">
+    <div className="pt-[65px]">
       <h1>Tutorial</h1>
     </div>
   );
