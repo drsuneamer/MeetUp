@@ -1,13 +1,12 @@
-package com.meetup.backend.entity.meeting;
-
+package com.meetup.backend.entity.schedule;
 
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/24
@@ -15,23 +14,22 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Group {
-
+public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime start;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime end;
+
+    private String title;
+
+    private String content;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User joinUser;
-
-    @ManyToOne
-    @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
-
-    @Builder
-    public Group(User user, Meeting meeting) {
-        this.joinUser = user;
-        this.meeting = meeting;
-    }
+    private User user;
 }
