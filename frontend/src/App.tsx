@@ -16,18 +16,16 @@ function App() {
   return (
     <div className="font-noto">
       <Layout>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MeetUp />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/*" element={<NotFound />} />
-            <Route path="/tutorial" element={<Tutorial />} />
-            <Route path="/create-channel" element={<CreateChannel />} />
-            <Route path="/edit-channel" element={<EditChannel />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin-login" element={<AdminLogin />} />
-          </Routes>
-        </BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MeetUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<NotFound />} />
+          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/create-channel" element={<CreateChannel />} />
+          <Route path="/edit-channel" element={<EditChannel />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+        </Routes>
       </Layout>
     </div>
   );
