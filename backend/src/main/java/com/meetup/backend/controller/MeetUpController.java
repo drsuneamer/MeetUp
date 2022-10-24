@@ -1,13 +1,12 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.channel.ChannelDto;
+import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
-import com.meetup.backend.dto.team.TeamDto;
-import com.meetup.backend.repository.team.TeamRepository;
+import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.meetup.MeetupService;
+import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
-import com.meetup.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,31 +32,34 @@ public class MeetUpController {
     @Autowired
     private final TeamUserService teamUserService;
     @Autowired
+    private final TeamService teamService;
+    @Autowired
     private final ChannelService channelService;
     @Autowired
     private final MeetupService meetupService;
 
-    @GetMapping("/team/{userId}")
-    public ResponseEntity<?> getTeamByUserId(@PathVariable("userId") String userId){
-        log.info("getUserId = {}", userId);
+    @GetMapping("/team")
+    public ResponseEntity<?> getTeamByUserId() {
 
-        List<TeamDto> teamDtoList=teamUserService.getTeamByUser(userId);
+        teamService.registerTeamFromMattermost();
 
-        return ResponseEntity.status(OK).body(teamDtoList);
+        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("");
+
+        return ResponseEntity.status(OK).body(teamResponseDtoList);
     }
 
     @GetMapping("/channel/{teamId}")
-    public ResponseEntity<?> getChannel(@PathVariable("teamId") String teamId){
-        log.info("getTeamId = {}",teamId);
+    public ResponseEntity<?> getChannel(@PathVariable("teamId") String teamId) {
+        log.info("getTeamId = {}", teamId);
 
-        List<ChannelDto> channelDtoList=channelService.getChannelByTeam(teamId);
+        List<ChannelResponseDto> channelResponseDtoList = channelService.getChannelByTeam(teamId);
 
-        return ResponseEntity.status(OK).body(channelDtoList);
+        return ResponseEntity.status(OK).body(channelResponseDtoList);
     }
 
     @PostMapping
-    public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto){
-        log.info("meetupRequestDto = {}",meetupRequestDto);
+    public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
+        log.info("meetupRequestDto = {}", meetupRequestDto);
         meetupService.registerMeetUp(meetupRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

@@ -1,6 +1,6 @@
 package com.meetup.backend.service.team;
 
-import com.meetup.backend.dto.team.TeamDto;
+import com.meetup.backend.dto.team.TeamResponseDto;
 
 import java.util.List;
 
@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface TeamUserService {
 
-    public List<TeamDto> getTeamByUser(String userId);
+    public List<TeamResponseDto> getTeamByUser(String userId);
 
 }

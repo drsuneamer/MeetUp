@@ -1,6 +1,6 @@
 package com.meetup.backend.service.channel;
 
-import com.meetup.backend.dto.channel.ChannelDto;
+import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.repository.channel.ChannelRepository;
@@ -28,15 +28,15 @@ public class ChannelServiceImpl implements ChannelService {
     private final TeamRepository teamRepository;
 
     @Override
-    public List<ChannelDto> getChannelByTeam(String teamId) {
+    public List<ChannelResponseDto> getChannelByTeam(String teamId) {
 
         Team team=teamRepository.findById(teamId).orElseThrow(() -> new BadRequestException("유효하지 않은 팀입니다."));
-        List<ChannelDto> channelDtoList=new ArrayList<>();
+        List<ChannelResponseDto> channelResponseDtoList =new ArrayList<>();
 
         for(Channel channel : channelRepository.findByTeam(team)){
-            channelDtoList.add(ChannelDto.of(channel));
+            channelResponseDtoList.add(ChannelResponseDto.of(channel));
         }
 
-        return channelDtoList;
+        return channelResponseDtoList;
     }
 }

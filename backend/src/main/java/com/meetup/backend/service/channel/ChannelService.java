@@ -1,6 +1,6 @@
 package com.meetup.backend.service.channel;
 
-import com.meetup.backend.dto.channel.ChannelDto;
+import com.meetup.backend.dto.channel.ChannelResponseDto;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface ChannelService {
 
-    public List<ChannelDto> getChannelByTeam(String teamId);
+    public List<ChannelResponseDto> getChannelByTeam(String teamId);
+
+//    public void getChannelListFromMattermost();
 
 }

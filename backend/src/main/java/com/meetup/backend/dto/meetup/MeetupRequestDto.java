@@ -26,9 +26,6 @@ public class MeetupRequestDto {
     private String color;
 
     @NotBlank
-    private String userId;
-
-    @NotBlank
     private String channelId;
 
 }

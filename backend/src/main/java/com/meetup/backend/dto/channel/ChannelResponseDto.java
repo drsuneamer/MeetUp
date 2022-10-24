@@ -10,16 +10,14 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ChannelDto {
+public class ChannelResponseDto {
 
     private String id;
-    private String name;
     private String displayName;
 
-    public static ChannelDto of(Channel channel){
-        return ChannelDto.builder()
+    public static ChannelResponseDto of(Channel channel) {
+        return ChannelResponseDto.builder()
                 .id(channel.getId())
-                .name(channel.getName())
                 .displayName(channel.getDisplayName())
                 .build();
     }

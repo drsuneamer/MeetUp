@@ -1,10 +1,8 @@
 package com.meetup.backend.service.team;
 
-import com.meetup.backend.dto.team.TeamDto;
-import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.User;
-import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import jakarta.ws.rs.BadRequestException;
@@ -31,14 +29,14 @@ public class TeamUserServiceImpl implements TeamUserService{
     private final UserRepository userRepository;
 
     @Override
-    public List<TeamDto> getTeamByUser(String userId) {
+    public List<TeamResponseDto> getTeamByUser(String userId) {
         User user=userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
-        List<TeamDto> teamDtoList=new ArrayList<>();
+        List<TeamResponseDto> teamResponseDtoList =new ArrayList<>();
 
         for(TeamUser teamUser : teamUserRepository.findByUser(user)){
-            teamDtoList.add(TeamDto.of(teamUser.getTeam()));
+            teamResponseDtoList.add(TeamResponseDto.of(teamUser.getTeam()));
         }
 
-        return teamDtoList;
+        return teamResponseDtoList;
     }
 }

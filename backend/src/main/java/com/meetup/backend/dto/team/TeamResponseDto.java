@@ -11,17 +11,15 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class TeamDto {
+public class TeamResponseDto {
 
     private String id;
-    private String name;
     private String displayName;
     private TeamType type;
 
-    public static TeamDto of(Team team){
-        return TeamDto.builder()
+    public static TeamResponseDto of(Team team) {
+        return TeamResponseDto.builder()
                 .id(team.getId())
-                .name(team.getName())
                 .displayName(team.getDisplayName())
                 .type(team.getType())
                 .build();
