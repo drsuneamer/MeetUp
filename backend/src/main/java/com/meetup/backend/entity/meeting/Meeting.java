@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -24,10 +25,10 @@ public class Meeting extends BaseEntity {
     private Long id;
 
     @Column(columnDefinition = "TIMESTAMP")
-    private Date start;
+    private LocalDateTime start;
 
     @Column(columnDefinition = "TIMESTAMP")
-    private Date end;
+    private LocalDateTime end;
 
     private String title;
 
@@ -46,7 +47,7 @@ public class Meeting extends BaseEntity {
     private Meetup meetup;
 
     @Builder
-    public Meeting(Date start, Date end, String title, String content, User manager, User applicant, Meetup meetup) {
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, User manager, User applicant, Meetup meetup) {
         this.start = start;
         this.end = end;
         this.title = title;
