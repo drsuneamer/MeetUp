@@ -23,13 +23,13 @@ import java.util.List;
 @Transactional
 @Service
 public class ChannelServiceImpl implements ChannelService {
-
     private final ChannelRepository channelRepository;
 
     private final TeamRepository teamRepository;
 
     @Override
     public List<ChannelDto> getChannelByTeam(String teamId) {
+
         Team team=teamRepository.findById(teamId).orElseThrow(() -> new BadRequestException("유효하지 않은 팀입니다."));
         List<ChannelDto> channelDtoList=new ArrayList<>();
 
@@ -37,6 +37,6 @@ public class ChannelServiceImpl implements ChannelService {
             channelDtoList.add(ChannelDto.of(channel));
         }
 
-        return null;
+        return channelDtoList;
     }
 }
