@@ -59,7 +59,7 @@ module.exports = {
       },
       borderRadius: {
         DEFAULT: '8px',
-        login: '20px',
+        login: '15px',
       },
     },
   },
