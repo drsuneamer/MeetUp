@@ -30,8 +30,8 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     @Transactional
-    public void registerMeetUp(MeetupRequestDto meetupRequestDto) {
-        User user = userRepository.findById("유저아이디").orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
+    public void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
         Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
         Meetup meetup = Meetup.builder()

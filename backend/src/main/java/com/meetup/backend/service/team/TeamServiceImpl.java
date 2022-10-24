@@ -34,6 +34,7 @@ public class TeamServiceImpl implements TeamService {
         log.info("start register Team From Mattermost");
 
         MattermostClient client = Client.getClient();
+//        client.setAccessToken();
         Response mmLoginResponse = client.login("yeonstar1@gmail.com", "Yeon@4302110").getRawResponse();
         JSONObject jsonRes = JsonConverter.toJson((BufferedInputStream) mmLoginResponse.getEntity());
 
