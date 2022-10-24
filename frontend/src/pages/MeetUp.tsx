@@ -7,8 +7,9 @@ import ScheduleCalendar from '../components/Calendar';
 import getThisWeek from '../util/GetThisWeek';
 import { useState } from 'react';
 // import AddScheduleButton from '../components/AddScheduleButton';
-// import AddScheduleModal from '../components/AddScheduleModal';
+import AddScheduleModal from '../components/AddScheduleModal';
 import formatDay from '../util/FormatDay';
+import SideBar from '../components/SideBar';
 
 export default function MeetUp() {
   const { year, month, days } = useSelector(currentCalendar);
@@ -24,8 +25,7 @@ export default function MeetUp() {
       <main className="flex h-[calc(100%_-_3.5rem)] flex-1">
         {/* <AddScheduleButton isSideCalendar={isSideCalendar} isOpenModal={isOpenModal} setIsOpenModal={setIsOpenModal} /> */}
         <div className={`p-5 flex flex-col mt-[65px] ${isSideCalendar ? 'block' : 'hidden'}`}>
-          {/* <SideCalendarTitle year={year} month={month} />
-          <SideCalendar days={days} /> */}
+          <SideBar />
         </div>
         <div className="flex flex-col h-full overflow-x-scroll flex-1 pr-2">
           <ScheduleCalendar
@@ -37,7 +37,7 @@ export default function MeetUp() {
             setIsDeleteOpen={setIsDeleteOpen}
           />
         </div>
-        {/* <AddScheduleModal defaultDate={modalDate} timeIndex={timeIndex} isOpen={isOpenModal} setIsOpen={setIsOpenModal} /> */}
+        <AddScheduleModal defaultDate={modalDate} timeIndex={timeIndex} isOpen={isOpenModal} setIsOpen={setIsOpenModal} />
       </main>
     </>
   );
