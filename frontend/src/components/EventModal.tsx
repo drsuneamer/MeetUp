@@ -109,12 +109,12 @@ const EventModal = () => {
       />
 
       <div
-        className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-96 h-max bg-white shadow-2xl rounded-lg "
+        className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-96 h-max bg-background shadow-2xl rounded-lg "
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
           e.stopPropagation();
         }}>
-        <header className="h-[36px] bg-gray-200/50 flex justify-end align-center rounded-t-lg">
-          <Button className="text-gray-300 mr-3" onClick={handleToggleModal}>
+        <header className="h-[36px] bg-label/50 flex justify-end align-center rounded-t-lg">
+          <Button className="text-label mr-3" onClick={handleToggleModal}>
             ✖
           </Button>
         </header>
@@ -126,7 +126,7 @@ const EventModal = () => {
               name="제목"
               placeholder="제목 추가"
               value={title}
-              className="mt-3 pb-2 text-gray-600 text-xl w-full border-b-2 border-gray-200 after:transition-[width] focus:outline-none focus:border-blue-500"
+              className="mt-3 pb-2 text-label text-xl w-full border-b-2 border-label after:transition-[width] focus:outline-none focus:border-title"
               onChange={e => setTitle(e.target.value)}
             />
 
@@ -173,7 +173,7 @@ const EventModal = () => {
 
             <div className="flex justify-end p-3 mt-5">
               <Button
-                className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded text-white"
+                className="bg-title hover:bg-hover px-6 py-2 rounded text-background"
                 onClick={handleSubmit}>
                 저장
               </Button>

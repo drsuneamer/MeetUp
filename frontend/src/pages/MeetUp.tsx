@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../components/layout/Header';
 import Sidebar from '../components/SideBar';
 import Calendar from '../components/Calendar';
 import EventModal from '../components/EventModal';
