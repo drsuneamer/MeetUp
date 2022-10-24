@@ -3,7 +3,7 @@ import MeetupList from '../components/MeetupList';
 
 function SideBar() {
   return (
-    <div className="SideBar w-full">
+    <div className="SideBar w-full mt-[80px]">
       <ChannelList />
       <MeetupList />
     </div>
