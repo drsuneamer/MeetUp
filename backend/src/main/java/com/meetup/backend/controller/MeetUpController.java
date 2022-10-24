@@ -3,6 +3,7 @@ package com.meetup.backend.controller;
 import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamService;
@@ -41,12 +42,16 @@ public class MeetUpController {
     @GetMapping("/team")
     public ResponseEntity<?> getTeamByUserId() {
 
-        teamService.registerTeamFromMattermost();
+        LoginRequestDto requestDto=null;
+        teamService.registerTeamFromMattermost(requestDto);
+
+        log.info("=========팀 목록 저장 완료2======");
 
 //        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("사용자 ID");
-        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
+//        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
 
-        return ResponseEntity.status(OK).body(teamResponseDtoList);
+//        return ResponseEntity.status(OK).body(teamResponseDtoList);
+        return ResponseEntity.status(OK).body(null);
     }
 
     @GetMapping("/channel/{teamId}")
