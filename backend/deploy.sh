@@ -1,6 +1,9 @@
 echo '실행 시작'
 echo 'git pull'
 
+echo '도커파일 이미지 빌드'
+docker build -t springbootapp .
+
 echo 'jar 파일 삭제'
 rm build/libs/*.jar
 
@@ -12,10 +15,6 @@ docker stop springbootapp
 
 echo '컨테이너 삭제'
 docker rm springbootapp
-
-echo '도커파일 이미지 빌드'
-docker build -t springbootapp .
-
 
 
 echo '컨테이너 실행'
