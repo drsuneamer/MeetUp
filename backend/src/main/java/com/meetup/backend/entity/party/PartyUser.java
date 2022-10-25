@@ -1,7 +1,6 @@
-package com.meetup.backend.entity.group;
+package com.meetup.backend.entity.party;
 
 import com.meetup.backend.entity.BaseEntity;
-import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.AccessLevel;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class GroupUser extends BaseEntity {
+public class PartyUser extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +23,8 @@ public class GroupUser extends BaseEntity {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "party_id")
+    private Party party;
 
     @Convert(converter = BooleanToYNConverter.class)
     private boolean isLeader;
