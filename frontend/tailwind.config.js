@@ -31,6 +31,7 @@ module.exports = {
       m: '20px', // modal title
       l: '25px', // calendar title(month/date/day)
       xl: '30px', // sidebar title
+      '2xl': '100px',
     },
     screens: {
       // responsive breakpoint
@@ -58,10 +59,12 @@ module.exports = {
       },
       borderRadius: {
         DEFAULT: '8px',
-        login: '20px',
+        login: '15px',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
   important: true,
 };

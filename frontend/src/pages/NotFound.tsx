@@ -1,7 +1,7 @@
 function NotFound() {
   return (
-    <div className="NotFound">
-      <h1>NotFound</h1>
+    <div className="fixed w-screen h-screen bg-title h-screen">
+      <div className="font-damion text-background text-2xl">404</div>
     </div>
   );
 }
