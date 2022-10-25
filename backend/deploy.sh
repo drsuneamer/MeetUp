@@ -1,17 +1,17 @@
 echo '실행 시작'
 echo 'git pull'
 
-echo '빌드 시작'
-./gradlew build -x test
-
 echo 'jar 파일 삭제'
 rm build/libs/*.jar
 
-echo '컨테이너 중지'
-docker stop springbootapp
+echo '빌드 시작'
+./gradlew build -x test
 
-echo '컨테이너 삭제'
-docker rm springbootapp
+#echo '컨테이너 중지'
+#docker stop springbootapp
+
+#echo '컨테이너 삭제'
+#docker rm springbootapp
 
 echo '도커파일 이미지 빌드'
 docker build -t springbootapp .
