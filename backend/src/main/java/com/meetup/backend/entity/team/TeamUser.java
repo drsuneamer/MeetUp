@@ -9,6 +9,7 @@ import javax.persistence.*;
 /**
  * created by seungyoung on 2022/10/20
  * updated by seongmin on 2022/10/21
+ * updated by seungyong on 2022/10/25
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,5 +31,12 @@ public class TeamUser extends BaseEntity {
     public TeamUser(Team team, User user) {
         this.team = team;
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.team.equals(((TeamUser) obj).getTeam()) && this.user.getId().equals(((TeamUser) obj).getUser().getId()))
+            return true;
+        return false;
     }
 }

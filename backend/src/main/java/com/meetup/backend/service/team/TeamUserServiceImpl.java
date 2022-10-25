@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class TeamUserServiceImpl implements TeamUserService{
+public class TeamUserServiceImpl implements TeamUserService {
 
     private final TeamUserRepository teamUserRepository;
 
@@ -30,11 +30,11 @@ public class TeamUserServiceImpl implements TeamUserService{
 
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
-        log.info("====userId = {}",userId);
-        User user=userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
-        List<TeamResponseDto> teamResponseDtoList =new ArrayList<>();
+        log.info("====userId = {}", userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
+        List<TeamResponseDto> teamResponseDtoList = new ArrayList<>();
 
-        for(TeamUser teamUser : teamUserRepository.findByUser(user)){
+        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
             teamResponseDtoList.add(TeamResponseDto.of(teamUser.getTeam()));
         }
 

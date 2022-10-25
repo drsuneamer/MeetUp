@@ -8,6 +8,8 @@ import com.meetup.backend.dto.user.LoginRequestDto;
  */
 public interface TeamService {
 
-    public void registerTeamFromMattermost(String userId, String token);
+    void registerTeamFromMattermost(String userId, String token);
+
+    void registerUsersFromTeam(String teamId, String mmSessionToken);
 
 }
