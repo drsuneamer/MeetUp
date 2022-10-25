@@ -8,7 +8,7 @@ function Header() {
 
   return (
     <nav>
-      <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line">
+      <div className="fixed flex items-center justify-between bg-background w-full h-l border-b-2 border-line z-50">
         <div>
           <Link to="/">
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
