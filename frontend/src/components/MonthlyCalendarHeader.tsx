@@ -10,7 +10,6 @@ const Header = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
 
-  // 고쳐봐야 하는 부분
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
 
@@ -49,7 +48,7 @@ const Header = () => {
             <IconLeft className="w-8 h-8" />
           </Button>
 
-          <h2 className="ml-4 text-md sm:text-xl text-body">{displayDate}</h2>
+          <h2 className="text-md sm:text-xl text-body">{displayDate}</h2>
 
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handleNextWeek}>
             <IconRight className="w-8 h-8" />

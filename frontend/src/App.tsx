@@ -2,7 +2,6 @@ import './App.css';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Layout from './components/layout/Layout';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
 import CreateChannel from './pages/CreateChannel';
@@ -15,7 +14,6 @@ import Tutorial from './pages/Tutorial';
 function App() {
   return (
     <div className="font-noto">
-      <Layout>
         <Routes>
           <Route path="/" element={<MeetUp />} />
           <Route path="/login" element={<Login />} />
@@ -26,7 +24,6 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin-login" element={<AdminLogin />} />
         </Routes>
-      </Layout>
     </div>
   );
 }
