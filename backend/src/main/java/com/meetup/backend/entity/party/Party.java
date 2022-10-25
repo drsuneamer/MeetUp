@@ -1,4 +1,4 @@
-package com.meetup.backend.entity.group;
+package com.meetup.backend.entity.party;
 
 import com.meetup.backend.entity.BaseEntity;
 import lombok.AccessLevel;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/25
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Group  extends BaseEntity {
+public class Party extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
