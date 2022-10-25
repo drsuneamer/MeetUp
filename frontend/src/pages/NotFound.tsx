@@ -4,7 +4,7 @@ function NotFound() {
   return (
     <div
       className="flex flex-col w-screen h-screen
-     bg-title items-center justify-center pb-[80px]"
+     bg-title items-center justify-center pb-[80px] cursor-default"
     >
       <div className="font-damion text-background text-2xl">404</div>
       <div className="text-background text-m mt-[40px]">Page Not Found</div>
