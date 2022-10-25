@@ -4,7 +4,7 @@ import IconLeft from './common/IconLeft';
 import IconRight from './common/IconRight';
 import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
 import { setCurrentDate, setToday } from '../stores/modules/dates';
-import { getStringDateFormat } from '../utils/GetStringDateFormat';
+// import { getStringDateFormat } from '../utils/GetStringDateFormat';
 
 const Header = () => {
   const { currentDate } = useAppSelector((state) => state.dates);

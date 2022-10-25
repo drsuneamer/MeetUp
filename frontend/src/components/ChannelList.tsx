@@ -1,10 +1,30 @@
 import ChannelListItem from './ChannelListItem';
+import { tChannel } from '../types/channels';
+
+let channelArray: Array<tChannel> = [
+  {
+  id: 1,
+  name: 'A102',
+  color: '#ED8383',
+},
+  {
+  id: 2,
+  name: '팀장채널',
+  color: '#838EED',
+},
+  {
+  id: 3,
+  name: '스크럼',
+  color: '#BEED83',
+},
+]
+
 
 function ChannelList() {
   return (
     <div className="ChannelList mb-[50px]">
       <div className="flex mb-[10px]">
-        <h1 className="text-xl font-bold">채널 관리하기</h1>
+        <h1 className="text-xl font-bold">밋업 관리하기</h1>
         <div className="flex flex-col justify-center">
           {/* plus button */}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-body align-middle">
@@ -16,7 +36,7 @@ function ChannelList() {
           </svg>
         </div>
       </div>
-      <ChannelListItem />
+        { channelArray.map((value: tChannel, index: number) => <ChannelListItem channel={value}/>)        }
     </div>
   );
 }
