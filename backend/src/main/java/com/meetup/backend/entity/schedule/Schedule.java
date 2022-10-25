@@ -1,7 +1,10 @@
 package com.meetup.backend.entity.schedule;
 
+import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Schedule {
+public class Schedule extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +32,20 @@ public class Schedule {
 
     private String content;
 
+    @Convert(converter = BooleanToYNConverter.class)
+    private boolean isOpen;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user) {
+        this.start = start;
+        this.end = end;
+        this.title = title;
+        this.content = content;
+        this.isOpen = isOpen;
+        this.user = user;
+    }
 }
