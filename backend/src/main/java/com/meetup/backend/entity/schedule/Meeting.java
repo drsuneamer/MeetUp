@@ -23,22 +23,18 @@ import java.util.Date;
 public class Meeting extends Schedule {
 
     @ManyToOne
-    @JoinColumn(name = "applicant_id")
-    private User applicant;
-
-    @ManyToOne
     @JoinColumn(name = "meetup_id")
     private Meetup meetup;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @Builder
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user, Meetup meetup) {
+        super(start, end, title, content, user);
+        this.meetup = meetup;
+    }
 
     @Builder
-    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user, User applicant, Meetup meetup, Group group) {
-        super(start, end, title, content, isOpen, user);
-        this.applicant = applicant;
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, User user, Meetup meetup) {
+        super(start, end, title, user);
         this.meetup = meetup;
-        this.group = group;
     }
 }
