@@ -38,31 +38,25 @@ public class TeamServiceImpl implements TeamService {
         MattermostClient client = Client.getClient();
         Response mmLoginResponse = client.login("yeonstar1@gmail.com", "Yeon@4302110").getRawResponse();
 
-        switch(mmLoginResponse.getStatus()){
+        switch (mmLoginResponse.getStatus()) {
             case 200:
 
-                JSONObject jsonUserRes=JsonConverter.toJson((BufferedInputStream) mmLoginResponse.getEntity());
-                Response mmTeamResponse= client.getTeamsForUser((String) jsonUserRes.get("id")).getRawResponse();
-                JSONTokener tokener=new JSONTokener((BufferedInputStream) mmTeamResponse.getEntity());
-                JSONArray teamArray=new JSONArray(tokener);
-                for(int i=0;i<teamArray.length();i++){
-                    JSONObject team=teamArray.getJSONObject(i);
-                    Optional<Team> t=teamRepository.findById(team.getString("id"));
+                JSONObject jsonUserRes = JsonConverter.toJson((BufferedInputStream) mmLoginResponse.getEntity());
+                Response mmTeamResponse = client.getTeamsForUser((String) jsonUserRes.get("id")).getRawResponse();
+                JSONArray teamArray=JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+                for (int i = 0; i < teamArray.length(); i++) {
+                    JSONObject team = teamArray.getJSONObject(i);
+                    if (teamRepository.findById(team.getString("id")).isEmpty()) {
 
-                    log.info((String) team.get("display_name")+teamRepository.findById(team.getString("id")));
-                    if(teamRepository.findById(team.getString("id")).get()==null){
-                        log.info("=-=-=-={} 저장 시작",team.getString("display_name"));
-                        Team teamEntity=Team.builder()
+                        Team teamEntity = Team.builder()
                                 .id(team.getString("id"))
                                 .name(team.getString("name"))
                                 .displayName(team.getString("display_name"))
-                                .type(TeamType.valueOf(team.getString("type")))
+                                .type(TeamType.of(team.getString("type")))
                                 .build();
                         teamRepository.save(teamEntity);
-                        log.info("========{} 저장 완료",teamEntity.getDisplayName());
                     }
                 }
-                log.info("팀 목록 저장 완료");
 
         }
 

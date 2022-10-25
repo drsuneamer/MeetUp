@@ -39,13 +39,12 @@ public class MeetUpController {
     @Autowired
     private final MeetupService meetupService;
 
+
     @GetMapping("/team")
     public ResponseEntity<?> getTeamByUserId() {
 
-        LoginRequestDto requestDto=null;
+        LoginRequestDto requestDto = null;
         teamService.registerTeamFromMattermost(requestDto);
-
-        log.info("=========팀 목록 저장 완료2======");
 
 //        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("사용자 ID");
 //        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
@@ -66,7 +65,7 @@ public class MeetUpController {
     @PostMapping
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
         log.info("meetupRequestDto = {}", meetupRequestDto);
-        meetupService.registerMeetUp(meetupRequestDto,"사용자ID");
+        meetupService.registerMeetUp(meetupRequestDto, "사용자ID");
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
