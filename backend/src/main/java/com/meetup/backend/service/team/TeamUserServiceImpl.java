@@ -30,6 +30,7 @@ public class TeamUserServiceImpl implements TeamUserService{
 
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
+        log.info("====userId = {}",userId);
         User user=userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
         List<TeamResponseDto> teamResponseDtoList =new ArrayList<>();
 

@@ -3,6 +3,7 @@ package com.meetup.backend.controller;
 import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamService;
@@ -41,11 +42,16 @@ public class MeetUpController {
     @GetMapping("/team")
     public ResponseEntity<?> getTeamByUserId() {
 
-        teamService.registerTeamFromMattermost();
+        LoginRequestDto requestDto=null;
+        teamService.registerTeamFromMattermost(requestDto);
 
-        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("");
+        log.info("=========팀 목록 저장 완료2======");
 
-        return ResponseEntity.status(OK).body(teamResponseDtoList);
+//        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("사용자 ID");
+//        List<TeamResponseDto> teamResponseDtoList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
+
+//        return ResponseEntity.status(OK).body(teamResponseDtoList);
+        return ResponseEntity.status(OK).body(null);
     }
 
     @GetMapping("/channel/{teamId}")
@@ -60,7 +66,7 @@ public class MeetUpController {
     @PostMapping
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
         log.info("meetupRequestDto = {}", meetupRequestDto);
-        meetupService.registerMeetUp(meetupRequestDto);
+        meetupService.registerMeetUp(meetupRequestDto,"사용자ID");
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

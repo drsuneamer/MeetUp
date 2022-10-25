@@ -7,6 +7,6 @@ import com.meetup.backend.dto.meetup.MeetupRequestDto;
  */
 public interface MeetupService {
 
-    public void registerMeetUp(MeetupRequestDto meetupRequestDto);
+    public void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId);
 
 }
