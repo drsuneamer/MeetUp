@@ -1,4 +1,4 @@
-package com.meetup.backend.dto.meeting;
+package com.meetup.backend.dto.schedule.meeting;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,26 +17,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MeetingRequestDto {
-    @NotBlank
+    @NotBlank(message = "미팅의 시작 시간은 필수입니다.")
     private String start;
 
-    @NotBlank
+    @NotBlank(message = "미팅의 종료 시간은 필수입니다.")
     private String end;
 
-    @NotBlank
+    @NotBlank(message = "미팅의 제목은 필수입니다.")
     private String title;
 
     private String content;
 
-    @NotBlank(message = "managerId는 필수 입니다.")
+    @NotBlank(message = "미팅의 managerId는 필수 입니다.")
     private String managerId;
 
-    @NotBlank(message = "applicantId는 필수 입니다.")
-    private String applicantId;
-
-    @NotBlank(message = "meetupId는 필수 입니다.")
+    @NotBlank(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
 
-    private List<String> list
 
 }
