@@ -25,7 +25,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +40,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -47,8 +50,10 @@ public class UserServiceImpl implements UserService {
     private final RedisUtil redisUtil;
 
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
         MattermostClient client = Client.getClient();
         Response mmLoginResponse = client.login(requestDto.getId(), requestDto.getPassword()).getRawResponse();
@@ -62,21 +67,24 @@ public class UserServiceImpl implements UserService {
                 String nickname = (String) jsonRes.get("nickname");
                 User user;
                 if (userRepository.findById(id).isEmpty()) {
-                    user = userRepository.save(User.builder().id(id).role(RoleType.Student).build());
+                    user = userRepository.save(
+                            User.builder()
+                                    .id(id)
+                                    .role(RoleType.Student)
+                                    .password(passwordEncoder.encode(requestDto.getPassword()))
+                                    .build());
                 } else {
                     user = userRepository.findById(id).get();
                 }
 
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getId(), requestDto.getPassword());
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, requestDto.getPassword());
 
                 Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
                 TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication);
 
                 redisUtil.setData(authentication.getName(), mmToken, tokenDto.getTokenExpiresIn(), TimeUnit.MILLISECONDS);
-
                 return LoginResponseDto.of(user, tokenDto);
-
             case 401:
                 throw new ApiException(EMPTY_CREDENTIAL);
             default:
@@ -89,9 +97,9 @@ public class UserServiceImpl implements UserService {
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
         int status = client.logout().getRawResponse().getStatus();
-        if(status == 400) {
+        if (status == 400) {
             throw new ApiException(BAD_REQUEST_LOGOUT);
-        } else if(status == 403) {
+        } else if (status == 403) {
             throw new ApiException(ACCESS_DENIED);
         }
     }
