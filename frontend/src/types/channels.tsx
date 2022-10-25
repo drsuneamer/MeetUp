@@ -3,3 +3,8 @@ export type tChannel = {
   name: string;
   color: string;
 }
+
+export type tMeetup = {
+  manager_id: number;
+  name: string;
+}
