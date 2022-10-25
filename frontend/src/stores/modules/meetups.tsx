@@ -1,27 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { tChannel } from '../../types/channels';
+import { tMeetup } from '../../types/channels';
 import axios from 'axios';
 
-interface channelState extends tChannel {
+interface meetupState extends tMeetup {
   loading: boolean;
 }
-const initialState: channelState = {
-  id: 0,
+const initialState: meetupState = {
+  manager_id: 0,
   name: '',
-  color: '',
   loading: false,
 };
 
-export const fetchChannelList = createAsyncThunk('channel/fetch', async (thunkAPI) => {
+export const fetchMeetupList = createAsyncThunk('meetup/fetch', async (thunkAPI) => {
   try {
     const res = await axios({
-      url: '/api/channel',
+      url: '/api/meetup',
       method: 'get',
       headers: {
         Authorization: `Bearer `,
       },
     }).then((res) => {
-      console.log('channel data fetched: ', res);
+      console.log('meetup data fetched: ', res);
     });
     return res;
   } catch (err) {
@@ -29,27 +28,27 @@ export const fetchChannelList = createAsyncThunk('channel/fetch', async (thunkAP
   }
 });
 
-const channelSlice = createSlice({
-  name: 'channel',
+const meetupSlice = createSlice({
+  name: 'meetup',
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchChannelList.pending.toString()]: (state) => {
+    [fetchMeetupList.pending.toString()]: (state) => {
       state.loading = false;
       console.log('fetching pending');
     },
-    [fetchChannelList.fulfilled.toString()]: (state, action) => {
+    [fetchMeetupList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       console.log(action.payload);
       console.log('fetching fulfilled');
     },
-    [fetchChannelList.rejected.toString()]: (state) => {
+    [fetchMeetupList.rejected.toString()]: (state) => {
       state.loading = false;
       console.log('fetching rejected');
     },
   },
 });
 
-const { reducer } = channelSlice;
-export const channelSelector = (state: channelState) => state;
+const { reducer } = meetupSlice;
+export const meetupSelector = (state: meetupState) => state;
 export default reducer;
