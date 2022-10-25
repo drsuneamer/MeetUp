@@ -2,10 +2,12 @@ import React from 'react';
 import Sidebar from '../components/SideBar';
 import Calendar from '../components/Calendar';
 import EventModal from '../components/EventModal';
+import Layout from '../components/layout/Layout';
 
 const MeetUp = () => {
   return (
-    <div className={'h-screen flex flex-col overflow-hidden m-3'}>
+    <Layout>
+    <div className={'h-screen flex flex-col overflow-hidden '}>
       <main className={'flex flex-1'}>
         <div className={'flex basis-3/12'}>
           <Sidebar />
@@ -14,6 +16,7 @@ const MeetUp = () => {
         <EventModal />
       </main>
     </div>
+    </Layout>
   );
 };
 

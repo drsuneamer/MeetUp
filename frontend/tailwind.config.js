@@ -14,6 +14,7 @@ module.exports = {
       offWhite: '#F9FAFB',
       point: '#6C91F4',
       primary: '#26C196',
+      footer: '#AEC2FA',
       cancel: '#B70038', // error
       cancelhover: '#B70038',
       text: {
@@ -22,8 +23,9 @@ module.exports = {
       },
     },
     fontFamily: {
+      pre: ['Pretendard Variable', 'cursive'],
       damion: ['Damion', 'cursive'], // meetup logo
-      noto: ['Noto Sans KR', 'sans-serif'], // body
+      noto: ['Noto Sans KR', 'cursive'], // body
     },
     fontSize: {
       xs: '15px', // meetup title
@@ -31,7 +33,7 @@ module.exports = {
       m: '20px', // modal title
       l: '25px', // calendar title(month/date/day)
       xl: '30px', // sidebar title
-      '2xl': '100px',
+      '2xl': '100px', // login title
     },
     screens: {
       // responsive breakpoint
@@ -63,8 +65,6 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('tailwind-scrollbar-hide')
-  ],
+  plugins: [require('tailwind-scrollbar-hide')],
   important: true,
 };
