@@ -14,6 +14,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ExceptionEnum {
 
     USER_NOT_FOUND(BAD_REQUEST, "40001", "사용자를 찾을 수 없습니다."),
+    BAD_REQUEST_LOGOUT(BAD_REQUEST, "40002","잘못된 로그아웃 접근입니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40101", "인증 정보가 없습니다."),
 

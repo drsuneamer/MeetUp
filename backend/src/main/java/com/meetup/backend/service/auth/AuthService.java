@@ -8,5 +8,5 @@ import com.meetup.backend.dto.user.UserInfoDto;
 public interface AuthService {
 
     UserInfoDto getMyInfoSecret();
-    String getMMSessionToken(String accessToken);
+    String getMMSessionToken(String id);
 }

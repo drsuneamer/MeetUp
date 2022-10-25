@@ -11,6 +11,7 @@ import com.meetup.backend.exception.UnAuthorizedException;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
+import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.redis.RedisUtil;
 import jakarta.ws.rs.core.Response;
@@ -29,8 +30,11 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedInputStream;
 import java.util.concurrent.TimeUnit;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by seongmin on 2022/10/23
+ * updated by seongmin on 2022/10/25
  */
 @Service
 @RequiredArgsConstructor
@@ -41,6 +45,8 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisUtil redisUtil;
+
+    private final AuthService authService;
 
     @Override
     public LoginResponseDto login(LoginRequestDto requestDto) {
@@ -72,9 +78,21 @@ public class UserServiceImpl implements UserService {
                 return LoginResponseDto.of(user, tokenDto);
 
             case 401:
-                throw new ApiException(ExceptionEnum.EMPTY_CREDENTIAL);
+                throw new ApiException(EMPTY_CREDENTIAL);
             default:
-                throw new ApiException(ExceptionEnum.MATTERMOST_EXCEPTION);
+                throw new ApiException(MATTERMOST_EXCEPTION);
+        }
+    }
+
+    @Override
+    public void logout(String mmSessionToken) {
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(mmSessionToken);
+        int status = client.logout().getRawResponse().getStatus();
+        if(status == 400) {
+            throw new ApiException(BAD_REQUEST_LOGOUT);
+        } else if(status == 403) {
+            throw new ApiException(ACCESS_DENIED);
         }
     }
 }
