@@ -1,8 +1,8 @@
 package com.meetup.backend.service.meeting;
 
-import com.meetup.backend.dto.meeting.MeetingRequestDto;
-import com.meetup.backend.dto.meeting.MeetingResponseDto;
-import com.meetup.backend.dto.meeting.MeetingUpdateRequestDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ import java.util.List;
  */
 public interface MeetingService {
 
-    public MeetingResponseDto getMeetingResponseDtoById(Long meetingId);
+    MeetingResponseDto getMeetingResponseDtoById(Long meetingId);
 
-    public List<MeetingResponseDto> getMeetingResponseDtoByDate(String startDate, String UserId);
+    List<MeetingResponseDto> getMeetingResponseDtoByDate(String startDate, String UserId);
 
-    public void createMeeting(String userId, MeetingRequestDto meetingRequestDto);
+    void createMeeting(String userId, MeetingRequestDto meetingRequestDto);
 
-    public void updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto);
+    void updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto);
 
-    public void deleteMeeting(String userId, Long meetingId);
+    void deleteMeeting(String userId, Long meetingId);
 }
