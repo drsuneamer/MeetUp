@@ -5,6 +5,8 @@ import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.exception.UnAuthorizedException;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
@@ -70,9 +72,9 @@ public class UserServiceImpl implements UserService {
                 return LoginResponseDto.of(user, tokenDto);
 
             case 401:
-                throw new UnAuthorizedException("전자우편 주소 또는 사용자명이나 비밀번호를 잘못 입력하셨습니다.");
+                throw new ApiException(ExceptionEnum.EMPTY_CREDENTIAL);
             default:
-                throw new IllegalArgumentException("잠시 후 다시 시도해주세요.");
+                throw new ApiException(ExceptionEnum.MATTERMOST_EXCEPTION);
         }
     }
 }
