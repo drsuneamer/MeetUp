@@ -13,7 +13,7 @@ import Tutorial from './pages/Tutorial';
 
 function App() {
   return (
-    <div className="font-noto">
+    <div className="font-pre">
       <Routes>
         <Route path="/" element={<MeetUp />} />
         <Route path="/login" element={<Login />} />
