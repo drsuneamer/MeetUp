@@ -15,6 +15,7 @@ import java.util.Collections;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/10/25
  */
 @Service
 @Slf4j
@@ -33,10 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserDetails createUserDetails(User user) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getRole().toString());
-
         return new org.springframework.security.core.userdetails.User(
                 String.valueOf(user.getId()),
-                null,
+                user.getPassword(),
                 Collections.singleton(grantedAuthority)
         );
     }

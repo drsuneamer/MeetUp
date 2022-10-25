@@ -1,10 +1,7 @@
 package com.meetup.backend.entity.user;
 
 import com.meetup.backend.entity.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,12 +12,13 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "USERS")
+@ToString
 public class User extends BaseEntity {
 
     @Id
     private String id;
 
-    private String email;
+    private String password;
 
     private String nickname;
 
@@ -30,9 +28,9 @@ public class User extends BaseEntity {
     private RoleType role;
 
     @Builder
-    public User(String id, String email, String nickname, String webex, RoleType role) {
+    public User(String id, String password, String nickname, String webex, RoleType role) {
         this.id = id;
-        this.email = email;
+        this.password = password;
         this.nickname = nickname;
         this.webex = webex;
         this.role = role;
