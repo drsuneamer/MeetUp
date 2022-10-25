@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type")
 @Getter
 public class Schedule extends BaseEntity {
     @Id
@@ -39,13 +41,23 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Builder
-    public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user) {
+    @Column(insertable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    private ScheduleType type;
+
+    public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, User user) {
         this.start = start;
         this.end = end;
         this.title = title;
         this.content = content;
-        this.isOpen = isOpen;
+        this.isOpen = false;
+        this.user = user;
+    }
+
+    public Schedule(LocalDateTime start, LocalDateTime end, String title, User user) {
+        this.start = start;
+        this.end = end;
+        this.title = title;
         this.user = user;
     }
 }
