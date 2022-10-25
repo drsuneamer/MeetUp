@@ -32,10 +32,11 @@ public class TeamServiceImpl implements TeamService {
     private TeamRepository teamRepository;
 
     @Override
-    public void registerTeamFromMattermost(LoginRequestDto requestDto) {
+    public void registerTeamFromMattermost(String userId, String token) {
         log.info("start register Team From Mattermost");
 
         MattermostClient client = Client.getClient();
+//        client.setAccessToken(token);
         Response mmLoginResponse = client.login("yeonstar1@gmail.com", "Yeon@4302110").getRawResponse();
 
         switch (mmLoginResponse.getStatus()) {
@@ -43,6 +44,7 @@ public class TeamServiceImpl implements TeamService {
 
                 JSONObject jsonUserRes = JsonConverter.toJson((BufferedInputStream) mmLoginResponse.getEntity());
                 Response mmTeamResponse = client.getTeamsForUser((String) jsonUserRes.get("id")).getRawResponse();
+//                Response mmTeamResponse = client.getTeamsForUser(userId).getRawResponse();
                 JSONArray teamArray=JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
                 for (int i = 0; i < teamArray.length(); i++) {
                     JSONObject team = teamArray.getJSONObject(i);
