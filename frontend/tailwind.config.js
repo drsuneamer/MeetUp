@@ -59,10 +59,12 @@ module.exports = {
       },
       borderRadius: {
         DEFAULT: '8px',
-        login: '20px',
+        login: '15px',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
   important: true,
 };
