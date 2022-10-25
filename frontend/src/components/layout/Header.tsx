@@ -23,7 +23,7 @@ function Header() {
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            className="w-6 h-6 pt-0.5"
+            className="w-6 h-6 pt-0.5 cursor-pointer"
             onClick={logout}
           >
             <path
