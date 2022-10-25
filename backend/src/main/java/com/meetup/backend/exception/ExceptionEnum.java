@@ -19,7 +19,8 @@ public enum ExceptionEnum {
 
     ACCESS_DENIED(FORBIDDEN, "40301","권한이 없습니다."),
 
-    DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다.");
+    DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
+    MATTERMOST_EXCEPTION(INTERNAL_SERVER_ERROR, "50001", "매터모스트 에러, 잠시 후 다시 시도해주세요.");
 
 
     private final HttpStatus status;
