@@ -15,10 +15,19 @@ const WeeklyCalenderHeader = () => {
       {weekly.map((date, index) => {
         return (
           <div className="flex flex-1 flex-col" key={date.date}>
-            <div className={`text-center text-sm ${date.isToday ? 'text-title' : 'text-body'}`}>{DAYS[index]}</div>
+            <div
+              className={`text-center text-sm 
+            ${date.isToday ? 'text-title' : 'text-body'}
+            ${DAYS[index] === '일' ? 'text-cancel' : 'text' && DAYS[index] === '토' ? 'text-title' : 'text'}    
+            `}
+            >
+              {DAYS[index]}
+            </div>
             <div
               className={`text-center text-2xl p-1 w-10 h-10 rounded-full m-auto flex justify-center items-center text-s
-            ${date.isToday ? 'bg-title text-background' : 'text-body'}`}
+            ${date.isToday ? 'bg-title text-background' : 'text-body'}
+            ${DAYS[index] === '일' ? 'text-cancel' : 'text' && DAYS[index] === '토' ? 'text-title' : 'text'}    
+            `}
             >
               {date.date}
             </div>
