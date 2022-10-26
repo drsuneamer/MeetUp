@@ -79,7 +79,7 @@ const WeeklyCalendarBody = () => {
                       const rect = e.currentTarget.getBoundingClientRect();
                       const y = e.clientY - rect.top;
                       let minute = '00';
-                      if (y > 55 / 2) {
+                      if (y > 50 / 2) {
                         minute = '30';
                       }
                       handleNewEvent(stringDate, index, minute);
@@ -95,8 +95,8 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(end.slice(-2));
                 const endHour = parseInt(end.slice(0, end.length - 2));
 
-                const top = startHour * 55 + startMinute;
-                let height = (endHour - startHour) * 55 + (endMinute - startMinute);
+                const top = startHour * 50 + startMinute;
+                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                 if (height < 24) {
                   height = 24;
