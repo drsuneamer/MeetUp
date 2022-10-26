@@ -5,6 +5,7 @@ import { getThisWeek } from '../utils/GetThisWeek';
 import { deleteEvent, setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
+import holiday from '../data/holidays.json';
 
 const WeeklyCalendarBody = () => {
   const { currentDate } = useAppSelector((state) => state.dates);

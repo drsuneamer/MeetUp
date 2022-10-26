@@ -1,0 +1,143 @@
+[
+  {
+    "dateName": "1월1일",
+    "locdate": 20220101
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20220131
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20220201
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20220202
+  },
+  {
+    "dateName": "삼일절",
+    "locdate": 20220301
+  },
+  {
+    "dateName": "대통령선거일",
+    "locdate": 20220309
+  },
+  {
+    "dateName": "어린이날",
+    "locdate": 20220505
+  },
+  {
+    "dateName": "부처님오신날",
+    "locdate": 20220508
+  },
+  {
+    "dateName": "전국동시지방선거",
+    "locdate": 20220601
+  },
+  {
+    "dateName": "현충일",
+    "locdate": 20220606
+  },
+  {
+    "dateName": "광복절",
+    "locdate": 20220815
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20220909
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20220910
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20220911
+  },
+  {
+    "dateName": "대체공휴일",
+    "locdate": 20220912
+  },
+  {
+    "dateName": "개천절",
+    "locdate": 20221003
+  },
+  {
+    "dateName": "한글날",
+    "locdate": 20221009
+  },
+  {
+    "dateName": "대체공휴일",
+    "locdate": 20221010
+  },
+  {
+    "dateName": "크리스마스",
+    "locdate": 20221225,
+    "seq": 1
+  },
+  {
+    "dateName": "1월1일",
+    "locdate": 20230101
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20230121
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20230122
+  },
+  {
+    "dateName": "설날",
+    "locdate": 20230123
+  },
+  {
+    "dateName": "대체공휴일",
+    "locdate": 20230124
+  },
+  {
+    "dateName": "삼일절",
+    "locdate": 20230301
+  },
+  {
+    "dateName": "어린이날",
+    "locdate": 20230505
+  },
+  {
+    "dateName": "부처님오신날",
+    "locdate": 20230527
+  },
+  {
+    "dateName": "현충일",
+    "locdate": 20230606
+  },
+  {
+    "dateName": "광복절",
+    "locdate": 20230815
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20230928
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20230929
+  },
+  {
+    "dateName": "추석",
+    "locdate": 20230930
+  },
+  {
+    "dateName": "개천절",
+    "locdate": 20231003
+  },
+  {
+    "dateName": "한글날",
+    "locdate": 20231009
+  },
+  {
+    "dateName": "크리스마스",
+    "locdate": 20231225
+  }
+]

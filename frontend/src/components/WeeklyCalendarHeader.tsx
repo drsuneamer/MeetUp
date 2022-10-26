@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { DAYS } from '../components/constants/Days';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { useAppSelector } from '../stores/ConfigHooks';
+import holiday from '../data/holidays.json';
 
 const WeeklyCalenderHeader = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
