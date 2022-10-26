@@ -5,7 +5,7 @@ import insta from '../../assets/insta_icon.png';
 
 function Footer() {
   return (
-    <div className="bg-[#AEC2FA] w-full pt-[200px]">
+    <div className="bg-footer w-full pt-[200px]">
       <div className="flex w-full items-start justify-between px-[90px]">
         <img src={LogoImage} alt="logo" width="200px" />
         <div className="flex flex-col pt-3 cursor-default font-pre">
