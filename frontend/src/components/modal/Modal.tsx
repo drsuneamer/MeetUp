@@ -60,28 +60,31 @@ function Modal({
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
-        <div onClick={onClickToggleModal}>x</div>
-        <div className="flex flex-col">
+        <svg onClick={onClickToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 stroke-title">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+</svg>
+        <div>
           <div>
-            <span>미팅명</span>
+            <div>미팅명</div>
             <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
           <div>
-            <span>날짜</span>
+            <div>날짜</div>
             <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
           <div>
-            <span>시간</span>
+            <div>시간</div>
             <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
           <div>
-            <span>내용</span>
+            <div>내용</div>
             <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
           <div>
-            <span>알림 보낼 채널</span>
+            <div>알림 보낼 채널</div>
             {/* <Stack spacing={1} sx={{ width: 300 }}> */}
             <Autocomplete
+              className="w-s hover:"
               {...defaultProps}
               id="disable-close-on-select"
               disableCloseOnSelect
@@ -95,7 +98,7 @@ function Modal({
             <span>팀원 초대하기</span>
                  
           </div> */}
-          <button className="bg-title hover:bg-hover text-background py-2 px-4 rounded w-[500] h-s">밋업 등록하기</button>
+          <button className="bg-title hover:bg-hover text-background py-2 px-4 rounded w-s h-s">밋업 등록하기</button>
         </div>
         </div>
       <div
