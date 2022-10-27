@@ -2,31 +2,61 @@ import  { PropsWithChildren }from 'react';
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+// import Stack from '@mui/material/Stack';
 
 interface ModalDefaultType {
   onClickToggleModal: () => void;  // 함수 타입 정의
 }
 
+interface ChannelOptionType {
+  title: string;
+}
+
 const top100Films = [
-  { label: 'The Shawshank Redemption' },
-  { label: 'The Godfather' },
-  { label: 'The Godfather: Part II' },
-  { label: 'The Dark Knight' },
-  { label: '12 Angry Men' },
-  { label: "Schindler's List" },
-  { label: 'Pulp Fiction' },
-  { label: 'Aliens' },
-  { label: 'Oldboy' },
-  { label: 'Once Upon a Time in America' },
-  { label: 'Witness for the Prosecution' },
-  { label: 'Das Boot' },
-  { label: 'Citizen Kane' },
-  { label: 'North by Northwest' },
-  { label: 'Vertigo' },
+  { title: 'The Shawshank Redemption', year: 1994 },
+  { title: 'The Godfather', year: 1972 },
+  { title: 'The Godfather: Part II', year: 1974 },
+  { title: 'The Dark Knight', year: 2008 },
+  { title: '12 Angry Men', year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: 'Pulp Fiction', year: 1994 },
+  {
+    title: 'The Lord of the Rings: The Return of the King',
+    year: 2003,
+  },
+  { title: 'The Good, the Bad and the Ugly', year: 1966 },
+  { title: 'Fight Club', year: 1999 },
+  {
+    title: 'The Lord of the Rings: The Fellowship of the Ring',
+    year: 2001,
+  },
+  {
+    title: 'Star Wars: Episode V - The Empire Strikes Back',
+    year: 1980,
+  },
+  { title: 'Forrest Gump', year: 1994 },
+  { title: 'Inception', year: 2010 },
+  {
+    title: 'The Lord of the Rings: The Two Towers',
+    year: 2002,
+  },
+  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
+  { title: 'Goodfellas', year: 1990 },
+  { title: 'The Matrix', year: 1999 },
+  { title: 'Seven Samurai', year: 1954 },
 ];
 function Modal({
   onClickToggleModal,
 }: PropsWithChildren<ModalDefaultType>) {
+  const defaultProps = {
+    options: top100Films,
+    getOptionLabel: (option: ChannelOptionType) => option.title,
+  };
+  const flatProps = {
+    options: top100Films.map((option) => option.title),
+  };
+  const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
@@ -50,19 +80,22 @@ function Modal({
           </div>
           <div>
             <span>알림 보낼 채널</span>
+            {/* <Stack spacing={1} sx={{ width: 300 }}> */}
             <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={top100Films}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="채널 선택하기" />}
+              {...defaultProps}
+              id="disable-close-on-select"
+              disableCloseOnSelect
+              renderInput={(params) => (
+                <TextField {...params} label="채널 선택하기" variant="standard" />
+              )}
             />
+            {/* </Stack> */}
           </div>
           {/* <div>
             <span>팀원 초대하기</span>
                  
           </div> */}
-          <button>밋업 등록하기</button>
+          <button className="bg-title hover:bg-hover text-background py-2 px-4 rounded w-[500] h-s">밋업 등록하기</button>
         </div>
         </div>
       <div
