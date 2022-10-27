@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 
@@ -10,8 +10,17 @@ interface Category {
 }
 
 function CreateChannel() {
+  // COLOR PICKER
+  const [color, setColor] = useState('#ED8383');
+  const [open, setOpen] = useState(false);
+
+  const openColor = () => {
+    setOpen(!open);
+  };
+
+  // SET CHANNEL
   const [category, setCategory] = useState<Category>();
-  console.log(category); // 보내줘야 할 값 (저장하기 클릭 시)
+  // console.log(category); // 보내줘야 할 값 (저장하기 클릭 시)
 
   const lv1Categories = [
     //팀
@@ -69,12 +78,24 @@ function CreateChannel() {
           </div>
         </div>
 
-        <div className="font-bold text-title">
+        <div className="z-50 font-bold text-title">
           <div>달력에 표시할 색상 선택</div>
-          <div> {/* color picker */}</div>
+          <div onClick={openColor} className="flex">
+            {/* 색상 선택 */}
+            <div style={{ backgroundColor: `${color}` }} className="rounded-full m-[5px] w-[30px] h-[30px]"></div>
+            {open ? (
+              <div className="absolute z-50">
+                <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
         </div>
 
-        <button className="-z-50 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">저장하기</button>
+        <button className="relative z-2 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">
+          저장하기
+        </button>
       </div>
     </Layout>
   );
