@@ -7,9 +7,11 @@ import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.mattermost.MattermostService;
 import com.meetup.backend.service.meetup.MeetupService;
+import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/api/meetup")
 public class MeetUpController {
 
+    @Autowired
+    private final TeamService teamService;
     @Autowired
     private final TeamUserService teamUserService;
     @Autowired
@@ -60,27 +64,34 @@ public class MeetUpController {
     }
 
     @GetMapping("/team")
-    public ResponseEntity<?> getTeamByUserId(){
-        return ResponseEntity.status(OK).body(null);
+    public ResponseEntity<?> getTeamByUserId() {
+        return ResponseEntity.status(OK).body(teamUserService.getTeamByUser(authService.getMyInfoSecret().getId()));
     }
 
     @GetMapping("/team/sync")
-    public ResponseEntity<?> getTeamSyncByUserId(){
+    public ResponseEntity<?> getTeamSyncByUserId() {
+
+        String userId=authService.getMyInfoSecret().getId();
+        String token= authService.getMMSessionToken(userId);
+
+        JSONArray teamList=teamService.registerTeamFromMattermost(userId,token);
+
+
         return ResponseEntity.status(OK).body(null);
     }
 
     @GetMapping("/channel/{teamId}")
-    public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") String teamId){
+    public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") String teamId) {
         return ResponseEntity.status(OK).body(null);
     }
 
     @GetMapping("/channel/sync/{teamId}")
-    ResponseEntity<?> getChannelSyncByUserId(@PathVariable("teamId") String teamId){
+    ResponseEntity<?> getChannelSyncByUserId(@PathVariable("teamId") String teamId) {
         return ResponseEntity.status(OK).body(null);
     }
 
     @PostMapping("channel/{teamId}")
-    ResponseEntity<?> registerNewChannel(@PathVariable("teamid") String teamId){
+    ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

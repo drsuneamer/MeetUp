@@ -3,6 +3,7 @@ package com.meetup.backend.service.user;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
@@ -102,5 +104,16 @@ public class UserServiceImpl implements UserService {
         } else if (status == 403) {
             throw new ApiException(ACCESS_DENIED);
         }
+    }
+
+    @Override
+    public void RegisterUserFromList(List<User> userList) {
+
+        for(User user : userList){
+            if(userRepository.findById(user.getId()).isEmpty()){
+                userRepository.save(user);
+            }
+        }
+
     }
 }
