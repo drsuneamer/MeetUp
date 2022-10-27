@@ -8,6 +8,7 @@ import lombok.Data;
 /**
  * created by seungyong on 2022/10/22
  * updated by seungyong on 2022/10/22
+ * updated by seungyong on 2022/10/27
  */
 @Data
 @Builder
@@ -15,13 +16,11 @@ public class TeamResponseDto {
 
     private String id;
     private String displayName;
-    private TeamType type;
 
     public static TeamResponseDto of(Team team) {
         return TeamResponseDto.builder()
                 .id(team.getId())
                 .displayName(team.getDisplayName())
-                .type(team.getType())
                 .build();
     }
 

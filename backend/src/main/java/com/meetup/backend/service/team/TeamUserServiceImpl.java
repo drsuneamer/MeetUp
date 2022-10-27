@@ -3,6 +3,8 @@ package com.meetup.backend.service.team;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import jakarta.ws.rs.BadRequestException;
@@ -22,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class TeamUserServiceImpl implements TeamUserService{
+public class TeamUserServiceImpl implements TeamUserService {
 
     private final TeamUserRepository teamUserRepository;
 
@@ -30,11 +32,10 @@ public class TeamUserServiceImpl implements TeamUserService{
 
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
-        log.info("====userId = {}",userId);
-        User user=userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
-        List<TeamResponseDto> teamResponseDtoList =new ArrayList<>();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        List<TeamResponseDto> teamResponseDtoList = new ArrayList<>();
 
-        for(TeamUser teamUser : teamUserRepository.findByUser(user)){
+        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
             teamResponseDtoList.add(TeamResponseDto.of(teamUser.getTeam()));
         }
 

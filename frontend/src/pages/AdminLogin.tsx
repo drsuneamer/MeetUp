@@ -1,7 +1,9 @@
+import AdminLoginForm from '../components/AdminLoginForm';
+
 function AdminLogin() {
   return (
-    <div className="AdminLogin">
-      <h1>AdminLogin</h1>
+    <div className="h-screen bg-footer flex items-center justify-center">
+      <AdminLoginForm />
     </div>
   );
 }

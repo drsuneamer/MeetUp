@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface TeamUserService {
 
-    public List<TeamResponseDto> getTeamByUser(String userId);
+    List<TeamResponseDto> getTeamByUser(String userId);
 
 }

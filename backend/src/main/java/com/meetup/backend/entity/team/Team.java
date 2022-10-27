@@ -1,7 +1,6 @@
 package com.meetup.backend.entity.team;
 
 
-
 import com.meetup.backend.entity.*;
 import lombok.*;
 

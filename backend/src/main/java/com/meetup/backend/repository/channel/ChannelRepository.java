@@ -10,9 +10,9 @@ import java.util.List;
 /**
  * created by seongmin on 2022/10/21
  * updated by seungyong on 2022/10/23
+ * udpated by seungyong on 2022/10/27
  */
 public interface ChannelRepository extends JpaRepository<Channel, String> {
 
-    List<Channel> findByTeam(Team team);
 
 }

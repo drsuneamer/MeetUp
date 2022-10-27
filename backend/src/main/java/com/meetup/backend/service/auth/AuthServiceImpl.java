@@ -2,6 +2,8 @@ package com.meetup.backend.service.auth;
 
 import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.redis.RedisUtil;
 import com.meetup.backend.util.security.SecurityUtil;
@@ -22,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserInfoDto getMyInfoSecret() {
-        User user = userRepository.findById(SecurityUtil.getCurrentId()).orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+        User user = userRepository.findById(SecurityUtil.getCurrentId()).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         return UserInfoDto.of(user);
     }
 

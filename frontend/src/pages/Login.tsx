@@ -20,7 +20,7 @@ function Login() {
 
   return (
     <div className="h-screen bg-cover" style={{ backgroundImage: `url(${showImg})` }}>
-      <div className="bg-title bg-opacity-30 w-screen h-screen flex items-center justify-center ">
+      <div className="bg-title bg-opacity-30 w-screen h-screen flex items-center justify-center">
         <LoginForm />
       </div>
     </div>
