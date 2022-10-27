@@ -7,62 +7,77 @@ interface ModalDefaultType {
   onClickToggleModal: () => void;  // 함수 타입 정의
 }
 
-const top100Films = [
-  { label: 'The Shawshank Redemption' },
-  { label: 'The Godfather' },
-  { label: 'The Godfather: Part II' },
-  { label: 'The Dark Knight' },
-  { label: '12 Angry Men' },
-  { label: "Schindler's List" },
-  { label: 'Pulp Fiction' },
-  { label: 'Aliens' },
-  { label: 'Oldboy' },
-  { label: 'Once Upon a Time in America' },
-  { label: 'Witness for the Prosecution' },
-  { label: 'Das Boot' },
-  { label: 'Citizen Kane' },
-  { label: 'North by Northwest' },
-  { label: 'Vertigo' },
+interface ChannelOptionType {
+  title: string;
+}
+
+const channels = [
+  { title: '서울_1반_팀장채널'},
+  { title: 'A101' },
+  { title: 'A102' },
+  { title: 'A103' },
+  { title: 'A104' },
+  { title: 'A105' },
+  { title: 'A106' },
+  { title: 'A107' },
+  { title: 'A102_scrum' },
+  { title: 'A102_jira_bot' },
 ];
 function Modal({
   onClickToggleModal,
 }: PropsWithChildren<ModalDefaultType>) {
+  const defaultProps = {
+    options: channels,
+    getOptionLabel: (option: ChannelOptionType) => option.title,
+  };
+  const flatProps = {
+    options: channels.map((option) => option.title),
+  };
+  const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  // const ELEMENT_TO_SHOW = 4;
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
-        <div onClick={onClickToggleModal}>x</div>
-        <div className="flex flex-col">
-          <div>
-            <span>미팅명</span>
-            <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+        <svg onClick={onClickToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+</svg>
+        <div>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">미팅명</div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
-          <div>
-            <span>날짜</span>
-            <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">날짜</div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
-          <div>
-            <span>시간</span>
-            <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">시간</div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
-          <div>
-            <span>내용</span>
-            <input type="text" name="title" className="w-s h-[40px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">내용</div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
           </div>
-          <div>
-            <span>알림 보낼 채널</span>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">알림 보낼 채널</div>
             <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={top100Films}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="채널 선택하기" />}
+              className="w-[450px]"
+              ListboxProps={{ style: { maxHeight: '150px' } }}
+              {...defaultProps}
+              id="select-channel"
+              // options={channels.filter((el, i) => {  // here add a filter for options
+              //   if (i < ELEMENT_TO_SHOW) return el;
+              // })}
+              renderInput={(params) => (
+                <TextField {...params} label="채널 선택하기" variant="standard" />
+              )}
             />
           </div>
           {/* <div>
             <span>팀원 초대하기</span>
                  
           </div> */}
-          <button>밋업 등록하기</button>
+          <button className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
         </div>
         </div>
       <div
