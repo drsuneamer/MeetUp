@@ -1,4 +1,4 @@
-package com.meetup.backend.dto.schedule.meeting;
+package com.meetup.backend.dto.Schedule.meeting;
 
 public class MeetingUpdateRequestDto {
 }

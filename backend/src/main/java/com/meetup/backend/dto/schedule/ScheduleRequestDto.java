@@ -1,4 +1,4 @@
-package com.meetup.backend.dto.schedule;
+package com.meetup.backend.dto.Schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * created by myeongseok on 2022/10/24
- * updated by myeongseok on 2022/10/24
+ * updated by myeongseok on 2022/10/27
  */
 @Data
 @Builder

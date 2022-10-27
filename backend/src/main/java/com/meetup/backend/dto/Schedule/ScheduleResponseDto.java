@@ -1,4 +1,4 @@
-package com.meetup.backend.dto.schedule;
+package com.meetup.backend.dto.Schedule;
 
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
