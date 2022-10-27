@@ -1,9 +1,10 @@
 import { createSlice} from '@reduxjs/toolkit';
 import { RootState } from '../../stores/ConfigStore';
 import holidayList from '../../data/holidays.json';
+import { HolidayDetail } from '../../types/events';
 
 type HolidaysInitialState = {
-  holidays: Array<Object>;
+  holidays: Array<HolidayDetail>;
 };
 
 const initialState: HolidaysInitialState = {
