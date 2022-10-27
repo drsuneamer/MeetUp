@@ -4,8 +4,8 @@
   border-radius: 4px;
   padding: 8px;
   position: absolute;
-  top: 7vh;
-  width: 68.5vw;
+  top: 8.3vh;
+  width: 68.3vw;
   height: 25vh;
 }
 
@@ -15,7 +15,7 @@
   max-height: 300px;
   overflow: auto;
   padding: 0;
-  width: 34vw;
+  width: 33vw;
 }
 
 .entry-level::-webkit-scrollbar {
