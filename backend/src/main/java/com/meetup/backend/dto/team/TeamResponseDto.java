@@ -13,15 +13,13 @@ import lombok.Data;
 @Builder
 public class TeamResponseDto {
 
-    private String id;
+    private String categoryId;
     private String displayName;
-    private TeamType type;
 
     public static TeamResponseDto of(Team team) {
         return TeamResponseDto.builder()
-                .id(team.getId())
+                .categoryId(team.getId())
                 .displayName(team.getDisplayName())
-                .type(team.getType())
                 .build();
     }
 

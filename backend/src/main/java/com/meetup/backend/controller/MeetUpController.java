@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.util.List;
@@ -44,13 +45,13 @@ public class MeetUpController {
 
 
     @GetMapping("/team")
-    public ResponseEntity<?> getTeamByUserId() {
+    public ResponseEntity<?> getTeamAndChannelByUserId() {
 
-        teamService.registerTeamFromMattermost(authService.getMyInfoSecret().getId(), authService.getMMSessionToken(authService.getMyInfoSecret().getId()));
-//        teamService.registerTeamFromMattermost("","");
-        teamService.registerUsersFromTeam("", "");
+        String userId = authService.getMyInfoSecret().getId();
+        String token = authService.getMMSessionToken(authService.getMyInfoSecret().getId());
+        teamService.getTeamAndChannelById(userId, token);
 
-        List<TeamResponseDto> teamUserList = teamUserService.getTeamByUser("pfnfdm4febgd5qmzemdu91ri6w");
+        List<TeamResponseDto> teamUserList = teamUserService.getTeamByUser(userId);
 
         return ResponseEntity.status(OK).body(teamUserList);
     }
