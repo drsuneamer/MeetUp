@@ -5,27 +5,52 @@ import { getThisWeek } from '../utils/GetThisWeek';
 import { deleteEvent, setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
-import { useSelector, useDispatch } from 'react-redux'
-import { holidaySelector, fetchHolidays  } from '../stores/modules/holidays';
+import { useSelector, useDispatch } from 'react-redux';
+import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
 
 const WeeklyCalendarBody = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
 
-  const rDispatch = useDispatch()
+  const rDispatch = useDispatch();
   const { holidays } = useSelector(holidaySelector);
+
+  const [thisWeek, setThisWeek] = useState([{}]);
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
-      await rDispatch(fetchHolidays())
+      await rDispatch(fetchHolidays());
     }
     fetchAndSetHolidays();
-    // const holiday:object = holidays.holidays[0]
-    console.log(holidays[0].locdate)
-    console.log(weekly) // 0: {isToday: false, day: 0, date: 23, stringDate: '2022-10-23'}
-  })
+    renderHoliday();
+  }, [holidays]);
 
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
+
+  const hours = useMemo(() => {
+    return getHours();
+  }, []);
+
+  function renderHoliday() {
+    const holidayThisWeek: Array<object> = [];
+
+    for (let i = 0; i < weekly.length; i++) {
+      for (let j = 0; j < holidays.length; j++) {
+        if (weekly[i].stringDate === holidays[j].locdate) {
+          holidayThisWeek.push({ name: holidays[j].dateName, date: holidays[j].locdate });
+        }
+      }
+    }
+
+    if (holidayThisWeek.length > 0) {
+      console.log('mmm');
+      setThisWeek(holidayThisWeek);
+    }
+    return thisWeek;
+  }
 
   const deletePopupContainerRef = useRef<HTMLDivElement>(null);
 
@@ -35,14 +60,6 @@ const WeeklyCalendarBody = () => {
   } | null>(null);
 
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
-
-  const weekly = useMemo(() => {
-    return getThisWeek(currentDate);
-  }, [currentDate]);
-
-  const hours = useMemo(() => {
-    return getHours();
-  }, []);
 
   const handleSelectedEvent = (e: React.MouseEvent<HTMLDivElement>, date: string, index: number) => {
     setSelectedEventPosition({ top: e.clientY, left: e.clientX });
@@ -84,10 +101,10 @@ const WeeklyCalendarBody = () => {
         })}
       </div>
 
-
       {/* 여기 만져보는 중 */}
       <div className="flex flex-1 h-fit p-2 md:ml-0">
-        {weekly.map(({ date, stringDate }) => { //date: 23, stringDate: 2022-10-23
+        {weekly.map(({ date, stringDate }) => {
+          //date: 23, stringDate: 2022-10-23
           return (
             <div className="flex flex-1 flex-col relative" key={`${date}-border`}>
               {hours.map((hour, index) => {
@@ -126,24 +143,25 @@ const WeeklyCalendarBody = () => {
                 return (
                   // 달력에 표시되는 이벤트 일정
                   <>
-                  { holidays ? 
-                  <div
-                    key={`${holidays}${index}`}
-                    style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                    onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                  >
-                    <div className="mr-1">{holidays[0].dateName}</div>
-                  </div> :
-                  <div
-                    key={`${stringDate}${index}`}
-                    style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                    onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                  >
-                    <div className="mr-1 w-full text-center">{title}</div>
-                  </div>
-                  }
+                    {holidays ? (
+                      <div
+                        key={`${holidays}${index}`}
+                        style={{ top, height }}
+                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
+                        onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
+                      >
+                        <div className="mr-1">{typeof holidays}</div>
+                      </div>
+                    ) : (
+                      <div
+                        key={`${stringDate}${index}`}
+                        style={{ top, height }}
+                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
+                        onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
+                      >
+                        <div className="mr-1 w-full text-center">{title}</div>
+                      </div>
+                    )}
                   </>
                 );
               })}
@@ -151,7 +169,7 @@ const WeeklyCalendarBody = () => {
           );
         })}
       </div>
-    
+
       {/* 원래 있던 것(모달 생성시 이벤트 생성 ) */}
       {/* <div className="flex flex-1 h-fit p-2 md:ml-0">
         {weekly.map(({ date, stringDate }) => { //date: 23, stringDate: 2022-10-23
