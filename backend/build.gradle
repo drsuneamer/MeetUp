@@ -34,6 +34,9 @@ dependencies {
 	testImplementation 'org.springframework.batch:spring-batch-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -42,10 +45,29 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+	// json
+	implementation 'org.json:json:20200518'
+
 	// mattermost
 	implementation 'net.bis5.mattermost4j:mattermost4j-core:0.25.0'
 
+	implementation group: 'jakarta.ws.rs', name: 'jakarta.ws.rs-api', version: '3.0.0'
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '3.0.1'
+	implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.0'
+	implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '2.0.0'
+	implementation group: 'com.sun.activation', name: 'jakarta.activation', version: '2.0.1'
+	implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jakarta-xmlbind-annotations', version: '2.13.3'
 
+	implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
+	implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '3.0.4'
+	implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '3.0.4'
+	implementation group: 'org.glassfish.jersey.core', name: 'jersey-common', version: '3.0.4'
+	implementation group: 'org.glassfish.jersey.ext', name: 'jersey-entity-filtering', version: '3.0.4'
+	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '3.0.4'
+	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '3.0.4'
+
+	implementation group: 'javax.annotation', name: 'javax.annotation-api'
 }
 
 tasks.named('test') {

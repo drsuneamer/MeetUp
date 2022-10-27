@@ -10,24 +10,22 @@ import java.util.Collection;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/10/25
  */
 @Getter
 @Slf4j
 public class UserDetailsImpl implements UserDetails {
     private String id;
-    private String email;
     private String nickname;
 
-    public UserDetailsImpl(String id, String email,String nickname) {
+    public UserDetailsImpl(String id, String nickname) {
         this.id = id;
-        this.email = email;
         this.nickname = nickname;
     }
 
     public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
                 user.getId(),
-                user.getEmail(),
                 user.getNickname()
         );
     }
