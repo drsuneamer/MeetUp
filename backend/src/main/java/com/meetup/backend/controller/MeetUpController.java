@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -54,10 +53,35 @@ public class MeetUpController {
         List<TeamResponseDto> teamRes = teamUserService.getTeamByUser(userId);
         TeamChannelResponseDto response = TeamChannelResponseDto.builder()
                 .teamList(teamRes)
-                .channelList(channelUserService.getChannelByTeam(userId))
+//                .channelList(channelUserService.getChannelByUser(userId))
                 .build();
 
         return ResponseEntity.status(OK).body(response);
+    }
+
+    @GetMapping("/team")
+    public ResponseEntity<?> getTeamByUserId(){
+        return ResponseEntity.status(OK).body(null);
+    }
+
+    @GetMapping("/team/sync")
+    public ResponseEntity<?> getTeamSyncByUserId(){
+        return ResponseEntity.status(OK).body(null);
+    }
+
+    @GetMapping("/channel/{teamId}")
+    public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") String teamId){
+        return ResponseEntity.status(OK).body(null);
+    }
+
+    @GetMapping("/channel/sync/{teamId}")
+    ResponseEntity<?> getChannelSyncByUserId(@PathVariable("teamId") String teamId){
+        return ResponseEntity.status(OK).body(null);
+    }
+
+    @PostMapping("channel/{teamId}")
+    ResponseEntity<?> registerNewChannel(@PathVariable("teamid") String teamId){
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping

@@ -67,8 +67,6 @@ public class MattermostServiceImpl implements MattermostService {
     @Override
     public void registerMattermost(String userId, String mmSessionToken) {
 
-        userRepository.save(User.builder().id(userId).build());
-
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
@@ -88,7 +86,7 @@ public class MattermostServiceImpl implements MattermostService {
             }
 
             User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-            Team team = teamRepository.findById(teamObj.getString("id")).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+            Team team = teamRepository.findById(teamObj.getString("id")).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
             TeamUser teamUser = TeamUser.builder()
                     .team(team)
                     .user(user)
@@ -126,6 +124,25 @@ public class MattermostServiceImpl implements MattermostService {
 
         }
 
+
+    }
+
+    @Override
+    public void registerTeamById(String userId, String mmSessionToken) {
+
+        User user=userRepository.findById(userId).orElseThrow(()->new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        MattermostClient client=Client.getClient();
+        client.setAccessToken(mmSessionToken);
+
+        Response mmTeamResponse=client.getTeamsForUser(userId).getRawResponse();
+        JSONArray teamArray=JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+
+
+
+    }
+
+    @Override
+    public void registerChannelByIdAndTeam(String userId, String teamId, String mmSessionToken) {
 
     }
 

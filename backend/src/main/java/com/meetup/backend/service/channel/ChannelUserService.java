@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface ChannelUserService {
 
-    List<ChannelResponseDto> getChannelByTeam(String userId);
+    List<ChannelResponseDto> getChannelByUser(String userId, String teamId);
 
 }

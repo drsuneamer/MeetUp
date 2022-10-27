@@ -15,13 +15,13 @@ public class ChannelResponseDto {
 
     private String id;
     private String displayName;
-    private String parentId;
+    private String TeamId;
 
     public static ChannelResponseDto of(Channel channel) {
         return ChannelResponseDto.builder()
                 .id(channel.getId())
                 .displayName(channel.getDisplayName())
-                .parentId(channel.getTeam().getId())
+                .TeamId(channel.getTeam().getId())
                 .build();
     }
 

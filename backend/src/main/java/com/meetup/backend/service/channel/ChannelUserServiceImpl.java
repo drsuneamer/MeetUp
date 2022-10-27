@@ -32,7 +32,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<ChannelResponseDto> getChannelByTeam(String userId) {
+    public List<ChannelResponseDto> getChannelByUser(String userId, String teamId) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
