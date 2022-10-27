@@ -6,6 +6,8 @@ function Header() {
     console.log('logout!');
   };
 
+  const nickname = window.localStorage.getItem('nickname');
+
   return (
     <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
       <div>
@@ -15,7 +17,7 @@ function Header() {
       </div>
 
       <div className="flex mr-2">
-        <div className="font-bold pr-1">박성민[서울_1반_A102_팀장]</div>
+        <div className="font-bold pr-1">{nickname}</div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
