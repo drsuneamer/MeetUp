@@ -1,8 +1,10 @@
 package com.meetup.backend.entity.schedule;
 
+import com.meetup.backend.dto.Schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
+import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,10 +56,20 @@ public class Schedule extends BaseEntity {
         this.user = user;
     }
 
+
     public Schedule(LocalDateTime start, LocalDateTime end, String title, User user) {
         this.start = start;
         this.end = end;
         this.title = title;
+        this.isOpen = false;
         this.user = user;
+    }
+
+    public void update(ScheduleUpdateRequestDto scheduleUpdateRequestDto){
+        this.start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
+        this.end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
+        this.title = scheduleUpdateRequestDto.getTitle();
+        this.content = scheduleUpdateRequestDto.getContent();
+
     }
 }
