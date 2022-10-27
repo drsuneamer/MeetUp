@@ -1,12 +1,12 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
+import com.meetup.backend.dto.meetup.TeamChannelResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.service.auth.AuthService;
-import com.meetup.backend.service.channel.ChannelService;
+import com.meetup.backend.service.channel.ChannelUserService;
+import com.meetup.backend.service.mattermost.MattermostService;
 import com.meetup.backend.service.meetup.MeetupService;
-import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,15 +15,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
 /**
- * created by seungyong on 2022/09/22
+ * created by seungyong on 2022/10/22
+ * updated by seungyong on 2022/10/27
  */
 @RestController
 @Slf4j
@@ -34,9 +35,9 @@ public class MeetUpController {
     @Autowired
     private final TeamUserService teamUserService;
     @Autowired
-    private final TeamService teamService;
+    private final MattermostService mattermostService;
     @Autowired
-    private final ChannelService channelService;
+    private final ChannelUserService channelUserService;
     @Autowired
     private final MeetupService meetupService;
 
@@ -44,25 +45,19 @@ public class MeetUpController {
     private final AuthService authService;
 
 
-    @GetMapping("/team")
+    @GetMapping("")
     public ResponseEntity<?> getTeamAndChannelByUserId() {
 
         String userId = authService.getMyInfoSecret().getId();
         String token = authService.getMMSessionToken(authService.getMyInfoSecret().getId());
-        teamService.getTeamAndChannelById(userId, token);
+        mattermostService.registerTeamAndChannelById(userId, token);
+        List<TeamResponseDto> teamRes = teamUserService.getTeamByUser(userId);
+        TeamChannelResponseDto response = TeamChannelResponseDto.builder()
+                .teamList(teamRes)
+                .channelList(channelUserService.getChannelByTeam(userId))
+                .build();
 
-        List<TeamResponseDto> teamUserList = teamUserService.getTeamByUser(userId);
-
-        return ResponseEntity.status(OK).body(teamUserList);
-    }
-
-    @GetMapping("/channel/{teamId}")
-    public ResponseEntity<?> getChannel(@PathVariable("teamId") String teamId) {
-        log.info("getTeamId = {}", teamId);
-
-        List<ChannelResponseDto> channelResponseDtoList = channelService.getChannelByTeam(teamId);
-
-        return ResponseEntity.status(OK).body(channelResponseDtoList);
+        return ResponseEntity.status(OK).body(response);
     }
 
     @PostMapping
