@@ -1,16 +1,29 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getHours } from '../utils/GetHours';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { deleteEvent, setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
-import holiday from '../data/holidays.json';
+import { useSelector, useDispatch } from 'react-redux'
+import { holidaySelector, fetchHolidays  } from '../stores/modules/holidays';
 
 const WeeklyCalendarBody = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
+
+  const rDispatch = useDispatch()
+  const holidays = useSelector(holidaySelector);
+
+  useEffect(() => {
+    async function fetchAndSetHolidays() {
+      await rDispatch(fetchHolidays())
+    }
+    fetchAndSetHolidays();
+    console.log(holidays.holidays[0])
+    console.log(typeof(holidays))
+  })
 
   const deletePopupContainerRef = useRef<HTMLDivElement>(null);
 
@@ -18,6 +31,7 @@ const WeeklyCalendarBody = () => {
     top: number;
     left: number;
   } | null>(null);
+
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
 
   const weekly = useMemo(() => {
@@ -104,14 +118,25 @@ const WeeklyCalendarBody = () => {
                 }
 
                 return (
+                  // 달력에 표시되는 이벤트 일정
+                  <>
+                  { holidays ? 
+                  <div
+                    key={`${holidays}${index}`}
+                    style={{ top, height }}
+                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
+                    onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
+                  >
+                    <div className="mr-1">메롱</div>
+                  </div> :
                   <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
                     className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >
-                    <div className="mr-1">{title}</div>
-                    <div className="hidden sm:block">
+                    <div className="mr-1 w-full text-center">{title}</div>
+                    {/* <div className="hidden sm:block">
                       <span>
                         {startHour < 12 ? '오전' : '오후'} {startHour !== 0 ? startHour : 12}
                       </span>
@@ -121,8 +146,10 @@ const WeeklyCalendarBody = () => {
                         {endHour < 12 ? '오전' : '오후'} {endHour !== 0 ? endHour : 12}
                       </span>
                       <span>{endMinute !== 0 && `:${endMinute}`}</span>
-                    </div>
+                    </div> */}
                   </div>
+                  }
+                  </>
                 );
               })}
             </div>

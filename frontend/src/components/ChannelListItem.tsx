@@ -10,8 +10,8 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({channel}) => {
 
   return (
     <ul>
-      <li>
-      <div className="ChannelListItem w-full mb-1">
+      <li key={channel.id}>
+      <div key={channel.id} className="ChannelListItem w-full mb-1">
         <div className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap">
           <div style={{ background: `${channel.color}` }} className="indexLable  w-3/12 h-[40px] flex justify-end" >
             <div style={{ background: `${channel.color}` }} className=" mix-blend-multiply y w-1/6 h-[40px]" />
