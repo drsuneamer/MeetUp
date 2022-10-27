@@ -77,7 +77,7 @@ function Modal({
             <span>팀원 초대하기</span>
                  
           </div> */}
-          <button className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[400px] h-s drop-shadow-button">밋업 등록하기</button>
+          <button className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
         </div>
         </div>
       <div
