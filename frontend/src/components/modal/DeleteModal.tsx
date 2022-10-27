@@ -1,12 +1,18 @@
 import  { PropsWithChildren }from 'react';
 
 interface ModalDefaultType {
-  onClickToggleModal: () => void;  // 함수 타입 정의
+  onClickToggleModal: () => void; // 함수 타입 정의
+  isSpecial: boolean;
 }
+// interface isSpecialProps {
+//   isSpecial: boolean;
+// }
 
 function DeleteModal({
+  isSpecial,
   onClickToggleModal,
-}: PropsWithChildren<ModalDefaultType>) {
+}:
+PropsWithChildren<ModalDefaultType>) {
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[450px] h-[300px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
@@ -16,6 +22,9 @@ function DeleteModal({
         <div className="flex flex-col justify-center items-center text-l font-bold mt-[30px]">
           <div>등록한 <span className="text-cancel">일정</span>을</div>
           <div><span className="text-cancel">삭제</span>하시겠습니까?</div>
+        </div>
+        <div className="flex flex-col justify-center items-center text-l font-bold mt-[30px]">
+          삭제하시겠습니까?
         </div>
         <button className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button">삭제하기</button>
         </div>
