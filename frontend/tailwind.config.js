@@ -58,6 +58,7 @@ module.exports = {
       spacing: {},
       dropShadow: {
         shadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        button: '0px 2.5px 2.5px rgba(0, 0, 0, 0.2)',
       },
       borderRadius: {
         DEFAULT: '8px',
