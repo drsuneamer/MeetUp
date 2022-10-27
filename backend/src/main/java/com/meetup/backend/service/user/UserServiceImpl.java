@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
                 String id = (String) jsonRes.get("id");
                 String mmToken = mmLoginResponse.getHeaderString("Token");
 
-                // 닉네임 저장은 나중에..
                 String nickname = (String) jsonRes.get("nickname");
                 User user;
                 if (userRepository.findById(id).isEmpty()) {
@@ -73,6 +72,7 @@ public class UserServiceImpl implements UserService {
                             User.builder()
                                     .id(id)
                                     .role(RoleType.Student)
+                                    .nickname(nickname)
                                     .password(passwordEncoder.encode(requestDto.getPassword()))
                                     .build());
                 } else {
