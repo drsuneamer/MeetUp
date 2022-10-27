@@ -1,143 +1,142 @@
 [
   {
     "dateName": "1월1일",
-    "locdate": 20220101
+    "locdate": "2022-01-01"
   },
   {
     "dateName": "설날",
-    "locdate": 20220131
+    "locdate": "2022-01-31"
   },
   {
     "dateName": "설날",
-    "locdate": 20220201
+    "locdate": "2022-02-01"
   },
   {
     "dateName": "설날",
-    "locdate": 20220202
+    "locdate": "2022-02-02"
   },
   {
     "dateName": "삼일절",
-    "locdate": 20220301
+    "locdate": "2022-03-01"
   },
   {
     "dateName": "대통령선거일",
-    "locdate": 20220309
+    "locdate": "2022-03-09"
   },
   {
     "dateName": "어린이날",
-    "locdate": 20220505
+    "locdate": "2022-05-05"
   },
   {
     "dateName": "부처님오신날",
-    "locdate": 20220508
+    "locdate": "2022-05-08"
   },
   {
     "dateName": "전국동시지방선거",
-    "locdate": 20220601
+    "locdate": "2022-06-01"
   },
   {
     "dateName": "현충일",
-    "locdate": 20220606
+    "locdate": "2022-06-06"
   },
   {
     "dateName": "광복절",
-    "locdate": 20220815
+    "locdate": "2022-08-15"
   },
   {
     "dateName": "추석",
-    "locdate": 20220909
+    "locdate": "2022-09-09"
   },
   {
     "dateName": "추석",
-    "locdate": 20220910
+    "locdate": "2022-09-10"
   },
   {
     "dateName": "추석",
-    "locdate": 20220911
+    "locdate": "2022-09-11"
   },
   {
     "dateName": "대체공휴일",
-    "locdate": 20220912
+    "locdate": "2022-09-12"
   },
   {
     "dateName": "개천절",
-    "locdate": 20221003
+    "locdate": "2022-10-03"
   },
   {
     "dateName": "한글날",
-    "locdate": 20221009
+    "locdate": "2022-10-09"
   },
   {
     "dateName": "대체공휴일",
-    "locdate": 20221010
+    "locdate": "2022-10-10"
   },
   {
     "dateName": "크리스마스",
-    "locdate": 20221225,
-    "seq": 1
+    "locdate": "2022-12-25"
   },
   {
     "dateName": "1월1일",
-    "locdate": 20230101
+    "locdate": "2023-01-01"
   },
   {
     "dateName": "설날",
-    "locdate": 20230121
+    "locdate": "2023-01-21"
   },
   {
     "dateName": "설날",
-    "locdate": 20230122
+    "locdate": "2023-01-22"
   },
   {
     "dateName": "설날",
-    "locdate": 20230123
+    "locdate": "2023-01-23"
   },
   {
     "dateName": "대체공휴일",
-    "locdate": 20230124
+    "locdate": "2023-01-24"
   },
   {
     "dateName": "삼일절",
-    "locdate": 20230301
+    "locdate": "2023-03-01"
   },
   {
     "dateName": "어린이날",
-    "locdate": 20230505
+    "locdate": "2023-05-05"
   },
   {
     "dateName": "부처님오신날",
-    "locdate": 20230527
+    "locdate": "2023-05-27"
   },
   {
     "dateName": "현충일",
-    "locdate": 20230606
+    "locdate": "2023-06-06"
   },
   {
     "dateName": "광복절",
-    "locdate": 20230815
+    "locdate": "2023-08-15"
   },
   {
     "dateName": "추석",
-    "locdate": 20230928
+    "locdate": "2023-09-28"
   },
   {
     "dateName": "추석",
-    "locdate": 20230929
+    "locdate": "2023-09-29"
   },
   {
     "dateName": "추석",
-    "locdate": 20230930
+    "locdate": "2023-09-30"
   },
   {
     "dateName": "개천절",
-    "locdate": 20231003
+    "locdate": "2023-10-03"
   },
   {
     "dateName": "한글날",
-    "locdate": 20231009
+    "locdate": "2023-10-09"
   },
   {
     "dateName": "크리스마스",
-    "locdate": 20231225
+    "locdate": "2023-12-25"
   }
 ]
