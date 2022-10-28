@@ -22,36 +22,32 @@ function CreateChannelModal({
   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 </svg>
         <div>
-          <div className="mt-[20px]">
-            <div className="text-title font-bold">공개여부</div>
-            <FormControl>
-                <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-                <RadioGroup
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                >
-                <div className="flex items-center">
-                    <FormControlLabel value="public" control={<Radio />} label="공개" />
-                    <span className="text-placeholder">누구나 이 채널에 참여할 수 있습니다</span>
+          <p className="text-placeholder text-[15px]">mm에 새로운 팀 채널 생성하기</p>
+          <div className="mt-[35px]">
+            <div className="text-title font-bold text-[20px] mb-[10px]">공개여부<span className="text-cancel">&#42;</span></div>
+                <div className="flex items-center mb-4">
+                    <input id="default-radio-1" type="radio" value="public" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:blue-500" />
+                    <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-[16px]">공개</label>
+                    <span className="ml-[12px] text-placeholder text-[14px]">누구나 이 채널에 참여할 수 있습니다</span>
                 </div>
                 <div className="flex items-center">
-                    <FormControlLabel value="private" control={<Radio />} label="비공개" />
-                    <span className="text-placeholder">초대받은 사람만 이 채널에 참여할 수 있습니다</span>
+                    <input checked id="default-radio-2" type="radio" value="private" name="default-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:blue-500" />
+                    <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 text-[16px]">비공개</label>
+                    <span className="ml-[12px] text-placeholder text-[14px]">초대받은 사람만 이 채널에 참여할 수 있습니다</span>
                 </div>
-                </RadioGroup>
-            </FormControl>
           </div>
-          <div className="mt-[20px]">
-            <div className="text-title font-bold">채널이름</div>
-            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+          <div className="mt-[35px]">
+            <div className="text-title font-bold text-[20px]">채널이름<span className="text-cancel">&#42;</span></div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point text-[16px]"/>
           </div>
-          <div className="mt-[20px]">
-            <div className="text-title font-bold">채널 URL</div>
-            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+          <div className="mt-[35px]">
+            <div className="text-title font-bold text-[20px]">채널 URL<span className="text-cancel">&#42;</span></div>
+            <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point text-[16px]"/>
           </div>
-          <div className="mt-[20px]">
-          </div>
-          <button className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
+          {/* <div className="mt-[20px]">
+            <div className="text-title font-bold">팀원 초대하기</div>
+          </div> */}
+          <button className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button">일정 등록하기</button>
         </div>
         </div>
       <div
