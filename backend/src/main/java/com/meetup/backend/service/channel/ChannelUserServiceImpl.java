@@ -71,7 +71,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         for (int i = 0; i < channelArray.length(); i++) {
 
             JSONObject channelObj = channelArray.getJSONObject(i);
-            if (channelObj.getString("display_name").equals("")) continue;
+            if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
             Channel channel = channelRepository.findById(channelObj.getString("id")).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOTFOUND));
 
             List<User> userList = new ArrayList<>();

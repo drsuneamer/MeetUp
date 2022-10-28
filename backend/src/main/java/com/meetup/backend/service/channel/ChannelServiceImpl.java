@@ -52,7 +52,7 @@ public class ChannelServiceImpl implements ChannelService {
         for (int i = 0; i < channelArray.length(); i++) {
 
             JSONObject channelObj = channelArray.getJSONObject(i);
-            if (channelObj.getString("display_name").equals("")) continue;
+            if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
             if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
 
                 Channel channel = Channel.builder()
