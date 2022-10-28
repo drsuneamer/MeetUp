@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
+import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,30 +64,33 @@ public class TeamUserServiceImpl implements TeamUserService {
     @Override
     public void registerTeamUserFromMattermost(String mmSessionToken, JSONArray teamArray) {
 
-        MattermostClient client= Client.getClient();
+        MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
-        for(int i=0;i< teamArray.length();i++){
+        for (int i = 0; i < teamArray.length(); i++) {
 
-            JSONObject teamObj=teamArray.getJSONObject(i);
-            Team team=teamRepository.findById(teamObj.getString("id")).orElseThrow(()->new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+            JSONObject teamObj = teamArray.getJSONObject(i);
+            Team team = teamRepository.findById(teamObj.getString("id")).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
-            List<User> userList=new ArrayList<>();
-            JSONArray userArray;
-            do {
-                Response mmTeamUserResponse=client.getTeamMembers(teamObj.getString("id")).getRawResponse();
-                userArray= JsonConverter.toJsonArray((BufferedInputStream) mmTeamUserResponse.getEntity());
-                for(int k=0;k< userArray.length();k++){
-                    userList.add(User.builder().id(userArray.getJSONObject(k).getString("user_id")).build());
+            List<User> userList = new ArrayList<>();
+
+            for (int k = 0; ; k++) {
+
+                Response mmTeamUserResponse = client.getTeamMembers(teamObj.getString("id"), Pager.of(k, 100)).getRawResponse();
+                JSONArray userArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamUserResponse.getEntity());
+                if (userArray.isEmpty()) break;
+
+                for (int l = 0; l < userArray.length(); l++) {
+                    userList.add(User.builder().id(userArray.getJSONObject(l).getString("user_id")).build());
                 }
 
-            }while (!userArray.isEmpty());
+            }
 
             userService.RegisterUserFromList(userList);
 
-            for(User user : userList){
-                if(teamUserRepository.findByTeamAndUser(team,user).isEmpty()){
-                    TeamUser teamUser=TeamUser.builder().team(team).user(user).build();
+            for (User user : userList) {
+                if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
+                    TeamUser teamUser = TeamUser.builder().team(team).user(user).build();
                     teamUserRepository.save(teamUser);
                 }
             }

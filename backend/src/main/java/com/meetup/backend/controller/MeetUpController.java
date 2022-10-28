@@ -35,12 +35,16 @@ public class MeetUpController {
 
     @Autowired
     private final TeamService teamService;
+
     @Autowired
     private final TeamUserService teamUserService;
+
     @Autowired
     private final MattermostService mattermostService;
+
     @Autowired
     private final ChannelUserService channelUserService;
+
     @Autowired
     private final MeetupService meetupService;
 
@@ -71,13 +75,12 @@ public class MeetUpController {
     @GetMapping("/team/sync")
     public ResponseEntity<?> getTeamSyncByUserId() {
 
-        String userId=authService.getMyInfoSecret().getId();
-        String token= authService.getMMSessionToken(userId);
+        String userId = authService.getMyInfoSecret().getId();
+        String token = authService.getMMSessionToken(userId);
 
-        JSONArray teamList=teamService.registerTeamFromMattermost(userId,token);
+        teamUserService.registerTeamUserFromMattermost(token, teamService.registerTeamFromMattermost(userId, token));
 
-
-        return ResponseEntity.status(OK).body(null);
+        return ResponseEntity.status(OK).body(teamUserService.getTeamByUser(authService.getMyInfoSecret().getId()));
     }
 
     @GetMapping("/channel/{teamId}")

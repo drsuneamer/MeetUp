@@ -37,19 +37,19 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public JSONArray registerTeamFromMattermost(String userId, String mmSessionToken) {
 
-        User user=userRepository.findById(userId).orElseThrow(()->new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
-        MattermostClient client= Client.getClient();
+        MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
-        Response mmTeamResponse=client.getTeamsForUser(user.getId()).getRawResponse();
-        JSONArray teamArray= JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+        Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
+        JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
 
-        for(int i=0;i<teamArray.length();i++){
+        for (int i = 0; i < teamArray.length(); i++) {
 
-            JSONObject teamObj=teamArray.getJSONObject(i);
-            if(teamRepository.findById(teamObj.getString("id")).isEmpty()){
-                Team teamEntity=Team.builder()
+            JSONObject teamObj = teamArray.getJSONObject(i);
+            if (teamRepository.findById(teamObj.getString("id")).isEmpty()) {
+                Team teamEntity = Team.builder()
                         .id(teamObj.getString("id"))
                         .name(teamObj.getString("name"))
                         .displayName(teamObj.getString("display_name"))

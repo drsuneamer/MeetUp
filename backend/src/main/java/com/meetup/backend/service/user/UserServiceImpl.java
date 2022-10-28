@@ -39,6 +39,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 /**
  * created by seongmin on 2022/10/23
  * updated by seongmin on 2022/10/25
+ * updated by seungyong on 2022/10/27
  */
 @Service
 @RequiredArgsConstructor
@@ -109,8 +110,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void RegisterUserFromList(List<User> userList) {
 
-        for(User user : userList){
-            if(userRepository.findById(user.getId()).isEmpty()){
+        for (User user : userList) {
+            if (userRepository.findById(user.getId()).isEmpty()) {
                 userRepository.save(user);
             }
         }
