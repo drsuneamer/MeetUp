@@ -3,12 +3,9 @@ package com.meetup.backend.service.user;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
-import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
-import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.exception.UnAuthorizedException;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
@@ -18,11 +15,8 @@ import com.meetup.backend.util.redis.RedisUtil;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bis5.mattermost.client4.ApiResponse;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -108,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void RegisterUserFromList(List<User> userList) {
+    public void registerUserFromList(List<User> userList) {
 
         for (User user : userList) {
             if (userRepository.findById(user.getId()).isEmpty()) {

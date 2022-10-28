@@ -12,7 +12,6 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.user.UserService;
 import com.meetup.backend.util.converter.JsonConverter;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +85,7 @@ public class TeamUserServiceImpl implements TeamUserService {
 
             }
 
-            userService.RegisterUserFromList(userList);
+            userService.registerUserFromList(userList);
 
             for (User user : userList) {
                 if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
