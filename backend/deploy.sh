@@ -13,6 +13,9 @@ echo '빌드 시작'
 #echo '컨테이너 삭제'
 #docker rm springbootapp
 
+#echo '기존 이미지 삭제'
+#docker rmi springbootapp
+
 echo '도커파일 이미지 빌드'
 docker build -t springbootapp .
 
