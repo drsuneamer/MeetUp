@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
+import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
@@ -35,7 +36,7 @@ public class TeamServiceImpl implements TeamService {
     private final UserRepository userRepository;
 
     @Override
-    public JSONArray registerTeamFromMattermost(String userId, String mmSessionToken) {
+    public void registerTeamFromMattermost(String userId, String mmSessionToken) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
@@ -59,8 +60,5 @@ public class TeamServiceImpl implements TeamService {
             }
 
         }
-
-        return teamArray;
-
     }
 }

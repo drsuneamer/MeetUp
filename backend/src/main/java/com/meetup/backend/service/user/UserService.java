@@ -4,8 +4,6 @@ import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.entity.user.User;
 
-import java.util.List;
-
 /**
  * created by seongmin on 2022/10/23
  * updated by seongmin on 2022/10/25
@@ -16,5 +14,5 @@ public interface UserService {
 
     void logout(String mmSessionToken);
 
-    void registerUserFromList(List<User> userList);
+    User registerUser(String userId);
 }

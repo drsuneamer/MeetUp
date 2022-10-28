@@ -1,6 +1,7 @@
 package com.meetup.backend.service.team;
 
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.entity.team.Team;
 import org.json.JSONArray;
 
 import java.util.List;
@@ -13,6 +14,6 @@ public interface TeamUserService {
 
     List<TeamResponseDto> getTeamByUser(String userId);
 
-    void registerTeamUserFromMattermost(String mmSessionToken, JSONArray teamArray);
+    void registerTeamUserFromMattermost(String userId, String mmSessionToken);
 
 }

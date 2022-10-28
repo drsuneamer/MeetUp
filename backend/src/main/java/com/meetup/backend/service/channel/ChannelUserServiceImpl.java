@@ -89,7 +89,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
             }
 
-            userService.registerUserFromList(userList);
+//            userService.registerUserFromList(userList);
 
             for (User user : userList) {
                 if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {

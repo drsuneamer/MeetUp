@@ -1,6 +1,5 @@
 package com.meetup.backend.service.team;
 
-import org.json.JSONArray;
 
 /**
  * created by myeongseok on 2022/10/21
@@ -8,6 +7,6 @@ import org.json.JSONArray;
  */
 public interface TeamService {
 
-    JSONArray registerTeamFromMattermost(String userId, String mmSessionToken);
+    void registerTeamFromMattermost(String userId, String mmSessionToken);
 
 }
