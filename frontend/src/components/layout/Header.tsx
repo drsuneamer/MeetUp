@@ -1,4 +1,5 @@
 import LogoImage from '../../assets/logo_title.png';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import DeleteModal from '../modal/DeleteModal';
@@ -9,10 +10,19 @@ function Header() {
   const onClickToggleModal = useCallback(() => {
     setIsOpenModal(!isOpenModal);
   }, [isOpenModal]);
-  // const logout = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-  //   console.log('logout!');
-  // };
 
+
+  const logout = async () => {
+  await axios
+    .get('http://localhost:8080/api/user/logout', {
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      },
+    })
+    .then((res) => {
+      console.log(res);
+    });
+};
   const nickname = window.localStorage.getItem('nickname');
   
   function logoutProps() {
@@ -23,7 +33,7 @@ function Header() {
   return (
     <div className="w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && (
-          <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType}>
+          <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}>
           </DeleteModal>
         )}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">

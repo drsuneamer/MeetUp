@@ -6,11 +6,17 @@ interface ModalDefaultType {
 
 interface ModalList extends ModalDefaultType {
   props: string;
+  submit: () => void;
 }
+
+// interface LogoutModal extends ModalList {
+//   submit: () => void;
+// }
 
 function DeleteModal({
   onClickToggleModal,
-  props
+  props,
+  submit,
 }:
 PropsWithChildren<ModalList>) {
   return (
@@ -31,7 +37,7 @@ PropsWithChildren<ModalList>) {
           <div className="text-l font-bold mt-[60px]">
             <span className="text-cancel">로그아웃 </span>하시겠습니까?
           </div>
-          <button className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button">로그아웃하기</button>
+          <button onClick={submit} className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button">로그아웃하기</button>
         </div>
     }
     </div>
