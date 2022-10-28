@@ -2,7 +2,6 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 
 import { Link } from 'react-router-dom';
-import { channel } from 'diagnostics_channel';
 
 let channelArray: Array<tChannel> = [
   {

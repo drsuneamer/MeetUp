@@ -1,4 +1,3 @@
-import React, { useMemo } from 'react';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../stores/ConfigStore';
 import holidayList from '../../data/holidays.json';

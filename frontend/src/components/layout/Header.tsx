@@ -26,6 +26,7 @@ function Header() {
           stroke="currentColor"
           className="w-6 h-6 pt-0.5 cursor-pointer"
           onClick={logout}
+          
         >
           <path
             strokeLinecap="round"

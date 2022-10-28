@@ -7,6 +7,12 @@ import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
+import _ from 'lodash'
+
+interface Week {
+  name: string,
+  date: string
+}
 
 const WeeklyCalendarBody = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
@@ -16,7 +22,8 @@ const WeeklyCalendarBody = () => {
   const rDispatch = useDispatch();
   const { holidays } = useSelector(holidaySelector);
 
-  const [thisWeek, setThisWeek] = useState([{}]);
+  
+  const [thisWeek, setThisWeek] = useState(Array<Week>);
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
@@ -35,7 +42,7 @@ const WeeklyCalendarBody = () => {
   }, []);
 
   function renderHoliday() {
-    const holidayThisWeek: Array<object> = [];
+    const holidayThisWeek : Week[] = [];
 
     for (let i = 0; i < weekly.length; i++) {
       for (let j = 0; j < holidays.length; j++) {
@@ -45,12 +52,11 @@ const WeeklyCalendarBody = () => {
       }
     }
 
-    if (holidayThisWeek.length > 0) {
-      console.log('mmm');
-      setThisWeek(holidayThisWeek);
+    if (holidayThisWeek.length !== 0) {
+      setThisWeek(holidayThisWeek) // array of objects
     }
-    return thisWeek;
   }
+
 
   const deletePopupContainerRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +67,9 @@ const WeeklyCalendarBody = () => {
 
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
 
+  if (thisWeek.length > 0) {
+    console.log(thisWeek[0].date)
+  }
   const handleSelectedEvent = (e: React.MouseEvent<HTMLDivElement>, date: string, index: number) => {
     setSelectedEventPosition({ top: e.clientY, left: e.clientX });
     setSelectedEvent({ date, index });
@@ -89,90 +98,20 @@ const WeeklyCalendarBody = () => {
     }
   };
 
+
   return (
-    <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
+    <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide">
       <div className="flex flex-col h-fit">
         {hours.map((hour, index) => {
           return (
             <div className="text-label text-xs h-[50px] text-right pr-2" key={index}>
               {hour}
-            </div> // 오전 12시, 오전 1시, ...
-          );
-        })}
-      </div>
-
-      {/* 여기 만져보는 중 */}
-      <div className="flex flex-1 h-fit p-2 md:ml-0">
-        {weekly.map(({ date, stringDate }) => {
-          //date: 23, stringDate: 2022-10-23
-          return (
-            <div className="flex flex-1 flex-col relative" key={`${date}-border`}>
-              {hours.map((hour, index) => {
-                return (
-                  <div
-                    key={`${hour}${index}`}
-                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
-                    onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const y = e.clientY - rect.top;
-                      let minute = '00';
-                      if (y > 50 / 2) {
-                        minute = '30';
-                      }
-                      handleNewEvent(stringDate, index, minute);
-                    }}
-                  />
-                );
-              })}
-              {events[stringDate]?.map((event, index) => {
-                // 미팅 일정
-                const { title, start, end } = event;
-                const startMinute = parseInt(start.slice(-2));
-                const startHour = parseInt(start.slice(0, start.length - 2));
-
-                const endMinute = parseInt(end.slice(-2));
-                const endHour = parseInt(end.slice(0, end.length - 2));
-
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
-
-                if (height < 25) {
-                  height = 25;
-                }
-
-                return (
-                  // 달력에 표시되는 이벤트 일정
-                  <>
-                    {holidays ? (
-                      <div
-                        key={`${holidays}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                        onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                      >
-                        <div className="mr-1">{typeof holidays}</div>
-                      </div>
-                    ) : (
-                      <div
-                        key={`${stringDate}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                        onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                      >
-                        <div className="mr-1 w-full text-center">{title}</div>
-                      </div>
-                    )}
-                  </>
-                );
-              })}
             </div>
           );
-        })}
-      </div>
-
-      {/* 원래 있던 것(모달 생성시 이벤트 생성 ) */}
-      {/* <div className="flex flex-1 h-fit p-2 md:ml-0">
-        {weekly.map(({ date, stringDate }) => { //date: 23, stringDate: 2022-10-23
+        })} 
+      </div> 
+      <div className="flex flex-1 h-fit p-2 md:ml-0">
+        {weekly.map(({ date, stringDate }) => {
           return (
             <div className="flex flex-1 flex-col relative" key={`${date}-border`}>
               {hours.map((hour, index) => {
@@ -193,7 +132,10 @@ const WeeklyCalendarBody = () => {
                 );
               })}
               {events[stringDate]?.map((event, index) => {
-                // 미팅 일정
+                console.log(stringDate)
+                if (stringDate === thisWeek[0].date) {
+                  console.log('yes')
+                }
                 const { title, start, end } = event;
                 const startMinute = parseInt(start.slice(-2));
                 const startHour = parseInt(start.slice(0, start.length - 2));
@@ -203,39 +145,52 @@ const WeeklyCalendarBody = () => {
 
                 const top = startHour * 50 + startMinute;
                 let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+
 
                 if (height < 24) {
                   height = 24;
                 }
 
+                console.log(thisWeek)
+
                 return (
-                  // 달력에 표시되는 이벤트 일정
-                  <>
-                  { holidays ? 
-                  <div
-                    key={`${holidays}${index}`}
-                    style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                    onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                  >
-                    <div className="mr-1">{holidays[0].dateName}</div>
-                  </div> :
-                  <div
+                  <div>
+                  { thisWeek.length > 0 ?
+                     <div
+                     key={`${thisWeek[0].date}${index}`}
+                     style={{ top, height }}
+                     className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-lable rounded p-1 text-[13px] cursor-pointer`}
+                   >
+                     <div className="mr-1">{title}</div>
+                   </div>
+                    : 
+                    <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
                     className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >
-                    <div className="mr-1 w-full text-center">{title}</div>
+                    <div className="mr-1">{title}</div>
+                    <div className="hidden sm:block">
+                      <span>
+                        {startHour < 12 ? '오전' : '오후'} {startHour !== 0 ? startHour : 12}
+                      </span>
+                      <span>{startMinute !== 0 && `:${startMinute}`}</span>
+                      <span> ~ </span>
+                      <span>
+                        {endHour < 12 ? '오전' : '오후'} {endHour !== 0 ? endHour : 12}
+                      </span>
+                      <span>{endMinute !== 0 && `:${endMinute}`}</span>
+                    </div>
                   </div>
                   }
-                  </>
+                  </div>
                 );
               })}
             </div>
           );
         })}
-      </div> */}
+      </div>
 
       {selectedEventPosition !== null && (
         <div
