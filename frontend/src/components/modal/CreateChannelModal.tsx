@@ -1,12 +1,5 @@
 import  { PropsWithChildren }from 'react';
 import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 
 interface ModalDefaultType {
   onClickToggleModal: () => void;  // 함수 타입 정의
