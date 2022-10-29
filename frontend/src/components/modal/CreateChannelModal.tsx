@@ -1,13 +1,42 @@
 import  { PropsWithChildren }from 'react';
 import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 interface ModalDefaultType {
   onClickToggleModal: () => void;  // 함수 타입 정의
 }
 
+interface TeamOptionType {
+  title: string;
+}
+
+const teams = [
+  { title: '공통_서울_1반'},
+  { title: '특화_서울_1반'},
+  { title: '자율_서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+  { title: '서울_1반'},
+];
+
 function CreateChannelModal({
   onClickToggleModal,
 }: PropsWithChildren<ModalDefaultType>) {
+  const defaultProps = {
+    options: teams,
+    getOptionLabel: (option: TeamOptionType) => option.title,
+  };
+  const flatProps = {
+    options: teams.map((option) => option.title),
+  };
+  const [value, setValue] = React.useState<TeamOptionType | null>(null);
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
@@ -28,6 +57,21 @@ function CreateChannelModal({
                     <label className="ml-2 font-bold text-[16px]">비공개</label>
                     <span className="ml-[12px] text-placeholder text-[14px]">초대받은 사람만 이 채널에 참여할 수 있습니다</span>
                 </div>
+          </div>
+          <div className="mt-[20px]">
+            <div className="text-title font-bold">팀</div>
+            <Autocomplete
+              className="w-[450px]"
+              ListboxProps={{ style: { maxHeight: '150px' } }}
+              {...defaultProps}
+              id="select-channel"
+              // options={channels.filter((el, i) => {  // here add a filter for options
+              //   if (i < ELEMENT_TO_SHOW) return el;
+              // })}
+              renderInput={(params) => (
+                <TextField {...params} label="팀 선택하기" variant="standard" />
+              )}
+            />
           </div>
           <div className="mt-[35px]">
             <div className="text-title font-bold text-[20px]">채널이름<span className="text-cancel">&#42;</span></div>
