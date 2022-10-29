@@ -113,7 +113,6 @@ const EventModal = () => {
   const [value, setValue] = React.useState<ChannelOptionType | null>(null);
 
   return (
-    
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
         className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
@@ -179,7 +178,9 @@ const EventModal = () => {
               </div>
 
             </div>
-            <button className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
+            <button 
+              onClick={handleSubmit}
+              className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
           
         </div>
       </div>
