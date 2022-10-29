@@ -60,17 +60,11 @@ public class TeamUserServiceImpl implements TeamUserService {
     }
 
     @Override
-    public void registerTeamUserFromMattermost(String userId, String mmSessionToken) {
+    public void registerTeamUserFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
         log.info("=====start register teamUser=====");
 
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
-
-        List<Team> teamList = new ArrayList<>();
-        for (TeamUser teamUser : teamUserRepository.findByUser(User.builder().id(userId).build())) {
-            log.info("=====team = {}", teamUser.getTeam().getDisplayName());
-            teamList.add(teamUser.getTeam());
-        }
 
         for (Team team : teamList) {
 

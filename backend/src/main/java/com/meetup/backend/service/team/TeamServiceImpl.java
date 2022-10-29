@@ -19,11 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
  * updated by seungyong on 2022/10/27
+ * updated by seungyong on 2022/10/28
  */
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class TeamServiceImpl implements TeamService {
     private final UserRepository userRepository;
 
     @Override
-    public void registerTeamFromMattermost(String userId, String mmSessionToken) {
+    public List<Team> registerTeamFromMattermost(String userId, String mmSessionToken) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
@@ -45,6 +47,7 @@ public class TeamServiceImpl implements TeamService {
 
         Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
         JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+        List<Team> teamList=new ArrayList<>();
 
         for (int i = 0; i < teamArray.length(); i++) {
 
@@ -57,8 +60,10 @@ public class TeamServiceImpl implements TeamService {
                         .type(TeamType.of(teamObj.getString("type")))
                         .build();
                 teamRepository.save(teamEntity);
+                teamList.add(teamEntity);
             }
 
         }
+        return teamList;
     }
 }

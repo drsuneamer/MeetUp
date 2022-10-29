@@ -25,6 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 /**
  * created by seungyong on 2022/10/22
  * updated by seungyong on 2022/10/27
+ * updated by seungyong on 2022/10/28
  */
 @RestController
 @Slf4j
@@ -66,8 +67,8 @@ public class MeetUpController {
         String userId = authService.getMyInfoSecret().getId();
         String mmSessionToken = authService.getMMSessionToken(userId);
 
-        teamService.registerTeamFromMattermost(userId, mmSessionToken);
-        teamUserService.registerTeamUserFromMattermost(userId, mmSessionToken);
+        List<Team> teamList = teamService.registerTeamFromMattermost(userId, mmSessionToken);
+        teamUserService.registerTeamUserFromMattermost(userId, mmSessionToken, teamList);
 
         return ResponseEntity.status(OK).body(null);
     }
