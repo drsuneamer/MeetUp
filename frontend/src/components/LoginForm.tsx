@@ -12,6 +12,16 @@ function LoginForm() {
   const [checked, setChecked] = useState(false); // 개인정보동의 체크 여부 확인
   const [alert, setAlert] = useState(false); // 개인정보제공 미동의 시 alert
 
+  const notYet = () => {
+    // 개인정보동의 미동의 상태로 로그인 버튼 누른 경우(alert 유발)
+    setAlert(true);
+  };
+
+  const toggleCheck = () => {
+    // 개인정보동의 버튼이 체크되었는지 확인
+    setChecked(!checked); // 체크 시 버튼 디자인 바뀜(disable-active)
+  };
+
   const onChangeID = (e: React.ChangeEvent<HTMLInputElement>) => {
     setID(e.target.value);
   };
@@ -22,25 +32,19 @@ function LoginForm() {
 
   useEffect(() => {
     setLogin({ id: id, password: pw });
-  }, [id, pw]);
+  }, [id, pw]); // id와 pw값이 변경될때마다 제출용 object에 반영
 
+  // 로그인 API 연결
   const onSubmit = async () => {
     await axios.post('http://localhost:8080/api/user/login', login).then((res) => {
+      console.log(res);
       if (res.status === 200) {
-        // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 이동
+        // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
         window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
         window.localStorage.setItem('nickname', res.data.nickname);
         navigate('/');
       }
     });
-  };
-
-  const notYet = () => {
-    setAlert(true);
-  };
-
-  const toggleCheck = () => {
-    setChecked(!checked);
   };
 
   return (
