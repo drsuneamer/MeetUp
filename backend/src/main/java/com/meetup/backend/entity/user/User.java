@@ -32,6 +32,10 @@ public class User extends BaseEntity {
     @Convert(converter = BooleanToYNConverter.class)
     boolean isFirstLogin;
 
+    public void setFirstLogin() {
+        isFirstLogin = true;
+    }
+
     @Builder
     public User(String id, String password, String nickname, String webex, RoleType role, boolean isFirstLogin) {
         this.id = id;
