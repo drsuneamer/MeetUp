@@ -39,6 +39,7 @@ const eventsSlice = createSlice({
 
       state.eventModalData = null;
       state.events[date].push(eventDetail);
+      console.log(state.events[date])
     },
     deleteEvent: (state, action: PayloadAction<SelectedEvent>) => {
       const { date, index } = action.payload;
