@@ -1,6 +1,8 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.admin.AdminLoginDto;
 import com.meetup.backend.dto.admin.ChangeRoleDto;
+import com.meetup.backend.dto.admin.SignUpDto;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.service.admin.AdminService;
@@ -46,7 +48,7 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto) {
+    public ResponseEntity<?> login(@RequestBody @Valid AdminLoginDto loginDto) {
         return ResponseEntity.status(OK).body(adminService.login(loginDto.getId(), loginDto.getPassword()));
     }
 
@@ -56,21 +58,4 @@ public class AdminController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @Data
-    private static class SignUpDto {
-        @NotEmpty(message = "아이디는 비어있을 수 없습니다.")
-        String id;
-        @NotEmpty(message = "비밀번호는 비어있을 수 없습니다.")
-        String password;
-        @NotEmpty(message = "key는 비어있을 수 없습니다.")
-        String key;
-    }
-
-    @Data
-    private static class LoginDto {
-        @NotEmpty(message = "아이디는 비어있을 수 없습니다.")
-        String id;
-        @NotEmpty(message = "비밀번호는 비어있을 수 없습니다.")
-        String password;
-    }
 }
