@@ -30,19 +30,19 @@ public class User extends BaseEntity {
     private RoleType role;
 
     @Convert(converter = BooleanToYNConverter.class)
-    boolean isFirstLogin;
+    private boolean firstLogin;
 
     public void setFirstLogin() {
-        isFirstLogin = true;
+        firstLogin = true;
     }
 
     @Builder
-    public User(String id, String password, String nickname, String webex, RoleType role, boolean isFirstLogin) {
+    public User(String id, String password, String nickname, String webex, RoleType role, boolean firstLogin) {
         this.id = id;
         this.password = password;
         this.nickname = nickname;
         this.webex = webex;
         this.role = role;
-        this.isFirstLogin = isFirstLogin;
+        this.firstLogin = firstLogin;
     }
 }
