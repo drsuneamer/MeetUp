@@ -6,8 +6,6 @@ import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
-import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.exception.UnAuthorizedException;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
@@ -17,11 +15,8 @@ import com.meetup.backend.util.redis.RedisUtil;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bis5.mattermost.client4.ApiResponse;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -37,6 +32,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 /**
  * created by seongmin on 2022/10/23
  * updated by seongmin on 2022/10/25
+ * updated by seungyong on 2022/10/27
  */
 @Service
 @RequiredArgsConstructor
@@ -102,5 +98,18 @@ public class UserServiceImpl implements UserService {
         } else if (status == 403) {
             throw new ApiException(ACCESS_DENIED);
         }
+    }
+
+    @Override
+    public User registerUser(String userId) {
+
+        if (userRepository.findById(userId).isEmpty()) {
+            User user = User.builder().id(userId).build();
+            userRepository.save(user);
+            return user;
+        }
+
+        return userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
     }
 }

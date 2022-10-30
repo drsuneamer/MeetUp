@@ -2,9 +2,6 @@ package com.meetup.backend.repository.team;
 
 import com.meetup.backend.entity.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
