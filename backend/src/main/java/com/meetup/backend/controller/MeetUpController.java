@@ -25,9 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seungyong on 2022/10/27
- * updated by seungyong on 2022/10/28
- * updated by seungyong on 2022/10/30
+ * updated by seongmin on 2022/10/30
  */
 @RestController
 @Slf4j
@@ -75,7 +73,7 @@ public class MeetUpController {
         List<Channel> channelList = channelService.registerChannelFromMattermost(userId, mmSessionToken, teamList);
         channelUserService.registerChannelUserFromMattermost(mmSessionToken, channelList);
 
-        return ResponseEntity.status(OK).body(null);
+        return ResponseEntity.status(CREATED).build();
     }
 
     @PostMapping("")
