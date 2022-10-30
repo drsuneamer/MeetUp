@@ -62,10 +62,6 @@ const WeeklyCalendarBody = () => {
     left: number;
   } | null>(null);
 
-  const [holidayPosition, setHolidayPosition] = useState<{ top: Number; left: Number } | null>(null);
-
-  // const isHolidayThisWeek = ()
-
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
 
   if (thisWeek.length > 0) {
@@ -100,7 +96,7 @@ const WeeklyCalendarBody = () => {
   };
 
   return (
-    <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide">
+    <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
       <div className="flex flex-col h-fit">
         {hours.map((hour, index) => {
           return (
@@ -114,7 +110,7 @@ const WeeklyCalendarBody = () => {
         {weekly.map(({ date, stringDate }) => {
           return (
             <div className="flex flex-1 flex-col relative" key={`${date}-border`}>
-              {/* 여기서 if? */}
+              {/* 여기서 holiday check */}
               {thisWeek.length > 0
                 ? thisWeek.map((element, index) => {
                     const top = 0;
@@ -126,9 +122,9 @@ const WeeklyCalendarBody = () => {
                             <div
                               key={`${element.date}${index}`}
                               style={{ top, height }}
-                              className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-label rounded p-1 text-[13px]`}
+                              className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px]`}
                             >
-                              {element.name}
+                              <span className={`w-full text-center font-medium pt-2`}>{element.name}</span>
                             </div>
                           </>
                         );
@@ -169,39 +165,25 @@ const WeeklyCalendarBody = () => {
                   height = 24;
                 }
 
-                console.log(thisWeek);
-
                 return (
-                  <div>
-                    {thisWeek.length > 0 ? (
-                      <div
-                        key={`${thisWeek[0].date}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-lable rounded p-1 text-[13px] cursor-pointer`}
-                      >
-                        <div className="mr-1">{title}</div>
-                      </div>
-                    ) : (
-                      <div
-                        key={`${stringDate}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
-                        onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
-                      >
-                        <div className="mr-1">{title}</div>
-                        <div className="hidden sm:block">
-                          <span>
-                            {startHour < 12 ? '오전' : '오후'} {startHour !== 0 ? startHour : 12}
-                          </span>
-                          <span>{startMinute !== 0 && `:${startMinute}`}</span>
-                          <span> ~ </span>
-                          <span>
-                            {endHour < 12 ? '오전' : '오후'} {endHour !== 0 ? endHour : 12}
-                          </span>
-                          <span>{endMinute !== 0 && `:${endMinute}`}</span>
-                        </div>
-                      </div>
-                    )}
+                  <div
+                    key={`${stringDate}${index}`}
+                    style={{ top, height }}
+                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
+                    onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
+                  >
+                    <div className="mr-1">{title}</div>
+                    <div className="hidden sm:block">
+                      <span>
+                        {startHour < 12 ? '오전' : '오후'} {startHour !== 0 ? startHour : 12}
+                      </span>
+                      <span>{startMinute !== 0 && `:${startMinute}`}</span>
+                      <span> ~ </span>
+                      <span>
+                        {endHour < 12 ? '오전' : '오후'} {endHour !== 0 ? endHour : 12}
+                      </span>
+                      <span>{endMinute !== 0 && `:${endMinute}`}</span>
+                    </div>
                   </div>
                 );
               })}
