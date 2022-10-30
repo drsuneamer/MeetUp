@@ -2,26 +2,27 @@ package com.meetup.backend.dto.team;
 
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamType;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seungyong on 2022/10/22
- * updated by seungyong on 2022/10/27
+ * updated by seongmin on 2022/10/30
  */
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class TeamResponseDto {
 
     private String id;
+
     private String displayName;
 
-    public static TeamResponseDto of(Team team) {
-        return TeamResponseDto.builder()
-                .id(team.getId())
-                .displayName(team.getDisplayName())
-                .build();
-    }
+    private TeamType type;
 
+    private boolean isActivate;
+
+    public static TeamResponseDto of(Team team) {
+        return new TeamResponseDto(team.getId(), team.getDisplayName(), team.getType(), team.isActivate());
+    }
 }
