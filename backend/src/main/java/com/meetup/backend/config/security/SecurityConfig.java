@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/10/31
  */
 @RequiredArgsConstructor
 @Configuration
@@ -43,7 +44,7 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/api/user/login/**", "/api/admin/login/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
