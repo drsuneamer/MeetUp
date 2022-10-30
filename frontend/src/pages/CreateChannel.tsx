@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-// import axios from 'axios';
+import axios from 'axios';
+// import {  useNavigate } from 'react-router-dom';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
@@ -11,6 +12,24 @@ interface Category {
 }
 
 function CreateChannel() {
+  // const navigate = useNavigate();
+
+  const getChannel = async () => {
+    await axios
+      .get('http://localhost:8080/api/meetup/sync', {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
+  useEffect(() => {
+    getChannel();
+  });
+
   // 알림을 받을 채널 선택하기
   const [category, setCategory] = useState<Category>();
   // console.log(category); // 보내줘야 할 값 (저장하기 클릭 시)
