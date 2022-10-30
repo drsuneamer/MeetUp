@@ -13,7 +13,9 @@ public interface ScheduleService {
 
     ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId);
 
-    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String userId, String date);
+    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
+
+    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
 
     void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto);
 

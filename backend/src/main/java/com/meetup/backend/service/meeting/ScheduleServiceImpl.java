@@ -3,10 +3,15 @@ package com.meetup.backend.service.meeting;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
+import com.meetup.backend.repository.channel.ChannelRepository;
+import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
@@ -27,6 +32,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final ChannelUserRepository channelUserRepository;
+    private final ChannelRepository channelRepository;
+    private final MeetupRepository meetupRepository;
 
     private final StringToLocalDateTime STLD;
 
@@ -38,32 +46,45 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!user.getId().equals(schedule.getUser().getId())) {
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
         }
-        return ScheduleResponseDto.builder()
-                .id(schedule.getId())
-                .start(schedule.getStart())
-                .end(schedule.getEnd())
-                .title(schedule.getTitle())
-                .content(schedule.getContent())
-                .userId(user.getId())
-                .userName(user.getNickname())
-                .build();
+        return ScheduleResponseDto.builder().id(schedule.getId()).start(schedule.getStart()).end(schedule.getEnd()).title(schedule.getTitle()).content(schedule.getContent()).userId(user.getId()).userName(user.getNickname()).build();
     }
 
-    // 해당 user와 date로 정보 가져오기
+    // 로그인 한 유저의 일정 갖고오기
     @Override
-    public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String userId, String date) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+    public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
         LocalDateTime from = STLD.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, user);
+        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, loginUser);
         List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
         for (Schedule schedule : schedules) {
-            scheduleResponseDtos.add(ScheduleResponseDto.of(schedule, user));
+            scheduleResponseDtos.add(ScheduleResponseDto.of(schedule, loginUser));
         }
         return scheduleResponseDtos;
     }
 
+    // 해당 user, mmetup, date로 정보 가져오기
+    @Override
+    public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        User getUser = userRepository.findById(getUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
+        Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
+        if (channelUserRepository.findByChannelAndUser(channel, loginUser) == null)
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+
+        LocalDateTime from = STLD.strToLDT(date);
+        LocalDateTime to = from.plusDays(6);
+        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, getUser);
+        List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            scheduleResponseDtos.add(ScheduleResponseDto.of(schedule, getUser));
+        }
+        return scheduleResponseDtos;
+    }
+
+    // 스케쥴 정보 등록
     @Override
     @Transactional
     public void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
@@ -76,6 +97,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleRepository.save(schedule);
     }
 
+    // 스케쥴 정보 수정
     @Override
     @Transactional
     public void updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
@@ -87,6 +109,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.update(scheduleUpdateRequestDto);
     }
 
+    // 스케쥴 정보 삭제
     @Override
     @Transactional
     public void deleteSchedule(String userId, Long scheduleId) {
