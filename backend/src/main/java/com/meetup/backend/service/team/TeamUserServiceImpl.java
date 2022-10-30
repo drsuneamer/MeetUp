@@ -3,6 +3,7 @@ package com.meetup.backend.service.team;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
+import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
@@ -27,7 +28,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seungyong on 2022/10/22
+ * updated by seongmin on 2022/10/30
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -41,9 +42,6 @@ public class TeamUserServiceImpl implements TeamUserService {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final UserService userService;
-
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
@@ -56,6 +54,7 @@ public class TeamUserServiceImpl implements TeamUserService {
         return teamResponseDtoList;
     }
 
+    // db에 저장되어 있지 않은 팀만 TeamUser db 저장
     @Override
     public void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList) {
 
@@ -71,17 +70,23 @@ public class TeamUserServiceImpl implements TeamUserService {
                 if (userArray.isEmpty()) break;
 
                 for (int l = 0; l < userArray.length(); l++) {
-                    User user = userService.registerUser(userArray.getJSONObject(l).getString("user_id"));
+
+                    String userId = userArray.getJSONObject(l).getString("user_id");
+                    User user = userRepository.findById(userId).orElseGet(
+                            () -> userRepository.save(
+                                    User.builder()
+                                            .id(userId)
+                                            .firstLogin(false)
+                                            .role(RoleType.Student)
+                                            .build()
+                            )
+                    );
                     if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
                         TeamUser teamUser = TeamUser.builder().team(team).user(user).build();
                         teamUserRepository.save(teamUser);
                     }
                 }
-
             }
-
-
         }
-
     }
 }

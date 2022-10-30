@@ -3,6 +3,8 @@ package com.meetup.backend.service.user;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -10,6 +12,10 @@ import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
+import com.meetup.backend.service.channel.ChannelService;
+import com.meetup.backend.service.channel.ChannelUserService;
+import com.meetup.backend.service.team.TeamService;
+import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.redis.RedisUtil;
 import jakarta.ws.rs.core.Response;
@@ -25,14 +31,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/10/25
- * updated by seungyong on 2022/10/27
+ * updated by seongmin on 2022/10/30
  */
 @Service
 @RequiredArgsConstructor
@@ -47,6 +53,10 @@ public class UserServiceImpl implements UserService {
 
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
+    private final TeamService teamService;
+    private final ChannelService channelService;
+    private final TeamUserService teamUserService;
+    private final ChannelUserService channelUserService;
 
     @Override
     @Transactional
@@ -68,9 +78,14 @@ public class UserServiceImpl implements UserService {
                                     .role(RoleType.Student)
                                     .nickname(nickname)
                                     .password(passwordEncoder.encode(requestDto.getPassword()))
+                                    .firstLogin(false)
                                     .build());
                 } else {
                     user = userRepository.findById(id).get();
+                }
+
+                if (!user.isFirstLogin()) {
+                    registerTeamAndChannel(mmToken, user);
                 }
 
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, requestDto.getPassword());
@@ -88,6 +103,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     @Override
     public void logout(String mmSessionToken) {
         MattermostClient client = Client.getClient();
@@ -99,17 +115,27 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(ACCESS_DENIED);
         }
     }
+//
+//    @Override
+//    public User registerUser(String userId) {
+//
+//        if (userRepository.findById(userId).isEmpty()) {
+//            User user = User.builder().id(userId).build();
+//            userRepository.save(user);
+//            return user;
+//        }
+//
+//        return userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+//
+//    }
 
     @Override
-    public User registerUser(String userId) {
-
-        if (userRepository.findById(userId).isEmpty()) {
-            User user = User.builder().id(userId).build();
-            userRepository.save(user);
-            return user;
-        }
-
-        return userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-
+    public void registerTeamAndChannel(String mmToken, User user) {
+        user.setFirstLogin();
+        List<Team> teams = teamService.registerTeamFromMattermost(user.getId(), mmToken); // 팀 등록
+        teamUserService.registerTeamUserFromMattermost(mmToken, teams);
+        List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
+        channelUserService.registerChannelUserFromMattermost(mmToken, channels);
     }
+
 }

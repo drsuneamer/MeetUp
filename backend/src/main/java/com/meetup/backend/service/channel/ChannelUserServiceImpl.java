@@ -3,6 +3,7 @@ package com.meetup.backend.service.channel;
 import com.meetup.backend.dto.channel.ChannelResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
+import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
@@ -28,8 +29,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seungyong on 2022/10/27
- * updated by seungyong on 2022/10/30
+ * updated by seongmin on 2022/10/30
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -46,9 +46,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final UserService userService;
-
     @Override
     public List<ChannelResponseDto> getChannelByUser(String userId, String teamId) {
 
@@ -62,6 +59,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         return channelResponseDtoList;
     }
 
+    // db에 저장되어 있지 않은 팀만 ChannelUser db 저장
     @Override
     public void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList) {
 
@@ -77,7 +75,17 @@ public class ChannelUserServiceImpl implements ChannelUserService {
                 if (userArray.isEmpty()) break;
 
                 for (int l = 0; l < userArray.length(); l++) {
-                    User user = userService.registerUser(userArray.getJSONObject(l).getString("user_id"));
+
+                    String userId = userArray.getJSONObject(l).getString("user_id");
+                    User user = userRepository.findById(userId).orElseGet(
+                            () -> userRepository.save(
+                                    User.builder()
+                                            .id(userId)
+                                            .firstLogin(false)
+                                            .role(RoleType.Student)
+                                            .build()
+                            )
+                    );
                     if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {
                         ChannelUser channelUser = ChannelUser.builder().channel(channel).user(user).build();
                         channelUserRepository.save(channelUser);

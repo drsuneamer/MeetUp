@@ -24,8 +24,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seungyong on 2022/10/27
- * updated by seungyong on 2022/10/28
+ * updated by seongmin on 2022/10/30
  */
 @Service
 @RequiredArgsConstructor
@@ -37,6 +36,9 @@ public class TeamServiceImpl implements TeamService {
     @Autowired
     private final UserRepository userRepository;
 
+    /**
+     * @return Team DB에 저장되어 있지 않은 Team 리스트
+     */
     @Override
     public List<Team> registerTeamFromMattermost(String userId, String mmSessionToken) {
 
@@ -61,11 +63,8 @@ public class TeamServiceImpl implements TeamService {
                         .type(TeamType.of(teamObj.getString("type")))
                         .build();
                 teamRepository.save(team);
-            } else {
-                team = teamRepository.findById(teamObj.getString("id")).get();
+                teamList.add(team);
             }
-            teamList.add(team);
-
         }
         return teamList;
     }
