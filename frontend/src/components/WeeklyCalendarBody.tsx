@@ -122,7 +122,7 @@ const WeeklyCalendarBody = () => {
                               style={{ top, height }}
                               className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
                             >
-                              <span key={`${element.name}`} className={`w-full text-center font-medium pt-2`}>
+                              <span key={`${element.name}`} className={`w-full text-center text-cancel font-medium pt-2`}>
                                 {element.name}
                               </span>
                             </div>
