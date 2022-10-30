@@ -19,7 +19,7 @@ public enum ExceptionEnum {
 
     TEAM_NOT_FOUND(BAD_REQUEST, "40003", "해당 팀을 찾을 수 없습니다."),
 
-    CHANNEL_NOTFOUND(BAD_REQUEST, "40004", "해당 채널을 찾을 수 없습니다."),
+    CHANNEL_NOT_FOUND(BAD_REQUEST, "40004", "해당 채널을 찾을 수 없습니다."),
 
     MEETUP_NOT_FOUND(BAD_REQUEST, "40005", "해당 밋업을 찾을 수 없습니다."),
 
@@ -32,6 +32,7 @@ public enum ExceptionEnum {
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
 
     DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
+
     MATTERMOST_EXCEPTION(INTERNAL_SERVER_ERROR, "50001", "매터모스트 에러, 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus status;
