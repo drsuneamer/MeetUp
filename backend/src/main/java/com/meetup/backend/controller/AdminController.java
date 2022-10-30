@@ -1,8 +1,10 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.admin.ChangeRoleDto;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.service.admin.AdminService;
+import com.meetup.backend.service.auth.AuthService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+
+import java.util.List;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -27,6 +31,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AuthService authService;
 
     @Value("${admin.key}")
     private String key;
@@ -43,6 +48,12 @@ public class AdminController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto) {
         return ResponseEntity.status(OK).body(adminService.login(loginDto.getId(), loginDto.getPassword()));
+    }
+
+    @PostMapping("/role")
+    public ResponseEntity<?> changeRole(@RequestBody List<ChangeRoleDto> changeRoleDtoList) {
+        adminService.changeRole(authService.getMyInfoSecret().getId(), changeRoleDtoList);
+        return ResponseEntity.status(CREATED).build();
     }
 
     @Data

@@ -1,5 +1,6 @@
 package com.meetup.backend.service.admin;
 
+import com.meetup.backend.dto.admin.ChangeRoleDto;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
@@ -14,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
@@ -48,6 +51,19 @@ public class AdminServiceImpl implements AdminService {
             return jwtTokenProvider.generateJwtToken(authentication);
         } catch (BadCredentialsException e) {
             throw new ApiException(ID_PWD_NOT_MATCHING);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void changeRole(String userId, List<ChangeRoleDto> changeRoleDtoList) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        if (!user.getRole().equals(RoleType.Admin)) {
+            throw new ApiException(ADMIN_ACCESS_DENIED);
+        }
+        for (ChangeRoleDto changeRoleDto : changeRoleDtoList) {
+            User u = userRepository.findById(changeRoleDto.getId()).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+            u.changeRole(changeRoleDto.getRoleType());
         }
     }
 }

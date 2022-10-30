@@ -28,6 +28,7 @@ public enum ExceptionEnum {
 
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
     ID_PWD_NOT_MATCHING(FORBIDDEN, "40302", "아이디 또는 패스워드가 일치하지 않습니다."),
+    ADMIN_ACCESS_DENIED(FORBIDDEN, "40302", "관리자 권한이 없습니다. 관리자만 이용할 수 있습니다."),
 
     DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
     DUPLICATE_ID(CONFLICT, "40902", "아이디가 중복됩니다."),
