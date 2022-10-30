@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../components/SideBar';
 import Calendar from '../components/Calendar';
-import EventModal from '../components/EventModal';
+import Modal from '../components/modal/Modal'
 import Layout from '../components/layout/Layout';
 
 const MeetUp = () => {
@@ -13,7 +13,7 @@ const MeetUp = () => {
           <Sidebar />
         </div>
         <Calendar />
-        <EventModal />
+        <Modal />
       </main>
     </div>
     </Layout>
