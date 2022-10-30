@@ -26,9 +26,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seungyong on 2022/10/23
- * updated by seungyong on 2022/10/27
- * updated by seungyong on 2022/10/30
+ * updated by seongmin on 2022/10/30
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -42,6 +40,9 @@ public class ChannelServiceImpl implements ChannelService {
     @Autowired
     private final UserRepository userRepository;
 
+    /**
+     * @return Channel DB에 저장되어 있지 않은 Channel 리스트
+     */
     @Override
     public List<Channel> registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
 
@@ -71,13 +72,9 @@ public class ChannelServiceImpl implements ChannelService {
                             .type(ChannelType.of(channelObj.getString("type")))
                             .build();
                     channelRepository.save(channel);
-                } else {
-                    channel = channelRepository.findById(channelObj.getString("id")).get();
+                    channelList.add(channel);
                 }
-                channelList.add(channel);
-
             }
-
         }
         return channelList;
     }
