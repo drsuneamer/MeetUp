@@ -16,6 +16,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
+ * updated by seongmin on 2022/10/30
  */
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<?> logout() {
-        userService.logout(authService.getMMSessionToken(authService.getMyInfoSecret().getId()));
+        userService.logout(authService.getMyInfoSecret().getId());
         return ResponseEntity.status(OK).build();
     }
 }
