@@ -1,7 +1,7 @@
 package com.meetup.backend.service.channel;
 
+import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
-import org.json.JSONArray;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ import java.util.List;
  */
 public interface ChannelService {
 
-    JSONArray registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList);
+    List<Channel> registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList);
 
 }

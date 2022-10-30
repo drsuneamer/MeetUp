@@ -14,6 +14,6 @@ public interface TeamUserService {
 
     List<TeamResponseDto> getTeamByUser(String userId);
 
-    void registerTeamUserFromMattermost(String userId, String mmSessionToken, List<Team> teamList);
+    void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList);
 
 }

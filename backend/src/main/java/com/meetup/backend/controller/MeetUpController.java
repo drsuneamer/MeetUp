@@ -1,6 +1,7 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
+import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
@@ -26,6 +27,7 @@ import static org.springframework.http.HttpStatus.*;
  * created by seungyong on 2022/10/22
  * updated by seungyong on 2022/10/27
  * updated by seungyong on 2022/10/28
+ * updated by seungyong on 2022/10/30
  */
 @RestController
 @Slf4j
@@ -68,32 +70,13 @@ public class MeetUpController {
         String mmSessionToken = authService.getMMSessionToken(userId);
 
         List<Team> teamList = teamService.registerTeamFromMattermost(userId, mmSessionToken);
-        teamUserService.registerTeamUserFromMattermost(userId, mmSessionToken, teamList);
+        teamUserService.registerTeamUserFromMattermost(mmSessionToken, teamList);
+
+        List<Channel> channelList = channelService.registerChannelFromMattermost(userId, mmSessionToken, teamList);
+        channelUserService.registerChannelUserFromMattermost(mmSessionToken, channelList);
 
         return ResponseEntity.status(OK).body(null);
     }
-
-//    @GetMapping("/team/sync")
-//    public ResponseEntity<?> getTeamSyncByUserId() {
-//
-//        String userId = authService.getMyInfoSecret().getId();
-//        String token = authService.getMMSessionToken(userId);
-//
-//        teamUserService.registerTeamUserFromMattermost(token, teamService.registerTeamFromMattermost(userId, token));
-//
-//        return ResponseEntity.status(OK).body(teamUserService.getTeamByUser(authService.getMyInfoSecret().getId()));
-//    }
-//
-//    @GetMapping("/channel/sync/{teamId}")
-//    ResponseEntity<?> getChannelSyncByUserId(@PathVariable("teamId") String teamId) {
-//
-//        String userId = authService.getMyInfoSecret().getId();
-//        String token = authService.getMMSessionToken(userId);
-//
-//        channelUserService.registerChannelUserFromMattermost(token, channelService.registerChannelFromMattermost(userId, teamId, token));
-//
-//        return ResponseEntity.status(OK).body(channelUserService.getChannelByUser(authService.getMyInfoSecret().getId(), teamId));
-//    }
 
     @PostMapping("")
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {

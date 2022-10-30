@@ -47,21 +47,24 @@ public class TeamServiceImpl implements TeamService {
 
         Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
         JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
-        List<Team> teamList=new ArrayList<>();
+        List<Team> teamList = new ArrayList<>();
 
         for (int i = 0; i < teamArray.length(); i++) {
 
             JSONObject teamObj = teamArray.getJSONObject(i);
+            Team team;
             if (teamRepository.findById(teamObj.getString("id")).isEmpty()) {
-                Team teamEntity = Team.builder()
+                team = Team.builder()
                         .id(teamObj.getString("id"))
                         .name(teamObj.getString("name"))
                         .displayName(teamObj.getString("display_name"))
                         .type(TeamType.of(teamObj.getString("type")))
                         .build();
-                teamRepository.save(teamEntity);
-                teamList.add(teamEntity);
+                teamRepository.save(team);
+            } else {
+                team = teamRepository.findById(teamObj.getString("id")).get();
             }
+            teamList.add(team);
 
         }
         return teamList;

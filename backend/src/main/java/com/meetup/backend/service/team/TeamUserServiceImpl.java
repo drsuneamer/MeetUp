@@ -6,7 +6,6 @@ import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
@@ -38,8 +37,6 @@ public class TeamUserServiceImpl implements TeamUserService {
 
     @Autowired
     private final TeamUserRepository teamUserRepository;
-    @Autowired
-    private final TeamRepository teamRepository;
 
     @Autowired
     private final UserRepository userRepository;
@@ -60,8 +57,7 @@ public class TeamUserServiceImpl implements TeamUserService {
     }
 
     @Override
-    public void registerTeamUserFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
-        log.info("=====start register teamUser=====");
+    public void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList) {
 
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);

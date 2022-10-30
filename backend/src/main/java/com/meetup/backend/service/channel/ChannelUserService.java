@@ -1,7 +1,7 @@
 package com.meetup.backend.service.channel;
 
 import com.meetup.backend.dto.channel.ChannelResponseDto;
-import org.json.JSONArray;
+import com.meetup.backend.entity.channel.Channel;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ public interface ChannelUserService {
 
     List<ChannelResponseDto> getChannelByUser(String userId, String teamId);
 
-    void registerChannelUserFromMattermost(String mmSessionToken, JSONArray channelArray);
+    void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList);
 
 }

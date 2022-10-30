@@ -21,12 +21,14 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
  * updated by seungyong on 2022/10/23
  * updated by seungyong on 2022/10/27
+ * updated by seungyong on 2022/10/30
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -41,13 +43,15 @@ public class ChannelServiceImpl implements ChannelService {
     private final UserRepository userRepository;
 
     @Override
-    public JSONArray registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
+    public List<Channel> registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
-        for(Team team : teamList){
+        List<Channel> channelList = new ArrayList<>();
+
+        for (Team team : teamList) {
 
             Response mmChannelResponse = client.getChannelsForTeamForUser(team.getId(), user.getId()).getRawResponse();
             JSONArray channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
@@ -56,46 +60,25 @@ public class ChannelServiceImpl implements ChannelService {
 
                 JSONObject channelObj = channelArray.getJSONObject(i);
                 if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
-                if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
 
-                    Channel channel = Channel.builder()
+                Channel channel;
+                if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
+                    channel = Channel.builder()
                             .id(channelObj.getString("id"))
-//                            .team(Team.builder().id(teamId).build())
+                            .team(team)
                             .name(channelObj.getString("name"))
                             .displyName(channelObj.getString("display_name"))
                             .type(ChannelType.of(channelObj.getString("type")))
                             .build();
                     channelRepository.save(channel);
-
+                } else {
+                    channel = channelRepository.findById(channelObj.getString("id")).get();
                 }
+                channelList.add(channel);
 
             }
 
         }
-
-//        Response mmChannelResponse = client.getChannelsForTeamForUser(teamId, user.getId()).getRawResponse();
-//        JSONArray channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
-//
-//        for (int i = 0; i < channelArray.length(); i++) {
-//
-//            JSONObject channelObj = channelArray.getJSONObject(i);
-//            if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
-//            if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
-//
-//                Channel channel = Channel.builder()
-//                        .id(channelObj.getString("id"))
-//                        .team(Team.builder().id(teamId).build())
-//                        .name(channelObj.getString("name"))
-//                        .displyName(channelObj.getString("display_name"))
-//                        .type(ChannelType.of(channelObj.getString("type")))
-//                        .build();
-//                channelRepository.save(channel);
-//
-//            }
-//
-//        }
-
-//        return channelArray;
-        return null;
+        return channelList;
     }
 }

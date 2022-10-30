@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ import java.util.List;
 /**
  * created by myeongseok on 2022/10/21
  * updated by seungyong on 2022/10/27
+ * updated by seungyong on 2022/10/30
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -63,18 +63,12 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     }
 
     @Override
-    public void registerChannelUserFromMattermost(String mmSessionToken, JSONArray channelArray) {
+    public void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList) {
 
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
-        for (int i = 0; i < channelArray.length(); i++) {
-
-            JSONObject channelObj = channelArray.getJSONObject(i);
-            if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
-            Channel channel = channelRepository.findById(channelObj.getString("id")).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOTFOUND));
-
-            List<User> userList = new ArrayList<>();
+        for (Channel channel : channelList) {
 
             for (int k = 0; ; k++) {
 
@@ -83,19 +77,13 @@ public class ChannelUserServiceImpl implements ChannelUserService {
                 if (userArray.isEmpty()) break;
 
                 for (int l = 0; l < userArray.length(); l++) {
-
-                    userList.add(User.builder().id(userArray.getJSONObject(l).getString("user_id")).build());
+                    User user = userService.registerUser(userArray.getJSONObject(l).getString("user_id"));
+                    if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {
+                        ChannelUser channelUser = ChannelUser.builder().channel(channel).user(user).build();
+                        channelUserRepository.save(channelUser);
+                    }
                 }
 
-            }
-
-//            userService.registerUserFromList(userList);
-
-            for (User user : userList) {
-                if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {
-                    ChannelUser channelUser = ChannelUser.builder().channel(channel).user(user).build();
-                    channelUserRepository.save(channelUser);
-                }
             }
 
         }

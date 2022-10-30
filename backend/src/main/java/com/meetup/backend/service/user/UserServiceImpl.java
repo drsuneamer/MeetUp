@@ -6,7 +6,6 @@ import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
-import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
@@ -17,7 +16,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
