@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 // import axios from 'axios';
-import Button from '../components/common/Button';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
@@ -91,6 +90,7 @@ function EditChannel() {
   //     });
   // };
 
+  // console.log(record);
   return (
     <Layout>
       <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
