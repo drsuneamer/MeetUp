@@ -7,6 +7,7 @@ import lombok.Data;
 /**
  * created by seungyong on 2022/10/22
  * updated by seungyong on 2022/10/22
+ * updated by seungyong on 2022/10/27
  */
 @Data
 @Builder
@@ -14,11 +15,13 @@ public class ChannelResponseDto {
 
     private String id;
     private String displayName;
+    private String TeamId;
 
     public static ChannelResponseDto of(Channel channel) {
         return ChannelResponseDto.builder()
                 .id(channel.getId())
                 .displayName(channel.getDisplayName())
+                .TeamId(channel.getTeam().getId())
                 .build();
     }
 

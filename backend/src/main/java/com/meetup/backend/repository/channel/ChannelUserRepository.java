@@ -2,10 +2,11 @@ package com.meetup.backend.repository.channel;
 
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
+import com.meetup.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
@@ -13,6 +14,8 @@ import java.util.List;
  */
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, Long> {
 
-    List<Channel> findByChannel(Channel channel);
+    List<ChannelUser> findByUser(User user);
+
+    Optional<ChannelUser> findByChannelAndUser(Channel channel, User user);
 
 }
