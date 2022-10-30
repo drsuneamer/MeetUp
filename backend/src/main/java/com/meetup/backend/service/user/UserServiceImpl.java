@@ -105,15 +105,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void logout(String mmSessionToken) {
+    public void logout(String id) {
         MattermostClient client = Client.getClient();
-        client.setAccessToken(mmSessionToken);
+        client.setAccessToken(redisUtil.getData(id));
         int status = client.logout().getRawResponse().getStatus();
         if (status == 400) {
             throw new ApiException(BAD_REQUEST_LOGOUT);
         } else if (status == 403) {
             throw new ApiException(ACCESS_DENIED);
         }
+        redisUtil.deleteData(id);
     }
 //
 //    @Override
