@@ -7,6 +7,7 @@ import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
+import _ from 'lodash';
 
 interface Week {
   name: string;
@@ -21,7 +22,7 @@ const WeeklyCalendarBody = () => {
   const rDispatch = useDispatch();
   const { holidays } = useSelector(holidaySelector);
 
-  const [thisWeek, setThisWeek] = useState(Array<Week>);
+  const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
@@ -29,7 +30,7 @@ const WeeklyCalendarBody = () => {
     }
     fetchAndSetHolidays();
     renderHoliday();
-  }, [holidays]);
+  }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
     return getThisWeek(currentDate);
@@ -40,18 +41,18 @@ const WeeklyCalendarBody = () => {
   }, []);
 
   function renderHoliday() {
-    const holidayThisWeek: Week[] = [];
+    const holidayResult: Week[] = [];
 
-    for (let i = 0; i < weekly.length; i++) {
-      for (let j = 0; j < holidays.length; j++) {
-        if (weekly[i].stringDate === holidays[j].locdate) {
-          holidayThisWeek.push({ name: holidays[j].dateName, date: holidays[j].locdate });
+    for (let week of weekly) {
+      for (let holiday of holidays) {
+        if (week.stringDate === holiday.locdate) {
+          holidayResult.push({ name: holiday.dateName, date: holiday.locdate });
         }
       }
     }
 
-    if (holidayThisWeek.length !== 0) {
-      setThisWeek(holidayThisWeek); // array of objects
+    if (!_.isEmpty(holidayResult)) {
+      setHolidayThisWeek(holidayResult); // array of objects
     }
   }
 
@@ -64,9 +65,6 @@ const WeeklyCalendarBody = () => {
 
   const [selectedEvent, setSelectedEvent] = useState<SelectedEvent | null>(null);
 
-  if (thisWeek.length > 0) {
-    console.log(thisWeek[0].date);
-  }
   const handleSelectedEvent = (e: React.MouseEvent<HTMLDivElement>, date: string, index: number) => {
     setSelectedEventPosition({ top: e.clientY, left: e.clientX });
     setSelectedEvent({ date, index });
@@ -111,8 +109,8 @@ const WeeklyCalendarBody = () => {
           return (
             <div className="flex flex-1 flex-col relative" key={`${date}-border`}>
               {/* 여기서 holiday check */}
-              {thisWeek.length > 0
-                ? thisWeek.map((element, index) => {
+              {holidayThisWeek.length > 0
+                ? holidayThisWeek.map((element, index) => {
                     const top = 0;
                     const height = 24 * 50;
                     {
@@ -122,9 +120,11 @@ const WeeklyCalendarBody = () => {
                             <div
                               key={`${element.date}${index}`}
                               style={{ top, height }}
-                              className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px]`}
+                              className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
                             >
-                              <span className={`w-full text-center font-medium pt-2`}>{element.name}</span>
+                              <span key={`${element.name}`} className={`w-full text-center font-medium pt-2`}>
+                                {element.name}
+                              </span>
                             </div>
                           </>
                         );
@@ -169,7 +169,7 @@ const WeeklyCalendarBody = () => {
                   <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer`}
+                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer border-2 border-solid border-background`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >
                     <div className="mr-1">{title}</div>
