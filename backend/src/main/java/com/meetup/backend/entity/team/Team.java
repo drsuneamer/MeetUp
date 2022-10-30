@@ -1,8 +1,8 @@
 package com.meetup.backend.entity.team;
 
 
-
 import com.meetup.backend.entity.*;
+import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,11 +21,15 @@ public class Team extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TeamType type;
 
+    @Convert(converter = BooleanToYNConverter.class)
+    private boolean isActivate;
+
     @Builder
     public Team(String id, String name, String displayName, TeamType type) {
         this.id = id;
         this.name = name;
         this.displayName = displayName;
         this.type = type;
+        this.isActivate = true;
     }
 }
