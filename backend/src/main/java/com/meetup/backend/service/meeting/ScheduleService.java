@@ -1,8 +1,8 @@
 package com.meetup.backend.service.meeting;
 
-import com.meetup.backend.dto.Schedule.ScheduleRequestDto;
-import com.meetup.backend.dto.Schedule.ScheduleResponseDto;
-import com.meetup.backend.dto.Schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleResponseDto;
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.meetup.backend.dto.Schedule;
+package com.meetup.backend.dto.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

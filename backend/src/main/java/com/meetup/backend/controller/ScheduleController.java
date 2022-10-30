@@ -1,7 +1,7 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.Schedule.ScheduleResponseDto;
-import com.meetup.backend.dto.Schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleResponseDto;
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.meeting.ScheduleService;
 import com.meetup.backend.service.user.UserService;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/23
@@ -32,7 +31,6 @@ public class ScheduleController {
     @GetMapping("/{scheduleId}")
     public ResponseEntity<?> getSchedule(@PathVariable("scheduleId") Long scheduleId) {
         log.info("scheduleId = {}", scheduleId);
-
         String userId = authService.getMyInfoSecret().getId();
         ScheduleResponseDto scheduleResponseDto = scheduleService.getScheduleResponseDtoById(userId, scheduleId);
         return ResponseEntity.status(HttpStatus.OK).body(scheduleResponseDto);

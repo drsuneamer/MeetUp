@@ -1,12 +1,11 @@
 package com.meetup.backend.entity.schedule;
 
-import com.meetup.backend.dto.Schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

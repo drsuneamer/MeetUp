@@ -1,8 +1,8 @@
 package com.meetup.backend.service.meeting;
 
-import com.meetup.backend.dto.Schedule.ScheduleRequestDto;
-import com.meetup.backend.dto.Schedule.ScheduleResponseDto;
-import com.meetup.backend.dto.Schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleResponseDto;
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -15,9 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
