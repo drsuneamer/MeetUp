@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+// import axios from 'axios';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
@@ -10,17 +11,16 @@ interface Category {
 }
 
 function CreateChannel() {
-  // COLOR PICKER
-  const [color, setColor] = useState('#ED8383');
-  const [open, setOpen] = useState(false);
-
-  const openColor = () => {
-    setOpen(!open);
-  };
-
-  // SET CHANNEL
+  // 알림을 받을 채널 선택하기
   const [category, setCategory] = useState<Category>();
   // console.log(category); // 보내줘야 할 값 (저장하기 클릭 시)
+  const [channelId, setChannelId] = useState('');
+
+  useEffect(() => {
+    if (category !== undefined) {
+      setChannelId(category.categoryId);
+    }
+  }, [category]);
 
   const lv1Categories = [
     //팀
@@ -32,10 +32,9 @@ function CreateChannel() {
   ];
 
   const lv2Categories = [
-    //채널
+    //채널 (parentId에 따라 팀에 종속됨)
     { categoryId: '1', name: '101', parentId: '1' },
     { categoryId: '2', name: '201', parentId: '1' },
-    { categoryId: '1', name: '새로운 채널 생성하기', parentId: '1' },
     { categoryId: '3', name: '202', parentId: '2' },
     { categoryId: '4', name: '203', parentId: '2' },
     { categoryId: '5', name: '204', parentId: '2' },
@@ -47,10 +46,47 @@ function CreateChannel() {
 
   const categories: Category[] = [...lv1Categories, ...lv2Categories];
   const categoriesByParentId = (parentId: string | number) => categories.filter((category) => category.parentId === `${parentId}`);
+
+  // MM 채널 이름 설정
+  const [title, setTitle] = useState('');
+  const titleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  // 달력에 표시할 색상 선택
+  const [color, setColor] = useState('#ED8383');
+  const [open, setOpen] = useState(false);
+
+  const openColor = () => {
+    setOpen(!open);
+  };
+
+  // 등록 (API 연결)
+  const [record, setRecord] = useState({ channelId: '', title: '', color: '' });
+  useEffect(() => {
+    setRecord({ channelId: channelId, title: title, color: color });
+  }, [channelId, title, color]); // 각 값이 변경될 때마다 제출될 record에 반영
+
+  const onSubmit = () => {
+    console.log(record);
+  };
+
+  // const onSubmit = async () => {
+  //   await axios
+  //     .post('http://localhost:8080/api/?', record, {
+  //       headers: {
+  //         Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //     });
+  // };
+
   return (
     <Layout>
-      <div className="text-m mx-[15vw] pt-[20vh]">
-        <div className="mb-10 z-50">
+      <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
+        <div className="mb-10 z-30">
           <div className="font-bold text-title">알림을 받을 채널 선택하기</div>
           <div className="">
             <MultipleLevelSelection
@@ -70,7 +106,7 @@ function CreateChannel() {
           <div className="font-bold text-title">MM 채널 이름 (변경 가능)</div>
           <div className="flex justify-center">
             <input
-              // onChange={}
+              onChange={titleChange}
               type="text"
               placeholder="ex. 서울_1반_A102"
               className="w-full text-center placeholder-placeholder border-b-2 border-b-title py-1 px-2 mb-10 placeholder:text-s focus:outline-none focus:border-b-footer"
@@ -78,22 +114,28 @@ function CreateChannel() {
           </div>
         </div>
 
-        <div className="z-50 font-bold text-title">
-          <div>달력에 표시할 색상 선택</div>
-          <div onClick={openColor} className="flex">
+        <div className="z-30">
+          <div className="font-bold text-title">달력에 표시할 색상 선택</div>
+          <div className="flex mt-2 mb-12">
             {/* 색상 선택 */}
-            <div style={{ backgroundColor: `${color}` }} className="rounded-full m-[5px] w-[30px] h-[30px]"></div>
+            <div onClick={openColor} style={{ backgroundColor: `${color}` }} className="rounded-full m-[5px] w-[30px] h-[30px] cursor-pointer"></div>
             {open ? (
-              <div className="absolute z-50">
+              <div onClick={openColor} className="absolute z-30">
                 <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
               </div>
             ) : (
               <div></div>
             )}
+            <div onClick={openColor} className="text-xs text-label pt-[9px] ml-1.5 cursor-pointer">
+              {color}
+            </div>
           </div>
         </div>
 
-        <button className="relative z-2 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">
+        <button
+          onClick={onSubmit}
+          className="relative z-2 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover"
+        >
           저장하기
         </button>
       </div>
