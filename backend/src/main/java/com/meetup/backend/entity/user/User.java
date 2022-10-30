@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 /**
  * created by seongmin on 2022/10/20
- * updated by seongmin on 2022/10/30
+ * updated by seongmin on 2022/10/31
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,6 +34,10 @@ public class User extends BaseEntity {
 
     public void setFirstLogin() {
         firstLogin = true;
+    }
+
+    public void changeRole(RoleType role) {
+        this.role = role;
     }
 
     @Builder
