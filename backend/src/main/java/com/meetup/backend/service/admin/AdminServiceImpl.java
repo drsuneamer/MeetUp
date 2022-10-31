@@ -1,6 +1,7 @@
 package com.meetup.backend.service.admin;
 
 import com.meetup.backend.dto.admin.ChangeRoleDto;
+import com.meetup.backend.dto.admin.UserResponseDto;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
@@ -65,5 +66,15 @@ public class AdminServiceImpl implements AdminService {
             User u = userRepository.findById(changeRoleDto.getId()).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
             u.changeRole(changeRoleDto.getRoleType());
         }
+    }
+
+    @Override
+    public List<UserResponseDto> getUsers(String id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        if (!user.getRole().equals(RoleType.Admin)) {
+            throw new ApiException(ADMIN_ACCESS_DENIED);
+        }
+        List<User> users = userRepository.findByFirstLogin(true);
+        return UserResponseDto.of(users);
     }
 }
