@@ -2,6 +2,7 @@ package com.meetup.backend.service.user;
 
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.entity.user.User;
 
 /**
@@ -19,5 +20,5 @@ public interface UserService {
 
     void changeWebexUrl(String userId, String webexUrl);
 
-    String getWebexUrl(String userId);
+    UserWebexInfoDto getWebexUrl(String userId);
 }

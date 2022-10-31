@@ -14,4 +14,8 @@ public class UserWebexInfoDto {
     @NotBlank
     private String webexUrl;
 
+    public static UserWebexInfoDto of(String webexUrl) {
+        return new UserWebexInfoDto(webexUrl);
+    }
+
 }
