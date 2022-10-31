@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function AdminLoginForm() {
+  const navigate = useNavigate();
   const [id, setID] = useState('');
   const [pw, setPW] = useState('');
+  const [login, setLogin] = useState({ id: '', password: '' });
 
   const onChangeID = (e: React.ChangeEvent<HTMLInputElement>) => {
     setID(e.target.value);
@@ -12,9 +16,19 @@ function AdminLoginForm() {
     setPW(e.target.value);
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const login: object = { idValue: id, pwValue: pw };
-    console.log(login);
+  useEffect(() => {
+    setLogin({ id: id, password: pw });
+  }, [id, pw]);
+
+  const onSubmit = async () => {
+    await axios.post('http://localhost:8080/admin/login', login).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
+        window.localStorage.setItem('accessToken', res.data.accessToken);
+        navigate('/admin');
+      }
+    });
   };
   return (
     // 전체

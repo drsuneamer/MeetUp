@@ -1,20 +1,21 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.schedule.ScheduleResponseDto;
-import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.*;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.meeting.ScheduleService;
-import com.meetup.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by myeongseok on 2022/10/23
+ * updated by seongmin on 2022/10/31
  */
 @RestController
 @Slf4j
@@ -22,8 +23,6 @@ import javax.validation.Valid;
 @RequestMapping("/schedule")
 public class ScheduleController {
     private final ScheduleService scheduleService;
-
-    private final UserService userService;
 
     private final AuthService authService;
 
@@ -33,8 +32,17 @@ public class ScheduleController {
         log.info("scheduleId = {}", scheduleId);
         String userId = authService.getMyInfoSecret().getId();
         ScheduleResponseDto scheduleResponseDto = scheduleService.getScheduleResponseDtoById(userId, scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleResponseDto);
+        return ResponseEntity.status(OK).body(scheduleResponseDto);
 
+    }
+
+    // 스케쥴 등록
+    @PostMapping
+    public ResponseEntity<?> createSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto) {
+        log.info("scheduleRequestDto = {}", scheduleRequestDto);
+        String userId = authService.getMyInfoSecret().getId();
+        Long scheduleId = scheduleService.createSchedule(userId, scheduleRequestDto);
+        return ResponseEntity.status(CREATED).body(scheduleId);
     }
 
     // 스케쥴 id 해당되는 스케쥴 수정
@@ -42,9 +50,30 @@ public class ScheduleController {
     public ResponseEntity<?> updateSchedule(@RequestBody @Valid ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         log.info("scheduleUpdateRequestDto : {}", scheduleUpdateRequestDto);
         String userId = authService.getMyInfoSecret().getId();
-        scheduleService.updateSchedule(userId, scheduleUpdateRequestDto);
+        Long scheduleId = scheduleService.updateSchedule(userId, scheduleUpdateRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).body(scheduleId);
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId") Long scheduleId) {
+        log.info("scheduleId :{}", scheduleId);
+        String userId = authService.getMyInfoSecret().getId();
+        scheduleService.deleteSchedule(userId, scheduleId);
+
+        return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam @Valid AllScheduleRequestDto requestDto) {
+        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getMeetupId(), requestDto.getDate());
+        return ResponseEntity.status(OK).body(result);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getScheduleByMeAndDate(@RequestParam @Valid String date) {
+        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), date);
+        return ResponseEntity.status(OK).body(result);
     }
 
 }

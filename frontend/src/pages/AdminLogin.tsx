@@ -1,4 +1,4 @@
-import AdminLoginForm from '../components/AdminLoginForm';
+import AdminLoginForm from '../components/login/AdminLoginForm';
 
 function AdminLogin() {
   return (
