@@ -1,10 +1,7 @@
 package com.meetup.backend.dto.schedule;
 
-import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
-import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
-import com.meetup.backend.entity.user.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,15 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 public class AllScheduleResponseDto {
 
-    private List<MeetingResponse> meetingResponseList;
+    private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
+    private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
 
-    public static AllScheduleResponseDto of(List<Schedule> scheduleList) {
-        List<MeetingResponse> meetingResponseList = new ArrayList<>();
+    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings) {
+        List<MeetingResponse> meetingFromMe = new ArrayList<>();
+        List<MeetingResponse> meetingToMe = new ArrayList<>();
         List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
         for (Schedule schedule : scheduleList) {
             if (schedule instanceof Meeting) {
-                meetingResponseList.add(new MeetingResponse(
+                meetingFromMe.add(new MeetingResponse(
                         schedule.getId(),
                         schedule.getStart(),
                         schedule.getEnd(),
@@ -50,7 +49,20 @@ public class AllScheduleResponseDto {
                 ));
             }
         }
-        return new AllScheduleResponseDto(meetingResponseList, scheduleResponseList);
+        for (Meeting meeting : meetings) {
+            meetingToMe.add(new MeetingResponse(
+                    meeting.getId(),
+                    meeting.getStart(),
+                    meeting.getEnd(),
+                    meeting.getTitle(),
+                    meeting.getContent(),
+                    meeting.getUser().getNickname(),
+                    meeting.getUser().getId(),
+                    meeting.getMeetup().getTitle(),
+                    meeting.getMeetup().getColor()
+            ));
+        }
+        return new AllScheduleResponseDto(meetingFromMe, meetingToMe, scheduleResponseList);
     }
 
     @Getter
