@@ -42,6 +42,6 @@ public class UserController {
     @PutMapping("/webex")
     public ResponseEntity<?> setWebex(@RequestBody @Valid UserWebexRequestDto userWebexRequestDto) {
         userService.changeWebexUrl(authService.getMyInfoSecret().getId(), userWebexRequestDto.getWebexUrl());
-        return ResponseEntity.status(OK).body(null);
+        return ResponseEntity.status(CREATED).build();
     }
 }
