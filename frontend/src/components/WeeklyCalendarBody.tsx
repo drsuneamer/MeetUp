@@ -113,10 +113,8 @@ const WeeklyCalendarBody = () => {
                 ? holidayThisWeek.map((element, index) => {
                     const top = 0;
                     const height = 24 * 50;
-                    {
                       if (element.date === stringDate)
                         return (
-                          <>
                             <div
                               key={`${element.date}${index}`}
                               style={{ top, height }}
@@ -126,14 +124,13 @@ const WeeklyCalendarBody = () => {
                                 {element.name}
                               </span>
                             </div>
-                          </>
                         );
+                      return null
                     }
-                  })
+                  )
                 : null}
               {hours.map((hour, index) => {
                 return (
-                  <div>
                     <div
                       key={`${hour}${index}`}
                       className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
@@ -147,7 +144,6 @@ const WeeklyCalendarBody = () => {
                         handleNewEvent(stringDate, index, minute);
                       }}
                     />
-                  </div>
                 );
               })}
               {events[stringDate]?.map((event, index) => {
