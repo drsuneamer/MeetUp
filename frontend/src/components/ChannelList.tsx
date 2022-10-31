@@ -2,6 +2,9 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../stores/ConfigHooks';
+import { useEffect } from 'react';
+
 
 let channelArray: Array<tChannel> = [
   {
@@ -22,6 +25,12 @@ let channelArray: Array<tChannel> = [
 ];
 
 function ChannelList() {
+  const channelSelector = useAppSelector((state) => (state.channels))
+
+  useEffect(() => {
+    console.log(channelSelector)
+  })
+
   return (
     <div className="ChannelList mb-[50px] -z-10">
       <div className="flex mb-[10px]">
