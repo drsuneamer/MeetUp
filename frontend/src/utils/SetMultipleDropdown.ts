@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import clsx from 'clsx';
 
 import { useDispatch } from 'react-redux';
-import { update } from '../stores/modules/teamNum';
+import { update } from '../stores/modules/teamId';
 
 import useToggle from '../hooks/useToggle';
 

@@ -13,7 +13,7 @@ interface Category {
 }
 
 function CreateChannel() {
-  const t = useSelector((state: any) => state.teamNum.value).id;
+  const t = useSelector((state: any) => state.teamId.value).id;
   // const navigate = useNavigate();
 
   const [lv1Categories, setLv1] = useState<any>([]);

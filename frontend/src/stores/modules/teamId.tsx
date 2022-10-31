@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialStateValue = {};
-export const teamNumSlice = createSlice({
-  name: 'teamNum',
+export const teamIdSlice = createSlice({
+  name: 'teamId',
   initialState: {
     value: initialStateValue,
   },
@@ -13,5 +13,5 @@ export const teamNumSlice = createSlice({
   },
 });
 
-export const { update } = teamNumSlice.actions;
-export default teamNumSlice.reducer;
+export const { update } = teamIdSlice.actions;
+export default teamIdSlice.reducer;
