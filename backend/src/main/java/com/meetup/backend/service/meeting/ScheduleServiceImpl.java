@@ -36,7 +36,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ChannelRepository channelRepository;
     private final MeetupRepository meetupRepository;
 
-    private final StringToLocalDateTime STLD;
 
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
     @Override
@@ -54,7 +53,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
-        LocalDateTime from = STLD.strToLDT(date);
+        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, loginUser);
         List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
@@ -71,10 +70,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         User getUser = userRepository.findById(getUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
-        if (channelUserRepository.findByChannelAndUser(channel, loginUser) == null)
+        if (channelUserRepository.findByChannelAndUser(channel, loginUser).isEmpty())
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
 
-        LocalDateTime from = STLD.strToLDT(date);
+        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, getUser);
         List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
@@ -89,8 +88,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     public void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        LocalDateTime start = STLD.strToLDT(scheduleRequestDto.getStart());
-        LocalDateTime end = STLD.strToLDT(scheduleRequestDto.getEnd());
+        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
+        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
         String title = scheduleRequestDto.getTitle();
         String content = scheduleRequestDto.getContent();
         Schedule schedule = new Schedule(start, end, title, content, user);
