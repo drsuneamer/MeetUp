@@ -2,10 +2,23 @@ import ChannelList from '../components/ChannelList';
 import MeetupList from '../components/MeetupList';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import { useState, useEffect } from 'react';
 
 function SideBar() {
 
   const navigate = useNavigate()
+  const [syncChecked, setSyncChecked] = useState(false)
+
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setSyncChecked(false)
+    }, 2000)
+
+    return () => {
+      clearTimeout(timeId)
+    }
+  }, [syncChecked]);
 
   const syncRequest = async () => {
     await axios.get('http://localhost:8080/meetup/sync', {
@@ -13,9 +26,9 @@ function SideBar() {
       Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
     },
   }).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        console.log('동기화 완료')
+      if (res.status === 201) {
+        console.log('동기화 완료', res)
+        setSyncChecked(true)
         navigate('/');
       }
     });
@@ -32,6 +45,13 @@ function SideBar() {
         </svg>
         <span> MatterMost와 동기화하기</span>
       </button>
+      { syncChecked ? 
+      <Alert severity="info" className="mt-32 text-[13px]">
+        동기화가 완료되었습니다
+      </Alert> :
+      null
+      }
+
     </div>
   );
 }
