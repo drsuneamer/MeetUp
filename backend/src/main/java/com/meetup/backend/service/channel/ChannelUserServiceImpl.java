@@ -11,7 +11,6 @@ import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
-import com.meetup.backend.service.user.UserService;
 import com.meetup.backend.util.converter.JsonConverter;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +56,13 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         }
 
         return channelResponseDtoList;
+    }
+
+    @Override
+    public List<ChannelUser> getChannelUserByUser(String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        return channelUserRepository.findByUser(user);
     }
 
     // db에 저장되어 있지 않은 팀만 ChannelUser db 저장

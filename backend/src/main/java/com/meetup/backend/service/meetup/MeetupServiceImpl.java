@@ -4,8 +4,11 @@ import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
@@ -36,7 +39,7 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     @Transactional
     public void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
         Meetup meetup = Meetup.builder()
@@ -59,5 +62,18 @@ public class MeetupServiceImpl implements MeetupService {
             meetupResponseDtos.add(MeetupResponseDto.of(meetup));
         }
         return meetupResponseDtos;
+    }
+    public List<Meetup> getMeetupList(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        return meetupRepository.findByManager(user);
+    }
+
+    @Override
+    public List<Meetup> getCalendarList(List<ChannelUser> channelUserList) {
+        List<Channel> channelList = new ArrayList<>();
+        for (ChannelUser channelUser : channelUserList) {
+            channelList.add(channelUser.getChannel());
+        }
+        return meetupRepository.findByChannelIn(channelList);
     }
 }
