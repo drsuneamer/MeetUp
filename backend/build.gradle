@@ -68,6 +68,10 @@ dependencies {
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '3.0.4'
 
 	implementation group: 'javax.annotation', name: 'javax.annotation-api'
+
+    // swagger -> https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 }
 
 tasks.named('test') {
