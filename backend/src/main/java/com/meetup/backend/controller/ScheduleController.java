@@ -19,6 +19,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by myeongseok on 2022/10/23
+ * updated by seongmin on 2022/10/31
  */
 @RestController
 @Slf4j
@@ -52,7 +53,7 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getScheduleByMeetupAndDate(@PathVariable @Valid AllScheduleRequestDto requestDto) {
+    public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam @Valid AllScheduleRequestDto requestDto) {
         AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getMeetupId(), requestDto.getDate());
         return ResponseEntity.status(OK).body(result);
     }
