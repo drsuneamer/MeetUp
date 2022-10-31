@@ -1,5 +1,6 @@
 package com.meetup.backend.service.meeting;
 
+import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
@@ -65,22 +66,18 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 해당 user, mmetup, date로 정보 가져오기
     @Override
-    public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date) {
+    public AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        User getUser = userRepository.findById(getUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
-        if (channelUserRepository.findByChannelAndUser(channel, loginUser).isEmpty())
+        Channel channel = meetup.getChannel();
+
+        if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
 
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, getUser);
-        List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            scheduleResponseDtos.add(ScheduleResponseDto.of(schedule, getUser));
-        }
-        return scheduleResponseDtos;
+        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, meetup.getManager());
+        return AllScheduleResponseDto.of(schedules);
     }
 
     // 스케쥴 정보 등록
