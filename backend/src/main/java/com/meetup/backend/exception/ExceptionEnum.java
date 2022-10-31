@@ -18,7 +18,9 @@ public enum ExceptionEnum {
     USER_NOT_FOUND(BAD_REQUEST, "40001", "사용자를 찾을 수 없습니다."),
     BAD_REQUEST_LOGOUT(BAD_REQUEST, "40002", "잘못된 로그아웃 접근입니다."),
     TEAM_NOT_FOUND(BAD_REQUEST, "40003", "해당 팀을 찾을 수 없습니다."),
+
     CHANNEL_NOT_FOUND(BAD_REQUEST, "40004", "해당 채널을 찾을 수 없습니다."),
+
     MEETUP_NOT_FOUND(BAD_REQUEST, "40005", "해당 밋업을 찾을 수 없습니다."),
     SCHEDULE_NOT_FOUND(BAD_REQUEST, "40006", "해당 스케줄(개인일정)을 찾을 수 없습니다."),
     MEETING_NOT_FOUND(BAD_REQUEST, "40007", "해당 미팅(밋업 신청 스케쥴)을 찾을 수 없습니다."),

@@ -10,10 +10,10 @@ import java.util.List;
  * created by seongmin on 2022/10/23
  */
 public interface MeetingService {
+    MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId);
+    List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String date);
 
-    MeetingResponseDto getMeetingResponseDtoById(Long meetingId);
-
-    List<MeetingResponseDto> getMeetingResponseDtoByDate(String startDate, String UserId);
+    List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
 
     void createMeeting(String userId, MeetingRequestDto meetingRequestDto);
 

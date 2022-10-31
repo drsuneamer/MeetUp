@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/meetup")
+@RequestMapping("/meetup")
 public class MeetUpController {
 
     @Autowired

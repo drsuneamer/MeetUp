@@ -1,7 +1,6 @@
 package com.meetup.backend.dto.schedule.meeting;
 
 import com.meetup.backend.entity.meetup.Meetup;
-import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import lombok.AllArgsConstructor;
