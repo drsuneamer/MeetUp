@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { DAYS } from '../components/constants/Days';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { useAppSelector } from '../stores/ConfigHooks';
-import holiday from '../data/holidays.json';
 
 const WeeklyCalenderHeader = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
@@ -25,7 +24,7 @@ const WeeklyCalenderHeader = () => {
               {DAYS[index]}
             </div>
             <div
-              className={`text-center text-2xl p-1 w-10 h-10 rounded-full m-auto flex justify-center items-center text-s
+              className={`text-center text-xl p-1 w-10 h-10 rounded-full m-auto flex justify-center items-center text-s
             ${date.isToday ? 'bg-title text-background' : 'text-body'}
             ${DAYS[index] === '일' ? 'text-cancel' : 'text' && DAYS[index] === '토' ? 'text-title' : 'text'}    
             `}

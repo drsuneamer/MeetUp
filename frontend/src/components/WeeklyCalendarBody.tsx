@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getHours } from '../utils/GetHours';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
+import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
 import { deleteEvent, setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
@@ -30,6 +31,7 @@ const WeeklyCalendarBody = () => {
     }
     fetchAndSetHolidays();
     renderHoliday();
+    dispatch(getSundayOfWeek)
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
