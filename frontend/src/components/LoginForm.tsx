@@ -11,6 +11,7 @@ function LoginForm() {
   const [login, setLogin] = useState({ id: '', password: '' });
   const [checked, setChecked] = useState(false); // 개인정보동의 체크 여부 확인
   const [alert, setAlert] = useState(false); // 개인정보제공 미동의 시 alert
+  const [load, setLoad] = useState(false); // 로그인 버튼 클릭 시 로딩 alert
 
   const notYet = () => {
     // 개인정보동의 미동의 상태로 로그인 버튼 누른 경우(alert 유발)
@@ -45,6 +46,7 @@ function LoginForm() {
         navigate('/');
       }
     });
+    setLoad(true);
   };
 
   return (
@@ -87,6 +89,13 @@ function LoginForm() {
         {alert ? (
           <Alert severity="error" className="mt-10">
             개인정보 수집 미동의시 서비스 이용이 불가합니다
+          </Alert>
+        ) : (
+          ''
+        )}
+        {load ? (
+          <Alert severity="info" className="mt-10 text-[13px]">
+            첫 로그인의 경우 데이터 동기화 시간이 소요됩니다 (최대 2분)
           </Alert>
         ) : (
           ''
