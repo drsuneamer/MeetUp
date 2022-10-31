@@ -23,7 +23,7 @@ let channelArray: Array<tChannel> = [
 
 function ChannelList() {
   return (
-    <div className="ChannelList mb-[50px]">
+    <div className="ChannelList mb-[50px] -z-10">
       <div className="flex mb-[10px]">
         <h1 className="text-xl font-bold">밋업 관리하기</h1>
         <Link to="/create-channel" className="flex flex-col justify-center">

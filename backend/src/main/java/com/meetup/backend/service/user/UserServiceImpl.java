@@ -3,6 +3,7 @@ package com.meetup.backend.service.user;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.RoleType;
@@ -11,7 +12,6 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
-import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.team.TeamService;
@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisUtil redisUtil;
-
-    private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
     private final TeamService teamService;
     private final ChannelService channelService;
@@ -144,6 +142,11 @@ public class UserServiceImpl implements UserService {
     public void changeWebexUrl(String userId, String webexUrl) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         user.setWebex(webexUrl);
+    }
+
+    @Override
+    public UserWebexInfoDto getWebexUrl(String userId) {
+        return UserWebexInfoDto.of(userRepository.findById(userId).get().getWebex());
     }
 
 }
