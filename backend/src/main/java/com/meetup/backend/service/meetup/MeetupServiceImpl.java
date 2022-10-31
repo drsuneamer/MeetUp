@@ -71,4 +71,12 @@ public class MeetupServiceImpl implements MeetupService {
         }
         return meetupRepository.findByChannelIn(channelList);
     }
+
+    @Override
+    public Channel getMeetupChannelById(Long meetupId) {
+
+        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
+
+        return meetup.getChannel();
+    }
 }

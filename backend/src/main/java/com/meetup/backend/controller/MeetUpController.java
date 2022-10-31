@@ -2,6 +2,7 @@ package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.dto.meetup.MeetupUserResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
@@ -114,5 +115,14 @@ public class MeetUpController {
         String userId = authService.getMyInfoSecret().getId();
         List<MeetupResponseDto> meetupResponseDtos = meetupService.getResponseDtos(userId);
         return ResponseEntity.status(OK).body(meetupResponseDtos);
+    }
+
+    @GetMapping("/users/{meetupId}")
+    public ResponseEntity<?> getUserListByMeetupId(@PathVariable("meetupId") Long meetupId) {
+
+        Channel channel = meetupService.getMeetupChannelById(meetupId);
+        MeetupUserResponseDto responseDto = MeetupUserResponseDto.of(channelUserService.getMeetupUserByChannel(channel));
+
+        return ResponseEntity.status(OK).body(responseDto);
     }
 }
