@@ -1,6 +1,8 @@
 package com.meetup.backend.service.meetup;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
+import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
@@ -12,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by seungyong on 2022/10/24
@@ -43,5 +48,16 @@ public class MeetupServiceImpl implements MeetupService {
 
         meetupRepository.save(meetup);
 
+    }
+
+    @Override
+    public List<MeetupResponseDto> getResponseDtos(String userId) {
+        User mangerUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
+        List<Meetup> meetups = meetupRepository.findByManager(mangerUser);
+        List<MeetupResponseDto> meetupResponseDtos = new ArrayList<>();
+        for (Meetup meetup : meetups) {
+            meetupResponseDtos.add(MeetupResponseDto.of(meetup));
+        }
+        return meetupResponseDtos;
     }
 }

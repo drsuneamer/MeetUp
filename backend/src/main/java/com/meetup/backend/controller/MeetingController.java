@@ -1,5 +1,6 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.meeting.MeetingService;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 /**
  * created by myeongseok on 2022/10/23
+ * updated by myeongseok on 2022/10/31
  */
 @RestController
 @Slf4j
@@ -20,9 +24,12 @@ public class MeetingController {
     private final MeetingService meetingService;
     private final AuthService authService;
 
-    @PostMapping("/")
-    public ResponseEntity<?> applyMeeting(@RequestBody @Valid com.meetup.backend.dto.schedule.meeting.MeetingRequestDto requestDto) {
-        return null;
+    @PostMapping
+    public ResponseEntity<?> applyMeeting(@RequestBody @Valid MeetingRequestDto meetingRequestDto) {
+        log.info("meetingRequestDto = {}", meetingRequestDto);
+        String userId = authService.getMyInfoSecret().getId();
+        Long meetingId = meetingService.createMeeting(userId, meetingRequestDto);
+        return ResponseEntity.status(CREATED).body(meetingId);
 
     }
 

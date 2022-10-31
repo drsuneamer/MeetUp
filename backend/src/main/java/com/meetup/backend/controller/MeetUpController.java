@@ -1,8 +1,11 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
+import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.entity.user.User;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
@@ -25,7 +28,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seongmin on 2022/10/30
+ * updated by myeongseok on 2022/10/31
  */
 @RestController
 @Slf4j
@@ -89,4 +92,10 @@ public class MeetUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/meetup")
+    public ResponseEntity<?> getMeetupByUserId() {
+        String userId = authService.getMyInfoSecret().getId();
+        List<MeetupResponseDto> meetupResponseDtos = meetupService.getResponseDtos(userId);
+        return ResponseEntity.status(OK).body(meetupResponseDtos);
+    }
 }

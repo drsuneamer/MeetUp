@@ -26,9 +26,6 @@ public class MeetingRequestDto {
 
     private String content;
 
-    @NotBlank(message = "미팅의 managerId는 필수 입니다.")
-    private String managerId;
-
     @NotBlank(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
 
