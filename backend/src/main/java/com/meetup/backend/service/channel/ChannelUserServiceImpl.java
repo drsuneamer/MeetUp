@@ -1,6 +1,7 @@
 package com.meetup.backend.service.channel;
 
 import com.meetup.backend.dto.channel.ChannelResponseDto;
+import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.user.RoleType;
@@ -63,6 +64,18 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         return channelUserRepository.findByUser(user);
+    }
+
+    @Override
+    public List<UserInfoDto> getMeetupUserByChannel(Channel channel) {
+        List<ChannelUser> channelUserList = channelUserRepository.findByChannel(channel);
+        List<UserInfoDto> userInfoDtoList = new ArrayList<>();
+        for (ChannelUser channelUser : channelUserList) {
+            UserInfoDto userInfoDto = UserInfoDto.of(channelUser.getUser());
+            userInfoDtoList.add(userInfoDto);
+        }
+
+        return userInfoDtoList;
     }
 
     // db에 저장되어 있지 않은 팀만 ChannelUser db 저장
