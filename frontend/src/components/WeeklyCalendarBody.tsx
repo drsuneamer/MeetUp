@@ -4,7 +4,8 @@ import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
 import { deleteEvent, setEventModalData } from '../stores/modules/events';
-import { setEventModalOpen } from '../stores/modules/modal';
+import { setEventModalOpen, ModalSelector } from '../stores/modules/modal';
+import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
@@ -16,6 +17,8 @@ interface Week {
 }
 
 const WeeklyCalendarBody = () => {
+  const detailModalSelector = useSelector(ModalSelector)
+
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
@@ -32,6 +35,7 @@ const WeeklyCalendarBody = () => {
     fetchAndSetHolidays();
     renderHoliday();
     dispatch(getSundayOfWeek)
+    console.log(detailModalSelector.detailModalIsOpen)
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
@@ -71,9 +75,9 @@ const WeeklyCalendarBody = () => {
     setSelectedEventPosition({ top: e.clientY, left: e.clientX });
     setSelectedEvent({ date, index });
 
-    if (deletePopupContainerRef.current !== null) {
-      deletePopupContainerRef.current.style.overflow = 'hidden';
-    }
+    // if (deletePopupContainerRef.current !== null) {
+    //   deletePopupContainerRef.current.style.overflow = 'hidden';
+    // }
   };
 
   const handleNewEvent = (stringDate: string, hour: number, minute: string) => {
@@ -83,17 +87,24 @@ const WeeklyCalendarBody = () => {
     dispatch(setEventModalOpen());
   };
 
-  const handleDeleteEvent = () => {
+  const handleViewEvent = () => {
     if (selectedEvent !== null) {
-      dispatch(deleteEvent(selectedEvent));
+      dispatch(setDetailModalOpen())
+      // setSelectedEventPosition(selectedEventPosition);
     }
-    setSelectedEvent(null);
-    setSelectedEventPosition(null);
+  }
 
-    if (deletePopupContainerRef.current !== null) {
-      deletePopupContainerRef.current.style.overflow = 'scroll';
-    }
-  };
+  // const handleDeleteEvent = () => {
+  //   if (selectedEvent !== null) {
+  //     dispatch(deleteEvent(selectedEvent));
+  //   }
+  //   setSelectedEvent(null);
+  //   setSelectedEventPosition(null);
+
+  //   if (deletePopupContainerRef.current !== null) {
+  //     deletePopupContainerRef.current.style.overflow = 'scroll';
+  //   }
+  // };
 
   return (
     <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
@@ -148,6 +159,15 @@ const WeeklyCalendarBody = () => {
                     />
                 );
               })}
+              {selectedEventPosition !== null && (
+                <div
+                  className="fixed text-sm shadow rounded-lg bg-background cursor-pointer px-4 py-2"
+                  style={selectedEventPosition}
+                  onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                    handleViewEvent();
+                  }}
+                />
+              )}
               {events[stringDate]?.map((event, index) => {
                 const { title, start, end } = event;
                 const startMinute = parseInt(start.slice(-2));
@@ -192,12 +212,12 @@ const WeeklyCalendarBody = () => {
 
       {selectedEventPosition !== null && (
         <div
-          className="fixed text-sm shadow rounded-lg bg-background cursor-pointer px-4 py-2"
+          className="fixed text-sm shadow rounded bg-background cursor-pointer px-2 py-2"
           style={selectedEventPosition}
-          onClick={handleDeleteEvent}
-        >
-          삭제
-        </div>
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+            handleViewEvent();
+          }}
+        >자세히 보기</div>
       )}
     </div>
   );
