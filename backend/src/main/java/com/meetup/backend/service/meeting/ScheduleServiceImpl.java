@@ -6,6 +6,7 @@ import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -13,6 +14,7 @@ import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
+import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
@@ -36,6 +38,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ChannelUserRepository channelUserRepository;
     private final ChannelRepository channelRepository;
     private final MeetupRepository meetupRepository;
+    private final MeetingRepository meetingRepository;
 
 
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
@@ -77,7 +80,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, meetup.getManager());
-        return AllScheduleResponseDto.of(schedules);
+
+        // 해당 스케줄 주인의 밋업 리스트
+        List<Meetup> meetupList = meetupRepository.findByManage(meetup.getManager());
+        List<Meeting> meetingToMe = new ArrayList<>();
+        if (meetupList.size() > 0) {
+            for (Meetup mu : meetupList) {
+                // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
+                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+            }
+        }
+        return AllScheduleResponseDto.of(schedules, meetingToMe);
     }
 
     // 스케쥴 정보 등록

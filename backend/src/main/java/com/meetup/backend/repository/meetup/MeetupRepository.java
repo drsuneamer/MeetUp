@@ -10,5 +10,6 @@ import java.util.List;
  * created by seongmin on 2022/10/21
  */
 public interface MeetupRepository extends JpaRepository<Meetup, Long> {
-    List<Meetup> findAllByManager(User user);
+
+    List<Meetup> findByManager(User user);
 }
