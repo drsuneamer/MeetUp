@@ -14,7 +14,6 @@ import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,6 +84,21 @@ public class MeetUpController {
         meetupService.registerMeetUp(meetupRequestDto, authService.getMyInfoSecret().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/meetupList")
+    public ResponseEntity<?> getMeetupList() {
+        return ResponseEntity.status(OK).body(meetupService.getMeetupList(authService.getMyInfoSecret().getId()));
+    }
+
+    @GetMapping("/calendarList")
+    public ResponseEntity<?> getCalendarList() {
+
+        String userId = authService.getMyInfoSecret().getId();
+        List<Meetup> meetupList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
+
+        return ResponseEntity.status(OK).body(meetupList);
+
     }
 
     @PostMapping("/channel/{teamId}")
