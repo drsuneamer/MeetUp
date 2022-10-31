@@ -5,7 +5,7 @@ import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 import { useSelector } from 'react-redux';
 
-import axiosInstance from '../components/auth/axiosConfig';
+import { axiosInstance } from '../components/auth/axiosConfig';
 
 interface Category {
   id: string;
@@ -86,9 +86,9 @@ function CreateChannel() {
     return (
       <Layout>
         <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
-          <div className="mb-10 z-30">
+          <div className="mb-10">
             <div className="font-bold text-title cursor-default">알림을 받을 채널 선택하기</div>
-            <div className="">
+            <div className="relative">
               <MultipleLevelSelection
                 initialItems={categoriesByteamId(0)}
                 getItemKey={(item) => item.id}
@@ -138,7 +138,7 @@ function CreateChannel() {
 
           <button
             onClick={onSubmit}
-            className="relative z-2 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover"
+            className="relative -z-50 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover"
           >
             저장하기
           </button>

@@ -72,6 +72,7 @@ function EditChannel() {
 
   const onSave = () => {
     console.log('save!');
+    console.log(record);
   };
 
   const onDelete = () => {
