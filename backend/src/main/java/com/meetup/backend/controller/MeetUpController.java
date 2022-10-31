@@ -1,6 +1,7 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
+import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
@@ -11,7 +12,6 @@ import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seongmin on 2022/10/30
+ * updated by myeongseok on 2022/10/31
  */
 @RestController
 @Slf4j
@@ -84,9 +84,25 @@ public class MeetUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/calendar")
+    public ResponseEntity<?> getCalendarList() {
+
+        String userId = authService.getMyInfoSecret().getId();
+        List<MeetupResponseDto> meetupList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
+
+        return ResponseEntity.status(OK).body(meetupList);
+
+    }
+
     @PostMapping("/channel/{teamId}")
-    ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
+    public ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @GetMapping("/meetup")
+    public ResponseEntity<?> getMeetupByUserId() {
+        String userId = authService.getMyInfoSecret().getId();
+        List<MeetupResponseDto> meetupResponseDtos = meetupService.getResponseDtos(userId);
+        return ResponseEntity.status(OK).body(meetupResponseDtos);
+    }
 }

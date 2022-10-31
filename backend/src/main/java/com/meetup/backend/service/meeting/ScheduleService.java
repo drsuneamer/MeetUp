@@ -9,18 +9,19 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/25
+ * updated by seongmin on 2022/10/31
  */
 public interface ScheduleService {
 
     ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId);
 
-    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
+    AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
 
     AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date);
 
-    void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto);
+    Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto);
 
-    void updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto);
+    Long updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto);
 
     void deleteSchedule(String userId, Long scheduleId);
 }

@@ -1,4 +1,4 @@
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/login/LoginForm';
 import Image1 from '../assets/background1.png';
 import Image2 from '../assets/background2.png';
 import Image3 from '../assets/background3.png';
