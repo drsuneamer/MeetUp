@@ -37,8 +37,14 @@ function LoginForm() {
     setLogin({ id: id, password: pw });
   }, [id, pw]); // id와 pw값이 변경될때마다 제출용 object에 반영
 
+  // const agreeCheck = (e: KeyboardEvent<HTMLLabelElement>): void => {
+  //   if (e.key === 'Enter') {
+  //     toggleCheck();
+  //   }
+  // };
+
   const onKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && checked) {
       onSubmit();
     }
   };
@@ -50,6 +56,7 @@ function LoginForm() {
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
         window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
+        window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
         window.localStorage.setItem('nickname', res.data.nickname);
         navigate('/');
       } else {
