@@ -14,7 +14,7 @@ let meetupArray: Array<tMeetup> = [
 
 function MeetupList() {
   return (
-    <div className="MeetupList">
+    <div className="MeetupList -z-10">
       <h1 className="text-xl font-bold mb-[10px]">참여중인 달력</h1>
       {meetupArray.map((value: tMeetup, index: number) => (
         <MeetupListItem key={value.manager_id} meetup={value} />

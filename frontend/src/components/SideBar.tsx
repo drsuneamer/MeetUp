@@ -35,7 +35,7 @@ function SideBar() {
   };
 
   return (
-    <div className="SideBar relative w-full pl-2 mt-[70px]">
+    <div className="SideBar relative w-full pl-2 mt-[70px] -z-10">
       <ChannelList />
       <MeetupList />
 

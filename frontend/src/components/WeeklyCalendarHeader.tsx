@@ -24,7 +24,7 @@ const WeeklyCalenderHeader = () => {
               {DAYS[index]}
             </div>
             <div
-              className={`text-center text-2xl p-1 w-10 h-10 rounded-full m-auto flex justify-center items-center text-s
+              className={`text-center text-xl p-1 w-10 h-10 rounded-full m-auto flex justify-center items-center text-s
             ${date.isToday ? 'bg-title text-background' : 'text-body'}
             ${DAYS[index] === '일' ? 'text-cancel' : 'text' && DAYS[index] === '토' ? 'text-title' : 'text'}    
             `}
