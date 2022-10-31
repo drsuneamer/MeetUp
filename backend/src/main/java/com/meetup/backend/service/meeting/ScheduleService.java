@@ -9,12 +9,13 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/25
+ * updated by seongmin on 2022/10/31
  */
 public interface ScheduleService {
 
     ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId);
 
-    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
+    AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
 
     AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date);
 
