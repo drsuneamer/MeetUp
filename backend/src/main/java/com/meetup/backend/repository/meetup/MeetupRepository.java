@@ -1,5 +1,6 @@
 package com.meetup.backend.repository.meetup;
 
+import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
@@ -15,6 +16,6 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
     List<Meetup> findByManager(User manager);
 
-    List<Meetup> findByChannelIn(List<Channel> channelList);
+    List<MeetupResponseDto> findByChannelIn(List<Channel> channelList);
 
 }
