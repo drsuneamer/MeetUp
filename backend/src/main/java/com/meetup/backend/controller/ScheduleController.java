@@ -1,9 +1,6 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
-import com.meetup.backend.dto.schedule.ScheduleRequestDto;
-import com.meetup.backend.dto.schedule.ScheduleResponseDto;
-import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.dto.schedule.*;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.meeting.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +62,12 @@ public class ScheduleController {
         scheduleService.deleteSchedule(userId, scheduleId);
 
         return ResponseEntity.status(OK).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam @Valid AllScheduleRequestDto requestDto) {
+        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getMeetupId(), requestDto.getDate());
+        return ResponseEntity.status(OK).body(result);
     }
 
     @GetMapping("/me")
