@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import MeetUp from './pages/MeetUp';
 import NotFound from './pages/NotFound';
 import Tutorial from './pages/Tutorial';
+import Settings from './pages/Settings';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/edit-channel" element={<EditChannel />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/settings/" element={<Settings />} />
       </Routes>
     </div>
   );

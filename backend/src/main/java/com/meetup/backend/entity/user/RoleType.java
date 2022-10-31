@@ -5,11 +5,12 @@ import lombok.Getter;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/10/31
  */
 @Getter
 @AllArgsConstructor
 public enum RoleType {
-    Consultant("CON"), Coach("CO"), Pro("P"), Student("S"), Professor("PF");
+    Consultant("CON"), Coach("CO"), Pro("P"), Student("S"), Professor("PF"), Admin("A");
 
     private final String code;
 

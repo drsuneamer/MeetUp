@@ -1,6 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
 import clsx from 'clsx';
 
+import { useDispatch } from 'react-redux';
+import { update } from '../stores/modules/teamNum';
+
 import useToggle from '../hooks/useToggle';
 
 export const useSelect = <TItem = string>({
@@ -12,6 +15,7 @@ export const useSelect = <TItem = string>({
   getItemLabel,
   isEqual,
 }: UseSelectProps<TItem>) => {
+  const dispatch = useDispatch();
   const [open, toggle] = useToggle();
   const [selectedItem, setSelectedItem] = useState<TItem>();
 
@@ -75,6 +79,10 @@ export const useSelect = <TItem = string>({
         }, {}),
       );
 
+      // change teamId
+      console.log(item);
+      dispatch(update(item));
+
       // Update selected items
       setSelectedItems((prev) => ({ ...prev, [level]: item }));
 
@@ -88,7 +96,7 @@ export const useSelect = <TItem = string>({
         toggle();
       }
     },
-    [handleGetNestedItems, hasNestedItems, onChange, toggle],
+    [handleGetNestedItems, hasNestedItems, onChange, toggle, dispatch],
   );
 
   return {
