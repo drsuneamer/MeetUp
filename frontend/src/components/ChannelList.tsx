@@ -2,34 +2,19 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../stores/ConfigHooks';
+import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
-
-
-let channelArray: Array<tChannel> = [
-  {
-    id: 1,
-    name: 'A102',
-    color: '#ED8383',
-  },
-  {
-    id: 2,
-    name: '팀장채널',
-    color: '#838EED',
-  },
-  {
-    id: 3,
-    name: '스크럼',
-    color: '#BEED83',
-  },
-];
+import { fetchChannelList, channelSelector } from '../stores/modules/channels';
+import { useSelector } from 'react-redux';
 
 function ChannelList() {
-  const channelSelector = useAppSelector((state) => (state.channels))
+  const dispatch = useAppDispatch();
+  const channel = useSelector(channelSelector);
 
   useEffect(() => {
-    console.log(channelSelector)
-  })
+    dispatch(fetchChannelList());
+    console.log(channel);
+  }, []);
 
   return (
     <div className="ChannelList mb-[50px] -z-10">
@@ -46,7 +31,7 @@ function ChannelList() {
           </svg>
         </Link>
       </div>
-      {channelArray.map((value: tChannel, index: number) => (
+      {channel.channels.map((value: tChannel, index: number) => (
         <ChannelListItem key={value.id} channel={value} />
       ))}
     </div>

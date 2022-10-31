@@ -1,25 +1,31 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tChannel } from '../../types/channels';
 import axiosInstance from '../../components/auth/axiosConfig';
+import { RootState } from '../ConfigStore';
 
-interface channelState extends tChannel {
+// interface channelState extends tChannel {
+//   loading: boolean;
+// }
+
+type channelInitialState = {
   loading: boolean;
-}
-const initialState: channelState = {
-  id: 0,
-  name: '',
-  color: '',
-  loading: false,
+  channels: Array<tChannel>;
 };
 
-export const fetchChannelList = createAsyncThunk('meetup', async (thunkAPI) => {
+const initialState: channelInitialState = {
+  loading: false,
+  channels: [{ id: 0, title: '', color: '' }],
+};
+
+export const fetchChannelList = createAsyncThunk('meetup', async () => {
   try {
     const res = await axiosInstance.get('/meetup').then((res) => {
-      console.log('channel data fetched: ', res);
+      // console.log('channel data fetched: ', res.data);
+      return res.data;
     });
     return res;
   } catch (err) {
-    return thunkAPI;
+    console.log(err);
   }
 });
 
@@ -30,20 +36,18 @@ const channelSlice = createSlice({
   extraReducers: {
     [fetchChannelList.pending.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching pending');
     },
     [fetchChannelList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      console.log(action.payload);
-      console.log('fetching fulfilled');
+      state.channels = action.payload;
     },
     [fetchChannelList.rejected.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching rejected');
+      console.log('rejected');
     },
   },
 });
 
 const { reducer } = channelSlice;
-export const channelSelector = (state: channelState) => state;
+export const channelSelector = (state: RootState) => state.channels;
 export default reducer;
