@@ -18,4 +18,6 @@ public interface UserService {
     void registerTeamAndChannel(String mmToken, User user);
 
     void changeWebexUrl(String userId, String webexUrl);
+
+    String getWebexUrl(String userId);
 }
