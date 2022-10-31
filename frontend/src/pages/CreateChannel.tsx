@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
+import Spinner from '../components/common/Spinner';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 import { useSelector } from 'react-redux';
 
@@ -146,7 +147,7 @@ function CreateChannel() {
       </Layout>
     );
   } else {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 }
 
