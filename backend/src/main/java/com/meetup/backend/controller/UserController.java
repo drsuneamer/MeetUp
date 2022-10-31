@@ -2,6 +2,7 @@ package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.dto.user.UserWebexRequestDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seongmin on 2022/10/30
+ * updated by seungyong on 2022/10/31
  */
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDto requestDto) {
+        log.info("login");
         return ResponseEntity.status(OK).body(userService.login(requestDto));
     }
 
@@ -35,5 +37,11 @@ public class UserController {
     public ResponseEntity<?> logout() {
         userService.logout(authService.getMyInfoSecret().getId());
         return ResponseEntity.status(OK).build();
+    }
+
+    @PutMapping("/webex")
+    public ResponseEntity<?> setWebex(@RequestBody @Valid UserWebexRequestDto userWebexRequestDto) {
+        userService.changeWebexUrl(authService.getMyInfoSecret().getId(), userWebexRequestDto.getWebexUrl());
+        return ResponseEntity.status(OK).body(null);
     }
 }
