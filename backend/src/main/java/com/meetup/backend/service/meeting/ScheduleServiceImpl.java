@@ -61,7 +61,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime to = from.plusDays(6);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, loginUser);
 
-        List<Meetup> meetupList = meetupRepository.findByManage(loginUser);
+        List<Meetup> meetupList = meetupRepository.findByManager(loginUser);
         List<Meeting> meetingToMe = new ArrayList<>();
         if (meetupList.size() > 0) {
             for (Meetup mu : meetupList) {

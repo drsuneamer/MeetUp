@@ -1,5 +1,6 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
@@ -37,17 +38,6 @@ public class ScheduleController {
         return ResponseEntity.status(OK).body(scheduleResponseDto);
 
     }
-
-    // 로그인 유저의 일정 가져오기
-    @GetMapping("/date/{date}")
-    public ResponseEntity<?> getScheduleResponseDtoByUserAndDate(@PathVariable("date") String date) {
-        log.info("date = {}", date);
-        String userId = authService.getMyInfoSecret().getId();
-        List<ScheduleResponseDto> scheduleResponseDto = scheduleService.getScheduleResponseDtoByUserAndDate(userId, date);
-        return ResponseEntity.status(OK).body(scheduleResponseDto);
-
-    }
-
 
     // 스케쥴 등록
     @PostMapping
