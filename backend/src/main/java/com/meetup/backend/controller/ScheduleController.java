@@ -1,5 +1,7 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.schedule.AllScheduleRequestDto;
+import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.service.auth.AuthService;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by myeongseok on 2022/10/23
@@ -33,7 +37,7 @@ public class ScheduleController {
         log.info("scheduleId = {}", scheduleId);
         String userId = authService.getMyInfoSecret().getId();
         ScheduleResponseDto scheduleResponseDto = scheduleService.getScheduleResponseDtoById(userId, scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleResponseDto);
+        return ResponseEntity.status(OK).body(scheduleResponseDto);
 
     }
 
@@ -44,7 +48,13 @@ public class ScheduleController {
         String userId = authService.getMyInfoSecret().getId();
         scheduleService.updateSchedule(userId, scheduleUpdateRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getScheduleByMeetupAndDate(@PathVariable @Valid AllScheduleRequestDto requestDto) {
+        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getMeetupId(), requestDto.getDate());
+        return ResponseEntity.status(OK).body(result);
     }
 
 }

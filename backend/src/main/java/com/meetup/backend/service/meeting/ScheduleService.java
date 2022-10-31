@@ -1,5 +1,6 @@
 package com.meetup.backend.service.meeting;
 
+import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
@@ -15,7 +16,7 @@ public interface ScheduleService {
 
     List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date);
 
-    List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
+    AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date);
 
     void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto);
 
