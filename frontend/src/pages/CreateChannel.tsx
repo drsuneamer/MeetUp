@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 import { useSelector } from 'react-redux';
+
+import axiosInstance from '../components/auth/axiosConfig';
 
 interface Category {
   id: string;
@@ -20,15 +21,9 @@ function CreateChannel() {
   const [lv2Categories, setLv2] = useState<any>([]);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:8080/meetup/team', {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-        },
-      })
-      .then((res) => {
-        setLv1(res.data);
-      });
+    axiosInstance.get('meetup/team').then((res) => {
+      setLv1(res.data);
+    });
   }, []);
 
   if (lv1Categories.length > 0) {
@@ -40,15 +35,9 @@ function CreateChannel() {
   }
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/meetup/channel/${t}`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-        },
-      })
-      .then((res) => {
-        setLv2(res.data);
-      });
+    axiosInstance.get(`/meetup/channel/${t}`).then((res) => {
+      setLv2(res.data);
+    });
   }, [t]);
 
   // 알림을 받을 채널 선택하기
@@ -86,17 +75,11 @@ function CreateChannel() {
   }, [channelId, title, color]); // 각 값이 변경될 때마다 제출될 record에 반영
 
   const onSubmit = async () => {
-    await axios
-      .post('http://localhost:8080/meetup/', record, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 201) {
-          navigate('/');
-        }
-      });
+    await axiosInstance.post('/meetup/', record).then((res) => {
+      if (res.status === 201) {
+        navigate('/');
+      }
+    });
   };
 
   if (lv1Categories.length > 0) {

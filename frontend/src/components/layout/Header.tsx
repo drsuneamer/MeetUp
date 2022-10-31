@@ -1,8 +1,8 @@
 import LogoImage from '../../assets/logo_title.png';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import DeleteModal from '../modal/DeleteModal';
+import axiosInstance from '../auth/axiosConfig';
 
 function Header() {
   const navigate = useNavigate();
@@ -14,18 +14,12 @@ function Header() {
   }, [isOpenModal]);
 
   const logout = async () => {
-    await axios
-      .get('http://localhost:8080/user/logout', {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          window.localStorage.removeItem('accessToken');
-          navigate('/login');
-        }
-      });
+    await axiosInstance.get('/user/logout').then((res) => {
+      if (res.status === 200) {
+        window.localStorage.removeItem('accessToken');
+        navigate('/login');
+      }
+    });
   };
   const nickname = window.localStorage.getItem('nickname');
 
