@@ -58,4 +58,10 @@ public class ScheduleController {
         return ResponseEntity.status(OK).body(result);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getScheduleByMeAndDate(@RequestParam @Valid String date) {
+        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), date);
+        return ResponseEntity.status(OK).body(result);
+    }
+
 }

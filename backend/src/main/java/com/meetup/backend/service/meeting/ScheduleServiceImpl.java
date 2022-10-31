@@ -54,17 +54,22 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 로그인 한 유저의 일정 갖고오기
     @Override
-    public List<ScheduleResponseDto> getScheduleResponseDtoByUserAndDate(String loginUserId, String date) {
+    public AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, String date) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
 
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, loginUser);
-        List<ScheduleResponseDto> scheduleResponseDtos = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            scheduleResponseDtos.add(ScheduleResponseDto.of(schedule, loginUser));
+
+        List<Meetup> meetupList = meetupRepository.findByManage(loginUser);
+        List<Meeting> meetingToMe = new ArrayList<>();
+        if (meetupList.size() > 0) {
+            for (Meetup mu : meetupList) {
+                // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
+                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+            }
         }
-        return scheduleResponseDtos;
+        return AllScheduleResponseDto.of(schedules, meetingToMe);
     }
 
     // 해당 user, mmetup, date로 정보 가져오기
