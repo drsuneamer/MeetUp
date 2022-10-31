@@ -2,6 +2,7 @@ package com.meetup.backend.service.meetup;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 
 import java.util.List;
@@ -16,5 +17,7 @@ public interface MeetupService {
     List<MeetupResponseDto> getResponseDtos(String userId);
 
     List<MeetupResponseDto> getCalendarList(List<ChannelUser> channelUserList);
+
+    Channel getMeetupChannelById(Long meetupId);
 
 }
