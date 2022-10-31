@@ -82,7 +82,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, meetup.getManager());
 
         // 해당 스케줄 주인의 밋업 리스트
-        List<Meetup> meetupList = meetupRepository.findByManage(meetup.getManager());
+        List<Meetup> meetupList = meetupRepository.findByManager(meetup.getManager());
         List<Meeting> meetingToMe = new ArrayList<>();
         if (meetupList.size() > 0) {
             for (Meetup mu : meetupList) {

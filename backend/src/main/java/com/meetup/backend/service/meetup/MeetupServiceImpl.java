@@ -53,7 +53,7 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     public List<MeetupResponseDto> getResponseDtos(String userId) {
         User mangerUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
-        List<Meetup> meetups = meetupRepository.findAllByManager(mangerUser);
+        List<Meetup> meetups = meetupRepository.findByManager(mangerUser);
         List<MeetupResponseDto> meetupResponseDtos = new ArrayList<>();
         for (Meetup meetup : meetups) {
             meetupResponseDtos.add(MeetupResponseDto.of(meetup));
