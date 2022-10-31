@@ -15,7 +15,7 @@ function Header() {
 
   const logout = async () => {
     await axios
-      .get('http://localhost:8080/api/user/logout', {
+      .get('http://localhost:8080/user/logout', {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
         },
