@@ -3,9 +3,7 @@ package com.meetup.backend.controller;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.entity.channel.Channel;
-import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.team.Team;
-import com.meetup.backend.entity.user.User;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
@@ -86,23 +84,18 @@ public class MeetUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/meetupList")
-    public ResponseEntity<?> getMeetupList() {
-        return ResponseEntity.status(OK).body(meetupService.getMeetupList(authService.getMyInfoSecret().getId()));
-    }
-
-    @GetMapping("/calendarList")
+    @GetMapping("/calendar")
     public ResponseEntity<?> getCalendarList() {
 
         String userId = authService.getMyInfoSecret().getId();
-        List<Meetup> meetupList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
+        List<MeetupResponseDto> meetupList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
 
         return ResponseEntity.status(OK).body(meetupList);
 
     }
 
     @PostMapping("/channel/{teamId}")
-    ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
+    public ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

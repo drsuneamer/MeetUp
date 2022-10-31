@@ -2,7 +2,6 @@ package com.meetup.backend.service.meetup;
 
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
-import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
@@ -63,13 +62,9 @@ public class MeetupServiceImpl implements MeetupService {
         }
         return meetupResponseDtos;
     }
-    public List<Meetup> getMeetupList(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        return meetupRepository.findByManager(user);
-    }
 
     @Override
-    public List<Meetup> getCalendarList(List<ChannelUser> channelUserList) {
+    public List<MeetupResponseDto> getCalendarList(List<ChannelUser> channelUserList) {
         List<Channel> channelList = new ArrayList<>();
         for (ChannelUser channelUser : channelUserList) {
             channelList.add(channelUser.getChannel());
