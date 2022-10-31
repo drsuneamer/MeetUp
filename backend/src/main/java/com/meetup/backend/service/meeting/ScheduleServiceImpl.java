@@ -64,7 +64,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleResponseDtos;
     }
 
-    // 해당 user, mmetup, date로 정보 가져오기
+    // 해당 user, meetup, date로 정보 가져오기
     @Override
     public AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
@@ -83,26 +83,28 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 스케쥴 정보 등록
     @Override
     @Transactional
-    public void createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
+    public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
         String title = scheduleRequestDto.getTitle();
         String content = scheduleRequestDto.getContent();
         Schedule schedule = new Schedule(start, end, title, content, user);
-        scheduleRepository.save(schedule);
+
+        return scheduleRepository.save(schedule).getId();
     }
 
     // 스케쥴 정보 수정
     @Override
     @Transactional
-    public void updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+    public Long updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         Schedule schedule = scheduleRepository.findById(scheduleUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(ExceptionEnum.SCHEDULE_NOT_FOUND));
         if (!user.getId().equals(schedule.getUser().getId())) {
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
         }
         schedule.update(scheduleUpdateRequestDto);
+        return schedule.getId();
     }
 
     // 스케쥴 정보 삭제
