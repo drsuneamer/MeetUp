@@ -17,7 +17,7 @@ interface Week {
 }
 
 const WeeklyCalendarBody = () => {
-  const detailModalSelector = useSelector(ModalSelector)
+  const detailModalSelector = useSelector(ModalSelector);
 
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
@@ -34,8 +34,8 @@ const WeeklyCalendarBody = () => {
     }
     fetchAndSetHolidays();
     renderHoliday();
-    dispatch(getSundayOfWeek)
-    console.log(detailModalSelector.detailModalIsOpen)
+    dispatch(getSundayOfWeek);
+    // console.log(detailModalSelector.detailModalIsOpen)
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
@@ -89,10 +89,10 @@ const WeeklyCalendarBody = () => {
 
   const handleViewEvent = () => {
     if (selectedEvent !== null) {
-      dispatch(setDetailModalOpen())
+      dispatch(setDetailModalOpen());
       // setSelectedEventPosition(selectedEventPosition);
     }
-  }
+  };
 
   // const handleDeleteEvent = () => {
   //   if (selectedEvent !== null) {
@@ -126,37 +126,36 @@ const WeeklyCalendarBody = () => {
                 ? holidayThisWeek.map((element, index) => {
                     const top = 0;
                     const height = 24 * 50;
-                      if (element.date === stringDate)
-                        return (
-                            <div
-                              key={`${element.date}${index}`}
-                              style={{ top, height }}
-                              className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
-                            >
-                              <span key={`${element.name}`} className={`w-full text-center text-cancel font-medium pt-2`}>
-                                {element.name}
-                              </span>
-                            </div>
-                        );
-                      return null
-                    }
-                  )
+                    if (element.date === stringDate)
+                      return (
+                        <div
+                          key={`${element.date}${index}`}
+                          style={{ top, height }}
+                          className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                        >
+                          <span key={`${element.name}`} className={`w-full text-center text-cancel font-medium pt-2`}>
+                            {element.name}
+                          </span>
+                        </div>
+                      );
+                    return null;
+                  })
                 : null}
               {hours.map((hour, index) => {
                 return (
-                    <div
-                      key={`${hour}${index}`}
-                      className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
-                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const y = e.clientY - rect.top;
-                        let minute = '00';
-                        if (y > 50 / 2) {
-                          minute = '30';
-                        }
-                        handleNewEvent(stringDate, index, minute);
-                      }}
-                    />
+                  <div
+                    key={`${hour}${index}`}
+                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
+                    onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const y = e.clientY - rect.top;
+                      let minute = '00';
+                      if (y > 50 / 2) {
+                        minute = '30';
+                      }
+                      handleNewEvent(stringDate, index, minute);
+                    }}
+                  />
                 );
               })}
               {selectedEventPosition !== null && (
@@ -217,7 +216,9 @@ const WeeklyCalendarBody = () => {
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             handleViewEvent();
           }}
-        >자세히 보기</div>
+        >
+          자세히 보기
+        </div>
       )}
     </div>
   );
