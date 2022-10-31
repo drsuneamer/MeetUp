@@ -28,13 +28,19 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final UserRepository userRepository;
 
+
     @Override
-    public MeetingResponseDto getMeetingResponseDtoById(Long meetingId) {
+    public MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId) {
         return null;
     }
 
-    @Override // 날짜별로 어케 갖고오지
-    public List<MeetingResponseDto> getMeetingResponseDtoByDate(String startDate, String UserId) {
+    @Override
+    public List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String date) {
+        return null;
+    }
+
+    @Override
+    public List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date) {
         return null;
     }
 
