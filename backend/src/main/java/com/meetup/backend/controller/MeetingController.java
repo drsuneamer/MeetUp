@@ -15,14 +15,14 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/meeting")
+@RequestMapping("/meeting")
 public class MeetingController {
     private final MeetingService meetingService;
     private final AuthService authService;
 
     @PostMapping("/")
     public ResponseEntity<?> applyMeeting(@RequestBody @Valid com.meetup.backend.dto.schedule.meeting.MeetingRequestDto requestDto) {
-
+        return null;
 
     }
 
