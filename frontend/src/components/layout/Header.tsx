@@ -2,7 +2,7 @@ import LogoImage from '../../assets/logo_title.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import DeleteModal from '../modal/DeleteModal';
-import axiosInstance from '../auth/axiosConfig';
+import { axiosInstance } from '../auth/axiosConfig';
 
 function Header() {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ function Header() {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
         window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('tokenExpiresIn');
         navigate('/login');
       }
     });
