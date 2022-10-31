@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisUtil redisUtil;
-
-    private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
     private final TeamService teamService;
     private final ChannelService channelService;
@@ -144,6 +142,11 @@ public class UserServiceImpl implements UserService {
     public void changeWebexUrl(String userId, String webexUrl) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         user.setWebex(webexUrl);
+    }
+
+    @Override
+    public String getWebexUrl(String userId) {
+        return userRepository.findById(userId).get().getWebex();
     }
 
 }

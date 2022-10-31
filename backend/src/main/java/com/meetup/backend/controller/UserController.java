@@ -1,13 +1,11 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.user.LoginRequestDto;
-import com.meetup.backend.dto.user.LoginResponseDto;
-import com.meetup.backend.dto.user.UserWebexRequestDto;
+import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +38,18 @@ public class UserController {
     }
 
     @PutMapping("/webex")
-    public ResponseEntity<?> setWebex(@RequestBody @Valid UserWebexRequestDto userWebexRequestDto) {
-        userService.changeWebexUrl(authService.getMyInfoSecret().getId(), userWebexRequestDto.getWebexUrl());
+    public ResponseEntity<?> setWebex(@RequestBody @Valid UserWebexInfoDto userWebexInfoDto) {
+        userService.changeWebexUrl(authService.getMyInfoSecret().getId(), userWebexInfoDto.getWebexUrl());
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping("/webex")
+    public ResponseEntity<?> getMyWebex() {
+        return ResponseEntity.status(OK).body(userService.getWebexUrl(authService.getMyInfoSecret().getId()));
+    }
+
+    @GetMapping("/webex/{userId}")
+    public ResponseEntity<?> getWebex(@PathVariable("userId") String userId) {
+        return ResponseEntity.status(OK).body(userService.getWebexUrl(userId));
     }
 }
