@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class TeamChannelResponseDto {
 
+
     private List<TeamResponseDto> teamList;
     private List<ChannelResponseDto> channelList;
 

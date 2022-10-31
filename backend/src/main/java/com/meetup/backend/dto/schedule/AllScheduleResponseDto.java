@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AllScheduleResponseDto {
 
+
     private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;

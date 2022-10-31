@@ -23,7 +23,7 @@ public class SwaggerConfig {
     public Docket restAPI() {
         ParameterBuilder aParameterBuilder = new ParameterBuilder();
         aParameterBuilder.name("Authorization") //헤더 이름
-                .description("Access Tocken") //설명
+                .description("Access Token") //설명
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
                 .required(false)
