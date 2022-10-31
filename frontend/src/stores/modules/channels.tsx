@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tChannel } from '../../types/channels';
-import axiosInstance from '../../components/auth/axiosConfig';
+import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 
 // interface channelState extends tChannel {
