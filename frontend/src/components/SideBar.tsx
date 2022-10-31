@@ -4,10 +4,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
+import { useAppDispatch } from '../stores/ConfigHooks';
+import { fetchChannelList } from '../stores/modules/channels';
 
 function SideBar() {
 
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const [syncChecked, setSyncChecked] = useState(false)
 
   useEffect(() => {
@@ -19,6 +22,10 @@ function SideBar() {
       clearTimeout(timeId)
     }
   }, [syncChecked]);
+
+  useEffect(() => {
+    dispatch(fetchChannelList())
+  })
 
   const syncRequest = async () => {
     await axios.get('http://localhost:8080/meetup/sync', {
@@ -35,7 +42,7 @@ function SideBar() {
   };
 
   return (
-    <div className="SideBar relative w-full pl-2 mt-[70px] -z-10">
+    <div className="SideBar relative w-full pl-2 mt-[70px] -z-1">
       <ChannelList />
       <MeetupList />
 
