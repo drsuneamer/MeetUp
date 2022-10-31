@@ -16,4 +16,6 @@ public interface UserService {
 //    User registerUser(String userId);
 
     void registerTeamAndChannel(String mmToken, User user);
+
+    void changeWebexUrl(String userId, String webexUrl);
 }

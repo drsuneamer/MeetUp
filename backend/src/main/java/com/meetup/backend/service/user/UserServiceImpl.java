@@ -38,7 +38,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/10/30
+ * updated by seungyong on 2022/10/31
  */
 @Service
 @RequiredArgsConstructor
@@ -137,6 +137,13 @@ public class UserServiceImpl implements UserService {
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
         channelUserService.registerChannelUserFromMattermost(mmToken, channels);
+    }
+
+    @Override
+    @Transactional
+    public void changeWebexUrl(String userId, String webexUrl) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        user.setWebex(webexUrl);
     }
 
 }
