@@ -3,8 +3,16 @@ import Sidebar from '../components/SideBar';
 import Calendar from '../components/Calendar';
 import Modal from '../components/modal/Modal'
 import Layout from '../components/layout/Layout';
+import { useNavigate } from 'react-router-dom';
 
 const MeetUp = () => {
+
+  const navigate = useNavigate()
+
+  function tutorialHandler() {
+    navigate('/tutorial')
+}   
+
   return (
     <Layout>
     <div className={'h-screen flex flex-col overflow-hidden '}>
@@ -15,6 +23,9 @@ const MeetUp = () => {
         <Calendar />
         <Modal />
       </main>
+      
+      <button onClick={tutorialHandler} title="tutorial"
+        className="fixed z-90 bottom-10 right-8 bg-primary w-12 h-12 rounded-full drop-shadow-lg flex justify-center items-center text-xl hover:bg-blue-700 hover:drop-shadow-2xl hover:animate-bounce duration-300 text-background">&#63;</button>
     </div>
     </Layout>
   );

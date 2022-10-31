@@ -22,8 +22,8 @@ PropsWithChildren<ModalList>) {
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[450px] h-[300px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
-        <svg onClick={onClickToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" className="w-6 h-6 stroke-cancel mt-[15px] ml-[400px] cursor-pointer">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg onClick={onClickToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" className="w-6 h-6 stroke-cancel mt-[15px] ml-[400px] cursor-pointer">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
   </svg>
     { props === 'delete' ?
         <div>
