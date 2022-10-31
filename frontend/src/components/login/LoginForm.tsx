@@ -44,6 +44,7 @@ function LoginForm() {
   };
   // 로그인 API 연결
   const onSubmit = async () => {
+    setLoad(true);
     await axios.post('http://localhost:8080/user/login', login).then((res) => {
       console.log(res);
       if (res.status === 200) {
