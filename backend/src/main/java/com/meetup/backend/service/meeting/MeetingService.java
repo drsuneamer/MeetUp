@@ -15,7 +15,7 @@ public interface MeetingService {
 
     List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
 
-    void createMeeting(String userId, MeetingRequestDto meetingRequestDto);
+    Long createMeeting(String userId, MeetingRequestDto meetingRequestDto);
 
     void updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto);
 
