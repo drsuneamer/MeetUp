@@ -12,7 +12,11 @@ function SideBar() {
   const navigate = useNavigate()
 
   const syncRequest = async () => {
-    await axios.get('http://localhost:8080//meetup/sync').then((res) => {
+    await axios.get('http://localhost:8080/meetup/sync', {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+    },
+  }).then((res) => {
       console.log(res);
       if (res.status === 200) {
         console.log('동기화 완료')
