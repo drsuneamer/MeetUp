@@ -37,7 +37,7 @@ function LoginForm() {
 
   // 로그인 API 연결
   const onSubmit = async () => {
-    await axios.post('http://localhost:8080/api/user/login', login).then((res) => {
+    await axios.post('http://localhost:8080/user/login', login).then((res) => {
       console.log(res);
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동

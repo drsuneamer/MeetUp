@@ -21,7 +21,7 @@ function CreateChannel() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8080/api/meetup/team', {
+      .get('http://localhost:8080/meetup/team', {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
         },
@@ -43,7 +43,7 @@ function CreateChannel() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/meetup/channel/${t}`, {
+      .get(`http://localhost:8080/meetup/channel/${t}`, {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
         },
