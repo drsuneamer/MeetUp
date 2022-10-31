@@ -19,8 +19,8 @@ export function MultipleLevelSelectionComponent<TItem = string>({
   const classesNames = useClassNames(classes);
 
   return (
-    <div className={'flex bg-title rounded items-center justify-center drop-shadow-shadow text-s font-medium w-full h-s my-2'}>
-      <div className="text-background">
+    <div className={'flex bg-title rounded items-center justify-center drop-shadow-shadow text-s font-medium w-full h-s my-2 cursor-pointer'}>
+      <div onClick={toggle} className="text-background">
         <span>{label}</span>
       </div>
       <svg onClick={toggle} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="absolute right-0 mr-3 w-6 h-6">

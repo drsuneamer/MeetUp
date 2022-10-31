@@ -80,7 +80,6 @@ export const useSelect = <TItem = string>({
       );
 
       // change teamId
-      console.log(item);
       dispatch(update(item));
 
       // Update selected items

@@ -94,7 +94,7 @@ function EditChannel() {
   return (
     <Layout>
       <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
-        <div className="mb-10 z-50">
+        <div className="mb-10 z-30">
           <div className="font-bold text-title">알림을 받을 채널 선택하기</div>
           <div className="">
             <MultipleLevelSelection

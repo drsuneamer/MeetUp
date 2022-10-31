@@ -3,6 +3,7 @@ package com.meetup.backend.controller;
 import com.meetup.backend.dto.admin.AdminLoginDto;
 import com.meetup.backend.dto.admin.ChangeRoleDto;
 import com.meetup.backend.dto.admin.SignUpDto;
+import com.meetup.backend.dto.admin.UserResponseDto;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.service.admin.AdminService;
@@ -56,6 +57,12 @@ public class AdminController {
     public ResponseEntity<?> changeRole(@RequestBody List<ChangeRoleDto> changeRoleDtoList) {
         adminService.changeRole(authService.getMyInfoSecret().getId(), changeRoleDtoList);
         return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getUsers() {
+        List<UserResponseDto> result = adminService.getUsers(authService.getMyInfoSecret().getId());
+        return ResponseEntity.status(OK).body(result);
     }
 
 }
