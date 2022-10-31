@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
- * updated by seungyong on 2022/10/23
+ * updated by seongmin on 2022/10/31
  */
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, Long> {
 
@@ -18,4 +18,5 @@ public interface ChannelUserRepository extends JpaRepository<ChannelUser, Long> 
 
     Optional<ChannelUser> findByChannelAndUser(Channel channel, User user);
 
+    boolean existsByChannelAndUser(Channel channel, User user);
 }
