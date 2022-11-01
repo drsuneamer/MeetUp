@@ -1,5 +1,6 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.meetup.CalendarResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.dto.meetup.MeetupUserResponseDto;
@@ -96,9 +97,9 @@ public class MeetUpController {
     public ResponseEntity<?> getCalendarList() {
 
         String userId = authService.getMyInfoSecret().getId();
-        List<MeetupResponseDto> meetupList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
+        List<CalendarResponseDto> calendarResponseDtoList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
 
-        return ResponseEntity.status(OK).body(meetupList);
+        return ResponseEntity.status(OK).body(calendarResponseDtoList);
 
     }
 
@@ -118,6 +119,7 @@ public class MeetUpController {
     }
 
     @GetMapping("/users/{meetupId}")
+    @ApiOperation(value = "밋업에 참가중인 유저의 목록을 반환")
     public ResponseEntity<?> getUserListByMeetupId(@PathVariable("meetupId") Long meetupId) {
 
         Channel channel = meetupService.getMeetupChannelById(meetupId);
