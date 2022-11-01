@@ -7,10 +7,11 @@ import holidays from './modules/holidays';
 import calendars from './modules/meetups';
 import channels from './modules/channels';
 import teamId from './modules/teamId';
-import members from './modules/members'
+import members from './modules/members';
+import myCalendar from './modules/mycalendar';
 
 const store = configureStore({
-  reducer: { dates, events, modal, holidays, calendars, channels, teamId, members },
+  reducer: { dates, events, modal, holidays, calendars, channels, teamId, members, myCalendar},
 });
 
 export type RootState = ReturnType<typeof store.getState>;
