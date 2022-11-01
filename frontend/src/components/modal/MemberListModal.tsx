@@ -1,8 +1,9 @@
 import  { PropsWithChildren }from 'react';
 import { tMember } from '../../types/members';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchMemberList, memberSelector } from '../../stores/modules/members';
+import { channelSelector } from '../../stores/modules/channels';
 import MemberListItem from './MemberListItem';
 import Spinner from '../common/Spinner';
 import { useSelector } from 'react-redux';
@@ -20,17 +21,19 @@ function MemberListModal({
 PropsWithChildren<ModalDefaultType>) { 
     const dispatch = useAppDispatch();
     
-    const member = useAppSelector(memberSelector);
-    const meetUpId = useSelector((state: any) => state.channels).id;  
-    console.log(meetUpId)
-    useEffect(() => {axiosInstance.get(`/meetup/users/${meetUpId}`).then((res) => {
-      console.log('여기')
-        console.log(res)
-        return res.data;
+    const [member, setMember] = useState([]);
+    const channel = useSelector(channelSelector);  
+    const meetupId = channel.channels
+
+    // console.log(meetUpId)
+    useEffect(() => {axiosInstance.get('/meetup/users/1').then((res) => {
+      setMember(res.data.userInfoDtoList)
+
       }).catch((err) => {
-        console.log('여기!!')
+        console.log('에러임')
       })
     })
+
     useEffect(() => {
       console.log('!!')
       dispatch(fetchMemberList());
@@ -52,7 +55,7 @@ PropsWithChildren<ModalDefaultType>) {
   </svg>
   <p className="text-placeholder text-[16px] ml-[5px]">서울1반_팀장채널 내 멤버</p>
         <div className="mt-[10px] h-[320px] overflow-auto scrollbar-hide">
-          { member.members.map((value: tMember, index: number) => (
+          { member.map((value: tMember, index: number) => (
             <MemberListItem key={value.id} member={value}/>
           ))
           }
