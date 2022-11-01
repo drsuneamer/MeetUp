@@ -12,7 +12,7 @@ type calendarInitialState = {
 
 const initialState: calendarInitialState = {
   loading: false,
-  calendars: [{ id: 0, username: ''}]
+  calendars: [{ id: '', username: ''}]
 };
 
 export const fetchCalendarList = createAsyncThunk('calendar', async () => {

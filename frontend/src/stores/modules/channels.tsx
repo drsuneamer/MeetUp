@@ -10,7 +10,7 @@ type channelInitialState = {
 
 const initialState: channelInitialState = {
   loading: false,
-  channels: [{ id: 0, title: '', color: '' }],
+  channels: [{ id: '', title: '', color: '' }],
 };
 
 export const fetchChannelList = createAsyncThunk('meetup', async () => {

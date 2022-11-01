@@ -28,4 +28,5 @@ export const getSundayOfWeek = () => {
   const sunday = getSundayOfWeek(getDayOfWeek(getFormatDate(now)));
   // console.log(sunday); // Sun Oct 30 2022 13:47:52 GMT+0900 (한국 표준시)
   // console.log(getFormatDate(sunday)); // 2022-10-30
+  return sunday
 };
