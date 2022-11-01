@@ -2,7 +2,7 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 import  Spinner  from './common/Spinner'
 import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
+import { useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
 import { fetchChannelList, channelSelector } from '../stores/modules/channels';
 import { useSelector } from 'react-redux';
@@ -16,7 +16,7 @@ function ChannelList() {
   }, []);
 
   if ( !channel.loading ) {
-    return <Spinner></Spinner>
+    return <Spinner />
   } 
   if ( !channel ) {
     return null
