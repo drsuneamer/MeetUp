@@ -30,7 +30,7 @@ function Header() {
   }
 
   return (
-    <div className="w-[100%] h-[100%] flex flex-col items-center">
+    <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div>
