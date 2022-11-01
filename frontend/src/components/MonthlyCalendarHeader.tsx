@@ -12,7 +12,7 @@ const Header = () => {
   const [isMyCalendar, setIsMyCalendar] = useState(false)
 
   useEffect(()=>{
-    if ( window.location.href === 'http://localhost:3000/') {
+    if ( window.location.href === `http://localhost:3000/${localStorage.getItem('id')}`) {
       setIsMyCalendar(true)
     }
   }, [])

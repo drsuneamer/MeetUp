@@ -78,7 +78,7 @@ function CreateChannel() {
   const onSubmit = async () => {
     await axiosInstance.post('/meetup/', record).then((res) => {
       if (res.status === 201) {
-        navigate('/');
+        navigate(`/${localStorage.getItem('id')}`);
       }
     });
   };

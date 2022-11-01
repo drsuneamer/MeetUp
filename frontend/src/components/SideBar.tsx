@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useAppDispatch } from '../stores/ConfigHooks';
-import { fetchChannelList } from '../stores/modules/channels';
+
 
 function SideBar() {
   const navigate = useNavigate();
@@ -22,10 +22,6 @@ function SideBar() {
     };
   }, [syncChecked]);
 
-  // useEffect(() => {
-  //   dispatch(fetchChannelList())
-  // })
-
   const syncRequest = async () => {
     await axios
       .get('http://localhost:8080/meetup/sync', {
@@ -37,7 +33,7 @@ function SideBar() {
         if (res.status === 201) {
           console.log('동기화 완료', res);
           setSyncChecked(true);
-          navigate('/');
+          navigate(`/${localStorage.getItem('id')}`);
         }
       });
   };
