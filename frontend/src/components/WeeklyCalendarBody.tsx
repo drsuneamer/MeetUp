@@ -9,8 +9,9 @@ import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
-import { scheduleSelector, fetchMySchedule } from '../stores/modules/schedules';
+import { scheduleSelector, fetchSchedule } from '../stores/modules/schedules';
 import _ from 'lodash';
+import { useParams } from 'react-router-dom';
 
 interface Week {
   name: string;
@@ -28,17 +29,26 @@ const WeeklyCalendarBody = () => {
   const { holidays } = useSelector(holidaySelector);
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
-  
-  const userId = 
+  let now = new Date()
+  const param = useParams()
+  const userId = param.userId
+  const sunday = getSundayOfWeek()
+
+  const thunkAPI = [userId, sunday]
+
   
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await rDispatch(fetchHolidays());
     }
+    
+    console.log('sunday of this week', getSundayOfWeek())
+
     fetchAndSetHolidays();
-    renderHoliday();
-    dispatch(getSundayOfWeek);
-    dispatch(fetchMySchedule('d'))
+    renderHoliday(); 
+    if ( userId && sunday ) {
+      dispatch(fetchSchedule(thunkAPI))
+    }
 
   }, [holidays, currentDate]);
 
