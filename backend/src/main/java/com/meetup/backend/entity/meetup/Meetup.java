@@ -39,19 +39,12 @@ public class Meetup extends BaseEntity {
     @JoinColumn(name = "channel_id")
     private Channel channel;
 
-    public void setTitle(String title) {
+    public void changeMeetup(String title, String color) {
         this.title = title;
-    }
-
-    public void setColor(String color) {
         this.color = color;
     }
 
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
-
-    public void setIsDelete(Boolean isDelete) {
+    public void deleteMeetup(Boolean isDelete) {
         this.isDelete = isDelete;
     }
 

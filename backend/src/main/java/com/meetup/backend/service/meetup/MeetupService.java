@@ -3,6 +3,7 @@ package com.meetup.backend.service.meetup;
 import com.meetup.backend.dto.meetup.CalendarResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.dto.meetup.MeetupUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 
@@ -16,7 +17,7 @@ public interface MeetupService {
 
     void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId);
 
-    void updateMeetup(MeetupRequestDto meetupRequestDto, String userId, Long meetupId);
+    void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId);
 
     void deleteMeetup(Long meetupId);
 

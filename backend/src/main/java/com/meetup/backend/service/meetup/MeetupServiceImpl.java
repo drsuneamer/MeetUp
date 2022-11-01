@@ -3,6 +3,7 @@ package com.meetup.backend.service.meetup;
 import com.meetup.backend.dto.meetup.CalendarResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.dto.meetup.MeetupUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
@@ -56,14 +57,11 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     @Transactional
-    public void updateMeetup(MeetupRequestDto meetupRequestDto, String userId, Long meetupId) {
+    public void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId) {
 
-        Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
 
-        meetup.setColor(meetupRequestDto.getColor());
-        meetup.setTitle(meetupRequestDto.getTitle());
-        meetup.setChannel(channel);
+        meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
 
     }
 
@@ -71,7 +69,7 @@ public class MeetupServiceImpl implements MeetupService {
     @Transactional
     public void deleteMeetup(Long meetupId) {
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        meetup.setIsDelete(true);
+        meetup.deleteMeetup(true);
     }
 
     @Override

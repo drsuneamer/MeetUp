@@ -1,9 +1,6 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.meetup.CalendarResponseDto;
-import com.meetup.backend.dto.meetup.MeetupRequestDto;
-import com.meetup.backend.dto.meetup.MeetupResponseDto;
-import com.meetup.backend.dto.meetup.MeetupUserResponseDto;
+import com.meetup.backend.dto.meetup.*;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
@@ -92,8 +89,8 @@ public class MeetUpController {
 
     @PutMapping("/{meetupId}")
     @ApiOperation(value = "meetup 수정")
-    public ResponseEntity<?> updateMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto, @PathVariable("meetupId") Long meetupId) {
-        meetupService.updateMeetup(meetupRequestDto, authService.getMyInfoSecret().getId(), meetupId);
+    public ResponseEntity<?> updateMeetup(@RequestBody @Valid MeetupUpdateRequestDto meetupUpdateRequestDto, @PathVariable("meetupId") Long meetupId) {
+        meetupService.updateMeetup(meetupUpdateRequestDto, authService.getMyInfoSecret().getId(), meetupId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
