@@ -1,6 +1,6 @@
 import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
-
+import  Spinner  from './common/Spinner'
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
@@ -16,6 +16,9 @@ function ChannelList() {
     console.log(channel);
   }, []);
 
+  if ( !channel.loading ) {
+    return <Spinner></Spinner>
+  } 
   return (
     <div className="ChannelList mb-[50px] -z-10">
       <div className="flex mb-[10px]">
