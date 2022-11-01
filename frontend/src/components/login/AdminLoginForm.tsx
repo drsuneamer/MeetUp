@@ -21,7 +21,7 @@ function AdminLoginForm() {
   }, [id, pw]);
 
   const onSubmit = async () => {
-    await axios.post('https://meet-up.co.kr/api/admin/login', login).then((res) => {
+    await axios.post('http://localhost:8080/admin/login', login).then((res) => {
       console.log(res);
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
