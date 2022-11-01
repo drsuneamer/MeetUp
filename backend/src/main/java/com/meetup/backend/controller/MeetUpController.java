@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by myeongseok on 2022/10/31
+ * updated by seungyong on 2022/11/01
  */
 @RestController
 @Slf4j
@@ -85,12 +85,25 @@ public class MeetUpController {
     @PostMapping("")
     @ApiOperation(value = "meetup 등록")
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
-        log.info("meetupRequestDto = {}", meetupRequestDto);
         meetupService.registerMeetUp(meetupRequestDto, authService.getMyInfoSecret().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping("/{meetupId}")
+    @ApiOperation(value = "meetup 수정")
+    public ResponseEntity<?> updateMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto, @PathVariable("meetupId") Long meetupId) {
+        meetupService.updateMeetup(meetupRequestDto, authService.getMyInfoSecret().getId(), meetupId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{meetupId}")
+    @ApiOperation(value = "meetup 삭제")
+    public ResponseEntity<?> deleteMeetup(@PathVariable("meetupId") Long meetupId) {
+        meetupService.deleteMeetup(meetupId);
+        return ResponseEntity.status(OK).build();
+    }
 
     @GetMapping("/calendar")
     @ApiOperation(value = "해당 로그인 유저가 참여하고 있는 달력(밋업) 가져오기")

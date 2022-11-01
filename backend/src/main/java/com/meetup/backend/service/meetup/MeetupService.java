@@ -10,10 +10,15 @@ import java.util.List;
 
 /**
  * created by seungyong on 2022/10/24
+ * updated by seungyong on 2022/11/01
  */
 public interface MeetupService {
 
     void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId);
+
+    void updateMeetup(MeetupRequestDto meetupRequestDto, String userId, Long meetupId);
+
+    void deleteMeetup(Long meetupId);
 
     List<MeetupResponseDto> getResponseDtos(String userId);
 
