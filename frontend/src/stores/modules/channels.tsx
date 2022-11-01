@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tChannel } from '../../types/channels';
-import axiosInstance from '../../components/auth/axiosConfig';
+import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 
 // interface channelState extends tChannel {
@@ -19,7 +19,7 @@ const initialState: channelInitialState = {
 
 export const fetchChannelList = createAsyncThunk('meetup', async () => {
   try {
-    const res = await axiosInstance.get('/meetup').then((res) => {
+    const res = await axiosInstance.get('/meetup/meetup').then((res) => {
       // console.log('channel data fetched: ', res.data);
       return res.data;
     });
