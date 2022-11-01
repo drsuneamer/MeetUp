@@ -10,7 +10,7 @@ import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
- * updated by seongmin on 2022/10/31
+ * updated by seongmin on 2022/11/01
  */
 public interface ChannelUserRepository extends JpaRepository<ChannelUser, Long> {
 
