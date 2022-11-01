@@ -24,7 +24,7 @@ const initialState: scheduleInitialState = {
   }]
 };
 
-export const fetchMySchedule = createAsyncThunk('schedule/me', async (thunkAPI) => {
+export const fetchMySchedule = createAsyncThunk('schedule/me', async (thunkAPI:string) => {
   try {
     const res = await axiosInstance.get(`/schedule/me?${thunkAPI}`).then((res) => {
       console.log('my schedule fetched: ', res.data);

@@ -28,8 +28,9 @@ const WeeklyCalendarBody = () => {
   const { holidays } = useSelector(holidaySelector);
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
-  const myUserId = localStorage.getItem('id')
-
+  
+  const userId = 
+  
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await rDispatch(fetchHolidays());
@@ -37,7 +38,7 @@ const WeeklyCalendarBody = () => {
     fetchAndSetHolidays();
     renderHoliday();
     dispatch(getSundayOfWeek);
-    dispatch(fetchMySchedule(myUserId))
+    dispatch(fetchMySchedule('d'))
 
   }, [holidays, currentDate]);
 
