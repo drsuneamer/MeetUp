@@ -78,7 +78,7 @@ public class MeetingServiceImpl implements MeetingService {
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
 
-        if (channelUserRepository.existsByChannelAndUser(channel, loginUser))
+        if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
 
         Meeting meeting = Meeting.builder()
