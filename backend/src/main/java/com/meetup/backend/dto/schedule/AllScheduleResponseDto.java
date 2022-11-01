@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class AllScheduleResponseDto {
 
 
@@ -104,5 +105,32 @@ public class AllScheduleResponseDto {
             this.userId = userId;
             this.userName = userName;
         }
+    }
+
+    public boolean isPossibleRegiser(LocalDateTime from, LocalDateTime to) {
+        for (MeetingResponse meetingResponse : meetingFromMe) {
+            if(isDuplicated(meetingResponse.getStart(),meetingResponse.getEnd(),from,to))
+                return false;
+        }
+        for (MeetingResponse meetingResponse : meetingToMe) {
+            if(isDuplicated(meetingResponse.getStart(),meetingResponse.getEnd(),from,to))
+                return false;
+        }
+        for (ScheduleResponse ScheduleResponse : scheduleResponseList) {
+            if(isDuplicated(ScheduleResponse.getStart(),ScheduleResponse.getEnd(),from,to))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean isDuplicated(LocalDateTime start, LocalDateTime end, LocalDateTime from, LocalDateTime to) {
+        if (start.isAfter(from) && start.isEqual(from) && start.isBefore(end))
+            return true;
+        else if (end.isAfter(from) && end.isEqual(to) && end.isBefore(to))
+            return true;
+        else if (start.isBefore(from) && end.isAfter(to))
+            return true;
+        else return false;
+
     }
 }
