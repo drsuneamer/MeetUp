@@ -10,7 +10,13 @@ function Settings() {
 
   useEffect(() => {
     axiosInstance.get('/user/webex').then((res) => {
-      setUrl(res.data.webexUrl);
+      if (res.status === 200) {
+        if (res.data.webexUrl === null) {
+          setUrl('Webex Link');
+        } else {
+          setUrl(res.data.webexUrl);
+        }
+      }
     });
   }, []);
 
