@@ -10,7 +10,7 @@ import teamId from './modules/teamId';
 import members from './modules/members'
 
 const store = configureStore({
-  reducer: { dates, events, modal, holidays, meetups, channels, teamId },
+  reducer: { dates, events, modal, holidays, calendars, channels, teamId, members },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
