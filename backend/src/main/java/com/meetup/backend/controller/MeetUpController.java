@@ -98,7 +98,7 @@ public class MeetUpController {
     @DeleteMapping("/{meetupId}")
     @ApiOperation(value = "meetup 삭제")
     public ResponseEntity<?> deleteMeetup(@PathVariable("meetupId") Long meetupId) {
-        meetupService.deleteMeetup(meetupId);
+        meetupService.deleteMeetup(meetupId, authService.getMyInfoSecret().getId());
         return ResponseEntity.status(OK).build();
     }
 

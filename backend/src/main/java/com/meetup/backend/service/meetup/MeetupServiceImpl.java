@@ -60,16 +60,17 @@ public class MeetupServiceImpl implements MeetupService {
     public void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId) {
 
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-
-        meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
+        if (meetup.getManager().getId().equals(userId))
+            meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
 
     }
 
     @Override
     @Transactional
-    public void deleteMeetup(Long meetupId) {
+    public void deleteMeetup(Long meetupId, String userId) {
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        meetup.deleteMeetup(true);
+        if (meetup.getManager().getId().equals(userId))
+            meetup.deleteMeetup(true);
     }
 
     @Override

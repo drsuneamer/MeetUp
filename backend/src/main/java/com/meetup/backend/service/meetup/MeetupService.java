@@ -19,7 +19,7 @@ public interface MeetupService {
 
     void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId);
 
-    void deleteMeetup(Long meetupId);
+    void deleteMeetup(Long meetupId, String userId);
 
     List<MeetupResponseDto> getResponseDtos(String userId);
 
