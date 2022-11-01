@@ -72,6 +72,7 @@ function EditChannel() {
 
   const onSave = () => {
     console.log('save!');
+    console.log(record);
   };
 
   const onDelete = () => {
@@ -80,7 +81,7 @@ function EditChannel() {
 
   // const onSubmit = async () => {
   //   await axios
-  //     .post('http://localhost:8080/api/?', record, {
+  //     .post('https://meet-up.co.kr/api/api/?', record, {
   //       headers: {
   //         Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
   //       },

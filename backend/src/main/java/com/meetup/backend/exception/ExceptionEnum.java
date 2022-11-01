@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seongmin on 2022/10/31
+ * updated by seungyong on 2022/11/01
  */
 @Getter
 @RequiredArgsConstructor
@@ -30,8 +30,12 @@ public enum ExceptionEnum {
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40108", "인증 정보가 없습니다."),
 
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
-    ID_PWD_NOT_MATCHING(FORBIDDEN, "40302", "아이디 또는 패스워드가 일치하지 않습니다."),
-    ADMIN_ACCESS_DENIED(FORBIDDEN, "40302", "관리자 권한이 없습니다. 관리자만 이용할 수 있습니다."),
+    ACCESS_DENIED_THIS_SCHEDULE(FORBIDDEN, "40302", "해당 스케줄을 볼 권한이 없습니다."),
+    ID_PWD_NOT_MATCHING(FORBIDDEN, "40303", "아이디 또는 패스워드가 일치하지 않습니다."),
+    ADMIN_ACCESS_DENIED(FORBIDDEN, "40304", "관리자 권한이 없습니다. 관리자만 이용할 수 있습니다."),
+    CHANNEL_ACCESS_DENIED(FORBIDDEN, "40305", "해당 채널에 대한 권한이 없습니다."),
+
+    MEETUP_ACCESS_DENIED(FORBIDDEN, "40306", "해당 밋업 작업에 대한 권한이 없습니다."),
 
     DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
     DUPLICATE_ID(CONFLICT, "40902", "아이디가 중복됩니다."),

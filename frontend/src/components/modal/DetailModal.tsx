@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
 
 const DetailModal = () => {
-  const detailModalSelector = useSelector(ModalSelector)
+  const detailModalSelector = useSelector(ModalSelector);
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
@@ -23,7 +23,6 @@ const DetailModal = () => {
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -96,15 +95,22 @@ const DetailModal = () => {
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
 
   return (
-  <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+    <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
         className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
           e.stopPropagation();
         }}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer" onClick={handleToggleModal}>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2.5"
+          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+          onClick={handleToggleModal}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div className="flex flex-col p-[20px]">
           <div className="mt-[20px] flex">
@@ -121,7 +127,10 @@ const DetailModal = () => {
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
-            <p className="w-[450px]">주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고주제 선정</p>
+            <p className="w-[450px]">
+              주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정
+              팀 미팅 신청합니다 어쩌고저쩌고주제 선정
+            </p>
           </div>
           <div className="mt-[20px] flex flex-col">
             <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
@@ -132,23 +141,28 @@ const DetailModal = () => {
               </div>
               <div className="flex flex-col justify-center items-center">
                 <img className="w-[60px]" src={webex} alt="webex" />
-                <a  href="#">박성민[서울_1반_A102]팀장</a>
+                <a href="#">박성민[서울_1반_A102]팀장</a>
               </div>
             </div>
           </div>
-
         </div>
         <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-          <button 
+          <button
             // onClick={handleSubmit}
-            className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">밋업 수정하기</button>
-          <button 
+            className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+          >
+            밋업 수정하기
+          </button>
+          <button
             // onClick={handleSubmit}
-            className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button">밋업 삭제하기</button>
+            className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+          >
+            밋업 삭제하기
+          </button>
         </div>
       </div>
       <div
-        className='w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]'
+        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
 
@@ -157,7 +171,7 @@ const DetailModal = () => {
           // }
         }}
       />
-  </div>
+    </div>
   );
 };
 

@@ -2,9 +2,11 @@ import LogoImage from '../../assets/logo_title.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 import DeleteModal from '../modal/DeleteModal';
-import axiosInstance from '../auth/axiosConfig';
+import { axiosInstance } from '../auth/axiosConfig';
 
 function Header() {
+  const userId = window.localStorage.getItem('id');
+  const url = `/calendar/${userId}`;
   const navigate = useNavigate();
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -16,8 +18,11 @@ function Header() {
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
+        window.localStorage.removeItem('id');
+        window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
-        navigate('/login');
+        window.localStorage.removeItem('tokenExpiresIn');
+        navigate('/');
       }
     });
   };
@@ -29,11 +34,11 @@ function Header() {
   }
 
   return (
-    <div className="w-[100%] h-[100%] flex flex-col items-center">
+    <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div>
-          <Link to="/">
+          <Link to={url}>
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
           </Link>
         </div>
