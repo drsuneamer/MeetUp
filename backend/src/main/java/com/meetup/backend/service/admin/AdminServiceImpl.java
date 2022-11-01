@@ -23,6 +23,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/31
+ * updated by seongmin on 2022/11/01
  */
 @Service
 @RequiredArgsConstructor
@@ -49,6 +50,9 @@ public class AdminServiceImpl implements AdminService {
         try {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(id, password);
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authToken);
+            if (!userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND)).getRole().equals(RoleType.Admin)) {
+                throw new ApiException(ADMIN_ACCESS_DENIED);
+            }
             return jwtTokenProvider.generateJwtToken(authentication);
         } catch (BadCredentialsException e) {
             throw new ApiException(ID_PWD_NOT_MATCHING);
