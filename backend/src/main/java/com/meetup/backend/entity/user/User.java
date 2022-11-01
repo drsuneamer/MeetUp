@@ -32,6 +32,15 @@ public class User extends BaseEntity {
     @Convert(converter = BooleanToYNConverter.class)
     private boolean firstLogin;
 
+    public void changePwd(String pwd) {
+        this.password = pwd;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+
     public void setFirstLogin() {
         firstLogin = true;
     }
