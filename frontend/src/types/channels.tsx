@@ -5,6 +5,6 @@ export type tChannel = {
 };
 
 export type tMeetup = {
-  manager_id: number;
-  name: string;
+  id: number;
+  username: string;
 };

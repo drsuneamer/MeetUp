@@ -3,10 +3,6 @@ import { tChannel } from '../../types/channels';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 
-// interface channelState extends tChannel {
-//   loading: boolean;
-// }
-
 type channelInitialState = {
   loading: boolean;
   channels: Array<tChannel>;
