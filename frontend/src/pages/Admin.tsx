@@ -1,6 +1,7 @@
 import LogoImage from '../assets/logo_title.png';
 import { useEffect, useState } from 'react';
 import { axiosInstance } from '../components/auth/axiosConfig';
+import { Navigate } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -29,6 +30,16 @@ function Admin() {
       setGet(true);
     });
   }, [post]);
+
+  const tokenExpiresIn = Number(localStorage.getItem('tokenExpiresIn'));
+
+  const today = new Date();
+  const parsedToday = today.getTime();
+  const isExpired = tokenExpiresIn - parsedToday < 0;
+
+  if (isExpired) {
+    return <Navigate to="/admin-login" />;
+  }
 
   return (
     <div>

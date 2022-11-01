@@ -144,7 +144,11 @@ function CreateChannel() {
       </Layout>
     );
   } else {
-    return <Spinner />;
+    return (
+      <div className="pt-[30vh]">
+        <Spinner />
+      </div>
+    );
   }
 }
 
