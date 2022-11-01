@@ -119,6 +119,7 @@ public class MeetUpController {
     }
 
     @GetMapping("/users/{meetupId}")
+    @ApiOperation(value = "밋업에 참가중인 유저의 목록을 반환")
     public ResponseEntity<?> getUserListByMeetupId(@PathVariable("meetupId") Long meetupId) {
 
         Channel channel = meetupService.getMeetupChannelById(meetupId);
