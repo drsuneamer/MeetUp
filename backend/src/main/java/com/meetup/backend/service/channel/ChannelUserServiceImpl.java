@@ -1,18 +1,22 @@
 package com.meetup.backend.service.channel;
 
 import com.meetup.backend.dto.channel.ChannelResponseDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingChannelDto;
 import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
+import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
+import io.swagger.annotations.Api;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +45,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final ChannelUserRepository channelUserRepository;
 
     @Autowired
-    private final ChannelRepository channelRepository;
+    private final MeetupRepository meetupRepository;
 
     @Autowired
     private final UserRepository userRepository;
@@ -115,5 +119,24 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
         }
 
+    }
+
+    @Override
+    public List<MeetingChannelDto> getMeetingChannelByUsers(String userId, String managerId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        List<MeetingChannelDto> channelList = new ArrayList<>();
+
+        for (Meetup meetup : meetupRepository.findByManager(manager)) {
+            Channel channel = meetup.getChannel();
+            if (channelUserRepository.findByChannelAndUser(channel, user).isPresent()) {
+                if (channelUserRepository.findByChannelAndUser(channel, manager).isPresent())
+                    channelList.add(MeetingChannelDto.of(channel));
+            }
+
+        }
+
+        return channelList;
     }
 }
