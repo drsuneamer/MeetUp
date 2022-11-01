@@ -1,5 +1,6 @@
 package com.meetup.backend.service.meetup;
 
+import com.meetup.backend.dto.meetup.CalendarResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
 import com.meetup.backend.entity.channel.Channel;
@@ -64,12 +65,19 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
-    public List<MeetupResponseDto> getCalendarList(List<ChannelUser> channelUserList) {
+    public List<CalendarResponseDto> getCalendarList(List<ChannelUser> channelUserList) {
         List<Channel> channelList = new ArrayList<>();
         for (ChannelUser channelUser : channelUserList) {
             channelList.add(channelUser.getChannel());
         }
-        return meetupRepository.findByChannelIn(channelList);
+
+        List<Meetup> meetupList = meetupRepository.findByChannelIn(channelList);
+        List<CalendarResponseDto> calendarResponseDtoList = new ArrayList<>();
+        for (Meetup meetup : meetupList) {
+            calendarResponseDtoList.add(CalendarResponseDto.of(meetup.getManager()));
+        }
+
+        return calendarResponseDtoList;
     }
 
     @Override
