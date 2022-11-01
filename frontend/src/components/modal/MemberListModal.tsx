@@ -5,26 +5,45 @@ import { useEffect } from 'react';
 import { fetchMemberList, memberSelector } from '../../stores/modules/members';
 import MemberListItem from './MemberListItem';
 import Spinner from '../common/Spinner';
+import { useSelector } from 'react-redux';
+import { axiosInstance } from '../../components/auth/axiosConfig';
+
 
 interface ModalDefaultType {
   onClickToggleModal: () => void; 
 }
+
 function MemberListModal({
   onClickToggleModal,
 }:
+
 PropsWithChildren<ModalDefaultType>) { 
-  const dispatch = useAppDispatch();
-  const member = useAppSelector(memberSelector);
-  
-  useEffect(() => {
-    dispatch(fetchMemberList());
-  }, []);
-  if ( !member.loading ) {
-    return <Spinner></Spinner>
-  } 
-  if ( !member ) {
-    return null
-  }
+    const dispatch = useAppDispatch();
+    
+    const member = useAppSelector(memberSelector);
+    const meetUpId = useSelector((state: any) => state.channels).id;  
+    console.log(meetUpId)
+    useEffect(() => {axiosInstance.get(`/meetup/users/${meetUpId}`).then((res) => {
+      console.log('여기')
+        console.log(res)
+        return res.data;
+      }).catch((err) => {
+        console.log('여기!!')
+      })
+    })
+    useEffect(() => {
+      console.log('!!')
+      dispatch(fetchMemberList());
+    }, []);
+
+    // if ( !member.loading ) {
+    //   return <Spinner></Spinner>
+    // } 
+    if ( !member ) {
+      return (
+        <div>멤버가 없습니다</div>
+      )
+    }
   return (
     <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
       <div className="w-[450px] h-[400px] bg-background z-10 rounded drop-shadow-shadow">
@@ -37,34 +56,6 @@ PropsWithChildren<ModalDefaultType>) {
             <MemberListItem key={value.id} member={value}/>
           ))
           }
-          {/* <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div>
-          <div className="p-[5px] hover:bg-line">
-            <div className="text-[18px] font-bold">이태희(컨설턴트)</div>
-            <div className="text-[18px]">@fusanova</div>
-          </div> */}
         </div> 
     </div>
       <div
