@@ -1,10 +1,11 @@
 export type tChannel = {
-  id: number;
+  id: string;
   title: string;
   color: string;
 };
 
 export type tMeetup = {
-  manager_id: number;
-  name: string;
+  id: string;
+  username: string;
 };
+

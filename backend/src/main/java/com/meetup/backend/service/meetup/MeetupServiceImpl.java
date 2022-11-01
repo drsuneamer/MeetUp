@@ -1,7 +1,9 @@
 package com.meetup.backend.service.meetup;
 
+import com.meetup.backend.dto.meetup.CalendarResponseDto;
 import com.meetup.backend.dto.meetup.MeetupRequestDto;
 import com.meetup.backend.dto.meetup.MeetupResponseDto;
+import com.meetup.backend.dto.meetup.MeetupUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
@@ -22,6 +24,7 @@ import java.util.List;
 
 /**
  * created by seungyong on 2022/10/24
+ * updated by seungyong on 2022/11/01
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -53,23 +56,54 @@ public class MeetupServiceImpl implements MeetupService {
     }
 
     @Override
+    @Transactional
+    public void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId) {
+
+        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
+        if (meetup.getManager().getId().equals(userId))
+            meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
+        else
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteMeetup(Long meetupId, String userId) {
+        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
+        if (meetup.getManager().getId().equals(userId))
+            meetup.deleteMeetup(true);
+        else
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+    }
+
+    @Override
     public List<MeetupResponseDto> getResponseDtos(String userId) {
         User mangerUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
         List<Meetup> meetups = meetupRepository.findByManager(mangerUser);
         List<MeetupResponseDto> meetupResponseDtos = new ArrayList<>();
         for (Meetup meetup : meetups) {
-            meetupResponseDtos.add(MeetupResponseDto.of(meetup));
+            if (!meetup.isDelete())
+                meetupResponseDtos.add(MeetupResponseDto.of(meetup));
         }
         return meetupResponseDtos;
     }
 
     @Override
-    public List<MeetupResponseDto> getCalendarList(List<ChannelUser> channelUserList) {
+    public List<CalendarResponseDto> getCalendarList(List<ChannelUser> channelUserList) {
         List<Channel> channelList = new ArrayList<>();
         for (ChannelUser channelUser : channelUserList) {
             channelList.add(channelUser.getChannel());
         }
-        return meetupRepository.findByChannelIn(channelList);
+
+        List<Meetup> meetupList = meetupRepository.findByChannelIn(channelList);
+        List<CalendarResponseDto> calendarResponseDtoList = new ArrayList<>();
+        for (Meetup meetup : meetupList) {
+            if (!meetup.isDelete())
+                calendarResponseDtoList.add(CalendarResponseDto.of(meetup.getManager()));
+        }
+
+        return calendarResponseDtoList;
     }
 
     @Override

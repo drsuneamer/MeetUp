@@ -3,10 +3,6 @@ import { tChannel } from '../../types/channels';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 
-// interface channelState extends tChannel {
-//   loading: boolean;
-// }
-
 type channelInitialState = {
   loading: boolean;
   channels: Array<tChannel>;
@@ -14,7 +10,7 @@ type channelInitialState = {
 
 const initialState: channelInitialState = {
   loading: false,
-  channels: [{ id: 0, title: '', color: '' }],
+  channels: [{ id: '', title: '', color: '' }],
 };
 
 export const fetchChannelList = createAsyncThunk('meetup', async () => {

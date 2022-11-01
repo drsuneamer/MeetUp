@@ -16,6 +16,6 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
 
     List<Meetup> findByManager(User manager);
 
-    List<MeetupResponseDto> findByChannelIn(List<Channel> channelList);
+    List<Meetup> findByChannelIn(List<Channel> channelList);
 
 }

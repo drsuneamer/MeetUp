@@ -16,6 +16,8 @@ function Header() {
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
+        window.localStorage.removeItem('id');
+        window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('tokenExpiresIn');
         navigate('/login');
@@ -30,7 +32,7 @@ function Header() {
   }
 
   return (
-    <div className="w-[100%] h-[100%] flex flex-col items-center">
+    <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div>

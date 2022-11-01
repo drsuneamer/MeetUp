@@ -48,22 +48,31 @@ function LoginForm() {
       onSubmit();
     }
   };
+
+  useEffect(() => {
+    setError(false);
+  }, []);
+
   // 로그인 API 연결
   const onSubmit = async () => {
     setLoad(true);
-    await axios.post('http://localhost:8080/user/login', login).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
-        window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
-        window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
-        window.localStorage.setItem('nickname', res.data.nickname);
-        navigate('/');
-      } else {
+    await axios
+      .post('http://localhost:8080/user/login', login)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setError(false);
+          // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
+          window.localStorage.setItem('id', res.data.id);
+          window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
+          window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
+          window.localStorage.setItem('nickname', res.data.nickname);
+          navigate('/');
+        }
+      })
+      .catch((error) => {
         setError(true);
-        console.log(error);
-      }
-    });
+      });
   };
 
   return (
@@ -112,20 +121,17 @@ function LoginForm() {
         ) : (
           ''
         )}
-        {load ? (
-          <Alert severity="info" className="mt-10 text-[13px]">
-            첫 로그인의 경우 데이터 동기화 시간이 소요됩니다 (최대 2분)
-          </Alert>
-        ) : (
-          ''
-        )}
         {error ? (
-          <Alert severity="error" className="mt-10">
+          <Alert severity="error" className="mt-5 text-[13px]">
             아이디(비밀번호)를 잘못 입력하였습니다.
           </Alert>
         ) : (
           ''
         )}
+
+        <Alert severity="info" className="mt-5 text-[13px]">
+          첫 로그인의 경우 데이터 동기화 시간이 소요됩니다 (최대 2분)
+        </Alert>
       </div>
       {/* 타이틀 */}
       <div className="bg-title w-[420px] relative rounded-r-login cursor-default">

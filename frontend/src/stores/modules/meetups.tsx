@@ -1,54 +1,53 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tMeetup } from '../../types/channels';
-import axios from 'axios';
+import { RootState } from '../ConfigStore'
+import { axiosInstance } from '../../components/auth/axiosConfig';
 
-interface meetupState extends tMeetup {
+
+// 여기서 밋업이란 캘린더를 말함
+type calendarInitialState = {
   loading: boolean;
+  calendars: Array<tMeetup>
 }
-const initialState: meetupState = {
-  manager_id: 0,
-  name: '',
+
+const initialState: calendarInitialState = {
   loading: false,
+  calendars: [{ id: '', username: ''}]
 };
 
-export const fetchMeetupList = createAsyncThunk('meetup/fetch', async (thunkAPI) => {
+export const fetchCalendarList = createAsyncThunk('calendar', async () => {
   try {
-    const res = await axios({
-      url: '/api/meetup',
-      method: 'get',
-      headers: {
-        Authorization: `Bearer `,
-      },
-    }).then((res) => {
-      console.log('meetup data fetched: ', res);
+    const res = await axiosInstance.get('/meetup/calendar').then((res) => {
+      console.log('canlendar data fetched: ', res.data);
+      return res.data;
     });
     return res;
   } catch (err) {
-    return thunkAPI;
+    console.log(err);
   }
 });
 
-const meetupSlice = createSlice({
-  name: 'meetup',
+const calendarSlice = createSlice({
+  name: 'calendar',
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchMeetupList.pending.toString()]: (state) => {
+    [fetchCalendarList.pending.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching pending');
     },
-    [fetchMeetupList.fulfilled.toString()]: (state, action) => {
+    [fetchCalendarList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      console.log(action.payload);
+      state.calendars = action.payload
+      console.log(state.calendars)
       console.log('fetching fulfilled');
     },
-    [fetchMeetupList.rejected.toString()]: (state) => {
+    [fetchCalendarList.rejected.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching rejected');
+      console.log('rejected')
     },
   },
 });
 
-const { reducer } = meetupSlice;
-export const meetupSelector = (state: meetupState) => state;
+const { reducer } = calendarSlice;
+export const calendarSelector = (state: RootState) => state.calendars;
 export default reducer;
