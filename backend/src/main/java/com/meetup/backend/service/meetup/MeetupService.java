@@ -23,7 +23,7 @@ public interface MeetupService {
 
     List<MeetupResponseDto> getResponseDtos(String userId);
 
-    List<CalendarResponseDto> getCalendarList(List<ChannelUser> channelUserList);
+    List<CalendarResponseDto> getCalendarList(String userId, List<ChannelUser> channelUserList);
 
     Channel getMeetupChannelById(Long meetupId);
 
