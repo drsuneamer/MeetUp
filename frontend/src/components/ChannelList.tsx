@@ -13,12 +13,14 @@ function ChannelList() {
 
   useEffect(() => {
     dispatch(fetchChannelList());
-    console.log(channel);
   }, []);
 
   if ( !channel.loading ) {
     return <Spinner></Spinner>
   } 
+  if ( !channel ) {
+    return null
+  }
   return (
     <div className="ChannelList mb-[50px] -z-10">
       <div className="flex mb-[10px]">
@@ -40,5 +42,6 @@ function ChannelList() {
     </div>
   );
 }
+
 
 export default ChannelList;
