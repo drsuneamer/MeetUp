@@ -1,6 +1,6 @@
 import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
-import  Spinner  from './common/Spinner'
+import Spinner from './common/Spinner';
 import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
@@ -15,12 +15,13 @@ function ChannelList() {
     dispatch(fetchChannelList());
   }, []);
 
-  if ( !channel.loading ) {
-    return <Spinner />
-  } 
-  if ( !channel ) {
-    return null
+  if (!channel.loading) {
+    return <Spinner />;
   }
+  if (!channel.channels) {
+    return null;
+  }
+
   return (
     <div className="ChannelList mb-[50px] -z-10">
       <div className="flex mb-[10px]">
@@ -42,6 +43,5 @@ function ChannelList() {
     </div>
   );
 }
-
 
 export default ChannelList;
