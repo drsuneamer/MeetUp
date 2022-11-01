@@ -2,6 +2,8 @@ package com.meetup.backend.service.meeting;
 
 import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
+import com.meetup.backend.dto.schedule.ScheduleResponseDto;
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelType;
@@ -22,6 +24,7 @@ import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.user.UserService;
+import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -198,10 +201,42 @@ class ScheduleServiceImplTest {
     }
 
     @Test
-    void updateSchedule() {
+    @DisplayName("스케줄 디테일 조회")
+    void getScheduleDetail() {
+        User user = userRepository.findById("user1").get();
+        Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+        ));
+        ScheduleResponseDto result = scheduleService.getScheduleResponseDtoById(user.getId(), scheduleId);
+        assertThat(result.getTitle()).isEqualTo("title");
+        assertThat(result.getContent()).isEqualTo("본문");
     }
 
     @Test
+    @DisplayName("스케줄 수정")
+    void updateSchedule() {
+        User user = userRepository.findById("user1").get();
+        Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+        ));
+        scheduleService.updateSchedule(user.getId(), new ScheduleUpdateRequestDto(
+                scheduleId, "2022-10-26 10:00:00", "2022-10-26 10:00:00", "modified title", "본문"
+        ));
+
+        Schedule schedule = scheduleRepository.findById(scheduleId).get();
+        assertThat(schedule.getTitle()).isEqualTo("modified title");
+        assertThat(schedule.getContent()).isEqualTo("본문");
+        assertThat(schedule.getStart()).isEqualTo(StringToLocalDateTime.strToLDT("2022-10-26 10:00:00"));
+    }
+
+    @Test
+    @DisplayName("스케줄 삭제")
     void deleteSchedule() {
+        User user = userRepository.findById("user1").get();
+        Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+        ));
+        scheduleService.deleteSchedule(user.getId(), scheduleId);
+        assertThat(scheduleRepository.findById(scheduleId).isPresent()).isFalse();
     }
 }
