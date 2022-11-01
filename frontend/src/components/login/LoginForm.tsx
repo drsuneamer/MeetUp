@@ -73,7 +73,7 @@ function LoginForm() {
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
-          navigate(`/${window.localStorage.getItem('id')}`);
+          navigate(`/calendar/${window.localStorage.getItem('id')}`);
         }
       })
       .catch((error) => {
