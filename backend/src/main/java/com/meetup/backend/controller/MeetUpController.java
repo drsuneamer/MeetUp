@@ -101,7 +101,7 @@ public class MeetUpController {
     public ResponseEntity<?> getCalendarList() {
 
         String userId = authService.getMyInfoSecret().getId();
-        List<CalendarResponseDto> calendarResponseDtoList = meetupService.getCalendarList(channelUserService.getChannelUserByUser(userId));
+        List<CalendarResponseDto> calendarResponseDtoList = meetupService.getCalendarList(authService.getMyInfoSecret().getId(), channelUserService.getChannelUserByUser(userId));
 
         return ResponseEntity.status(OK).body(calendarResponseDtoList);
 
