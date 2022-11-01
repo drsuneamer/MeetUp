@@ -143,10 +143,11 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         List<MeetingChannelDto> channelList = new ArrayList<>();
 
         for (Meetup meetup : meetupRepository.findByManager(manager)) {
+            if (meetup.isDelete())
+                continue;
             Channel channel = meetup.getChannel();
-            if (channelUserRepository.findByChannelAndUser(channel, user).isPresent()) {
-                if (channelUserRepository.findByChannelAndUser(channel, manager).isPresent())
-                    channelList.add(MeetingChannelDto.of(meetup,channel));
+            if (channelUserRepository.existsByChannelAndUser(channel, user)) {
+                channelList.add(MeetingChannelDto.of(meetup, channel));
             }
 
         }
