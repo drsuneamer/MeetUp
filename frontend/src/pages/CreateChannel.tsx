@@ -137,10 +137,7 @@ function CreateChannel() {
             </div>
           </div>
 
-          <button
-            onClick={onSubmit}
-            className="relative -z-50 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover"
-          >
+          <button onClick={onSubmit} className="z-30 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">
             저장하기
           </button>
         </div>
