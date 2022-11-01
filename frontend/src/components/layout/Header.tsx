@@ -5,6 +5,8 @@ import DeleteModal from '../modal/DeleteModal';
 import { axiosInstance } from '../auth/axiosConfig';
 
 function Header() {
+  const userId = window.localStorage.getItem('id');
+  const url = `/calendar/${userId}`;
   const navigate = useNavigate();
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -20,7 +22,7 @@ function Header() {
         window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('tokenExpiresIn');
-        navigate('/login');
+        navigate('/');
       }
     });
   };
@@ -36,7 +38,7 @@ function Header() {
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div>
-          <Link to="/">
+          <Link to={url}>
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
           </Link>
         </div>
