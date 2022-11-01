@@ -62,6 +62,8 @@ public class MeetupServiceImpl implements MeetupService {
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
         if (meetup.getManager().getId().equals(userId))
             meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
+        else
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
 
     }
 
@@ -71,6 +73,8 @@ public class MeetupServiceImpl implements MeetupService {
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
         if (meetup.getManager().getId().equals(userId))
             meetup.deleteMeetup(true);
+        else
+            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
     }
 
     @Override
