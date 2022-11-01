@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tSchedule } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import { getSundayOfWeek } from '../../utils/GetSundayOfWeek'
 
 type scheduleInitialState = {
   loading: boolean;
@@ -24,9 +23,9 @@ const initialState: scheduleInitialState = {
   }]
 };
 
-export const fetchMySchedule = createAsyncThunk('schedule/me', async (thunkAPI:string) => {
+export const fetchSchedule = createAsyncThunk('schedule/me', async (thunkAPI:any) => {
   try {
-    const res = await axiosInstance.get(`/schedule/me?${thunkAPI}`).then((res) => {
+    const res = await axiosInstance.get(`/schedule?targetId=${thunkAPI[0]}&date=${thunkAPI[1]}`).then((res) => {
       console.log('my schedule fetched: ', res.data);
       return res.data;
     });
@@ -41,14 +40,14 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchMySchedule.pending.toString()]: (state) => {
+    [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
     },
-    [fetchMySchedule.fulfilled.toString()]: (state, action) => {
+    [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       console.log(action.payload)
     },
-    [fetchMySchedule.rejected.toString()]: (state) => {
+    [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;
       console.log('rejected');
     },
