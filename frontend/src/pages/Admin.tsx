@@ -11,21 +11,22 @@ interface User {
 function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [post, setPost] = useState({ id: '', roleType: '' });
+  const [get, setGet] = useState(false);
 
   useEffect(() => {
     axiosInstance.get('/admin').then((res) => {
       setUsers(res.data);
     });
-  }, []);
+  }, [get]);
 
   const onChanged = (e: any): any => {
     setPost({ id: e.target.id, roleType: e.target.value });
+    setGet(false);
   };
 
   useEffect(() => {
-    console.log(post);
     axiosInstance.post('/admin/role', [post]).then((res) => {
-      console.log(res);
+      setGet(true);
     });
   }, [post]);
 
@@ -40,7 +41,9 @@ function Admin() {
       {/* 내용 */}
       <div className="flex flex-col w-screen items-center justify-center pt-[65px]">
         <div className="font-bold text-xl">MeetUp 관리자 페이지</div>
-        <div className="flex">
+        <div>처음 로그인 후 새로고침!! (관리자 계정 로그인 필수)</div>
+
+        <div className="flex flex-col">
           {users.map((user, index) => (
             <div key={index} className="flex">
               <div className="w-[80vw]">
