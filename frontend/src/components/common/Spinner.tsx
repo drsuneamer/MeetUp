@@ -2,7 +2,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Spinner() {
   return (
-    <div className="flex flex-col items-center justify-center pt-[35vh]">
+    <div className="flex flex-col items-center justify-center">
       <CircularProgress />
       <div className="mt-10 text-m font-bold">Loading</div>
       <div className="mt-2">
