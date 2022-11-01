@@ -63,10 +63,11 @@ function LoginForm() {
         if (res.status === 200) {
           setError(false);
           // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
+          window.localStorage.setItem('id', res.data.id);
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
-          navigate('/');
+          navigate(`/${window.localStorage.getItem('id')}`);
         }
       })
       .catch((error) => {

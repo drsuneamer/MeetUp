@@ -12,13 +12,13 @@ type calendarInitialState = {
 
 const initialState: calendarInitialState = {
   loading: false,
-  calendars: [{ id: '', username: ''}]
+  calendars: [{ id: '', userName: ''}]
 };
 
 export const fetchCalendarList = createAsyncThunk('calendar', async () => {
   try {
     const res = await axiosInstance.get('/meetup/calendar').then((res) => {
-      console.log('canlendar data fetched: ', res.data);
+      console.log('calendar data fetched: ', res.data);
       return res.data;
     });
     return res;

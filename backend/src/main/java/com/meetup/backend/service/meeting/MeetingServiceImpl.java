@@ -17,7 +17,6 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
-import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

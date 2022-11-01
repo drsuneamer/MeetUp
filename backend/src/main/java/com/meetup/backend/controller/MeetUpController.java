@@ -1,9 +1,6 @@
 package com.meetup.backend.controller;
 
-import com.meetup.backend.dto.meetup.CalendarResponseDto;
-import com.meetup.backend.dto.meetup.MeetupRequestDto;
-import com.meetup.backend.dto.meetup.MeetupResponseDto;
-import com.meetup.backend.dto.meetup.MeetupUserResponseDto;
+import com.meetup.backend.dto.meetup.*;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
@@ -28,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by myeongseok on 2022/10/31
+ * updated by seongmin on 2022/11/01
  */
 @RestController
 @Slf4j
@@ -36,22 +33,16 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/meetup")
 public class MeetUpController {
 
-    @Autowired
     private final TeamService teamService;
 
-    @Autowired
     private final TeamUserService teamUserService;
 
-    @Autowired
     private final ChannelService channelService;
 
-    @Autowired
     private final ChannelUserService channelUserService;
 
-    @Autowired
     private final MeetupService meetupService;
 
-    @Autowired
     private final AuthService authService;
 
     @GetMapping("/team")
@@ -82,15 +73,28 @@ public class MeetUpController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    @PostMapping("")
+    @PostMapping
     @ApiOperation(value = "meetup 등록")
     public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
-        log.info("meetupRequestDto = {}", meetupRequestDto);
         meetupService.registerMeetUp(meetupRequestDto, authService.getMyInfoSecret().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping("/{meetupId}")
+    @ApiOperation(value = "meetup 수정")
+    public ResponseEntity<?> updateMeetup(@RequestBody @Valid MeetupUpdateRequestDto meetupUpdateRequestDto, @PathVariable("meetupId") Long meetupId) {
+        meetupService.updateMeetup(meetupUpdateRequestDto, authService.getMyInfoSecret().getId(), meetupId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{meetupId}")
+    @ApiOperation(value = "meetup 삭제")
+    public ResponseEntity<?> deleteMeetup(@PathVariable("meetupId") Long meetupId) {
+        meetupService.deleteMeetup(meetupId, authService.getMyInfoSecret().getId());
+        return ResponseEntity.status(OK).build();
+    }
 
     @GetMapping("/calendar")
     @ApiOperation(value = "해당 로그인 유저가 참여하고 있는 달력(밋업) 가져오기")
@@ -110,7 +114,7 @@ public class MeetUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("")
+    @GetMapping
     @ApiOperation(value = "해당 로그인 유저의 meetup 목록 가져오기")
     public ResponseEntity<?> getMeetupByUserId() {
         String userId = authService.getMyInfoSecret().getId();
@@ -120,10 +124,10 @@ public class MeetUpController {
 
     @GetMapping("/users/{meetupId}")
     @ApiOperation(value = "밋업에 참가중인 유저의 목록을 반환")
-    public ResponseEntity<?> getUserListByMeetupId(@PathVariable("meetupId") Long meetupId) {
+    public ResponseEntity<?> getUserListByMeetup(@PathVariable("meetupId") Long meetupId) {
 
         Channel channel = meetupService.getMeetupChannelById(meetupId);
-        MeetupUserResponseDto responseDto = MeetupUserResponseDto.of(channelUserService.getMeetupUserByChannel(channel));
+        MeetupUserResponseDto responseDto = MeetupUserResponseDto.of(channelUserService.getMeetupUserByChannel(channel, authService.getMyInfoSecret().getId()));
 
         return ResponseEntity.status(OK).body(responseDto);
     }
