@@ -16,6 +16,8 @@ function Header() {
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
+        window.localStorage.removeItem('id');
+        window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('tokenExpiresIn');
         navigate('/login');

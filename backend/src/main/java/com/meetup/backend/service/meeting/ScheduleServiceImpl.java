@@ -10,7 +10,6 @@ import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
-import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
@@ -27,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,7 +37,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ChannelUserRepository channelUserRepository;
-    private final ChannelRepository channelRepository;
     private final MeetupRepository meetupRepository;
     private final MeetingRepository meetingRepository;
 
@@ -44,50 +44,39 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
     @Override
     public ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(ExceptionEnum.SCHEDULE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
         if (!user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+            throw new ApiException(ACCESS_DENIED);
         }
         return ScheduleResponseDto.builder().id(schedule.getId()).start(schedule.getStart()).end(schedule.getEnd()).title(schedule.getTitle()).content(schedule.getContent()).userId(user.getId()).userName(user.getNickname()).build();
     }
 
-    // 로그인 한 유저의 일정 갖고오기
+    // 해당 user, 캘린더 주인 id, date로 정보 가져오기
     @Override
-    public AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, String date) {
-        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+    public AllScheduleResponseDto getScheduleByUserAndDate(String loginUserId, String targetUserId, String date) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
-        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
-        LocalDateTime to = from.plusDays(6);
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, loginUser);
+        List<Meetup> meetups = meetupRepository.findByManager(targetUser);
 
-        List<Meetup> meetupList = meetupRepository.findByManager(loginUser);
-        List<Meeting> meetingToMe = new ArrayList<>();
-        if (meetupList.size() > 0) {
-            for (Meetup mu : meetupList) {
-                // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
-                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+        boolean flag = false;
+        for (Meetup meetup : meetups) {
+            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
+                flag = true;
+                break;
             }
         }
-        return AllScheduleResponseDto.of(schedules, meetingToMe);
-    }
-
-    // 해당 user, meetup, date로 정보 가져오기
-    @Override
-    public AllScheduleResponseDto getScheduleResponseDtoByUserAndDate(String loginUserId, Long meetupId, String date) {
-        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        Channel channel = meetup.getChannel();
-
-        if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+        if (!flag) {
+            throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
+        }
 
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(6);
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, meetup.getManager());
+        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 
         // 해당 스케줄 주인의 밋업 리스트
-        List<Meetup> meetupList = meetupRepository.findByManager(meetup.getManager());
+        List<Meetup> meetupList = meetupRepository.findByManager(targetUser);
         List<Meeting> meetingToMe = new ArrayList<>();
         if (meetupList.size() > 0) {
             for (Meetup mu : meetupList) {
@@ -102,7 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
         String title = scheduleRequestDto.getTitle();
@@ -116,10 +105,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public Long updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(ExceptionEnum.SCHEDULE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
         if (!user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+            throw new ApiException(ACCESS_DENIED);
         }
         schedule.update(scheduleUpdateRequestDto);
         return schedule.getId();
@@ -129,10 +118,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional
     public void deleteSchedule(String userId, Long scheduleId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(ExceptionEnum.SCHEDULE_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
         if (!user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+            throw new ApiException(ACCESS_DENIED);
         }
         scheduleRepository.delete(schedule);
 

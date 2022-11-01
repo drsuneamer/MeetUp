@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seungyong on 2022/10/27
+ * updated by seongmin on 2022/11/01
  */
 public interface ChannelUserService {
 
@@ -18,7 +18,7 @@ public interface ChannelUserService {
 
     List<ChannelUser> getChannelUserByUser(String userId);
 
-    List<UserInfoDto> getMeetupUserByChannel(Channel channel);
+    List<UserInfoDto> getMeetupUserByChannel(Channel channel, String userId);
 
     void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList);
 

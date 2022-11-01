@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by myeongseok on 2022/10/23
- * updated by seongmin on 2022/10/31
+ * updated by seongmin on 2022/11/01
  */
 @RestController
 @Slf4j
@@ -71,17 +71,17 @@ public class ScheduleController {
     }
 
     @GetMapping
-    @ApiOperation(value ="상대방(meetup)의 스케쥴(개인일정) 가져오기")
+    @ApiOperation(value ="targetId의 스케쥴(개인일정) 가져오기")
     public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam @Valid AllScheduleRequestDto requestDto) {
-        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getMeetupId(), requestDto.getDate());
+        AllScheduleResponseDto result = scheduleService.getScheduleByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getTargetId(), requestDto.getDate());
         return ResponseEntity.status(OK).body(result);
     }
 
-    @GetMapping("/me")
-    @ApiOperation(value ="날짜에 따른 나의 스케쥴(개인일정) 7일치 가져오기")
-    public ResponseEntity<?> getScheduleByMeAndDate(@RequestParam @Valid String date) {
-        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), date);
-        return ResponseEntity.status(OK).body(result);
-    }
+//    @GetMapping("/me")
+//    @ApiOperation(value ="날짜에 따른 나의 스케쥴(개인일정) 7일치 가져오기")
+//    public ResponseEntity<?> getScheduleByMeAndDate(@RequestParam @Valid String date) {
+//        AllScheduleResponseDto result = scheduleService.getScheduleResponseDtoByUserAndDate(authService.getMyInfoSecret().getId(), date);
+//        return ResponseEntity.status(OK).body(result);
+//    }
 
 }
