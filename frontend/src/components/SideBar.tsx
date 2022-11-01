@@ -33,7 +33,7 @@ function SideBar() {
         if (res.status === 201) {
           console.log('동기화 완료', res);
           setSyncChecked(true);
-          navigate(`/${localStorage.getItem('id')}`);
+          navigate(`calendar/${localStorage.getItem('id')}`);
         }
       });
   };

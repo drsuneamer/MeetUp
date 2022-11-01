@@ -10,8 +10,7 @@ function MeetupListItem(meetup: MeetupListItemProps) {
   const navigate = useNavigate()
 
   const OthersCalendar =()=> {
-    navigate(`/${meetup.meetup.id}`)
-    console.log('hello')
+    navigate(`/calendar/${meetup.meetup.id}`)
   }
 
   return (

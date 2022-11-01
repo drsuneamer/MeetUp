@@ -9,6 +9,7 @@ import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
+import { scheduleSelector, fetchMySchedule } from '../stores/modules/schedules';
 import _ from 'lodash';
 
 interface Week {
@@ -25,9 +26,11 @@ const WeeklyCalendarBody = () => {
 
   const rDispatch = useDispatch();
   const { holidays } = useSelector(holidaySelector);
-
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
+  
+  const userId = 
+  
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await rDispatch(fetchHolidays());
@@ -35,7 +38,8 @@ const WeeklyCalendarBody = () => {
     fetchAndSetHolidays();
     renderHoliday();
     dispatch(getSundayOfWeek);
-    // console.log(detailModalSelector.detailModalIsOpen)
+    dispatch(fetchMySchedule('d'))
+
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {

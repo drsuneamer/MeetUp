@@ -78,7 +78,7 @@ function CreateChannel() {
   const onSubmit = async () => {
     await axiosInstance.post('/meetup/', record).then((res) => {
       if (res.status === 201) {
-        navigate(`/${localStorage.getItem('id')}`);
+        navigate(`calendar/${localStorage.getItem('id')}`);
       }
     });
   };
@@ -144,7 +144,11 @@ function CreateChannel() {
       </Layout>
     );
   } else {
-    return <Spinner />;
+    return (
+      <div className="pt-[30vh]">
+        <Spinner />
+      </div>
+    );
   }
 }
 
