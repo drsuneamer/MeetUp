@@ -12,7 +12,7 @@ export const MeetupListItem: React.FC<MeetupListItemProps> = ({ meetup }) => {
         <div className="indexLable bg-title w-3/12 h-[40px] flex justify-end ">
           <div className="bg-title mix-blend-multiply w-1/6 h-[40px]" />
         </div>
-        <span className="MeetupName leading-[40px] w-9/12 text-center">{meetup.name}</span>
+        <span className="MeetupName leading-[40px] w-9/12 text-center">{meetup.username}</span>
       </div>
     </div>
   );
