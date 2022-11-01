@@ -26,7 +26,8 @@ function AdminLoginForm() {
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
         window.localStorage.setItem('accessToken', res.data.accessToken);
-        navigate('/admin');
+        window.localStorage.setItem('tokenExpiresIn', res.data.tokenExpiresIn);
+        navigate('/admin-meetup2022');
       }
     });
   };
