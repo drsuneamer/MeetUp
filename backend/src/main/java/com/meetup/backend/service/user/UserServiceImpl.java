@@ -80,6 +80,12 @@ public class UserServiceImpl implements UserService {
                                     .build());
                 } else {
                     user = userRepository.findById(id).get();
+                    if (user.getNickname() == null) {
+                        user.setNickname(nickname);
+                    }
+                    if (user.getPassword() == null) {
+                        user.changePwd(passwordEncoder.encode(requestDto.getPassword()));
+                    }
                 }
 
                 if (!user.isFirstLogin()) {

@@ -15,16 +15,24 @@ import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
+import com.meetup.backend.service.Client;
+import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bis5.mattermost.client4.MattermostClient;
+import net.bis5.mattermost.model.Post;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * created by myeongseok on 2022/10/30
+ * updated by seongmin on 2022/11/01
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -41,6 +49,8 @@ public class MeetingServiceImpl implements MeetingService {
     private final MeetupRepository meetupRepository;
 
     private final UserRepository userRepository;
+
+    private final AuthService authService;
 
 
     @Override
@@ -80,6 +90,12 @@ public class MeetingServiceImpl implements MeetingService {
                 .meetup(meetup)
                 .user(loginUser)
                 .build();
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(authService.getMMSessionToken(userId));
+        String startTime = meetingRequestDto.getStart().substring(5,16);
+        String endTime = meetingRequestDto.getStart().substring(11, 16);
+        String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+        client.createPost(new Post(channel.getId(), message));
         return meetingRepository.save(meeting).getId();
     }
 
