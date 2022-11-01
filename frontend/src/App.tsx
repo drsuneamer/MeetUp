@@ -24,7 +24,7 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-signup" element={<AdminSignup />} />
         <Route element={<PrivateRoutes />}>
-          <Route path="/:userId" element={<MeetUp />} />
+          <Route path="/calendar/:userId" element={<MeetUp />} />
           <Route path="/tutorial" element={<Tutorial />} />
           <Route path="/create-channel" element={<CreateChannel />} />
           <Route path="/edit-channel" element={<EditChannel />} />
