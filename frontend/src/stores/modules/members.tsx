@@ -15,15 +15,19 @@ const initialState: memberInitialState = {
     members: [{id: '', nickname: ''}],
 };
 
-export const fetchMemberList = createAsyncThunk('members/fetchMemberList', async (thunkAPI) => {
-    const meetUpId = useSelector((state: any) => state.channels.value).id;  
-    await axiosInstance.get(`/meetup/users/${meetUpId}`).then((res) => {
-        console.log(res)
-        return res.data;
-      }).catch((err) => {
-        console.log('ㅜㅜ')
-      })
-
+export const fetchMemberList = createAsyncThunk('members/fetchMemberList', async () => {
+    console.log('hello')
+    // const meetUpId = useSelector((state: any) => state.channels.value).id;
+    try {
+        const res = await axiosInstance.get(`/meetup/users/1`).then((res) => {
+            console.log(res)
+            return res
+        })
+        return res
+    } 
+    catch (err) {
+        console.log('디스팟치')
+      }
 });
 
 // export const fetchMemberList = createAsyncThunk('members/fetchMemberList', async (thunkAPI) => {
@@ -57,6 +61,7 @@ const memberSlice = createSlice({
         [fetchMemberList.fulfilled.toString()]: (state, action) => {
         state.loading = true;
         state.members = action.payload;
+        console.log('fulfilled')
         },
         [fetchMemberList.rejected.toString()]: (state) => {
         state.loading = false;
