@@ -10,13 +10,11 @@ import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
-import io.swagger.annotations.Api;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,7 +130,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
             Channel channel = meetup.getChannel();
             if (channelUserRepository.findByChannelAndUser(channel, user).isPresent()) {
                 if (channelUserRepository.findByChannelAndUser(channel, manager).isPresent())
-                    channelList.add(MeetingChannelDto.of(channel));
+                    channelList.add(MeetingChannelDto.of(meetup,channel));
             }
 
         }

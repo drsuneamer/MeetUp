@@ -33,22 +33,16 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/meetup")
 public class MeetUpController {
 
-    @Autowired
     private final TeamService teamService;
 
-    @Autowired
     private final TeamUserService teamUserService;
 
-    @Autowired
     private final ChannelService channelService;
 
-    @Autowired
     private final ChannelUserService channelUserService;
 
-    @Autowired
     private final MeetupService meetupService;
 
-    @Autowired
     private final AuthService authService;
 
     @GetMapping("/team")
