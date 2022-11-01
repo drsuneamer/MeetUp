@@ -9,13 +9,13 @@ import { setCurrentDate, setToday } from '../stores/modules/dates';
 const Header = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
-  const [isMyCalendar, setIsMyCalendar] = useState(false)
+  const [isMyCalendar, setIsMyCalendar] = useState(false);
 
-  useEffect(()=>{
-    if ( window.location.href === `https://meet-up.co.kr/calendar/${localStorage.getItem('id')}`) {
-      setIsMyCalendar(true)
+  useEffect(() => {
+    if (window.location.href === `http://localhost:3000/calendar/${localStorage.getItem('id')}`) {
+      setIsMyCalendar(true);
     }
-  }, [window.location.href])
+  }, [window.location.href]);
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
@@ -50,10 +50,11 @@ const Header = () => {
   return (
     <>
       <header className="flex flex-col relative items-center px-4 justify-center w-full h-[80px] mt-[50px]">
-        { isMyCalendar ? 
-        <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 밋업</div> :
-        <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">다른 사람의 밋업</div>
-        }
+        {isMyCalendar ? (
+          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 밋업</div>
+        ) : (
+          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">다른 사람의 밋업</div>
+        )}
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />
