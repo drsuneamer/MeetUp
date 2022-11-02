@@ -9,7 +9,11 @@ import SingleSelect from '../common/SingleSelect';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { setMyCalendar } from '../../stores/modules/mycalendar';
-
+import { isValidDateValue } from '@testing-library/user-event/dist/utils';
+import { useNavigate } from 'react-router-dom';
+import { isFulfilled } from '@reduxjs/toolkit';
+import { addSchedule } from '../../stores/modules/schedules';
+ 
 interface ChannelOptionType {
   title: string;
 }
@@ -31,13 +35,28 @@ const EventModal = () => {
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
+
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
+  const startTimeValue = startTime.value
+
+  const newStartTime =() => {
+    console.log(startTimeValue)
+    if(startTimeValue.length === 3){
+      console.log('three')
+      const startTimeNewValue = '0'+ startTimeValue
+      console.log(startTimeNewValue)
+      return startTimeNewValue
+    } 
+    return startTimeValue
+  }
+
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
+
 
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
@@ -45,18 +64,38 @@ const EventModal = () => {
   
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
   
+  const onTitleChange = (e:any) => {
+    setTitle(e.currentTarget.value);
+    console.log(e.currentTarget.value);
+  };
+
+  const onDateChange = (e:any) => {
+    setDate(e.currentTarget.value);
+    console.log(e.currentTarget.value);
+  };
+
+  const parsedData:any = {
+    title: title,
+    date: date,
+    startTime: startTime,
+    endTime: endTime,
+  };
+
+  // const parsedData: any = {
+  //   title: title,
+     
+  // }
   useEffect(()=>{
     dispatch(setMyCalendar())
-    console.log('내꺼', myCalendar)
+    // console.log('내꺼', myCalendar)
   },[myCalendar])
   
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
-      setDate(date);
+      setDate(date)
 
       const foundTimeIndex = startSelectOptions.findIndex((option) => option.value === startTime);
-
       foundTimeIndex !== undefined ? setStartTimeIndex(foundTimeIndex) : setStartTimeIndex(0);
     } else {
       handleResetInput();
@@ -76,21 +115,31 @@ const EventModal = () => {
     dispatch(setEventModalOpen());
   }, []);
 
-  const handleSubmit = () => {
-    const newEvent: NewEvent = {
-      date,
-      eventDetail: {
-        title: title !== '' ? title : '제목 없음',
-        start: startTime.value,
-        end: endTime.value,
-      },
-    };
+  // const handleSubmit = () => {
+  //   const newEvent: NewEvent = {
+  //     date,
+  //     eventDetail: {
+  //       title: title !== '' ? title : '제목 없음',
+  //       start: startTime.value,
+  //       end: endTime.value,
+  //     },
+  //   };
 
-    dispatch(addEvent(newEvent));
-    handleToggleModal();
-    handleResetInput();
-  };
-
+  //   dispatch(addEvent(newEvent));
+  //   handleToggleModal();
+  //   handleResetInput();
+  // };
+  const handleSubmit = async() => {
+    const action = await dispatch(addSchedule(parsedData))
+    console.log('title:', title ,'date:',date, 'startTime:',startTime, 'startTimeValue:', startTimeValue, 'endTime:',endTime)
+    console.log(startTimeValue.length)
+    console.log(typeof(startTimeValue))
+    console.log(newStartTime())
+    if (isFulfilled(action)) {
+      const userId = localStorage.getItem('id')
+      navigate(`/calendar/${userId}`);
+    } 
+  }
   const handleResetInput = useCallback(() => {
     setTitle('');
     setDate(getStringDateFormat(new Date()));
@@ -142,7 +191,7 @@ const EventModal = () => {
               type="text"
               name="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={onTitleChange}
               className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
@@ -151,7 +200,7 @@ const EventModal = () => {
               <input 
                 type="date" 
                 value={date} 
-                onChange={(e) => setDate(e.target.value)} 
+                onChange={onDateChange} 
                 className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
               />
               <div className="mt-[20px]">
