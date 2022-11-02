@@ -6,7 +6,6 @@ import Alert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useAppDispatch } from '../stores/ConfigHooks';
 
-
 function SideBar() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

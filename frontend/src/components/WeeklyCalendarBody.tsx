@@ -23,33 +23,33 @@ const WeeklyCalendarBody = () => {
 
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
+  const { schedules } = useAppSelector((state) => state.schedules);
+
   const dispatch = useAppDispatch();
 
   const rDispatch = useDispatch();
   const { holidays } = useSelector(holidaySelector);
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
-  let now = new Date()
-  const param = useParams()
-  const userId = param.userId
-  const sunday = getSundayOfWeek()
+  let now = new Date();
+  const param = useParams();
+  const userId = param.userId;
+  const sunday = getSundayOfWeek();
 
-  const thunkAPI = [userId, sunday]
+  const thunkAPI = [userId, sunday];
 
-  
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await rDispatch(fetchHolidays());
     }
-    
-    console.log('sunday of this week', getSundayOfWeek())
+
+    // console.log('sunday of this week', getSundayOfWeek())
 
     fetchAndSetHolidays();
-    renderHoliday(); 
-    if ( userId && sunday ) {
-      dispatch(fetchSchedule(thunkAPI))
+    renderHoliday();
+    if (userId && sunday) {
+      dispatch(fetchSchedule(thunkAPI));
     }
-
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
