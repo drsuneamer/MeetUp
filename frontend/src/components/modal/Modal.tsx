@@ -40,28 +40,63 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
+  const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value
-
+  
   const newStartTime =() => {
     console.log(startTimeValue)
     if(startTimeValue.length === 3){
-      console.log('three')
       const startTimeNewValue = '0'+ startTimeValue
-      console.log(startTimeNewValue)
-      return startTimeNewValue
+      // console.log(startTimeNewValue)
+      const hour = startTimeNewValue.slice(0,2) + ':'
+      console.log(hour)
+      const minute = startTimeNewValue.slice(2,4) + ':'
+      console.log(minute)
+      const startTimeResult = hour + minute + '00'
+      console.log(startTimeResult)
+      const start = date + ' ' + startTimeResult  
+      return start
     } 
-    return startTimeValue
+      const hour = startTimeValue.slice(0,2) + ':'
+      console.log(hour)
+      const minute = startTimeValue.slice(2,4) + ':'
+      console.log(minute)
+      const startTimeResult = hour + minute + '00'
+      console.log(startTimeResult)
+      const start = date + ' ' + startTimeResult 
+      return start
   }
 
-  const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
-
-  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
-  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
+  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
   
+  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
+  const endTimeValue = endTime.value
+
+  const newEndTime =() => {
+    if(endTimeValue.length === 3){
+      const endTimeNewValue = '0'+ endTimeValue
+      const hour = endTimeNewValue.slice(0,2) + ':'
+      console.log(hour)
+      const minute = endTimeNewValue.slice(2,4) + ':'
+      console.log(minute)
+      const endTimeResult = hour + minute + '00'
+      console.log(endTimeResult)
+      const end = date + ' ' + endTimeResult 
+      return end
+    } 
+      const hour = endTimeValue.slice(0,2) + ':'
+      console.log(hour)
+      const minute = endTimeValue.slice(2,4) + ':'
+      console.log(minute)
+      const endTimeResult = hour + minute + '00'
+      console.log(endTimeResult)
+      const end = date + ' ' + endTimeResult 
+      return end
+  }
+
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
   
   const onTitleChange = (e:any) => {
@@ -135,6 +170,7 @@ const EventModal = () => {
     console.log(startTimeValue.length)
     console.log(typeof(startTimeValue))
     console.log(newStartTime())
+    console.log(newEndTime())
     if (isFulfilled(action)) {
       const userId = localStorage.getItem('id')
       navigate(`/calendar/${userId}`);
