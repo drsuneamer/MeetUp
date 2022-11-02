@@ -28,7 +28,7 @@ function AdminSignup() {
   };
 
   const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    await axios.post('https://meet-up.co.kr/api/admin/signup', signUp).then((res) => {
+    await axios.post('http://localhost:8080/admin/signup', signUp).then((res) => {
       console.log(signUp);
       console.log(res);
       if (res.status === 201) {
