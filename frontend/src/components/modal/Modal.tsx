@@ -239,6 +239,7 @@ const EventModal = () => {
           }
         }}
       />
+      </div>
     </div>
   );
 };
