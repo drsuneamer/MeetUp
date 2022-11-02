@@ -15,6 +15,7 @@ function ChannelList() {
     dispatch(fetchChannelList());
   }, []);
 
+
   if (!channel.loading) {
     return <Spinner />;
   }
