@@ -6,27 +6,21 @@ import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
 import { setCurrentDate, setToday } from '../stores/modules/dates';
 import { setMyCalendar } from '../stores/modules/mycalendar';
 // import { getStringDateFormat } from '../utils/GetStringDateFormat';
-// import { setMyCalendar } from '../stores/modules/mycalendar';
 
 const Header = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
   // const [isMyCalendar, setIsMyCalendar] = useState(false)
-  const { myCalendar } = useAppSelector((state) => state.myCalendar);
+  const { myCalendar } = useAppSelector((state) => state.mycalendar);
   // useEffect(()=>{
   //   if ( window.location.href === `http://localhost:3000/calendar/${localStorage.getItem('id')}`) {
   //     setIsMyCalendar(true)
   //   }
   // }, [window.location.href])
   useEffect(()=>{
-    dispatch(setMyCalendar)
-    console.log('내꺼', myCalendar)
-  },)
-//     if ( window.location.href === `https://meet-up.co.kr/calendar/${localStorage.getItem('id')}`) {
-//       setIsMyCalendar(true)
-//     }
-//   }, [window.location.href])
-// >>>>>>> cdc5b7b8c9be40471088500ce7f8886ace90e232
+    dispatch(setMyCalendar())
+    // console.log('내꺼', myCalendar)
+  },[])
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
