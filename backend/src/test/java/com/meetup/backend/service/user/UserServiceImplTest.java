@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,27 @@ class UserServiceImplTest {
         String mmSessionToken = redisUtil.getData(mmId);
         log.info("mmSessionToken = {}", mmSessionToken);
         userService.logout(mmSessionToken);
+    }
+
+    @Test
+    @DisplayName("웹엑스 주소 가져오기")
+    void getWebexUrl(){
+        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+        mmId = loginResponse.getId();
+        String webex=userService.getWebexUrl(mmId).getWebexUrl();
+        assertNotNull(webex);
+    }
+
+    @Transactional
+    @Test
+    @DisplayName("웹엑스 주소 바꾸기")
+    void changeWebexUrl(){
+        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+        mmId = loginResponse.getId();
+        String webexUrl="웹엑스 주소";
+        userService.changeWebexUrl(mmId,webexUrl);
+        String webex=userService.getWebexUrl(mmId).getWebexUrl();
+        assertEquals(webex,webexUrl);
     }
 
 }
