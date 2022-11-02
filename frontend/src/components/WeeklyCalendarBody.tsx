@@ -170,7 +170,6 @@ const WeeklyCalendarBody = () => {
                   let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                   const scheduleDate = element.start.slice(0, 10)
-                  console.log(scheduleDate)
 
                   if (scheduleDate === stringDate) 
                     return (

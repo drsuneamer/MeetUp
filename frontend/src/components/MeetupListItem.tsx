@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { tMeetup } from '../types/channels';
+import { setUserNickName } from '../stores/modules/meetups'
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 interface MeetupListItemProps {
   meetup: tMeetup;
@@ -8,11 +11,17 @@ interface MeetupListItemProps {
 
 function MeetupListItem(meetup: MeetupListItemProps) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const OthersCalendar =()=> {
+  const OthersCalendar = async ()=> {
+    await dispatch(setUserNickName(meetup.meetup.userName))
     navigate(`/calendar/${meetup.meetup.id}`)
     window.location.reload()
   }
+
+  useEffect(() => {
+    console.log(meetup.meetup.id)
+  })
 
   return (
     <div onClick={OthersCalendar} key={meetup.meetup.id} className="MeetupListItem w-full mb-1 drop-shadow-button -z-10 cursor-pointer">

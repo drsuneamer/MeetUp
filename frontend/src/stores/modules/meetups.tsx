@@ -7,10 +7,12 @@ import { axiosInstance } from '../../components/auth/axiosConfig';
 type calendarInitialState = {
   loading: boolean;
   calendars: Array<tMeetup>;
+  nickname: string;
 };
 
 const initialState: calendarInitialState = {
   loading: false,
+  nickname: '',
   calendars: [{ id: '', userName: '' }],
 };
 
@@ -29,7 +31,12 @@ export const fetchCalendarList = createAsyncThunk('calendar', async () => {
 const calendarSlice = createSlice({
   name: 'calendar',
   initialState,
-  reducers: {},
+  reducers: {
+    setUserNickName(state, action) {
+      state.nickname = action.payload
+      console.log('nickname', state.nickname)
+    }
+  },
   extraReducers: {
     [fetchCalendarList.pending.toString()]: (state) => {
       state.loading = false;
@@ -45,5 +52,6 @@ const calendarSlice = createSlice({
 });
 
 const { reducer } = calendarSlice;
+export const { setUserNickName } = calendarSlice.actions;
 export const calendarSelector = (state: RootState) => state.calendars;
 export default reducer;
