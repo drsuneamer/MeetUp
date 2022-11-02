@@ -20,7 +20,7 @@ const Header = () => {
   useEffect(()=>{
     dispatch(setMyCalendar())
     // console.log('내꺼', myCalendar)
-  },[])
+  },[myCalendar])
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
