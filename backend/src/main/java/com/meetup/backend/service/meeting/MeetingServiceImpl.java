@@ -92,7 +92,7 @@ public class MeetingServiceImpl implements MeetingService {
         MattermostClient client = Client.getClient();
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingRequestDto.getStart().substring(5,16);
-        String endTime = meetingRequestDto.getStart().substring(11, 16);
+        String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
         client.createPost(new Post(channel.getId(), message));
         return meetingRepository.save(meeting).getId();
