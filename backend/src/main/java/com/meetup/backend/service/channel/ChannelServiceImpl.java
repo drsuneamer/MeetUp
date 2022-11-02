@@ -17,6 +17,7 @@ import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -62,18 +63,27 @@ public class ChannelServiceImpl implements ChannelService {
                 JSONObject channelObj = channelArray.getJSONObject(i);
                 if (channelObj.getString("type").equals("D") || channelObj.getString("type").equals("G")) continue;
 
-                Channel channel;
-                if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
-                    channel = Channel.builder()
-                            .id(channelObj.getString("id"))
-                            .team(team)
-                            .name(channelObj.getString("name"))
-                            .displyName(channelObj.getString("display_name"))
-                            .type(ChannelType.of(channelObj.getString("type")))
-                            .build();
-                    channelRepository.save(channel);
-                    channelList.add(channel);
-                }
+
+                Channel channel = channelRepository.findById(channelObj.getString("id"))
+                        .orElseGet(() -> channelRepository.save(Channel.builder()
+                                .id(channelObj.getString("id"))
+                                .team(team)
+                                .name(channelObj.getString("name"))
+                                .displyName(channelObj.getString("display_name"))
+                                .type(ChannelType.of(channelObj.getString("type")))
+                                .build()));
+                channelList.add(channel);
+//                if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
+//                    channel = Channel.builder()
+//                            .id(channelObj.getString("id"))
+//                            .team(team)
+//                            .name(channelObj.getString("name"))
+//                            .displyName(channelObj.getString("display_name"))
+//                            .type(ChannelType.of(channelObj.getString("type")))
+//                            .build();
+//                    channelRepository.save(channel);
+//                    channelList.add(channel);
+//                }
             }
         }
         return channelList;

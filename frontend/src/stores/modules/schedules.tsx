@@ -2,31 +2,64 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tSchedule } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import { getSundayOfWeek } from '../../utils/GetSundayOfWeek'
 
 type scheduleInitialState = {
   loading: boolean;
-  meetingFromMe: Array<tSchedule>;
+  schedules: {
+    meetingFromMe: Array<tSchedule>;
+    meetingToMe: Array<tSchedule>;
+    scheduleResponseList: Array<tSchedule>;
+  };
 };
 
 const initialState: scheduleInitialState = {
   loading: false,
-  meetingFromMe: [{
-    id : '',
-    start : '',
-    end : '',
-    title : '',
-    content : '',
-    userId : '', 
-    userName: '', 
-    meetupName: '',
-    meetupColor: ''
-  }]
+  schedules: {
+    meetingFromMe: [
+      {
+        id: '',
+        start: '',
+        end: '',
+        title: '',
+        content: '',
+        userId: '',
+        userName: '',
+        meetupName: '',
+        meetupColor: '',
+      },
+    ],
+    meetingToMe: [
+      {
+        id: '',
+        start: '',
+        end: '',
+        title: '',
+        content: '',
+        userId: '',
+        userName: '',
+        meetupName: '',
+        meetupColor: '',
+      },
+    ],
+    scheduleResponseList: [
+      {
+        id: '',
+        start: '',
+        end: '',
+        title: '',
+        content: '',
+        userId: '',
+        userName: '',
+        meetupName: '',
+        meetupColor: '',
+      },
+    ],
+  },
 };
 
-export const fetchMySchedule = createAsyncThunk('schedule/me', async (thunkAPI:string) => {
+export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI: any) => {
   try {
-    const res = await axiosInstance.get(`/schedule/me?${thunkAPI}`).then((res) => {
+    const res = await axiosInstance.get(`/schedule?targetId=${thunkAPI[0]}&date=${thunkAPI[1]} 00:00:00`).then((res) => {
       console.log('my schedule fetched: ', res.data);
       return res.data;
     });
@@ -41,20 +74,22 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchMySchedule.pending.toString()]: (state) => {
+    [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
     },
-    [fetchMySchedule.fulfilled.toString()]: (state, action) => {
+    [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      console.log(action.payload)
+      state.schedules = action.payload;
     },
-    [fetchMySchedule.rejected.toString()]: (state) => {
+    [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;
-      console.log('rejected');
     },
   },
 });
 
 const { reducer } = scheduleSlice;
-export const scheduleSelector = (state: RootState) => state.channels;
+export const scheduleSelector = (state:RootState) => state.schedules
+export const myScheduleSelector = (state: RootState) => state.schedules.schedules.scheduleResponseList;
+export const meetingToMeSelector = (state: RootState) => state.schedules.schedules.meetingToMe;
+export const meetingFromMeSelector = (state: RootState) => state.schedules.schedules.meetingFromMe;
 export default reducer;

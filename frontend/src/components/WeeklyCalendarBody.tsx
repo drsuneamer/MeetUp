@@ -9,8 +9,13 @@ import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
-import { scheduleSelector, fetchMySchedule } from '../stores/modules/schedules';
+import { 
+  scheduleSelector, 
+  myScheduleSelector, 
+  
+  meetingFromMeSelector, meetingToMeSelector, fetchSchedule } from '../stores/modules/schedules';
 import _ from 'lodash';
+import { useParams } from 'react-router-dom';
 
 interface Week {
   name: string;
@@ -18,28 +23,37 @@ interface Week {
 }
 
 const WeeklyCalendarBody = () => {
-  const detailModalSelector = useSelector(ModalSelector);
-
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
-  const dispatch = useAppDispatch();
-
-  const rDispatch = useDispatch();
+  const { schedules } = useAppSelector((state) => state.schedules);
   const { holidays } = useSelector(holidaySelector);
+  const mySchedule = useSelector(myScheduleSelector);
+  const meetingToMe = useSelector(meetingToMeSelector);
+  const meetingFromMe = useSelector(meetingFromMeSelector);
+
+  const dispatch = useAppDispatch();
+  const rDispatch = useDispatch();
+  
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
-  
-  const userId = 
-  
+  const param = useParams();
+  const userId = param.userId;
+  const sunday = getSundayOfWeek();
+
+  const thunkAPI = [userId, sunday];
+
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await rDispatch(fetchHolidays());
     }
+
+    // console.log('sunday of this week', getSundayOfWeek())
+
     fetchAndSetHolidays();
     renderHoliday();
-    dispatch(getSundayOfWeek);
-    dispatch(fetchMySchedule('d'))
-
+    if (userId && sunday) {
+      dispatch(fetchSchedule(thunkAPI));
+    }
   }, [holidays, currentDate]);
 
   const weekly = useMemo(() => {
@@ -145,6 +159,32 @@ const WeeklyCalendarBody = () => {
                     return null;
                   })
                 : null}
+               {/* 나의 스케쥴 */}
+               {mySchedule.map((element, index) => {
+                  const startMinute = parseInt(element.start.slice(-5, -3));
+                  const startHour = parseInt(element.start.slice(-8, -5));
+                  const endMinute = parseInt(element.end.slice(-5, -3));
+                  const endHour = parseInt(element.end.slice(-8, -5));
+
+                  const top = startHour * 50 + startMinute;
+                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+
+                  const scheduleDate = element.start.slice(0, 10)
+                  console.log(scheduleDate)
+
+                  if (scheduleDate === stringDate) 
+                    return (
+                      <div
+                        key={`${scheduleDate}${index}`}
+                        style={{ top, height }}
+                        className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                      >
+                        <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                          {element.title}
+                        </span>
+                      </div>
+                    )
+                  })}
               {hours.map((hour, index) => {
                 return (
                   <div

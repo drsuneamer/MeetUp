@@ -8,6 +8,7 @@ import { NewEvent } from '../../types/events';
 import SingleSelect from '../common/SingleSelect';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { setMyCalendar } from '../../stores/modules/mycalendar';
 
 interface ChannelOptionType {
   title: string;
@@ -41,7 +42,14 @@ const EventModal = () => {
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-
+  
+  const { myCalendar } = useAppSelector((state) => state.mycalendar);
+  
+  useEffect(()=>{
+    dispatch(setMyCalendar())
+    console.log('내꺼', myCalendar)
+  },[myCalendar])
+  
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -124,14 +132,18 @@ const EventModal = () => {
         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className="mt-[20px]">
+          <div className={`${myCalendar ? 'mt-[50px]' : 'mt-[20px]'}`}>
+            {myCalendar ? (
+            <div className="text-s text-title font-bold">제목</div>
+          ) : (
             <div className="text-s text-title font-bold">미팅명<span className="text-cancel">&#42;</span></div>
+          )}
             <input
               type="text"
               name="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+              className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
             <div className="mt-[20px]">
@@ -140,7 +152,7 @@ const EventModal = () => {
                 type="date" 
                 value={date} 
                 onChange={(e) => setDate(e.target.value)} 
-                className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+                className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
               />
               <div className="mt-[20px]">
                 <div className="text-s text-title font-bold">시간<span className="text-cancel">&#42;</span></div>
@@ -154,33 +166,50 @@ const EventModal = () => {
                     viewBox="0 0 24 24"
                     strokeWidth="2.5"
                     stroke="currentColor"
-                    className="w-5 h-5 ml-[182px]"
+                    className="w-7 h-7 ml-[181px]"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
               <div className="mt-[20px]">
-                <div className="text-s text-title font-bold">내용</div>
-               <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+                {myCalendar ? (
+                  null
+              ) : (
+                <div>
+                  <div className="text-s text-title font-bold">내용</div>
+                 <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+                </div>
+              )}
               </div>
               <div className="mt-[20px]">
-                <div className="text-s text-title font-bold">알림 보낼 채널</div>
-                <Autocomplete
-                  className="w-[450px]"
-                  ListboxProps={{ style: { maxHeight: '150px' } }}
-                  {...defaultProps}
-                  id="select-channel"
-                  renderInput={(params) => (
-                    <TextField {...params} label="채널 선택하기" variant="standard" />
-                  )}
-                />
+                {myCalendar ? (
+                    null
+                ) : (
+                  <div>
+                   <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                   <Autocomplete
+                     className="w-[450px]"
+                     ListboxProps={{ style: { maxHeight: '150px' } }}
+                     {...defaultProps}
+                     id="select-channel"
+                     renderInput={(params) => (
+                      <TextField {...params} label="채널 선택하기" variant="standard" />
+                     )}
+                    />
+                  </div>
+                )}
               </div>
-
             </div>
-            <button 
+            {myCalendar ? (
+               <button 
+               onClick={handleSubmit}
+               className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button">밋업 불가시간 설정하기</button>
+            ) : (
+              <button 
               onClick={handleSubmit}
               className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
+            )}
           
         </div>
       </div>

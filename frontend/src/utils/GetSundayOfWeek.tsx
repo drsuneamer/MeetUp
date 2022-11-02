@@ -10,6 +10,7 @@ export const getSundayOfWeek = () => {
     day = day >= 10 ? day : '0' + day;
     return year + '-' + month + '-' + day;
   };
+
   const week = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const getDayOfWeek = (strDate: any) => {
     const dayOfWeek = week[new Date(strDate).getDay()];
@@ -19,14 +20,16 @@ export const getSundayOfWeek = () => {
   // console.log(getFormatDate(now)); // 2022-10-31
   // console.log(getDayOfWeek(getFormatDate(now))); //MON
 
-  const getSundayOfWeek = (today: any) => {
+  const getSunday = (today: any) => {
     let diff = week.indexOf(today);
-    let sunday = new Date(now.setDate(now.getDate() - diff));
-    return sunday;
+    let sundayTemp = new Date(now.setDate(now.getDate() - diff));
+    return sundayTemp;
   };
-
-  const sunday = getSundayOfWeek(getDayOfWeek(getFormatDate(now)));
+  
+  const sunday = getSunday(getDayOfWeek(getFormatDate(now)));
+  return getFormatDate(sunday)
   // console.log(sunday); // Sun Oct 30 2022 13:47:52 GMT+0900 (한국 표준시)
   // console.log(getFormatDate(sunday)); // 2022-10-30
-  return sunday
-};
+}
+
+

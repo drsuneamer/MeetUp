@@ -1,9 +1,6 @@
 package com.meetup.backend.service.meetup;
 
-import com.meetup.backend.dto.meetup.CalendarResponseDto;
-import com.meetup.backend.dto.meetup.MeetupRequestDto;
-import com.meetup.backend.dto.meetup.MeetupResponseDto;
-import com.meetup.backend.dto.meetup.MeetupUpdateRequestDto;
+import com.meetup.backend.dto.meetup.*;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
@@ -51,6 +48,8 @@ public class MeetupServiceImpl implements MeetupService {
     @Transactional
     public void registerMeetUp(MeetupRequestDto meetupRequestDto, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
+            throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
         Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
         Meetup meetup = Meetup.builder()
@@ -68,8 +67,11 @@ public class MeetupServiceImpl implements MeetupService {
     @Transactional
     public void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId) {
 
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
+            throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        if (meetup.getManager().getId().equals(userId))
+        if (meetup.getManager().getId().equals(user.getId()))
             meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
         else
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
@@ -79,8 +81,12 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     @Transactional
     public void deleteMeetup(Long meetupId, String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
+            throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        if (meetup.getManager().getId().equals(userId))
+        if (meetup.getManager().getId().equals(user.getId()))
             meetup.deleteMeetup(true);
         else
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
@@ -96,6 +102,12 @@ public class MeetupServiceImpl implements MeetupService {
                 meetupResponseDtos.add(MeetupResponseDto.of(meetup));
         }
         return meetupResponseDtos;
+    }
+
+    @Override
+    public MeetupUpdateResponseDto getMeetupInfo(Long meetupId) {
+        Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
+        return MeetupUpdateResponseDto.of(meetup);
     }
 
     @Override
