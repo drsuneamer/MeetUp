@@ -17,10 +17,10 @@ const Header = () => {
   //     setIsMyCalendar(true)
   //   }
   // }, [window.location.href])
-  useEffect(()=>{
-    dispatch(setMyCalendar())
+  useEffect(() => {
+    dispatch(setMyCalendar());
     // console.log('내꺼', myCalendar)
-  },[])
+  }, []);
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
