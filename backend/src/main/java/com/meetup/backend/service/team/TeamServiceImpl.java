@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/10/30
+ * updated by seongmin on 2022/11/01
  */
 @Service
 @RequiredArgsConstructor
@@ -54,18 +54,25 @@ public class TeamServiceImpl implements TeamService {
         for (int i = 0; i < teamArray.length(); i++) {
 
             JSONObject teamObj = teamArray.getJSONObject(i);
-            Team team;
-            if (teamRepository.findById(teamObj.getString("id")).isEmpty()) {
-                team = Team.builder()
-                        .id(teamObj.getString("id"))
-                        .name(teamObj.getString("name"))
-                        .displayName(teamObj.getString("display_name"))
-                        .type(TeamType.of(teamObj.getString("type")))
-                        .build();
-                teamRepository.save(team);
-                teamList.add(team);
-            }
+
+            teamList.add(teamRepository.findById(teamObj.getString("id"))
+                    .orElseGet(() -> Team.builder()
+                            .id(teamObj.getString("id"))
+                            .name(teamObj.getString("name"))
+                            .displayName(teamObj.getString("display_name"))
+                            .type(TeamType.of(teamObj.getString("type")))
+                            .build()));
+//            if (!teamRepository.existsById(teamObj.getString("id"))) {
+////                teamRepository.save(team);
+//                teamList.add(Team.builder()
+//                        .id(teamObj.getString("id"))
+//                        .name(teamObj.getString("name"))
+//                        .displayName(teamObj.getString("display_name"))
+//                        .type(TeamType.of(teamObj.getString("type")))
+//                        .build());
+//            }
         }
+        teamRepository.saveAll(teamList);
         return teamList;
     }
 }
