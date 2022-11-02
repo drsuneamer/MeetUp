@@ -64,7 +64,7 @@ function LoginForm() {
   const onSubmit = async () => {
     setLoad(true);
     await axios
-      .post('https://meet-up.co.kr/api/user/login', login)
+      .post('http://localhost:8080/user/login', login)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -74,6 +74,7 @@ function LoginForm() {
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
           navigate(`/calendar/${window.localStorage.getItem('id')}`);
+          window.location.reload()
         }
       })
       .catch((error) => {

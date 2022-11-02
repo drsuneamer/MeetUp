@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * created by myeongseok on 2022/10/23
@@ -26,7 +27,7 @@ public class MeetingRequestDto {
 
     private String content;
 
-    @NotBlank(message = "미팅의 meetupId는 필수 입니다.")
+    @NotNull(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
 
 

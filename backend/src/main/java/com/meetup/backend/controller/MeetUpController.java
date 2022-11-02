@@ -12,7 +12,6 @@ import com.meetup.backend.service.team.TeamUserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -114,12 +113,18 @@ public class MeetUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping
+    @GetMapping("")
     @ApiOperation(value = "해당 로그인 유저의 meetup 목록 가져오기")
     public ResponseEntity<?> getMeetupByUserId() {
         String userId = authService.getMyInfoSecret().getId();
         List<MeetupResponseDto> meetupResponseDtos = meetupService.getResponseDtos(userId);
         return ResponseEntity.status(OK).body(meetupResponseDtos);
+    }
+
+    @GetMapping("/{meetupId}")
+    @ApiOperation(value = "해당 meetup의 상세정보")
+    public ResponseEntity<?> getMeetupInfoById(@PathVariable("meetupId") Long meetupId) {
+        return ResponseEntity.status(OK).body(meetupService.getMeetupInfo(meetupId));
     }
 
     @GetMapping("/users/{meetupId}")

@@ -5,16 +5,13 @@ import { useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
 import { fetchCalendarList, calendarSelector } from '../stores/modules/meetups';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 function MeetupList() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const calendar = useSelector(calendarSelector);
 
   useEffect(() => {
     dispatch(fetchCalendarList());
-    console.log('hi', calendar);
   }, []);
 
   if (!calendar.loading) {

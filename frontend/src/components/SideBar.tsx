@@ -23,7 +23,7 @@ function SideBar() {
 
   const syncRequest = async () => {
     await axios
-      .get('https://meet-up.co.kr/api/meetup/sync', {
+      .get('http://localhost:8080/meetup/sync', {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
         },

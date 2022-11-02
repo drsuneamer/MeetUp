@@ -72,8 +72,8 @@ public class ScheduleController {
 
     @GetMapping
     @ApiOperation(value ="targetId의 스케쥴(개인일정) 가져오기")
-    public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam @Valid AllScheduleRequestDto requestDto) {
-        AllScheduleResponseDto result = scheduleService.getScheduleByUserAndDate(authService.getMyInfoSecret().getId(), requestDto.getTargetId(), requestDto.getDate());
+    public ResponseEntity<?> getScheduleByMeetupAndDate(@RequestParam String targetId, @RequestParam String date) {
+        AllScheduleResponseDto result = scheduleService.getScheduleByUserAndDate(authService.getMyInfoSecret().getId(), targetId, date);
         return ResponseEntity.status(OK).body(result);
     }
 

@@ -38,7 +38,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seungyong on 2022/10/31
+ * updated by seungyong on 2022/11/02
  */
 @Service
 @RequiredArgsConstructor
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                     user = userRepository.save(
                             User.builder()
                                     .id(id)
-                                    .role(RoleType.Student)
+                                    .role(RoleType.ROLE_Student)
                                     .nickname(nickname)
                                     .password(passwordEncoder.encode(requestDto.getPassword()))
                                     .firstLogin(false)
@@ -119,6 +119,11 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(ACCESS_DENIED);
         }
         redisUtil.deleteData(id);
+    }
+
+    @Override
+    public String getNickname(String userId) {
+        return userRepository.findById(userId).get().getNickname();
     }
 //
 //    @Override

@@ -38,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public void signUp(String id, String password) {
-        User user = User.builder().id(id).password(passwordEncoder.encode(password)).role(RoleType.Admin).build();
+        User user = User.builder().id(id).password(passwordEncoder.encode(password)).role(RoleType.ROLE_Admin).build();
         if (userRepository.findById(id).isPresent()) {
             throw new ApiException(DUPLICATE_ID);
         }
@@ -50,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
         try {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(id, password);
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authToken);
-            if (!userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND)).getRole().equals(RoleType.Admin)) {
+            if (!userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND)).getRole().equals(RoleType.ROLE_Admin)) {
                 throw new ApiException(ADMIN_ACCESS_DENIED);
             }
             return jwtTokenProvider.generateJwtToken(authentication);
@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public void changeRole(String userId, List<ChangeRoleDto> changeRoleDtoList) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        if (!user.getRole().equals(RoleType.Admin)) {
+        if (!user.getRole().equals(RoleType.ROLE_Admin)) {
             throw new ApiException(ADMIN_ACCESS_DENIED);
         }
         for (ChangeRoleDto changeRoleDto : changeRoleDtoList) {
@@ -75,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<UserResponseDto> getUsers(String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        if (!user.getRole().equals(RoleType.Admin)) {
+        if (!user.getRole().equals(RoleType.ROLE_Admin)) {
             throw new ApiException(ADMIN_ACCESS_DENIED);
         }
         List<User> users = userRepository.findByFirstLogin(true);
