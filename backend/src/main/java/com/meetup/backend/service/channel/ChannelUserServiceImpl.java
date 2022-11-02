@@ -10,7 +10,6 @@ import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
@@ -24,7 +23,6 @@ import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -130,7 +128,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
                     userList.add(userRepository.findById(userId).orElse(User.builder()
                             .id(userId)
                             .firstLogin(false)
-                            .role(RoleType.Student)
+                            .role(RoleType.ROLE_Student)
                             .build()));
 //                    if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {
 //                        ChannelUser channelUser = ChannelUser.builder().channel(channel).user(user).build();

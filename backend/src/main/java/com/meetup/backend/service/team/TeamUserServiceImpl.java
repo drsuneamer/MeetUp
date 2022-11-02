@@ -10,7 +10,6 @@ import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
-import com.meetup.backend.service.user.UserService;
 import com.meetup.backend.util.converter.JsonConverter;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +81,7 @@ public class TeamUserServiceImpl implements TeamUserService {
                     userList.add(userRepository.findById(userId).orElse(User.builder()
                             .id(userId)
                             .firstLogin(false)
-                            .role(RoleType.Student)
+                            .role(RoleType.ROLE_Student)
                             .build()));
 
 //                    User user = userRepository.findById(userId).orElseGet(
