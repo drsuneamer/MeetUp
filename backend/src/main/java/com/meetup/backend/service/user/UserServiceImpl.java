@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                     user = userRepository.save(
                             User.builder()
                                     .id(id)
-                                    .role(RoleType.Student)
+                                    .role(RoleType.ROLE_Student)
                                     .nickname(nickname)
                                     .password(passwordEncoder.encode(requestDto.getPassword()))
                                     .firstLogin(false)

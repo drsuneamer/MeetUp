@@ -74,6 +74,7 @@ function LoginForm() {
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
           navigate(`/calendar/${window.localStorage.getItem('id')}`);
+          window.location.reload()
         }
       })
       .catch((error) => {

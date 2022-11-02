@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seungyong on 2022/11/02
+ * updated by seongmin on 2022/11/02
  */
 @RestController
 @RequiredArgsConstructor

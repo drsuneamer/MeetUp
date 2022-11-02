@@ -15,7 +15,6 @@ import com.meetup.backend.entity.team.TeamType;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
-import com.meetup.backend.jwt.JwtTokenProvider;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
@@ -23,11 +22,8 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
-import com.meetup.backend.service.user.UserService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,10 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * created by seongmin on 2022/10/31
@@ -84,7 +77,7 @@ class ScheduleServiceImplTest {
                 .nickname("홍사범")
                 .password(passwordEncoder.encode("password123"))
                 .firstLogin(true)
-                .role(RoleType.Consultant)
+                .role(RoleType.ROLE_Consultant)
                 .build());
 
         User user1 = userRepository.save(User.builder()
@@ -92,21 +85,21 @@ class ScheduleServiceImplTest {
                 .nickname("기영이")
                 .password(passwordEncoder.encode("password123"))
                 .firstLogin(true)
-                .role(RoleType.Student)
+                .role(RoleType.ROLE_Student)
                 .build());
         User user2 = userRepository.save(User.builder()
                 .id("user2")
                 .nickname("기철이")
                 .password(passwordEncoder.encode("password123"))
                 .firstLogin(true)
-                .role(RoleType.Student)
+                .role(RoleType.ROLE_Student)
                 .build());
         User coach1 = userRepository.save(User.builder()
                 .id("coach1")
                 .nickname("나코치")
                 .password(passwordEncoder.encode("password123"))
                 .firstLogin(true)
-                .role(RoleType.Coach)
+                .role(RoleType.ROLE_Coach)
                 .build());
 
 

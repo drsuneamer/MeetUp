@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RoleType {
-    Consultant("CON"), Coach("CO"), Pro("P"), Student("S"), Professor("PF"), Admin("A");
+    ROLE_Consultant("CON"), ROLE_Coach("CO"), ROLE_Pro("P"), ROLE_Student("S"), ROLE_Professor("PF"), ROLE_Admin("A");
 
     private final String code;
 
@@ -20,6 +20,6 @@ public enum RoleType {
                 return type;
             }
         }
-        return RoleType.Student;
+        return RoleType.ROLE_Student;
     }
 }

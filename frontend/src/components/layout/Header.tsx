@@ -15,6 +15,11 @@ function Header() {
     setIsOpenModal(!isOpenModal);
   }, [isOpenModal]);
 
+  const navTo =()=> {
+    navigate(`${url}`)
+    window.location.reload()
+  }
+
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
@@ -37,10 +42,8 @@ function Header() {
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
-        <div>
-          <Link to={url}>
+        <div onClick={navTo} className="cursor-pointer">
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
-          </Link>
         </div>
 
         <div className="flex mr-2">

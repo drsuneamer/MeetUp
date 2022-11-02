@@ -80,6 +80,7 @@ const scheduleSlice = createSlice({
     [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       state.schedules = action.payload;
+      console.log(state.schedules)
     },
     [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;

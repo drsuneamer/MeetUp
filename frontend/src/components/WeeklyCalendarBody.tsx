@@ -159,7 +159,7 @@ const WeeklyCalendarBody = () => {
                     return null;
                   })
                 : null}
-               {/* 나의 스케쥴 */}
+               {/* 나의 스케쥴(회색으로 블락) */}
                {mySchedule.map((element, index) => {
                   const startMinute = parseInt(element.start.slice(-5, -3));
                   const startHour = parseInt(element.start.slice(-8, -5));
@@ -170,7 +170,6 @@ const WeeklyCalendarBody = () => {
                   let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                   const scheduleDate = element.start.slice(0, 10)
-                  console.log(scheduleDate)
 
                   if (scheduleDate === stringDate) 
                     return (
@@ -180,6 +179,56 @@ const WeeklyCalendarBody = () => {
                         className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
                       >
                         <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                          {element.title}
+                        </span>
+                      </div>
+                    )
+                  })}
+                {/* 나에게 신청한 스케쥴(컨설턴트 입장) */}
+                {meetingToMe.map((element, index) => {
+                  const startMinute = parseInt(element.start.slice(-5, -3));
+                  const startHour = parseInt(element.start.slice(-8, -5));
+                  const endMinute = parseInt(element.end.slice(-5, -3));
+                  const endHour = parseInt(element.end.slice(-8, -5));
+
+                  const top = startHour * 50 + startMinute;
+                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+
+                  const scheduleDate = element.start.slice(0, 10)
+
+                  if (scheduleDate === stringDate) 
+                    return (
+                      <div
+                        key={`${scheduleDate}${index}`}
+                        style={{ top: top, height: height, background: `${element.meetupColor}` }}
+                        className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2`}
+                      >
+                        <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                          {element.title}
+                        </span>
+                      </div>
+                    )
+                  })}
+                {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
+                {meetingFromMe.map((element, index) => {
+                  const startMinute = parseInt(element.start.slice(-5, -3));
+                  const startHour = parseInt(element.start.slice(-8, -5));
+                  const endMinute = parseInt(element.end.slice(-5, -3));
+                  const endHour = parseInt(element.end.slice(-8, -5));
+
+                  const top = startHour * 50 + startMinute;
+                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+
+                  const scheduleDate = element.start.slice(0, 10)
+
+                  if (scheduleDate === stringDate) 
+                    return (
+                      <div
+                        key={`${scheduleDate}${index}`}
+                        style={{ top, height }}
+                        className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2`}
+                      >
+                        <span key={`${element.id}`} className={`w-full text-center text-background font-medium pt-2`}>
                           {element.title}
                         </span>
                       </div>
