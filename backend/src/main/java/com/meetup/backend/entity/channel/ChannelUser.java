@@ -18,7 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @IdClass(ChannelUserId.class)
-public class ChannelUser extends BaseEntity implements Serializable {
+public class ChannelUser implements Serializable {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
