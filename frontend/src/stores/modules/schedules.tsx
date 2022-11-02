@@ -88,5 +88,8 @@ const scheduleSlice = createSlice({
 });
 
 const { reducer } = scheduleSlice;
-export const scheduleSelector = (state: RootState) => state.schedules;
+export const scheduleSelector = (state:RootState) => state.schedules
+export const myScheduleSelector = (state: RootState) => state.schedules.schedules.scheduleResponseList;
+export const meetingToMeSelector = (state: RootState) => state.schedules.schedules.meetingToMe;
+export const meetingFromMeSelector = (state: RootState) => state.schedules.schedules.meetingFromMe;
 export default reducer;

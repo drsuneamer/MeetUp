@@ -46,7 +46,7 @@ function SideBar() {
         onClick={syncRequest}
         className="bg-title hover:bg-hover text-background rounded w-full h-s drop-shadow-button flex justify-center items-center space-x-2 absolute bottom-24"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+        <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
