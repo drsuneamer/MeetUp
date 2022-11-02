@@ -10,8 +10,9 @@ import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/25
+ * updated by myeongseok on 2022/11/01
  */
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    @Query("SELECT s FROM Schedule s WHERE s.user = :user AND s.type = 'schedule' AND s.start BETWEEN :from AND :to ")
+    @Query("SELECT s FROM Schedule s WHERE s.user = :user AND s.start BETWEEN :from AND :to ")
     List<Schedule> findAllByStartBetweenAndUser(LocalDateTime from, LocalDateTime to, User user);
 }

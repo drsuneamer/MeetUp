@@ -1,15 +1,18 @@
 package com.meetup.backend.service.channel;
 
 import com.meetup.backend.dto.channel.ChannelResponseDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingChannelDto;
 import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
+import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
@@ -44,6 +47,8 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final ChannelUserRepository channelUserRepository;
 
     private final UserRepository userRepository;
+
+    private final MeetupRepository meetupRepository;
 
     private final AuthService authService;
 
@@ -129,4 +134,25 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         }
 
     }
+
+    @Override
+    public List<MeetingChannelDto> getMeetingChannelByUsers(String userId, String managerId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        User manager = userRepository.findById(managerId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        List<MeetingChannelDto> channelList = new ArrayList<>();
+
+        for (Meetup meetup : meetupRepository.findByManager(manager)) {
+            if (meetup.isDelete())
+                continue;
+            Channel channel = meetup.getChannel();
+            if (channelUserRepository.existsByChannelAndUser(channel, user)) {
+                channelList.add(MeetingChannelDto.of(meetup, channel));
+            }
+
+        }
+
+        return channelList;
+    }
+
 }

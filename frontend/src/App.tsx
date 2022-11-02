@@ -18,17 +18,17 @@ function App() {
   return (
     <div className="font-pre">
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/*" element={<NotFound />} />
+        <Route path="/admin-meetup2022" element={<Admin />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-signup" element={<AdminSignup />} />
         <Route element={<PrivateRoutes />}>
-          <Route path="/" element={<MeetUp />} />
+          <Route path="/calendar/:userId" element={<MeetUp />} />
           <Route path="/tutorial" element={<Tutorial />} />
           <Route path="/create-channel" element={<CreateChannel />} />
           <Route path="/edit-channel" element={<EditChannel />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/admin-signup" element={<AdminSignup />} />
         </Route>
       </Routes>
     </div>

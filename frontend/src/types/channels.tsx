@@ -6,6 +6,6 @@ export type tChannel = {
 
 export type tMeetup = {
   id: string;
-  username: string;
+  userName: string;
 };
 

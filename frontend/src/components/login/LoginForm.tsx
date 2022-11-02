@@ -43,31 +43,37 @@ function LoginForm() {
   //   }
   // };
 
-  const onKeyPress = (e: KeyboardEvent<HTMLInputElement>): void => {
+  const enterLogin = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && checked) {
       onSubmit();
     }
   };
 
   useEffect(() => {
-    setError(false);
-  }, []);
+    const timer = setTimeout(() => {
+      setAlert(false);
+      setError(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error, alert]);
 
   // 로그인 API 연결
   const onSubmit = async () => {
     setLoad(true);
     await axios
-      .post('http://localhost:8080/user/login', login)
+      .post('https://meet-up.co.kr/api/user/login', login)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          setError(false);
-          // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
+          // 로그인 완료 시 localstorage에 accesstoken, nickname, id 저장 후 메인('/') 이동
           window.localStorage.setItem('id', res.data.id);
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
-          navigate('/');
+          navigate(`/calendar/${window.localStorage.getItem('id')}`);
         }
       })
       .catch((error) => {
@@ -80,56 +86,58 @@ function LoginForm() {
     <div className="flex h-[500px] w-[900px]">
       {/* 입력창 */}
       <div className="bg-background w-[480px] flex flex-col items-center justify-center rounded-l-login">
-        <input
-          onChange={onChangeID}
-          type="text"
-          placeholder="Mattermost ID"
-          className="w-xs text-center placeholder-placeholder border-b-2 border-b-title py-1 px-2 mb-8 focus:outline-none focus:border-b-footer"
-        />
-        <input
-          onKeyDown={onKeyPress}
-          onChange={onChangePW}
-          type="password"
-          placeholder="Mattermost PW"
-          className="w-xs text-center placeholder-placeholder border-b-2 border-b-title py-1 px-2 mb-10 focus:outline-none focus:border-b-footer"
-        />
-        <div className="flex items-center mb-3">
-          <label className="mr-2 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">개인정보(닉네임) 제공 동의 </label>
+        <div className="mb-10 flex flex-col items-center justify-center">
           <input
-            onKeyDown={onKeyPress}
-            onClick={toggleCheck}
-            id="default-checkbox"
-            type="checkbox"
-            value=""
-            className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            onKeyDown={enterLogin}
+            onChange={onChangeID}
+            type="text"
+            placeholder="Mattermost ID"
+            className="w-xs text-center placeholder-placeholder border-b-2 border-b-title py-1 px-2 mb-8 focus:outline-none focus:border-b-footer"
           />
+          <input
+            onKeyDown={enterLogin}
+            onChange={onChangePW}
+            type="password"
+            placeholder="Mattermost PW"
+            className="w-xs text-center placeholder-placeholder border-b-2 border-b-title py-1 px-2 mb-10 focus:outline-none focus:border-b-footer"
+          />
+          <div className="flex items-center mb-3">
+            <label className="mr-2 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">개인정보(닉네임) 제공 동의 </label>
+            <input
+              onKeyDown={enterLogin}
+              onClick={toggleCheck}
+              id="default-checkbox"
+              type="checkbox"
+              className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+          </div>
+          {checked ? ( // 개인정보 동의 체크 시에만 버튼 활성화
+            <button onClick={onSubmit} className="bg-title rounded drop-shadow-shadow w-xs h-s text-background text-m hover:bg-hover">
+              매터모스트로 로그인
+            </button>
+          ) : (
+            // 비활성화된 버튼 - 클릭시 아래 alert
+            <button onClick={notYet} className="bg-footer rounded drop-shadow-shadow w-xs h-s text-label text-m">
+              매터모스트로 로그인
+            </button>
+          )}
         </div>
-        {checked ? ( // 개인정보 동의 체크 시에만 버튼 활성화
-          <button onClick={onSubmit} className="bg-title rounded drop-shadow-shadow w-xs h-s text-background text-m hover:bg-hover">
-            매터모스트로 로그인
-          </button>
-        ) : (
-          // 비활성화된 버튼 - 클릭시 아래 alert
-          <button onClick={notYet} className="bg-footer rounded drop-shadow-shadow w-xs h-s text-label text-m">
-            매터모스트로 로그인
-          </button>
-        )}
-        {alert && load === false ? (
-          <Alert severity="error" className="mt-10">
+        {alert && load === false ? ( // 개인정보 동의하지 않은 상태로 로그인 버튼 클릭시 - 3초
+          <Alert severity="error" className="mb-4 text-[13px]">
             개인정보 수집 미동의시 서비스 이용이 불가합니다
           </Alert>
         ) : (
           ''
         )}
-        {error ? (
-          <Alert severity="error" className="mt-5 text-[13px]">
+        {error ? ( // axios response 에러 시 반응 - 3초
+          <Alert severity="error" className="mb-4 text-[13px]">
             아이디(비밀번호)를 잘못 입력하였습니다.
           </Alert>
         ) : (
           ''
         )}
 
-        <Alert severity="info" className="mt-5 text-[13px]">
+        <Alert severity="info" className="text-[13px]">
           첫 로그인의 경우 데이터 동기화 시간이 소요됩니다 (최대 2분)
         </Alert>
       </div>

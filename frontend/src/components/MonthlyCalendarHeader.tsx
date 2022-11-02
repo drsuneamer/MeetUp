@@ -22,6 +22,11 @@ const Header = () => {
     dispatch(setMyCalendar)
     console.log('내꺼', myCalendar)
   },)
+//     if ( window.location.href === `https://meet-up.co.kr/calendar/${localStorage.getItem('id')}`) {
+//       setIsMyCalendar(true)
+//     }
+//   }, [window.location.href])
+// >>>>>>> cdc5b7b8c9be40471088500ce7f8886ace90e232
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);

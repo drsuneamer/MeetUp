@@ -61,6 +61,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Meetup> meetups = meetupRepository.findByManager(targetUser);
 
         boolean flag = false;
+        if (loginUserId.equals(targetUserId)) {
+            flag = true;
+        }
         for (Meetup meetup : meetups) {
             if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
                 flag = true;
