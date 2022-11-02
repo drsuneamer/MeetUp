@@ -81,7 +81,7 @@ function EditChannel() {
 
   // const onSubmit = async () => {
   //   await axios
-  //     .post('https://meet-up.co.kr/api/api/?', record, {
+  //     .post('http://localhost:8080/api/?', record, {
   //       headers: {
   //         Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
   //       },

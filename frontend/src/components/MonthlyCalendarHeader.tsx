@@ -61,10 +61,11 @@ const Header = () => {
   return (
     <>
       <header className="flex flex-col relative items-center px-4 justify-center w-full h-[80px] mt-[50px]">
-        { myCalendar ? 
-        <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 밋업</div> :
-        <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">다른 사람의 밋업</div>
-        }
+        {myCalendar ? (
+          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 밋업</div>
+        ) : (
+          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">다른 사람의 밋업</div>
+        )}
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />
