@@ -100,7 +100,9 @@ public class TeamUserServiceImpl implements TeamUserService {
 //                    }
                 }
             }
-            userRepository.saveAll(userList.stream().filter(user -> !userRepository.existsById(user.getId())).collect(Collectors.toList()));
+
+            Set<User> userSet = new HashSet<>(userRepository.findAll());
+            userRepository.saveAll(userList.stream().filter(user -> !userSet.contains(user)).collect(Collectors.toList()));
 //            List<TeamUser> teamUserList = userList.stream().map(user -> TeamUser.builder().team(team).user(user).build())
 //                    .filter(teamUser -> teamUserRepository.existsByUserAndTeam(teamUser.getUser(), teamUser.getTeam()))
 //                    .collect(Collectors.toList());
@@ -108,9 +110,10 @@ public class TeamUserServiceImpl implements TeamUserService {
 //            teamUserRepository.saveAll(userList.stream().filter(user -> !teamUserRepository.existsByUserAndTeam(user, team))
 //                    .map(user -> TeamUser.builder().team(team).user(user).build())
 //                    .collect(Collectors.toList()));
-
+            Set<TeamUser> teamUserSet = new HashSet<>(teamUserRepository.findByTeam(team));
             teamUserRepository.saveAll(userList.stream()
                     .map(user -> TeamUser.builder().team(team).user(user).build())
+                    .filter(teamUser -> !teamUserSet.contains(teamUser))
                     .collect(Collectors.toList()));
 
         }
