@@ -22,7 +22,7 @@ function Admin() {
   }, [get]);
 
   const onChanged = (e: any): any => {
-    setPost({ id: e.target.id, roleType: e.target.value });
+    setPost({ id: e.target.id, roleType: `ROLE_${e.target.value}` });
     setGet(false);
   };
 

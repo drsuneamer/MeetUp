@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/SideBar';
 import Calendar from '../components/Calendar';
 import Modal from '../components/modal/Modal'
@@ -7,12 +7,11 @@ import Layout from '../components/layout/Layout';
 import { useNavigate } from 'react-router-dom';
 
 const MeetUp = () => {
-
   const navigate = useNavigate()
-
   function tutorialHandler() {
     navigate('/tutorial')
-}   
+  }
+
 
   return (
     <Layout>
