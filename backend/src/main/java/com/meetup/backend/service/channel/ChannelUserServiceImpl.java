@@ -30,7 +30,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
@@ -137,11 +139,14 @@ public class ChannelUserServiceImpl implements ChannelUserService {
                 }
 
             }
+            Set<ChannelUser> channelUserSet = new HashSet<>(channelUserRepository.findByChannel(channel));
+
 
 //            channelUserRepository.saveAll(userList.stream().filter(user -> !channelUserRepository.existsByChannelAndUser(channel, user))
 //                    .map(user -> ChannelUser.builder().channel(channel).user(user).build())
 //                    .collect(Collectors.toList()));
             channelUserRepository.saveAll(userList.stream().map(user -> ChannelUser.builder().channel(channel).user(user).build())
+                    .filter(channelUser -> !channelUserSet.contains(channelUser))
                     .collect(Collectors.toList()));
         }
 
