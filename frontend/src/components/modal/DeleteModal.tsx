@@ -19,7 +19,7 @@ function DeleteModal({ onClickToggleModal, props, submit }: PropsWithChildren<Mo
       <div className="w-[450px] h-[300px] flex flex-col items-center bg-background z-[10000] rounded drop-shadow-shadow">
         <svg
           onClick={onClickToggleModal}
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns="https://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="2.5"

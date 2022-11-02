@@ -25,7 +25,6 @@ module.exports = {
     fontFamily: {
       pre: ['Pretendard Variable'],
       damion: ['Damion'], // meetup logo
-      noto: ['Noto Sans KR'], // body
     },
     fontSize: {
       xs: '15px', // meetup title
