@@ -5,13 +5,20 @@ import IconRight from './common/IconRight';
 import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
 import { setCurrentDate, setToday } from '../stores/modules/dates';
 import { setMyCalendar } from '../stores/modules/mycalendar';
+import { calendarSelector } from '../stores/modules/meetups';
+import { useSelector } from 'react-redux';
+import { axiosInstance } from './auth/axiosConfig';
+import { useParams } from 'react-router-dom';
+
 // import { getStringDateFormat } from '../utils/GetStringDateFormat';
 
 const Header = () => {
+  const params = useParams()
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
   // const [isMyCalendar, setIsMyCalendar] = useState(false)
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
+  const calendar = useSelector(calendarSelector);
   // useEffect(()=>{
   //   if ( window.location.href === `http://localhost:3000/calendar/${localStorage.getItem('id')}`) {
   //     setIsMyCalendar(true)
@@ -21,6 +28,18 @@ const Header = () => {
     dispatch(setMyCalendar());
     // console.log('내꺼', myCalendar)
   },[myCalendar])
+
+  const [nickname, setNickname] = useState('')
+
+  useEffect(() => {
+    const userId = params.userId
+    axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
+     setNickname(res.data)
+    });
+  }, [nickname]);
+
+  
+
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
@@ -58,7 +77,7 @@ const Header = () => {
         {myCalendar ? (
           <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 밋업</div>
         ) : (
-          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">다른 사람의 밋업</div>
+          <div className="absolute left-0 bg-point py-1 px-8 drop-shadow-button rounded text-background">{nickname}의 밋업</div>
         )}
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
