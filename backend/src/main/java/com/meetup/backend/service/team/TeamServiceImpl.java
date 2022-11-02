@@ -54,18 +54,17 @@ public class TeamServiceImpl implements TeamService {
         for (int i = 0; i < teamArray.length(); i++) {
 
             JSONObject teamObj = teamArray.getJSONObject(i);
-            Team team;
-            if (teamRepository.findById(teamObj.getString("id")).isEmpty()) {
-                team = Team.builder()
+            if (!teamRepository.existsById(teamObj.getString("id"))) {
+//                teamRepository.save(team);
+                teamList.add(Team.builder()
                         .id(teamObj.getString("id"))
                         .name(teamObj.getString("name"))
                         .displayName(teamObj.getString("display_name"))
                         .type(TeamType.of(teamObj.getString("type")))
-                        .build();
-                teamRepository.save(team);
-                teamList.add(team);
+                        .build());
             }
         }
+        teamRepository.saveAll(teamList);
         return teamList;
     }
 }

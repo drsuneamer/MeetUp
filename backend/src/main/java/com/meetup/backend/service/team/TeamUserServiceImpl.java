@@ -24,7 +24,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
@@ -55,6 +58,7 @@ public class TeamUserServiceImpl implements TeamUserService {
     }
 
     // db에 저장되어 있지 않은 팀만 TeamUser db 저장
+    // Teamuser에 이미 저장되어 있는지 확인 할 필요 없음
     @Override
     public void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList) {
 
@@ -62,7 +66,7 @@ public class TeamUserServiceImpl implements TeamUserService {
         client.setAccessToken(mmSessionToken);
 
         for (Team team : teamList) {
-
+            List<User> userList = new ArrayList<>();
             for (int k = 0; ; k++) {
 
                 Response mmTeamUserResponse = client.getTeamMembers(team.getId(), Pager.of(k, 200)).getRawResponse();
@@ -72,21 +76,43 @@ public class TeamUserServiceImpl implements TeamUserService {
                 for (int l = 0; l < userArray.length(); l++) {
 
                     String userId = userArray.getJSONObject(l).getString("user_id");
-                    User user = userRepository.findById(userId).orElseGet(
-                            () -> userRepository.save(
-                                    User.builder()
-                                            .id(userId)
-                                            .firstLogin(false)
-                                            .role(RoleType.Student)
-                                            .build()
-                            )
-                    );
-                    if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
-                        TeamUser teamUser = TeamUser.builder().team(team).user(user).build();
-                        teamUserRepository.save(teamUser);
-                    }
+
+                    // @id 값을 알고있기 때문에 persist()가 아닌 merge()를 함.
+                    // insert 쿼리 전 select 실행?
+                    userList.add(userRepository.findById(userId).orElse(User.builder()
+                            .id(userId)
+                            .firstLogin(false)
+                            .role(RoleType.Student)
+                            .build()));
+
+//                    User user = userRepository.findById(userId).orElseGet(
+//                            () -> userRepository.save(
+//                                    User.builder()
+//                                            .id(userId)
+//                                            .firstLogin(false)
+//                                            .role(RoleType.Student)
+//                                            .build()
+//                            )
+//                    );
+//                    if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
+//                        TeamUser teamUser = TeamUser.builder().team(team).user(user).build();
+//                        teamUserRepository.save(teamUser);
+//                    }
                 }
             }
+            userRepository.saveAll(userList.stream().filter(user -> !userRepository.existsById(user.getId())).collect(Collectors.toList()));
+//            List<TeamUser> teamUserList = userList.stream().map(user -> TeamUser.builder().team(team).user(user).build())
+//                    .filter(teamUser -> teamUserRepository.existsByUserAndTeam(teamUser.getUser(), teamUser.getTeam()))
+//                    .collect(Collectors.toList());
+
+//            teamUserRepository.saveAll(userList.stream().filter(user -> !teamUserRepository.existsByUserAndTeam(user, team))
+//                    .map(user -> TeamUser.builder().team(team).user(user).build())
+//                    .collect(Collectors.toList()));
+
+            teamUserRepository.saveAll(userList.stream()
+                    .map(user -> TeamUser.builder().team(team).user(user).build())
+                    .collect(Collectors.toList()));
+
         }
     }
 }
