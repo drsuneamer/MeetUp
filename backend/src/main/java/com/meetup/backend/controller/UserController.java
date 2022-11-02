@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seungyong on 2022/10/31
+ * updated by seungyong on 2022/11/02
  */
 @RestController
 @RequiredArgsConstructor
@@ -51,5 +51,10 @@ public class UserController {
     @GetMapping("/webex/{userId}")
     public ResponseEntity<?> getWebex(@PathVariable("userId") String userId) {
         return ResponseEntity.status(OK).body(userService.getWebexUrl(userId));
+    }
+
+    @GetMapping("/nickname/{userId}")
+    public ResponseEntity<?> getUserNickname(@PathVariable("userId") String userId) {
+        return ResponseEntity.status(OK).body(userService.getNickname(userId));
     }
 }
