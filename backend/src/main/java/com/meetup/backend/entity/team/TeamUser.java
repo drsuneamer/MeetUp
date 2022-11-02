@@ -5,6 +5,7 @@ import com.meetup.backend.entity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * created by seungyoung on 2022/10/20
@@ -14,15 +15,18 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TeamUser extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@IdClass(TeamUserId.class)
+public class TeamUser extends BaseEntity implements Serializable {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

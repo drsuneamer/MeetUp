@@ -10,12 +10,13 @@ import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
- * updated by seungyong on 2022/10/22
- * updated by seungyong on 2022/10/25
+ * updated by seongmin on 2022/11/02
  */
 public interface TeamUserRepository extends JpaRepository<TeamUser, Long> {
 
     List<TeamUser> findByUser(User user);
+
+    boolean existsByUserAndTeam(User user, Team team);
 
     Optional<TeamUser> findByTeamAndUser(Team team, User user);
 
