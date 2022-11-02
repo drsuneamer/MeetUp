@@ -45,7 +45,7 @@ const EventModal = () => {
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value
   
-  const newStartTime =() => {
+  const newStartTime =()  => {
     console.log(startTimeValue)
     if(startTimeValue.length === 3){
       const startTimeNewValue = '0'+ startTimeValue
@@ -75,7 +75,7 @@ const EventModal = () => {
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value
 
-  const newEndTime =() => {
+  const newEndTime =()  => {
     if(endTimeValue.length === 3){
       const endTimeNewValue = '0'+ endTimeValue
       const hour = endTimeNewValue.slice(0,2) + ':'
@@ -111,9 +111,9 @@ const EventModal = () => {
 
   const parsedData:any = {
     title: title,
-    date: date,
-    startTime: startTime,
-    endTime: endTime,
+    content: null,
+    start: newStartTime(),
+    end: newEndTime()
   };
 
   // const parsedData: any = {
@@ -166,14 +166,18 @@ const EventModal = () => {
   // };
   const handleSubmit = async() => {
     const action = await dispatch(addSchedule(parsedData))
-    console.log('title:', title ,'date:',date, 'startTime:',startTime, 'startTimeValue:', startTimeValue, 'endTime:',endTime)
+    // const a = newStartTime()
+    console.log(parsedData)
     console.log(startTimeValue.length)
     console.log(typeof(startTimeValue))
     console.log(newStartTime())
     console.log(newEndTime())
     if (isFulfilled(action)) {
+      console.log('마 들리냐')
       const userId = localStorage.getItem('id')
-      navigate(`/calendar/${userId}`);
+      console.log(userId)
+      handleToggleModal()
+      // navigate(`/calendar/${userId}`);
     } 
   }
   const handleResetInput = useCallback(() => {
