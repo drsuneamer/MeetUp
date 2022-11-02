@@ -28,9 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/02
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -70,16 +72,19 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public Long createMeeting(String userId, MeetingRequestDto meetingRequestDto) {
-        User loginUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        if (meetingRequestDto.getStart().length() != "yyyy-MM-dd HH:mm:ss".length() || meetingRequestDto.getEnd().length() != "yyyy-MM-dd HH:mm:ss".length()) {
+            throw new ApiException(DATE_FORMAT_EX);
+        }
+        User loginUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
-        Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
+        Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
-            throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+            throw new ApiException(ACCESS_DENIED);
 
         Meeting meeting = Meeting.builder()
                 .title(title)
@@ -91,7 +96,7 @@ public class MeetingServiceImpl implements MeetingService {
                 .build();
         MattermostClient client = Client.getClient();
         client.setAccessToken(authService.getMMSessionToken(userId));
-        String startTime = meetingRequestDto.getStart().substring(5,16);
+        String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
         client.createPost(new Post(channel.getId(), message));

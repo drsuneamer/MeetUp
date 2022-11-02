@@ -8,12 +8,11 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seungyong on 2022/11/01
+ * updated by seungyong on 2022/11/02
  */
 @Getter
 @RequiredArgsConstructor
 public enum ExceptionEnum {
-
 
     USER_NOT_FOUND(BAD_REQUEST, "40001", "사용자를 찾을 수 없습니다."),
     BAD_REQUEST_LOGOUT(BAD_REQUEST, "40002", "잘못된 로그아웃 접근입니다."),
@@ -26,6 +25,7 @@ public enum ExceptionEnum {
 
     MEETING_NOT_FOUND(BAD_REQUEST, "40007", "해당 미팅(밋업 신청 스케쥴)을 찾을 수 없습니다."),
     KEY_NOT_MATCHING(BAD_REQUEST, "40008", "키 값이 일치하지 않습니다."),
+    DATE_FORMAT_EX(BAD_REQUEST, "40009", "date의 형식은 yyyy-MM-dd HH:mm:ss 입니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40108", "인증 정보가 없습니다."),
 
