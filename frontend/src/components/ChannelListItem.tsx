@@ -1,11 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { tChannel } from '../types/channels';
+import { useDispatch } from 'react-redux';
+import { update } from '../stores/modules/channelId';
 
 interface ChannelListItemProps {
   channel: tChannel;
 }
 
 export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const goEdit = () => {
+    dispatch(update(channel.id));
+    navigate(`/edit-channel/${channel.id}`);
+  };
   return (
     <div className="ChannelListItem w-full mb-1 drop-shadow-button">
       <div className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap">
@@ -15,7 +25,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
         <span className="channelName leading-[40px] w-7/12 text-center">{channel.title}</span>
         <div className="ColDiv flex flex-col justify-center">
           {/* settings button */}
-          <span className="w-2/12 text-center ">
+          <span className="w-2/12 text-center cursor-pointer" onClick={goEdit}>
             <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-label">
               <path
                 fillRule="evenodd"

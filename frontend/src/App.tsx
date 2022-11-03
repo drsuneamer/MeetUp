@@ -27,7 +27,7 @@ function App() {
           <Route path="/calendar/:userId" element={<MeetUp />} />
           <Route path="/tutorial" element={<Tutorial />} />
           <Route path="/create-channel" element={<CreateChannel />} />
-          <Route path="/edit-channel" element={<EditChannel />} />
+          <Route path="/edit-channel/:id" element={<EditChannel />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
