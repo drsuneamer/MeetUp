@@ -6,8 +6,8 @@ import { KeyboardEvent } from 'react';
 import LoginSpinner from '../common/LoginSpinner';
 
 function LoginForm() {
-  const baseURL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const [id, setID] = useState('');
   const [pw, setPW] = useState('');
@@ -36,10 +36,6 @@ function LoginForm() {
     setPW(e.target.value);
   };
 
-  useEffect(() => {
-    setLogin({ id: id, password: pw });
-  }, [id, pw]); // id와 pw값이 변경될때마다 제출용 object에 반영
-
   const enterLogin = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter' && checked) {
       onSubmit();
@@ -47,6 +43,11 @@ function LoginForm() {
   };
 
   useEffect(() => {
+    setLogin({ id: id, password: pw });
+  }, [id, pw]); // id와 pw값이 변경될때마다 제출용 object에 반영
+
+  useEffect(() => {
+    // 개인정보동의, 비밀번호 오류 안내는 3초 뒤에 사라짐
     const timer = setTimeout(() => {
       setAlert(false);
       setCert(false);
@@ -57,8 +58,20 @@ function LoginForm() {
     };
   }, [cert, alert]);
 
+  useEffect(() => {
+    // 기타 오류 안내는 10초 뒤에 사라짐
+    const timer = setTimeout(() => {
+      setError(false);
+    }, 10000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
+
   // 로그인 API 연결
   const onSubmit = async () => {
+    // 로딩 화면으로 전환
     setLoad(true);
     await axios
       .post(`${baseURL}/user/login`, login)
@@ -76,9 +89,10 @@ function LoginForm() {
         }
       })
       .catch((error) => {
+        // 오류 캐치시 로딩 페이지에서 로그인 페이지로 다시 전환
         if (error.response.data.errorMessage === '인증 정보가 없습니다.') {
           setLoad(false);
-          setCert(true);
+          setCert(true); // 비밀번호 오류시 비밀번호 오류 안내
           setChecked(false);
         } else {
           setLoad(false);
@@ -89,14 +103,15 @@ function LoginForm() {
   };
 
   if (load) {
+    // axios 전송 후 대기 상태 - 로그인 스피너만 보여줌
     return <LoginSpinner />;
   } else {
     return (
       // 전체
       <div className="flex h-[500px] w-[900px]">
         {/* 입력창 */}
-        <div className="bg-background w-[480px] flex flex-col items-center justify-center rounded-l-login">
-          <div className="mt-3 mb-10 flex flex-col items-center justify-center">
+        <div className="relative bg-background w-[480px] flex flex-col items-center justify-center rounded-l-login">
+          <div className="flex flex-col items-center">
             <input
               onKeyDown={enterLogin}
               onChange={onChangeID}
@@ -133,8 +148,9 @@ function LoginForm() {
               </button>
             )}
           </div>
+
           {alert ? ( // 개인정보 동의하지 않은 상태로 로그인 버튼 클릭시 - 3초
-            <Alert severity="error" className="mb-4 text-[13px]">
+            <Alert severity="error" className="absolute bottom-12 text-[13px]">
               개인정보 수집 미동의시 서비스 이용이 불가합니다
             </Alert>
           ) : (
@@ -142,7 +158,7 @@ function LoginForm() {
           )}
 
           {cert ? ( // axios response 에러 시 반응 - 3초
-            <Alert severity="error" className="mb-4 text-[13px]">
+            <Alert severity="error" className="absolute bottom-12 text-[13px]">
               아이디(비밀번호)를 잘못 입력하였습니다.
             </Alert>
           ) : (
@@ -150,7 +166,7 @@ function LoginForm() {
           )}
 
           {error ? ( // axios response 에러 (비밀번호 오류 제외) 반응 - 3초
-            <Alert severity="error" className="mb-4 text-[13px]">
+            <Alert severity="error" className="absolute bottom-12 text-[13px]">
               오류가 발생했습니다! 잠시 후에 다시 시도해주세요 😥
             </Alert>
           ) : (
