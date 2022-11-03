@@ -14,6 +14,7 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
+import com.meetup.backend.service.notice.WebhookNoticeService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.util.converter.JsonConverter;
@@ -38,7 +39,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seungyong on 2022/11/03
+ * updated by seongmin on 2022/11/03
  */
 @Service
 @RequiredArgsConstructor
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
     private final ChannelService channelService;
     private final TeamUserService teamUserService;
     private final ChannelUserService channelUserService;
+    private final WebhookNoticeService webhookNoticeService;
 
     @Override
     @Transactional
@@ -87,6 +89,8 @@ public class UserServiceImpl implements UserService {
                 }
 
                 if (!user.isFirstLogin()) {
+                    webhookNoticeService.firstLoginNotice(nickname);
+                    user.setFirstLogin();
                     registerTeamAndChannel(mmToken, user);
                 }
 
@@ -139,7 +143,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerTeamAndChannel(String mmToken, User user) {
-        user.setFirstLogin();
         List<Team> teams = teamService.registerTeamFromMattermost(user.getId(), mmToken); // 팀 등록
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
