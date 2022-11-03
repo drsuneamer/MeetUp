@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+
 import { tMember } from '../../types/members';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
 import { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ import { axiosInstance } from '../../components/auth/axiosConfig';
 interface ModalDefaultType {
   onClickToggleModal: () => void;
 }
+
 
 function MemberListModal({ onClickToggleModal }: PropsWithChildren<ModalDefaultType>) {
   const dispatch = useAppDispatch();
@@ -58,6 +60,7 @@ function MemberListModal({ onClickToggleModal }: PropsWithChildren<ModalDefaultT
         </svg>
         <p className="text-placeholder text-[16px] ml-[5px]">서울1반_팀장채널 내 멤버</p>
         <div className="mt-[10px] h-[320px] overflow-auto scrollbar-hide">
+
           {member.map((value: tMember, index: number) => (
             <MemberListItem key={value.id} member={value} />
           ))}

@@ -69,7 +69,15 @@ public class TeamUserServiceImpl implements TeamUserService {
             for (int k = 0; ; k++) {
 
                 Response mmTeamUserResponse = client.getTeamMembers(team.getId(), Pager.of(k, 200)).getRawResponse();
-                JSONArray userArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamUserResponse.getEntity());
+                JSONArray userArray = new JSONArray();
+
+                try {
+                    userArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamUserResponse.getEntity());
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                    log.info("mmChannelUserResponse.getEntity() = {}", mmTeamUserResponse.getEntity());
+                    e.printStackTrace();
+                }
                 if (userArray.isEmpty()) break;
 
                 for (int l = 0; l < userArray.length(); l++) {

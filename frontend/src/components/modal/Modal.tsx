@@ -19,7 +19,7 @@ interface ChannelOptionType {
 }
 
 const channels = [
-  { title: '서울_1반_팀장채널'},
+  { title: '서울_1반_팀장채널' },
   { title: 'A101' },
   { title: 'A102' },
   { title: 'A103' },
@@ -209,8 +209,15 @@ const EventModal = () => {
           e.stopPropagation();
         }}
       >
-        <svg onClick={handleToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          onClick={handleToggleModal}
+          xmlns="https://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2.5"
+          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
           <div className={`${myCalendar ? 'mt-[50px]' : 'mt-[20px]'}`}>
@@ -227,6 +234,16 @@ const EventModal = () => {
               className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
+          <div className="mt-[20px]">
+            <div className="text-s text-title font-bold">
+              날짜<span className="text-cancel">&#42;</span>
+            </div>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+            />
             <div className="mt-[20px]">
               <div className="text-s text-title font-bold">날짜<span className="text-cancel">&#42;</span></div>
               <input 
@@ -291,11 +308,10 @@ const EventModal = () => {
               onClick={handleSubmit}
               className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
             )}
-          
         </div>
       </div>
       <div
-        className='w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]'
+        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
 
@@ -304,6 +320,7 @@ const EventModal = () => {
           }
         }}
       />
+      </div>
     </div>
   );
 };
