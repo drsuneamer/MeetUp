@@ -9,16 +9,15 @@ import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
@@ -62,7 +61,16 @@ class UserServiceImplTest {
         mmSessionToken = redisUtil.getData(mmId);
     }
 
-    @Transactional
+    @AfterEach
+    void After() {
+        channelUserRepository.deleteAll();
+        channelRepository.deleteAll();
+        teamUserRepository.deleteAll();
+        teamRepository.deleteAll();
+        userRepository.deleteAll();
+
+    }
+
     @Test
     @DisplayName("로그인")
     void login() {
@@ -70,18 +78,17 @@ class UserServiceImplTest {
         mmId = loginResponse.getId();
         assertThat(loginResponse).isNotNull();
 
-        assertNotSame(teamRepository.findAll().size(), 0);
+        assertThat(teamRepository.findAll().size()).isNotSameAs(0);
 
-        assertNotSame(teamUserRepository.findAll().size(), 0);
+        assertThat(teamUserRepository.findAll().size()).isNotSameAs(0);
 
-        assertNotSame(channelRepository.findAll().size(), 0);
+        assertThat(channelRepository.findAll().size()).isNotSameAs(0);
 
-        assertNotSame(channelUserRepository.findAll().size(), 0);
+        assertThat(channelUserRepository.findAll().size()).isNotSameAs(0);
 
-        assertNotSame(userRepository.findAll().size(), 1);
+        assertThat(userRepository.findAll().size()).isNotSameAs(0);
     }
 
-    @Transactional
     @Test
     @DisplayName("로그아웃")
     void logout() {
@@ -91,30 +98,20 @@ class UserServiceImplTest {
         userService.logout(mmSessionToken);
     }
 
-    @Transactional
     @Test
-    @DisplayName("웹엑스 주소 바꾸기")
-    void changeWebexUrl() {
+    @DisplayName("웹엑스 주소 바꾸기 & 가져오기")
+    void changeAndGetWebexUrl() {
         String webexUrl = "웹엑스 주소";
         userService.changeWebexUrl(mmId, webexUrl);
         String webex = userService.getWebexUrl(mmId).getWebexUrl();
-        assertEquals(webex, webexUrl);
-    }
-
-    @Transactional
-    @Test
-    @DisplayName("웹엑스 주소 가져오기")
-    void getWebexUrl() {
-        userService.changeWebexUrl(mmId, "웹엑스 주소");
-        String webex = userService.getWebexUrl(mmId).getWebexUrl();
-        assertNotNull(webex);
+        assertThat(webex).isEqualTo(webexUrl);
     }
 
     @Test
     @DisplayName("닉네임 불러오기")
     void getNickname() {
 
-        assertNotNull(userService.getNickname(mmId));
+        assertThat(userService.getNickname(mmId)).isNotNull();
 
     }
 
