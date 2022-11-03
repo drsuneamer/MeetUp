@@ -46,25 +46,18 @@ const EventModal = () => {
   const startTimeValue = startTime.value
   
   const newStartTime =()  => {
-    console.log(startTimeValue)
     if(startTimeValue.length === 3){
       const startTimeNewValue = '0'+ startTimeValue
       // console.log(startTimeNewValue)
       const hour = startTimeNewValue.slice(0,2) + ':'
-      console.log(hour)
       const minute = startTimeNewValue.slice(2,4) + ':'
-      console.log(minute)
       const startTimeResult = hour + minute + '00'
-      console.log(startTimeResult)
       const start = date + ' ' + startTimeResult  
       return start
     } 
       const hour = startTimeValue.slice(0,2) + ':'
-      console.log(hour)
       const minute = startTimeValue.slice(2,4) + ':'
-      console.log(minute)
       const startTimeResult = hour + minute + '00'
-      console.log(startTimeResult)
       const start = date + ' ' + startTimeResult 
       return start
   }
@@ -79,20 +72,14 @@ const EventModal = () => {
     if(endTimeValue.length === 3){
       const endTimeNewValue = '0'+ endTimeValue
       const hour = endTimeNewValue.slice(0,2) + ':'
-      console.log(hour)
       const minute = endTimeNewValue.slice(2,4) + ':'
-      console.log(minute)
       const endTimeResult = hour + minute + '00'
-      console.log(endTimeResult)
       const end = date + ' ' + endTimeResult 
       return end
     } 
       const hour = endTimeValue.slice(0,2) + ':'
-      console.log(hour)
       const minute = endTimeValue.slice(2,4) + ':'
-      console.log(minute)
       const endTimeResult = hour + minute + '00'
-      console.log(endTimeResult)
       const end = date + ' ' + endTimeResult 
       return end
   }
@@ -116,14 +103,7 @@ const EventModal = () => {
     end: newEndTime()
   };
 
-  // const parsedData: any = {
-  //   title: title,
-     
-  // }
-  useEffect(()=>{
-    dispatch(setMyCalendar())
-    // console.log('내꺼', myCalendar)
-  },[myCalendar])
+
   
   useEffect(() => {
     if (eventModalData !== null) {
@@ -151,20 +131,6 @@ const EventModal = () => {
     window.location.reload()
   }, []);
 
-  // const handleSubmit = () => {
-  //   const newEvent: NewEvent = {
-  //     date,
-  //     eventDetail: {
-  //       title: title !== '' ? title : '제목 없음',
-  //       start: startTime.value,
-  //       end: endTime.value,
-  //     },
-  //   };
-
-  //   dispatch(addEvent(newEvent));
-  //   handleToggleModal();
-  //   handleResetInput();
-  // };
   const handleSubmit = async() => {
     const action = await dispatch(addSchedule(parsedData))
     if (isFulfilled(action)) {
@@ -215,7 +181,7 @@ const EventModal = () => {
         <div>
           <div className={`${myCalendar ? 'mt-[50px]' : 'mt-[20px]'}`}>
             {myCalendar ? (
-            <div className="text-s text-title font-bold">제목</div>
+            <div className="text-s text-title font-bold">제목<span className="text-cancel">&#42;</span></div>
           ) : (
             <div className="text-s text-title font-bold">미팅명<span className="text-cancel">&#42;</span></div>
           )}

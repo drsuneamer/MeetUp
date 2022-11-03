@@ -14,11 +14,7 @@ const myCalendarSlice = createSlice({
   initialState,
   reducers: {
     setMyCalendar: state => {
-      // console.log('안되냐')
-      if ( window.location.href === `https://meet-up.co.kr/calendar/${localStorage.getItem('id')}`) {
           state.myCalendar = true;
-          // console.log('url', state.myCalendar)
-      }
     },
   },
 });
