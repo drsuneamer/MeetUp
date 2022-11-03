@@ -30,7 +30,6 @@ function Settings() {
 
   const submit = () => {
     axiosInstance.put('/user/webex', input).then((res) => {
-      console.log(res);
       if (res.status === 201) {
         setDone(true);
       }
