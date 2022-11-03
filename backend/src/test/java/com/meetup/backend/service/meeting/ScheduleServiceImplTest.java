@@ -15,6 +15,7 @@ import com.meetup.backend.entity.team.TeamType;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
@@ -167,6 +168,51 @@ class ScheduleServiceImplTest {
 
     }
 
+    @Test()
+    @DisplayName("중복 일정된 스케쥴 생성시 실패 확인")
+    void refuseCreatingSchedule() {
+        User user1 = userRepository.findById("user1").get();
+        // 스케쥴 생성
+        Long scheduleId = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title", "본문"
+        ));
+        // 스케쥴 1개 생성 확인
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
+
+        // 1. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 끝이 기존 스케쥴의 시작보다 뒤 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                    "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");;
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
+
+        // 2. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 시작이 기존 스케쥴의 끝보다 앞 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                    "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
+
+        // 3. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴을 전체 포함 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                    "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
+
+        // 4. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴에 전체 포함됨 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                    "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
+
+    }
+
     @Test
     @DisplayName("대상의 1주일 스케줄 조회")
     void getScheduleByUserAndDate() {
@@ -208,18 +254,59 @@ class ScheduleServiceImplTest {
     @Test
     @DisplayName("스케줄 수정")
     void updateSchedule() {
-        User user = userRepository.findById("user1").get();
-        Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
-                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+        User user1 = userRepository.findById("user1").get();
+        Long scheduleId = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                "2022-10-30 20:00:00", "2022-10-30 20:30:00", "title1", "본문1"
         ));
-        scheduleService.updateSchedule(user.getId(), new ScheduleUpdateRequestDto(
-                scheduleId, "2022-10-26 10:00:00", "2022-10-26 10:00:00", "modified title", "본문"
+        Long scheduleId2 = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
+                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title2", "본문2"
+        ));
+        // 스케쥴 2개 생성 확인
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
+
+        // 1. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 끝이 기존 스케쥴의 시작보다 뒤 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
+                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
+
+        // 2. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 시작이 기존 스케쥴의 끝보다 앞 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
+                    scheduleId, "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
+
+        // 3. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴을 전체 포함 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
+                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");;
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
+
+        // 4. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴에 전체 포함됨 _ 생성 실패해야함)
+        assertThatThrownBy(() -> {
+            scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
+                    scheduleId, "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2")
+            );
+        }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");;
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
+
+        // 생성되야함 _ 그러므로 조회 된게 2개여야함
+        scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
+                scheduleId, "2022-10-30 15:00:00", "2022-10-30 16:00:00", "modified title", "본문"
         ));
 
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
         assertThat(schedule.getTitle()).isEqualTo("modified title");
         assertThat(schedule.getContent()).isEqualTo("본문");
-        assertThat(schedule.getStart()).isEqualTo(StringToLocalDateTime.strToLDT("2022-10-26 10:00:00"));
+        assertThat(schedule.getStart()).isEqualTo(StringToLocalDateTime.strToLDT("2022-10-30 15:00:00"));
+
+        assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
     }
 
     @Test
