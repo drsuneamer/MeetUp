@@ -16,6 +16,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
     dispatch(update(channel.id));
     navigate(`/edit-channel/${channel.id}`);
   };
+
   return (
     <div className="ChannelListItem w-full mb-1 drop-shadow-button">
       <div className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap">

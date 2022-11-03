@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { axiosInstance } from '../components/auth/axiosConfig';
 import Spinner from '../components/common/Spinner';
 import { useNavigate } from 'react-router-dom';
-import { escapeRegExp } from 'lodash';
 
 interface Channel {
   id: number;
@@ -18,7 +17,9 @@ interface Channel {
 function EditChannel() {
   const navigate = useNavigate();
   const [channel, setChannel] = useState<Channel>();
+
   const channelId: number = useSelector((state: any) => state.channelId.value);
+
   // MM 채널 이름 수정
   const [title, setTitle] = useState('');
   const titleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
