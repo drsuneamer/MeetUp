@@ -103,7 +103,7 @@ function CreateChannel() {
           </div>
 
           <div className="mb-5">
-            <div className="font-bold text-title cursor-default">MM 채널 이름 (변경 가능)</div>
+            <div className="font-bold text-title cursor-default">밋업 이름 (변경 가능)</div>
             <div className="flex justify-center">
               <input
                 onChange={titleChange}
@@ -137,7 +137,7 @@ function CreateChannel() {
           </div>
 
           <button onClick={onSubmit} className="z-30 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">
-            저장하기
+            밋업 생성하기
           </button>
         </div>
       </Layout>
