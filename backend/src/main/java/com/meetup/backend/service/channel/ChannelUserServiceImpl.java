@@ -110,7 +110,15 @@ public class ChannelUserServiceImpl implements ChannelUserService {
             for (int k = 0; ; k++) {
 
                 Response mmChannelUserResponse = client.getChannelMembers(channel.getId(), Pager.of(k, 100)).getRawResponse();
-                JSONArray userArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelUserResponse.getEntity());
+                JSONArray userArray = new JSONArray();
+                try {
+                    userArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelUserResponse.getEntity());
+
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                    log.info("mmChannelUserResponse.getEntity() = {}", mmChannelUserResponse.getEntity());
+                    e.printStackTrace();
+                }
                 if (userArray.isEmpty()) break;
 
                 for (int l = 0; l < userArray.length(); l++) {
