@@ -64,11 +64,13 @@ function LoginForm() {
       .post(`${baseURL}/user/login`, login)
       .then((res) => {
         if (res.status === 200) {
+          console.log(res);
           // 로그인 완료 시 localstorage에 accesstoken, nickname, id 저장 후 메인('/') 이동
           window.localStorage.setItem('id', res.data.id);
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
           window.localStorage.setItem('nickname', res.data.nickname);
+          window.localStorage.setItem('roleType', res.data.roleType);
           navigate(`/calendar/${window.localStorage.getItem('id')}`);
           window.location.reload();
         }
@@ -79,7 +81,6 @@ function LoginForm() {
           setCert(true);
           setChecked(false);
         } else {
-          console.log(error.response);
           setLoad(false);
           setError(true);
           setChecked(false);

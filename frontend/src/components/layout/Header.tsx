@@ -27,6 +27,7 @@ function Header() {
         window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('tokenExpiresIn');
+        window.localStorage.removeItem('roleType');
         navigate('/');
       }
     });
