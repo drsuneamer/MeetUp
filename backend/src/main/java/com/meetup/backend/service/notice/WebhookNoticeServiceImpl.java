@@ -35,7 +35,7 @@ public class WebhookNoticeServiceImpl implements WebhookNoticeService {
         slackAttachment.setColor("#cc101f");
 
         if (nickname.contains("컨설턴트") || nickname.contains("교수") || nickname.contains("코치") || nickname.contains("프로")) {
-            slackAttachment.setText("## 권한 변경 필요");
+            slackAttachment.setText("## :alert_siren: 권한 변경 필요 :alert_siren:");
         }
 
         SlackAttachmentField field = new SlackAttachmentField();
