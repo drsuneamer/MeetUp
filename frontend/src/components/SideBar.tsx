@@ -13,6 +13,8 @@ function SideBar() {
   const [syncChecked, setSyncChecked] = useState(false);
 
   useEffect(() => {
+    checkRole()
+
     const timeId = setTimeout(() => {
       setSyncChecked(false);
     }, 2000);
@@ -32,9 +34,20 @@ function SideBar() {
     });
   };
 
+  const [isStudent, setIsStudent] = useState(false)
+
+  const checkRole = () => {
+    if ( localStorage.getItem('roleType') === 'ROLE_Student') {
+      setIsStudent(true)
+    }
+  }
+
   return (
     <div className="SideBar relative w-full pl-2 mt-[70px] -z-1">
+      
+      { isStudent ? <div />:
       <ChannelList />
+      }
       <MeetupList />
 
       <button
