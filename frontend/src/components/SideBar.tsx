@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useAppDispatch } from '../stores/ConfigHooks';
+import { axiosInstance } from './auth/axiosConfig';
 
 function SideBar() {
   const navigate = useNavigate();
@@ -22,19 +23,13 @@ function SideBar() {
   }, [syncChecked]);
 
   const syncRequest = async () => {
-    await axios
-      .get('https://meet-up.co.kr/api/meetup/sync', {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-        },
-      })
-      .then((res) => {
-        if (res.status === 201) {
-          console.log('동기화 완료', res);
-          setSyncChecked(true);
-          navigate(`/calendar/${localStorage.getItem('id')}`);
-        }
-      });
+    await axiosInstance.get('/meetup/sync').then((res) => {
+      if (res.status === 201) {
+        console.log('동기화 완료', res);
+        setSyncChecked(true);
+        navigate(`/calendar/${localStorage.getItem('id')}`);
+      }
+    });
   };
 
   return (
