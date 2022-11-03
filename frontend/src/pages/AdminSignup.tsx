@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function AdminSignup() {
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
 
   const [id, setID] = useState('');
@@ -28,7 +29,7 @@ function AdminSignup() {
   };
 
   const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    await axios.post('http://localhost:8080/admin/signup', signUp).then((res) => {
+    await axios.post(`${baseURL}}/admin/signup`, signUp).then((res) => {
       console.log(signUp);
       console.log(res);
       if (res.status === 201) {
