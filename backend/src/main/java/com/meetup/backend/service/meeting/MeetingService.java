@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface MeetingService {
     MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId);
+
     List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String date);
 
     List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
