@@ -29,7 +29,7 @@ function AdminSignup() {
   };
 
   const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    await axios.post(`${baseURL}}/admin/signup`, signUp).then((res) => {
+    await axios.post(`${baseURL}/admin/signup`, signUp).then((res) => {
       if (res.status === 201) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
         navigate('/admin-login');
