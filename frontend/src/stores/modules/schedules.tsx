@@ -72,12 +72,13 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
 
 
 export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async(thunkAPI:any) => {
+  console.log(thunkAPI)
   try {
     const res = await axiosInstance.post('/schedule',thunkAPI).then((res) => {
-      console.log('schedule data fetched: ', res.data);
+      console.log('schedule data created: ', res);
       return res.data;
     });
-    return res;
+    return res.data;
   } catch(err) {
     console.log(err)
   }
@@ -106,6 +107,17 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    // POST
+    [addSchedule.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [addSchedule.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+    },
+    [addSchedule.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+    // GET
     [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
     },
@@ -120,25 +132,6 @@ const scheduleSlice = createSlice({
   },
 });
 
-
-const ScheduleModalSlice = createSlice({
-  name: 'scheduleModal',
-  initialState,
-  reducers: {},
-  extraReducers: {
-    // POST
-    [addSchedule.pending.toString()]: (state) => {
-      state.loading = false;
-    },
-    [addSchedule.fulfilled.toString()]: (state, action) => {
-      state.loading = true;
-      state.schedules = action.payload;
-    },
-    [addSchedule.rejected.toString()]: (state) => {
-      state.loading = false;
-    },
-  },
-})
 
 const { reducer } = scheduleSlice;
 export const scheduleSelector = (state:RootState) => state.schedules

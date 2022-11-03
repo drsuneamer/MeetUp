@@ -148,6 +148,7 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
+    window.location.reload()
   }, []);
 
   // const handleSubmit = () => {
@@ -166,18 +167,9 @@ const EventModal = () => {
   // };
   const handleSubmit = async() => {
     const action = await dispatch(addSchedule(parsedData))
-    // const a = newStartTime()
-    console.log(parsedData)
-    console.log(startTimeValue.length)
-    console.log(typeof(startTimeValue))
-    console.log(newStartTime())
-    console.log(newEndTime())
     if (isFulfilled(action)) {
-      console.log('마 들리냐')
       const userId = localStorage.getItem('id')
-      console.log(userId)
       handleToggleModal()
-      // navigate(`/calendar/${userId}`);
     } 
   }
   const handleResetInput = useCallback(() => {
