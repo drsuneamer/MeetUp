@@ -14,11 +14,7 @@ const myCalendarSlice = createSlice({
   initialState,
   reducers: {
     setMyCalendar: state => {
-      // console.log('안되냐')
-      if ( window.location.href === `http://localhost:3000/calendar/${localStorage.getItem('id')}`) {
           state.myCalendar = true;
-          // console.log('url', state.myCalendar)
-      }
     },
   },
 });

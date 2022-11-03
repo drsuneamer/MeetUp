@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function AdminLoginForm() {
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
   const [id, setID] = useState('');
   const [pw, setPW] = useState('');
@@ -21,7 +22,7 @@ function AdminLoginForm() {
   }, [id, pw]);
 
   const onSubmit = async () => {
-    await axios.post('http://localhost:8080/admin/login', login).then((res) => {
+    await axios.post(`${baseURL}/admin/login`, login).then((res) => {
       console.log(res);
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동

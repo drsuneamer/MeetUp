@@ -15,10 +15,10 @@ function Header() {
     setIsOpenModal(!isOpenModal);
   }, [isOpenModal]);
 
-  const navTo =()=> {
-    navigate(`${url}`)
-    window.location.reload()
-  }
+  const navTo = () => {
+    navigate(`${url}`);
+    window.location.reload();
+  };
 
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
@@ -27,6 +27,7 @@ function Header() {
         window.localStorage.removeItem('nickname');
         window.localStorage.removeItem('accessToken');
         window.localStorage.removeItem('tokenExpiresIn');
+        window.localStorage.removeItem('roleType');
         navigate('/');
       }
     });
@@ -42,8 +43,16 @@ function Header() {
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
-        <div onClick={navTo} className="cursor-pointer">
+        <div className="flex items-center">
+          <div onClick={navTo} className="cursor-pointer">
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
+          </div>
+          <a
+            href="https://app.gitbook.com/o/jTWvp4xUfyfFgtmCNX77/s/FCNXRCKyHn6H2cvv6wwU/release-notes/meetup-1.0.0"
+            className="drop-shadow-shadow mt-1 border-placeholder bg-title text-background px-3 rounded h-[30px]  font-bold ml-3 text-s font-dots"
+          >
+            v 1.0.4
+          </a>
         </div>
 
         <div className="flex mr-2">
