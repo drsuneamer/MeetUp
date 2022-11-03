@@ -43,7 +43,6 @@ function CreateChannel() {
 
   // 알림을 받을 채널 선택하기
   const [category, setCategory] = useState<Category>();
-  // console.log(category); // 보내줘야 할 값 (저장하기 클릭 시)
   const [channelId, setChannelId] = useState('');
 
   useEffect(() => {
