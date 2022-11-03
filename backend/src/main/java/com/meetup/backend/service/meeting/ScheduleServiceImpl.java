@@ -10,6 +10,7 @@ import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +57,65 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 해당 user, 캘린더 주인 id, date로 정보 가져오기
     @Override
     public AllScheduleResponseDto getScheduleByUserAndDate(String loginUserId, String targetUserId, String date) {
+        return getSchedule(loginUserId, targetUserId, date, 6);
+    }
+
+    // 스케쥴 정보 등록
+    @Override
+    @Transactional
+    public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
+        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
+        // 일정 중복 체크
+        String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
+
+        if (!allScheduleResponseDto.isPossibleRegiser(start, end))
+            throw new ApiException(ExceptionEnum.DUPLICATE_INSERT_DATETIME);
+
+        String title = scheduleRequestDto.getTitle();
+        String content = scheduleRequestDto.getContent();
+        Schedule schedule = new Schedule(start, end, title, content, user);
+
+        return scheduleRepository.save(schedule).getId();
+    }
+
+    // 스케쥴 정보 수정
+    @Override
+    @Transactional
+    public Long updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
+        if (!user.getId().equals(schedule.getUser().getId())) {
+            throw new ApiException(ACCESS_DENIED);
+        }
+        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
+        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
+        // 일정 중복 체크
+        String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
+        if (!allScheduleResponseDto.isPossibleRegiser(start, end))
+            throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
+
+        schedule.update(scheduleUpdateRequestDto);
+        return schedule.getId();
+    }
+
+    // 스케쥴 정보 삭제
+    @Override
+    @Transactional
+    public void deleteSchedule(String userId, Long scheduleId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
+        if (!user.getId().equals(schedule.getUser().getId())) {
+            throw new ApiException(ACCESS_DENIED);
+        }
+        scheduleRepository.delete(schedule);
+
+    }
+
+    public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
@@ -73,9 +134,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!flag) {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
-
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
-        LocalDateTime to = from.plusDays(6);
+        LocalDateTime to = from.plusDays(p);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 
         // 해당 스케줄 주인의 밋업 리스트
@@ -88,45 +148,5 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
         return AllScheduleResponseDto.of(schedules, meetingToMe);
-    }
-
-    // 스케쥴 정보 등록
-    @Override
-    @Transactional
-    public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
-        String title = scheduleRequestDto.getTitle();
-        String content = scheduleRequestDto.getContent();
-        Schedule schedule = new Schedule(start, end, title, content, user);
-
-        return scheduleRepository.save(schedule).getId();
-    }
-
-    // 스케쥴 정보 수정
-    @Override
-    @Transactional
-    public Long updateSchedule(String userId, ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
-        if (!user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ACCESS_DENIED);
-        }
-        schedule.update(scheduleUpdateRequestDto);
-        return schedule.getId();
-    }
-
-    // 스케쥴 정보 삭제
-    @Override
-    @Transactional
-    public void deleteSchedule(String userId, Long scheduleId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
-        if (!user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ACCESS_DENIED);
-        }
-        scheduleRepository.delete(schedule);
-
     }
 }

@@ -105,4 +105,34 @@ public class AllScheduleResponseDto {
             this.userName = userName;
         }
     }
+
+    public boolean isPossibleRegiser(LocalDateTime from, LocalDateTime to) {
+        for (MeetingResponse meetingResponse : meetingFromMe) {
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to))
+                return false;
+        }
+        for (MeetingResponse meetingResponse : meetingToMe) {
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to))
+                return false;
+        }
+        for (ScheduleResponse ScheduleResponse : scheduleResponseList) {
+            if (isDuplicated(ScheduleResponse.getStart(), ScheduleResponse.getEnd(), from, to))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean isDuplicated(LocalDateTime start, LocalDateTime end, LocalDateTime from, LocalDateTime to) {
+        if (from.isAfter(start) && from.isBefore(end))
+            return true;
+        else if (to.isAfter(start) && to.isBefore(end))
+            return true;
+        else if ((from.isBefore(start) || from.isEqual(start)) && (to.isAfter(end) || to.isEqual(end)))
+            return true;
+        else if (from.isAfter(start) && to.isBefore(end))
+            return true;
+        else
+            return false;
+
+    }
 }
