@@ -123,7 +123,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getNickname(String userId) {
-        return userRepository.findById(userId).get().getNickname();
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        return user.getNickname();
     }
 //
 //    @Override
@@ -157,7 +158,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserWebexInfoDto getWebexUrl(String userId) {
-        return UserWebexInfoDto.of(userRepository.findById(userId).get().getWebex());
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        return UserWebexInfoDto.of(userRepository.findById(user.getId()).get().getWebex());
     }
 
 }

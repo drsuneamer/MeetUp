@@ -127,17 +127,19 @@ public class MeetupServiceImpl implements MeetupService {
             if (meetup.getManager().getId().equals(userId))
                 continue;
 
-            if (!meetup.isDelete())
-                if (!calendarUserList.contains(meetup.getManager())) {
-                    User manager = meetup.getManager();
-                    if (manager.getNickname() == null) {
-                        Response userResponse = client.getUser(manager.getId()).getRawResponse();
-                        JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
-                        String nickname = (String) jsonObject.get("nickname");
-                        manager.setNickname(nickname);
-                    }
-                    calendarUserList.add(meetup.getManager());
+            if (meetup.isDelete())
+                continue;
+
+            if (!calendarUserList.contains(meetup.getManager())) {
+                User manager = meetup.getManager();
+                if (manager.getNickname() == null) {
+                    Response userResponse = client.getUser(manager.getId()).getRawResponse();
+                    JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
+                    String nickname = (String) jsonObject.get("nickname");
+                    manager.setNickname(nickname);
                 }
+                calendarUserList.add(meetup.getManager());
+            }
         }
 
         for (User user : calendarUserList) {
