@@ -81,9 +81,7 @@ public class UserServiceImpl implements UserService {
                 } else {
                     user = userRepository.findById(id).get();
                     user.setNickname(nickname);
-                    if (user.getPassword() == null) {
-                        user.changePwd(passwordEncoder.encode(requestDto.getPassword()));
-                    }
+                    user.changePwd(passwordEncoder.encode(requestDto.getPassword()));
                 }
 
                 if (!user.isFirstLogin()) {
