@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-// const baseURL = process.env.REACT_APP_LOCAL_URL; => 왜안되지
-const baseURL = 'https://meet-up.co.kr/api';
+const baseURL = process.env.REACT_APP_BASE_URL;
+
 const accessToken = window.localStorage.getItem('accessToken');
 
 // axios를 모듈화하여 이후 baseURL, header를 입력하지 않고 사용 가능

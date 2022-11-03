@@ -11,7 +11,7 @@ const PrivateRoutes = () => {
   // console.log('is refresh token expired?', isExpired);
 
   if (isExpired) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
   return <Outlet />;
 };
