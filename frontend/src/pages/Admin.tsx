@@ -79,7 +79,7 @@ function Admin() {
 
   // 처음 로그인 시 값 불러오기
   const reload = () => {
-    return <Navigate to="/admin-meetup2022" />;
+    window.location.reload();
   };
 
   return (
