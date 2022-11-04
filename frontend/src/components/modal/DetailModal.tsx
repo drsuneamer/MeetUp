@@ -7,7 +7,7 @@ import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { fetchScheduleDetail, scheduleSelector } from '../../stores/modules/schedules';
+import { detailSelector, scheduleSelector } from '../../stores/modules/schedules';
 
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
@@ -26,7 +26,7 @@ const DetailModal = () => {
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
 
-  const scheduleId = useSelector(scheduleSelector);
+  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -119,22 +119,21 @@ const DetailModal = () => {
         <div className="flex flex-col p-[20px]">
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
-            <p>A102 팀 미팅</p>
+            <p>{scheduleDetail.title}</p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-            <p>2022-11-03</p>
+            <p>{scheduleDetail.start.slice(0, 10)}</p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">시간</div>
-            <p>오전 10시 - 10시 30분</p>
+            <p>
+              {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
+            </p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
-            <p className="w-[450px]">
-              주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정
-              팀 미팅 신청합니다 어쩌고저쩌고주제 선정
-            </p>
+            <p className="w-[450px]">{scheduleDetail.content}</p>
           </div>
           <div className="mt-[20px] flex flex-col">
             <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>

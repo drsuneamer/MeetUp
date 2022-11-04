@@ -36,6 +36,14 @@ export type tSchedule = {
   meetupColor: string;
 };
 
-export type tScheduleDetail = {};
+export type tScheduleDetail = {
+  id: string;
+  start: string;
+  end: string;
+  title: string;
+  content: string;
+  userId: string;
+  userName: string;
+};
 
 export type tMeetingDetail = {};
