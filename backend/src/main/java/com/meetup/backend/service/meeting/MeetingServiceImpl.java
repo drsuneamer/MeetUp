@@ -22,6 +22,7 @@ import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bis5.mattermost.client4.ApiResponse;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.model.Post;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public Long createMeeting(String userId, MeetingRequestDto meetingRequestDto) {
+        log.info("=======create meeting start========");
         if (meetingRequestDto.getStart().length() != "yyyy-MM-dd HH:mm:ss".length() || meetingRequestDto.getEnd().length() != "yyyy-MM-dd HH:mm:ss".length()) {
             throw new ApiException(DATE_FORMAT_EX);
         }
@@ -101,7 +103,10 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-        client.createPost(new Post(channel.getId(), message));
+        ApiResponse<Post> post = client.createPost(new Post(channel.getId(), message));
+        log.info("post response = {}", post.getRawResponse());
+        log.info("=======create meeting end========");
+
         return meetingRepository.save(meeting).getId();
     }
 
