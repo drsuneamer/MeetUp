@@ -11,7 +11,6 @@ import { axiosInstance } from './auth/axiosConfig';
 import { useParams } from 'react-router-dom';
 
 const Header = () => {
-  const baseURL = process.env.REACT_APP_BASE_URL;
   const params = useParams();
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
@@ -19,7 +18,7 @@ const Header = () => {
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   useEffect(() => {
-    if (window.location.href === `${baseURL}/calendar/${localStorage.getItem('id')}`) {
+    if (params.userId === `${localStorage.getItem('id')}`) {
       // setIsMyCalendar(true)
       dispatch(setMyCalendar());
     }
@@ -27,6 +26,7 @@ const Header = () => {
 
   const [nickname, setNickname] = useState('');
 
+  console.log(window.location.href);
   useEffect(() => {
     const userId = params.userId;
     axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
