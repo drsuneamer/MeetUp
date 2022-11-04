@@ -16,6 +16,7 @@ import {
   meetingFromMeSelector, meetingToMeSelector, fetchSchedule } from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
+import { tSchedule } from '../types/events';
 
 interface Week {
   name: string;
@@ -30,7 +31,7 @@ const WeeklyCalendarBody = () => {
   const mySchedule = useSelector(myScheduleSelector);
   const meetingToMe = useSelector(meetingToMeSelector);
   const meetingFromMe = useSelector(meetingFromMeSelector);
-
+ 
   const dispatch = useAppDispatch();
   const rDispatch = useDispatch();
   
@@ -41,6 +42,22 @@ const WeeklyCalendarBody = () => {
   const sunday = getSundayOfWeek();
 
   const thunkAPI = [userId, sunday];
+ 
+  // useEffect(() => {
+  //   for (let i = 0; i < mySchedule.length; i+=1) {
+  //     if (mySchedule[i].userId !== userId) {
+        
+  //     } 
+  //   }
+  // })
+  
+  // const [myScheduleId, setMyScheduleId] = useState<boolean>(false);
+  // for (let i = 0; i < mySchedule.length; i+=1) {
+  //   if (mySchedule[i].userId !== userId) {
+  //     setMyScheduleId(true)
+  //     console.log(myScheduleId)
+  //     } 
+  //   } 
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
@@ -104,13 +121,25 @@ const WeeklyCalendarBody = () => {
     dispatch(setEventModalData({ date: stringDate, startTime: time }));
     dispatch(setEventModalOpen());
   };
+  // const handleViewEvent = () => {
+  //   if (selectedEvent !== null) {
+  //     dispatch(setDetailModalOpen());
+  //     // setSelectedEventPosition(selectedEventPosition);
+  //   }
+  // };
+
+  // const handleViewEvent = () => {
+  //   if (selectedEventPosition !== null) {
+  //     dispatch(setDetailModalOpen());
+  //     setSelectedEventPosition(selectedEventPosition);
+  //   }
+  // };
 
   const handleViewEvent = () => {
-    if (selectedEvent !== null) {
-      dispatch(setDetailModalOpen());
-      // setSelectedEventPosition(selectedEventPosition);
-    }
-  };
+    dispatch(setDetailModalOpen());
+    console.log('hi',mySchedule);
+  }
+  
 
   // const handleDeleteEvent = () => {
   //   if (selectedEvent !== null) {
@@ -177,6 +206,9 @@ const WeeklyCalendarBody = () => {
                         key={`${scheduleDate}${index}`}
                         style={{ top, height }}
                         className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                          handleViewEvent()
+                        }}
                       >
                         <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
                           {element.title}
@@ -302,7 +334,7 @@ const WeeklyCalendarBody = () => {
         })}
       </div>
 
-      {selectedEventPosition !== null && (
+      {/* {selectedEventPosition !== null && (
         <div
           className="fixed text-sm shadow rounded bg-background cursor-pointer px-2 py-2"
           style={selectedEventPosition}
@@ -312,7 +344,7 @@ const WeeklyCalendarBody = () => {
         >
           자세히 보기
         </div>
-      )}
+      )} */}
     </div>
   );
 };
