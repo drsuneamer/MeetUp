@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
+import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -10,28 +11,31 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { addSchedule } from '../../stores/modules/schedules';
- 
-interface ChannelOptionType {
-  title: string;
-}
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { tAlarm } from '../../types/channels';
 
-const channels = [
-  { title: '서울_1반_팀장채널'},
-  { title: 'A101' },
-  { title: 'A102' },
-  { title: 'A103' },
-  { title: 'A104' },
-  { title: 'A105' },
-  { title: 'A106' },
-  { title: 'A107' },
-  { title: 'A102_scrum' },
-  { title: 'A102_jira_bot' },
-];
+// interface ChannelOptionType {
+//   title: string;
+// }
+
+// const channels = [
+//   { title: '서울_1반_팀장채널'},
+//   { title: 'A101' },
+//   { title: 'A102' },
+//   { title: 'A103' },
+//   { title: 'A104' },
+//   { title: 'A105' },
+//   { title: 'A106' },
+//   { title: 'A107' },
+//   { title: 'A102_scrum' },
+//   { title: 'A102_jira_bot' },
+// ];
 
 const EventModal = () => {
+  const channels = useSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
@@ -159,13 +163,20 @@ const EventModal = () => {
   }, []);
 
   const defaultProps = {
-    options: channels,
-    getOptionLabel: (option: ChannelOptionType) => option.title,
+    options: channels.alarmChannels,
+    getOptionLabel: (option:tAlarm) => option.displayName,
   };
   const flatProps = {
-    options: channels.map((option) => option.title),
+    options: channels&&channels.alarmChannels.map((option: any) => option.displayname),
   };
-  const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  const [value, setValue] = React.useState<tAlarm | null>(null);
+  
+  const params = useParams()
+  const userId = params.userId
+  
+  useEffect(() => {
+    dispatch(fetchAlarmChannelList(userId));
+  }, []);
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>

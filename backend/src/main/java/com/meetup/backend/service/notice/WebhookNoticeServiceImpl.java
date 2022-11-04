@@ -6,19 +6,14 @@ import net.bis5.mattermost.client4.hook.IncomingWebhookClient;
 import net.bis5.mattermost.model.IncomingWebhookRequest;
 import net.bis5.mattermost.model.SlackAttachment;
 import net.bis5.mattermost.model.SlackAttachmentField;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * created by seongmin on 2022/11/03
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @Slf4j
@@ -26,6 +21,7 @@ import java.util.Map;
 public class WebhookNoticeServiceImpl implements WebhookNoticeService {
 
     private final IncomingWebhookClient client;
+    private final String ICON = "https://a106mtld.s3.ap-northeast-2.amazonaws.com/logo_square.png";
 
     @Override
     public void firstLoginNotice(String nickname) {
@@ -44,6 +40,8 @@ public class WebhookNoticeServiceImpl implements WebhookNoticeService {
         List<SlackAttachmentField> fields = new ArrayList<>();
         fields.add(field);
         slackAttachment.setFields(fields);
+        slackAttachment.setFooter("MeetUp");
+        slackAttachment.setFooterIcon(ICON);
         slackAttachments.add(slackAttachment);
         payload.setAttachments(slackAttachments);
         client.postByIncomingWebhook(payload);
