@@ -1,5 +1,6 @@
 package com.meetup.backend.dto.schedule;
 
+import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,5 +31,6 @@ public class ScheduleUpdateRequestDto {
     private String title;
 
     private String content;
+
 
 }
