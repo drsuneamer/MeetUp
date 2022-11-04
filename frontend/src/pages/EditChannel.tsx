@@ -29,7 +29,6 @@ function EditChannel() {
   // 달력에 표시할 색상 선택
   const [color, setColor] = useState('');
   const [open, setOpen] = useState(false);
-  const [n, setN] = useState('');
 
   const openColor = () => {
     setOpen(!open);
@@ -45,11 +44,10 @@ function EditChannel() {
     axiosInstance.get(`/meetup/${channelId}`).then((res) => {
       setChannel(res.data);
       setColor(res.data.color);
-      setN(res.data.title);
       setTitle(res.data.title);
       setRecord({ title: res.data.title, color: res.data.color });
     });
-  }, []);
+  }, [channelId]);
 
   useEffect(() => {
     setRecord({ title: title, color: color });
