@@ -65,7 +65,7 @@ function SideBar() {
           <div className="flex">
             { syncChecked ?
               <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 animate-bounce">
-              <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             :
             <div className='flex gap-x-2'>
