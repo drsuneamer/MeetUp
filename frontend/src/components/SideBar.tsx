@@ -48,14 +48,14 @@ function SideBar() {
   }
 
   return (
-    <div className="SideBar relative w-full pl-2 mt-[70px] -z-1">
+    <div className="SideBar relative w-full pl-2 mt-[70px]">
       
       { isStudent ? <div />:
       <ChannelList />
       }
       <MeetupList />
 
-      <div className="relative h-full bottom-[320px]">
+      <div className="relative h-1/8 top-[450px]">
       <button
         onClick={syncRequest}
         className="bg-title hover:bg-hover text-background rounded w-full h-s drop-shadow-button flex justify-center items-center space-x-2 absolute bottom-2"
