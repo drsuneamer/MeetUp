@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { tSchedule, tScheduleDetail, tMettingDetail } from '../../types/events';
+import { tSchedule, tScheduleDetail, tMeetingDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import axios from 'axios';
 
 type scheduleInitialState = {
   loading: boolean;
@@ -14,7 +13,7 @@ type scheduleInitialState = {
   };
   scheduleModal: {
     addSchedule: Array<tScheduleDetail>; // 일정 등록 디테일
-    // addMeeting: Array<tMettingDetail>; // 미팅 등록 디테일
+    // addMeeting: Array<tMeetingDetail>; // 미팅 등록 디테일
   };
 };
 
@@ -112,10 +111,9 @@ export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (
   let scheduleId = '';
   try {
     const res = await axiosInstance.post('/schedule', thunkAPI).then((res) => {
-      console.log('안녕!!');
       scheduleId = res.data;
-      console.log('schedule data created: ', res);
-      console.log(scheduleId);
+      // console.log('schedule data created: ', res);
+      // console.log(scheduleId);
       return scheduleId;
     });
     return scheduleId;
@@ -138,7 +136,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 });
 
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
-  console.log(thunkAPI);
+  // console.log(thunkAPI);
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
       console.log('my schedule detail fetched: ', res.data);

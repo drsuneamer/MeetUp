@@ -2,9 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tAlarm } from '../../types/channels';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import { useSelector } from 'react-redux';
-import { useAppSelector } from '../../stores/ConfigHooks';
-import { channelSelector } from './channels';
 
 type channelAlarmInitialState = {
   loading: boolean;

@@ -26,8 +26,8 @@ const DetailModal = () => {
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
 
-  const scheduleId = useSelector(scheduleSelector)
- 
+  const scheduleId = useSelector(scheduleSelector);
+
   // useEffect(() => {
   //   if (eventModalData !== null) {
   //     const { date, startTime } = eventModalData;
@@ -52,17 +52,8 @@ const DetailModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen());
-    console.log('안녕!!!!!!');
-    if (scheduleId.scheduleId !== '') {
-      console.log('스케쥴ID')
-      console.log(scheduleId.scheduleId);
-    }
-      
   }, []);
 
-  useEffect(() => {
-    dispatch(fetchScheduleDetail(scheduleId))
-  })
   // const handleSubmit = () => {
   //   const newEvent: NewEvent = {
   //     date,
