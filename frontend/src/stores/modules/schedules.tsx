@@ -82,25 +82,22 @@ export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async(t
   } catch(err) {
     console.log(err)
   }
-  // try {
-  //   console.log(thunkAPI);
-  //   const accessToken = window.localStorage.getItem('accessToken');
-  //   const res = await axios({
-  //     url: `${process.env.REACT_APP_BASE_URL}/api/schedule`,
-  //     method: 'post',
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //     data: thunkAPI,
-  //   }).then((res) => {
-  //     console.log('successfully registered schedule');
-  //     return res;
-  //   });
-  //   return res;
-  // } catch (err) {
-  //   return console.log(err);
-  // }
 });
+
+export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async(thunkAPI:any) => {
+  console.log(thunkAPI)
+  try {
+    const res = await axiosInstance.post('/meeting ',thunkAPI).then((res) => {
+      console.log('meeting data created: ', res);
+      return res.data;
+    });
+    return res.data;
+  } catch(err) {
+    console.log(err)
+  }
+});
+
+
 
 const scheduleSlice = createSlice({
   name: 'schedule',
@@ -115,6 +112,16 @@ const scheduleSlice = createSlice({
       state.loading = true;
     },
     [addSchedule.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+    // POST
+    [addMeeting.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [addMeeting.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+    },
+    [addMeeting.rejected.toString()]: (state) => {
       state.loading = false;
     },
     // GET
