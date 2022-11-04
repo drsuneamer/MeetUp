@@ -123,9 +123,9 @@ public class AllScheduleResponseDto {
     }
 
     public boolean isDuplicated(LocalDateTime start, LocalDateTime end, LocalDateTime from, LocalDateTime to) {
-        if (from.isAfter(start) && from.isBefore(end))
+        if (from.isBefore(end) && to.isAfter(end))
             return true;
-        else if (to.isAfter(start) && to.isBefore(end))
+        else if (from.isBefore(start) && to.isAfter(start))
             return true;
         else if ((from.isBefore(start) || from.isEqual(start)) && (to.isAfter(end) || to.isEqual(end)))
             return true;
