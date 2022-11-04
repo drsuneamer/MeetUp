@@ -39,7 +39,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/11/03
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @RequiredArgsConstructor
@@ -82,8 +82,14 @@ public class UserServiceImpl implements UserService {
                                     .build());
                 } else {
                     user = userRepository.findById(id).get();
-                    user.setNickname(nickname);
-                    user.changePwd(passwordEncoder.encode(requestDto.getPassword()));
+                    if (!user.getNickname().equals(nickname)) {
+                        user.setNickname(nickname);
+                    }
+                    String encodedPwd = passwordEncoder.encode(requestDto.getPassword());
+                    if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+                        log.info("패스워드 변경");
+                        user.changePwd(encodedPwd);
+                    }
                 }
 
                 if (!user.isFirstLogin()) {
