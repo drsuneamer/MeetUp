@@ -22,9 +22,11 @@ import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @RequiredArgsConstructor
@@ -48,6 +50,17 @@ public class TeamServiceImpl implements TeamService {
         client.setAccessToken(mmSessionToken);
 
         Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
+        int status = mmTeamResponse.getStatus();
+        if (status == 400) {
+            log.error("register team 실패 status = {}", status);
+            throw new ApiException(MM_BAD_REQUEST);
+        } else if (status == 401) {
+            log.error("register team 실패 status = {}", status);
+            throw new ApiException(EMPTY_MM_CREDENTIAL);
+        } else if (status == 403) {
+            log.error("register team 실패 status = {}", status);
+            throw new ApiException(MM_FORBIDDEN);
+        }
         JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
         List<Team> teamList = new ArrayList<>();
 
