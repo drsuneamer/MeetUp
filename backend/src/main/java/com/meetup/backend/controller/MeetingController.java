@@ -1,7 +1,9 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingChannelDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
+import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.meeting.MeetingService;
@@ -31,7 +33,14 @@ public class MeetingController {
     private final AuthService authService;
 
     private final ChannelUserService channelUserService;
-
+    @GetMapping("/{meetingID}")
+    @ApiOperation(value = "알림을 보낼 채널 선택")
+    public ResponseEntity<?> getMeetingDetail(@PathVariable("meetingId") Long meetingId){
+        log.info("meetingId = {}", meetingId);
+        String userId = authService.getMyInfoSecret().getId();
+        MeetingResponseDto meetingResponseDto = meetingService.getMeetingResponseDtoById(userId,meetingId);
+        return ResponseEntity.status(OK).body(meetingResponseDto);
+    }
     @PostMapping
     @ApiOperation(value = "meeting 일정 등록(나 -> 컨설턴트)")
     public ResponseEntity<?> applyMeeting(@RequestBody @Valid MeetingRequestDto meetingRequestDto) {
@@ -40,6 +49,7 @@ public class MeetingController {
         Long meetingId = meetingService.createMeeting(userId, meetingRequestDto);
         return ResponseEntity.status(CREATED).body(meetingId);
     }
+
 
     @GetMapping("/channel/{managerId}")
     @ApiOperation(value = "알림을 보낼 채널 선택")
