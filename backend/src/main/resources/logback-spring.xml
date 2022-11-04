@@ -19,51 +19,28 @@
  %% : % 표시를 출력하기 위해 사용한다.
  %t : 로그이벤트가 발생된 쓰레드의 이름을 출력합니다
 -->
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration>
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <property name="LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) - %msg%n"/>
 
-    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
-            <fileNamePattern>D:\log\logback\logback-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 100MB -->
-                <maxFileSize>100MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{HH:mm:ss.SSS} [%-5level] - %msg%n</Pattern>
-        </layout>
-    </appender>
+    <springProfile name="!prod">
+        <include resource="console-appender.xml"/>
 
-    <!-- Loggers -->
-    <!-- <logger name="org.apache.catalina" level="ERROR">
-    </logger>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
-    <logger name="org.apache.commons" level="ERROR">
-    </logger>
+    <springProfile name="prod">
+        <include resource="file-info-appender.xml"/>
+<!--        <include resource="file-warn-appender.xml"/>-->
+        <include resource="file-error-appender.xml"/>
 
-    <logger name="org.springframework" level="DEBUG" >
-    </logger>
-
-    <logger name="egovframework.*" level="DEBUG">
-    </logger>
-
-    <logger name="java.sql" level="DEBUG">
-    </logger>
-
-    <logger name="org.mybatis.spring" level="DEBUG">
-    </logger>
-
-    <logger name="egovframework.sqlmappers" level="TRACE">
-    </logger> -->
-
-    <root level="INFO">
-        <appender-ref ref="ROLLING"/>
-        <appender-ref ref="STDOUT" />
-    </root>
+        <root level="INFO">
+            <appender-ref ref="FILE-INFO"/>
+<!--            <appender-ref ref="FILE-WARN"/>-->
+            <appender-ref ref="FILE-ERROR"/>
+        </root>
+    </springProfile>
 </configuration>
