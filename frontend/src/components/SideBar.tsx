@@ -48,14 +48,14 @@ function SideBar() {
   }
 
   return (
-    <div className="SideBar relative w-full pl-2 mt-[70px] -z-1">
+    <div className="SideBar relative w-full pl-2 mt-[70px]">
       
       { isStudent ? <div />:
       <ChannelList />
       }
       <MeetupList />
 
-      <div className="relative h-full bottom-[320px]">
+      <div className="relative h-1/8 top-[450px]">
       <button
         onClick={syncRequest}
         className="bg-title hover:bg-hover text-background rounded w-full h-s drop-shadow-button flex justify-center items-center space-x-2 absolute bottom-2"
@@ -65,7 +65,7 @@ function SideBar() {
           <div className="flex">
             { syncChecked ?
               <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 animate-bounce">
-              <path strokeLinecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             :
             <div className='flex gap-x-2'>
