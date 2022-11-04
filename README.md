@@ -1,4 +1,4 @@
-![Group 608](/Users/gyumin/Desktop/와이어프레임/Group 608.png)
+![Group 608](README.assets/Group 608.png)
 
 
 
