@@ -25,6 +25,8 @@ import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by myeongseok on 2022/10/21
  * updated by seongmin on 2022/10/30
@@ -56,6 +58,17 @@ public class ChannelServiceImpl implements ChannelService {
         for (Team team : teamList) {
 
             Response mmChannelResponse = client.getChannelsForTeamForUser(team.getId(), user.getId()).getRawResponse();
+            int status = mmChannelResponse.getStatus();
+            if (status == 400) {
+                log.error("register channel 실패 status = {}", status);
+                throw new ApiException(MM_BAD_REQUEST);
+            } else if (status == 401) {
+                log.error("register channel 실패 status = {}", status);
+                throw new ApiException(EMPTY_MM_CREDENTIAL);
+            } else if (status == 403) {
+                log.error("register channel 실패 status = {}", status);
+                throw new ApiException(MM_FORBIDDEN);
+            }
             JSONArray channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
 
             for (int i = 0; i < channelArray.length(); i++) {
