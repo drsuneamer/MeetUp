@@ -1,5 +1,6 @@
 package com.meetup.backend.entity.schedule;
 
+import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
@@ -35,5 +36,9 @@ public class Meeting extends Schedule {
     public Meeting(LocalDateTime start, LocalDateTime end, String title, User user, Meetup meetup) {
         super(start, end, title, user);
         this.meetup = meetup;
+    }
+
+    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
+        super.update(meetingUpdateRequestDto);
     }
 }
