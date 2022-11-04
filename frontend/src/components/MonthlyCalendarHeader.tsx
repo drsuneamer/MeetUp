@@ -19,7 +19,7 @@ const Header = () => {
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   useEffect(() => {
-    if (window.location.href === `${baseURL}/${localStorage.getItem('id')}`) {
+    if (window.location.href === `${baseURL}/calendar/${localStorage.getItem('id')}`) {
       // setIsMyCalendar(true)
       dispatch(setMyCalendar());
     }
