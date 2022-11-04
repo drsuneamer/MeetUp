@@ -67,7 +67,7 @@ public class MeetingServiceImpl implements MeetingService {
         Meetup meetup = meeting.getMeetup(); // 해당 미팅의 밋업
         Channel channel = meetup.getChannel(); // 해당 밋업의 채널
         // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아닌경우 접근 불가
-        if (!channelUserRepository.existsByChannelAndUser(channel, user) || !meeting.getMeetup().getManager().equals(user)) {
+        if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
         return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager());
@@ -90,6 +90,10 @@ public class MeetingServiceImpl implements MeetingService {
 
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
             throw new ApiException(ACCESS_DENIED);
+        AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
+        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
+        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || !managerAllScheduleResponseDto.isPossibleRegiser(start, end))
+            throw new ApiException(DUPLICATE_INSERT_DATETIME);
 
         Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).build();
         MattermostClient client = Client.getClient();
@@ -103,19 +107,20 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 미팅 정보 수정
     @Override
+    @Transactional
     public Long updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
         User managerUser = userRepository.findById(meeting.getMeetup().getManager().getId()).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        if (!meeting.getMeetup().getManager().equals(user) || !meeting.getUser().equals(user)) {
+        if (!meeting.getMeetup().getManager().equals(user) && !meeting.getUser().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || managerAllScheduleResponseDto.isPossibleRegiser(start, end))
+        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);
+        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || !managerAllScheduleResponseDto.isPossibleRegiser(start, end))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
         meeting.update(meetingUpdateRequestDto);
         return meeting.getId();
@@ -128,7 +133,7 @@ public class MeetingServiceImpl implements MeetingService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
         // 로그인 유저가 미팅 관리자가 아니거나 신청자가 아니라면 삭제 불가
-        if (!meeting.getMeetup().getManager().equals(user) || !meeting.getUser().equals(user)) {
+        if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
         meetingRepository.delete(meeting);
