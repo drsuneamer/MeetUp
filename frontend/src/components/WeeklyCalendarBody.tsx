@@ -16,6 +16,7 @@ import {
   meetingToMeSelector,
   fetchSchedule,
   fetchScheduleDetail,
+  fetchMeetingDetail,
 } from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
@@ -125,8 +126,12 @@ const WeeklyCalendarBody = () => {
     dispatch(setEventModalOpen());
   };
 
-  const handleViewEvent = (scheduleId: string) => {
-    dispatch(fetchScheduleDetail(scheduleId));
+  const handleViewEvent = (id: string, prop: string) => {
+    if (prop === 'myCalendar') {
+      dispatch(fetchScheduleDetail(id));
+    } else {
+      dispatch(fetchMeetingDetail(id));
+    }
     dispatch(setDetailModalOpen());
   };
 
@@ -189,16 +194,30 @@ const WeeklyCalendarBody = () => {
 
                 const scheduleDate = element.start.slice(0, 10);
                 const scheduleId = element.id;
+                const ownerId = element.userName; // 이부분 api 고치면 userId 로 바꿀 것
+                const myId = localStorage.getItem('id');
 
-                if (scheduleDate === stringDate)
+                if (scheduleDate === stringDate && ownerId === myId)
                   return (
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
                       className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        handleViewEvent(scheduleId);
+                        handleViewEvent(scheduleId, 'myCalendar');
                       }}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
+                else if (scheduleDate === stringDate && ownerId !== myId)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
                         {element.title}
@@ -217,13 +236,17 @@ const WeeklyCalendarBody = () => {
                 let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                 const scheduleDate = element.start.slice(0, 10);
+                const meetingId = element.id;
 
                 if (scheduleDate === stringDate)
                   return (
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(meetingId, 'myCalendar');
+                      }}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
                         {element.title}
@@ -242,6 +265,7 @@ const WeeklyCalendarBody = () => {
                 let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                 const scheduleDate = element.start.slice(0, 10);
+                const scheduleId = element.id;
 
                 if (scheduleDate === stringDate)
                   return (
@@ -249,6 +273,9 @@ const WeeklyCalendarBody = () => {
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
                       className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(scheduleId, 'myCalendar');
+                      }}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-background font-medium pt-2`}>
                         {element.title}
@@ -275,7 +302,7 @@ const WeeklyCalendarBody = () => {
               })}
               {selectedEventPosition !== null && (
                 <div
-                  className="fixed text-sm shadow rounded-lg bg-background cursor-pointer px-4 py-2"
+                  className="fixed text-sm shadow rounded-lg bg-background px-4 py-2"
                   style={selectedEventPosition}
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     // handleViewEvent('');
