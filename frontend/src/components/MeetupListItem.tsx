@@ -19,12 +19,8 @@ function MeetupListItem(meetup: MeetupListItemProps) {
     window.location.reload()
   }
 
-  useEffect(() => {
-    console.log(meetup.meetup.id)
-  })
-
   return (
-    <div onClick={OthersCalendar} key={meetup.meetup.id} className="MeetupListItem w-full mb-1 drop-shadow-button -z-10 cursor-pointer">
+    <div onClick={OthersCalendar} key={meetup.meetup.id} className="MeetupListItem w-full mb-1 drop-shadow-button cursor-pointer">
       <div className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap">
         <div className="indexLable bg-title w-3/12 h-[40px] flex justify-end ">
           <div className="bg-title mix-blend-multiply w-1/6 h-[40px]" />
