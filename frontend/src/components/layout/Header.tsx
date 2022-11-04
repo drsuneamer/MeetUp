@@ -47,12 +47,12 @@ function Header() {
           <div onClick={navTo} className="cursor-pointer">
             <img className="h-s ml-2" src={LogoImage} alt="logo" />
           </div>
-          <a
-            href="https://app.gitbook.com/o/jTWvp4xUfyfFgtmCNX77/s/FCNXRCKyHn6H2cvv6wwU/release-notes/meetup-1.0.0"
-            className="drop-shadow-shadow mt-1 border-placeholder bg-title text-background px-3 rounded h-[30px]  font-bold ml-3 text-s font-dots"
+          <button
+            onClick={() => window.open('https://meetup.gitbook.io/meetup-docs/release-notes', '_blank')}
+            className="drop-shadow-shadow mt-1 border-placeholder bg-title text-background px-3 rounded h-[30px] font-bold ml-3 text-s font-dots pb-1"
           >
-            v 1.0.8
-          </a>
+            v 1.0.9
+          </button>
         </div>
 
         <div className="flex mr-2">
