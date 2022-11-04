@@ -116,8 +116,8 @@ const DetailModal = () => {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-        <div className="flex flex-col p-[20px]">
-          <div className="mt-[20px] flex">
+        <div className="flex flex-col p-[20px] ">
+          <div className="mt-[20px] flex ">
             <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
             <p>{scheduleDetail.title}</p>
           </div>
@@ -135,19 +135,24 @@ const DetailModal = () => {
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
             <p className="w-[450px]">{scheduleDetail.content}</p>
           </div>
-          <div className="mt-[20px] flex flex-col">
-            <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
-            <div className="flex justify-center items-center gap-x-[50px]">
-              <div className="flex flex-col justify-center items-center">
-                <img className="w-[60px]" src={webex} alt="webex" />
-                <a href="#">이태희(컨설턴트)</a>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <img className="w-[60px]" src={webex} alt="webex" />
-                <a href="#">박성민[서울_1반_A102]팀장</a>
+
+          {scheduleDetail ? (
+            <div></div>
+          ) : (
+            <div className="mt-[20px] flex flex-col">
+              <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
+              <div className="flex justify-center items-center gap-x-[50px]">
+                <div className="flex flex-col justify-center items-center">
+                  <img className="w-[60px]" src={webex} alt="webex" />
+                  <a href="#">이태희(컨설턴트)</a>
+                </div>
+                <div className="flex flex-col justify-center items-center">
+                  <img className="w-[60px]" src={webex} alt="webex" />
+                  <a href="#">박성민[서울_1반_A102]팀장</a>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center gap-[20px] mt-[40px]">
           <button
@@ -168,10 +173,6 @@ const DetailModal = () => {
         className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
-
-          // if (handleToggleModal) {
-          //   handleToggleModal();
-          // }
         }}
       />
     </div>
