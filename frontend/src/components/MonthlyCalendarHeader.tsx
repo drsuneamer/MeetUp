@@ -11,30 +11,28 @@ import { axiosInstance } from './auth/axiosConfig';
 import { useParams } from 'react-router-dom';
 
 const Header = () => {
-  const params = useParams()
+  const baseURL = process.env.REACT_APP_BASE_URL;
+  const params = useParams();
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
   // const [isMyCalendar, setIsMyCalendar] = useState(false)
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
-  useEffect(()=>{
-    if ( window.location.href === `http://localhost:3000/calendar/${localStorage.getItem('id')}`) {
+  useEffect(() => {
+    if (window.location.href === `${baseURL}/${localStorage.getItem('id')}`) {
       // setIsMyCalendar(true)
-      dispatch(setMyCalendar())
+      dispatch(setMyCalendar());
     }
-  }, [window.location.href])
+  }, [window.location.href]);
 
-  const [nickname, setNickname] = useState('')
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
-    const userId = params.userId
+    const userId = params.userId;
     axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
-     setNickname(res.data)
+      setNickname(res.data);
     });
   }, [nickname]);
-
-  
-
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
