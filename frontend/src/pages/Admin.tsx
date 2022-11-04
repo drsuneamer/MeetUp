@@ -77,24 +77,31 @@ function Admin() {
     return <Navigate to="/admin-login" />;
   }
 
+  // 처음 로그인 시 값 불러오기
+  const reload = () => {
+    return <Navigate to="/admin-meetup2022" />;
+  };
+
   return (
     <div>
       {/* 헤더 */}
-      <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line">
+      <div onClick={reload} className="fixed relative flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line">
         <img className="h-s ml-2" src={LogoImage} alt="logo" />
+        <button className="bg-footer rounded absolute left-[180px] mt-1 px-2 drop-shadow-shadow">동기화</button>
         <div className="font-bold cursor-default mr-4">관리자</div>
       </div>
 
       {/* 내용 */}
-      <div className="flex flex-col w-screen items-center justify-center pt-[65px]">
+      <div className="flex flex-col w-screen items-center justify-center pt-[15px] cursor-default">
         <div className="font-bold text-xl">MeetUp 관리자 페이지</div>
-        <div>처음 로그인 후 새로고침!! (관리자 계정 로그인 필수)</div>
 
         {/* 검색 */}
-        <div className="flex w-full justify-between">
+        <div className="flex mt-5 w-[70vw] justify-center">
           {/* 권한 필터링 */}
-          <select className="w-[150px] outline-none" onChange={searchRole} defaultValue={'role'}>
-            <option value="ROLE">권한</option>
+          <select className="outline-none border-b-2 border-title mr-5" onChange={searchRole} defaultValue={'role'}>
+            <option className="text-[black]" value="ROLE">
+              권한
+            </option>
             <option value="ROLE_Student">Student</option>
             <option value="ROLE_Consultant">Consultant</option>
             <option value="ROLE_Coach">Coach</option>
@@ -103,20 +110,17 @@ function Admin() {
             <option value="ROLE_Admin">Admin</option>
           </select>
 
-          {/* 닉네임 필터링 */}
-          <div className="relative w-[300px] outline-none">
-            <input
-              onChange={searchName}
-              type="text"
-              id="simple-search"
-              className="outline-none bg-gray-50 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="이름"
-            />
+          {/* 닉네임 검색바 */}
+          <div className="flex items-center border-b-2 border-b-title py-1 px-2 focus:bg-title">
+            <input onChange={searchName} type="text" className="outline-none placeholder-[black]" placeholder="이름" />
+            <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#0552AC" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
           </div>
         </div>
 
         {/* 유저 조회*/}
-        <div className="flex flex-col mx-[30vw] mt-[3vh]">
+        <div className="flex flex-col mt-[3vh]">
           {/* 컬럼명 */}
           <div className="px-2 py-1 bg-line font-bold text-title flex w-[80vw] mb-3">
             <p className="w-[30vw]">닉네임</p>
@@ -129,7 +133,7 @@ function Admin() {
             <div key={index} className="px-2 border-b-[2px] border-line flex py-2">
               <p className="w-[30vw]">{user.nickname}</p>
               <p className="w-[30vw]">{user.role.slice(5)}</p>
-              <select id={user.id} className="outline-none" onChange={onChanged} defaultValue={'default'}>
+              <select id={user.id} className="outline-none cursor-pointer" onChange={onChanged} defaultValue={'default'}>
                 <option value="default" disabled hidden>
                   {user.role.slice(5)}
                 </option>
