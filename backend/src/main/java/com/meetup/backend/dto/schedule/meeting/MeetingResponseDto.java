@@ -33,6 +33,8 @@ public class MeetingResponseDto {
 
     private String userId;
 
+    private String userWebex;
+
     private Long meetupId;
 
     private String meetupName;
@@ -43,6 +45,8 @@ public class MeetingResponseDto {
 
     private String meetupAdminUserName;
 
+    private String meetupAdminUserWebex;
+
     public static MeetingResponseDto of(Schedule schedule, Meetup meetup, User user, User meetingUser) {
         return MeetingResponseDto.builder()
                 .id(schedule.getId())
@@ -52,11 +56,13 @@ public class MeetingResponseDto {
                 .content(schedule.getContent())
                 .userId(user.getId())
                 .userName(user.getNickname())
+                .userWebex(user.getWebex())
                 .meetupId(meetup.getId())
                 .meetupName(meetup.getTitle())
                 .meetupColor(meetup.getColor())
                 .meetupAdminUserId(meetingUser.getId())
                 .meetupAdminUserName(meetingUser.getNickname())
+                .meetupAdminUserWebex(meetingUser.getWebex())
                 .build();
     }
 }
