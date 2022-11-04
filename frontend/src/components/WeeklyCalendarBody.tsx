@@ -195,7 +195,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(scheduleId);
                       }}
