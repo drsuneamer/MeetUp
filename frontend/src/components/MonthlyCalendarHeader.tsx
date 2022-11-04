@@ -26,7 +26,6 @@ const Header = () => {
 
   const [nickname, setNickname] = useState('');
 
-  console.log(window.location.href);
   useEffect(() => {
     const userId = params.userId;
     axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
