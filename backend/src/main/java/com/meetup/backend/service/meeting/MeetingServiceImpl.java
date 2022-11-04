@@ -1,5 +1,6 @@
 package com.meetup.backend.service.meeting;
 
+import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
@@ -27,13 +28,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/02
+ * updated by myeongseok on 2022/11/04
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +58,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final AuthService authService;
 
-
+    // 미팅 상세정보 반환
     @Override
     public MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId) {
         // 로그인 유저
@@ -68,17 +71,6 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
         }
         return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager());
-    }
-
-    // 해당 user, 캘린더 주인 id, date로 정보 가져오기
-    @Override
-    public List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String date) {
-        return null;
-    }
-
-    @Override
-    public List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date) {
-        return null;
     }
 
     //미팅 정보 등록
@@ -109,11 +101,27 @@ public class MeetingServiceImpl implements MeetingService {
         return meetingRepository.save(meeting).getId();
     }
 
+    // 미팅 정보 수정
     @Override
-    public void updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto) {
-
+    public Long updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Meeting meeting = meetingRepository.findById(meetingUpdateRequestDto.getId()).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
+        User managerUser = userRepository.findById(meeting.getMeetup().getManager().getId()).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        if (!meeting.getMeetup().getManager().equals(user) || !meeting.getUser().equals(user)) {
+            throw new ApiException(ACCESS_DENIED);
+        }
+        LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
+        LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
+        String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+        AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
+        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
+        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || managerAllScheduleResponseDto.isPossibleRegiser(start, end))
+            throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
+        meeting.update(meetingUpdateRequestDto);
+        return meeting.getId();
     }
 
+    // 미팅 정보 삭제
     @Override
     @Transactional
     public void deleteMeeting(String userId, Long meetingId) {
@@ -124,6 +132,41 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
         }
         meetingRepository.delete(meeting);
+    }
+
+    public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        List<Meetup> meetups = meetupRepository.findByManager(targetUser);
+
+        boolean flag = false;
+        if (loginUserId.equals(targetUserId)) {
+            flag = true;
+        }
+        for (Meetup meetup : meetups) {
+            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+            throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
+        }
+        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime to = from.plusDays(p);
+        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
+
+        // 해당 스케줄 주인의 밋업 리스트
+        List<Meetup> meetupList = meetupRepository.findByManager(targetUser);
+        List<Meeting> meetingToMe = new ArrayList<>();
+        if (meetupList.size() > 0) {
+            for (Meetup mu : meetupList) {
+                // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
+                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+            }
+        }
+        return AllScheduleResponseDto.of(schedules, meetingToMe);
     }
 
 
