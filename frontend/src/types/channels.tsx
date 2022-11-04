@@ -9,3 +9,7 @@ export type tMeetup = {
   userName: string;
 };
 
+export type tAlarm = {
+  meetupId: number;
+  displayName: string;
+}
