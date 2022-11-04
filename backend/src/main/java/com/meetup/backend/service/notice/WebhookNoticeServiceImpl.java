@@ -5,19 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.hook.IncomingWebhookClient;
 import net.bis5.mattermost.model.IncomingWebhookRequest;
 import net.bis5.mattermost.model.SlackAttachment;
-import org.springframework.http.*;
+import net.bis5.mattermost.model.SlackAttachmentField;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * created by seongmin on 2022/11/03
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @Slf4j
@@ -25,17 +21,29 @@ import java.util.Map;
 public class WebhookNoticeServiceImpl implements WebhookNoticeService {
 
     private final IncomingWebhookClient client;
+    private final String ICON = "https://a106mtld.s3.ap-northeast-2.amazonaws.com/logo_square.png";
 
     @Override
     public void firstLoginNotice(String nickname) {
         IncomingWebhookRequest payload = new IncomingWebhookRequest();
-        StringBuilder text = new StringBuilder();
-        if (nickname.contains("컨설턴트") || nickname.contains("교수") || nickname.contains("코치") || nickname.contains("프로")) {
-            text.append("## 권한 변경 필요 \n");
-        }
-        text.append("#### ").append(nickname).append(" 첫 로그인 \n").append("https://meet-up.co.kr/admin-login");
+        List<SlackAttachment> slackAttachments = new ArrayList<>();
+        SlackAttachment slackAttachment = new SlackAttachment();
+        slackAttachment.setColor("#cc101f");
 
-        payload.setText(text.toString());
+        if (nickname.contains("컨설턴트") || nickname.contains("교수") || nickname.contains("코치") || nickname.contains("프로")) {
+            slackAttachment.setText("## :alert_siren: 권한 변경 필요 :alert_siren:");
+        }
+
+        SlackAttachmentField field = new SlackAttachmentField();
+        field.setTitle(nickname+" 첫 로그인");
+        field.setValue("https://meet-up.co.kr/admin-login");
+        List<SlackAttachmentField> fields = new ArrayList<>();
+        fields.add(field);
+        slackAttachment.setFields(fields);
+        slackAttachment.setFooter("MeetUp");
+        slackAttachment.setFooterIcon(ICON);
+        slackAttachments.add(slackAttachment);
+        payload.setAttachments(slackAttachments);
         client.postByIncomingWebhook(payload);
     }
 }

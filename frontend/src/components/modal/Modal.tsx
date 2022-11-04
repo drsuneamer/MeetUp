@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
+import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -10,35 +11,41 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { addSchedule } from '../../stores/modules/schedules';
- 
-interface ChannelOptionType {
-  title: string;
-}
+import { addMeeting } from '../../stores/modules/schedules';
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { tAlarm } from '../../types/channels';
 
-const channels = [
-  { title: '서울_1반_팀장채널'},
-  { title: 'A101' },
-  { title: 'A102' },
-  { title: 'A103' },
-  { title: 'A104' },
-  { title: 'A105' },
-  { title: 'A106' },
-  { title: 'A107' },
-  { title: 'A102_scrum' },
-  { title: 'A102_jira_bot' },
-];
+// interface ChannelOptionType {
+//   title: string;
+// }
+
+// const channels = [
+//   { title: '서울_1반_팀장채널'},
+//   { title: 'A101' },
+//   { title: 'A102' },
+//   { title: 'A103' },
+//   { title: 'A104' },
+//   { title: 'A105' },
+//   { title: 'A106' },
+//   { title: 'A107' },
+//   { title: 'A102_scrum' },
+//   { title: 'A102_jira_bot' },
+// ];
 
 const EventModal = () => {
+  const channels = useSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
-
+  const [content, setContent] = useState<string>('');
+  const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
@@ -96,6 +103,15 @@ const EventModal = () => {
     console.log(e.currentTarget.value);
   };
 
+  const onContentChange = (e:any) => {
+    setContent(e.currentTarget.value)    
+  }
+  const onAlarmChannel = (e:any, value:any) => {
+    const alarmChannelValue = value.meetupId || undefined;
+    setAlarmChannelId(alarmChannelValue);
+    console.log(alarmChannelValue);
+  }
+
   const parsedData:any = {
     title: title,
     content: null,
@@ -103,8 +119,15 @@ const EventModal = () => {
     end: newEndTime()
   };
 
+  const parsedMeetingData:any = {
+    title: title,
+    content: content,
+    start: newStartTime(),
+    end: newEndTime(),
+    meetupId: alarmChannelId,
+  };
 
-  
+
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -131,13 +154,22 @@ const EventModal = () => {
     window.location.reload()
   }, []);
 
-  const handleSubmit = async() => {
+  const handleSubmitToMe = async() => {
     const action = await dispatch(addSchedule(parsedData))
     if (isFulfilled(action)) {
       const userId = localStorage.getItem('id')
       handleToggleModal()
     } 
   }
+
+  const handleSubmitToYou = async() => {
+    const action = await dispatch(addMeeting(parsedMeetingData))
+    if (isFulfilled(action)) {
+      // const userId = localStorage.getItem('id')
+      handleToggleModal()
+    } 
+  }
+  
   const handleResetInput = useCallback(() => {
     setTitle('');
     setDate(getStringDateFormat(new Date()));
@@ -159,13 +191,21 @@ const EventModal = () => {
   }, []);
 
   const defaultProps = {
-    options: channels,
-    getOptionLabel: (option: ChannelOptionType) => option.title,
+    options: channels.alarmChannels,
+    getOptionLabel: (option:tAlarm) => option.displayName,
   };
   const flatProps = {
-    options: channels.map((option) => option.title),
+    options: channels&&channels.alarmChannels.map((option: any) => option.displayname),
   };
-  const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  const [value, setValue] = React.useState<tAlarm["meetupId"] | null>(null);
+  
+  const params = useParams()
+  const userId = params.userId
+  
+  useEffect(() => {
+    dispatch(fetchAlarmChannelList(userId));
+ 
+  }, []);
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -225,7 +265,7 @@ const EventModal = () => {
               ) : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
-                 <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+                 <input type="text" name="title" value={content} onChange={onContentChange} className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
                 </div>
               )}
               </div>
@@ -236,6 +276,7 @@ const EventModal = () => {
                   <div>
                    <div className="text-s text-title font-bold">알림 보낼 채널</div>
                    <Autocomplete
+                     onChange={onAlarmChannel}
                      className="w-[450px]"
                      ListboxProps={{ style: { maxHeight: '150px' } }}
                      {...defaultProps}
@@ -250,11 +291,11 @@ const EventModal = () => {
             </div>
             {myCalendar ? (
                <button 
-               onClick={handleSubmit}
+               onClick={handleSubmitToMe}
                className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button">밋업 불가시간 설정하기</button>
             ) : (
               <button 
-              onClick={handleSubmit}
+              onClick={handleSubmitToYou}
               className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
             )}
           

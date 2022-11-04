@@ -20,7 +20,7 @@ function Admin() {
   // 유저 권한 설정
   useEffect(() => {
     axiosInstance.get('/admin').then((res) => {
-      setUsers(res.data);
+      setUsers(res.data.sort());
     });
   }, [get]);
 
@@ -58,8 +58,12 @@ function Admin() {
         }
         return acc;
       }, []);
-
-      setFiltered(filteredList);
+      setFiltered(
+        // 닉네임 가나다순 정렬하여 설정
+        filteredList.sort(function (a, b) {
+          return a.nickname < b.nickname ? -1 : a.nickname > b.nickname ? 1 : 0;
+        }),
+      );
     }
   }, [users, role, name]);
 
@@ -87,7 +91,7 @@ function Admin() {
         <div>처음 로그인 후 새로고침!! (관리자 계정 로그인 필수)</div>
 
         {/* 검색 */}
-        <div className="flex">
+        <div className="flex w-full justify-between">
           {/* 권한 필터링 */}
           <select className="w-[150px] outline-none" onChange={searchRole} defaultValue={'role'}>
             <option value="ROLE">권한</option>
@@ -101,15 +105,6 @@ function Admin() {
 
           {/* 닉네임 필터링 */}
           <div className="relative w-[300px] outline-none">
-            {/* <div className=" outline-none flex absolute inset-y-0 left-0 items-center pl-3">
-              <svg aria-hidden="true" className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="https://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div> */}
             <input
               onChange={searchName}
               type="text"
@@ -123,7 +118,7 @@ function Admin() {
         {/* 유저 조회*/}
         <div className="flex flex-col mx-[30vw] mt-[3vh]">
           {/* 컬럼명 */}
-          <div className="font-bold text-title flex w-[80vw] mb-3">
+          <div className="px-2 py-1 bg-line font-bold text-title flex w-[80vw] mb-3">
             <p className="w-[30vw]">닉네임</p>
             <p className="w-[30vw]">현재 권한</p>
             <p className="">권한 설정하기</p>
@@ -131,21 +126,14 @@ function Admin() {
 
           {/* 리스트 */}
           {filtered.map((user, index) => (
-            <div key={index} className="flex mb-2">
+            <div key={index} className="px-2 border-b-[2px] border-line flex py-2">
               <p className="w-[30vw]">{user.nickname}</p>
-              <p className="w-[30vw]">{user.role}</p>
-              <select
-                id={user.id}
-                className="outline-none bg-title text-center text-background rounded"
-                onChange={onChanged}
-                defaultValue={'default'}
-              >
-                <option className="bg-background text-center" value="default" disabled hidden>
+              <p className="w-[30vw]">{user.role.slice(5)}</p>
+              <select id={user.id} className="outline-none" onChange={onChanged} defaultValue={'default'}>
+                <option value="default" disabled hidden>
                   {user.role.slice(5)}
                 </option>
-                <option className="bg-background text-center" value="Student">
-                  Student
-                </option>
+                <option value="Student">Student</option>
                 <option value="Consultant">Consultant</option>
                 <option value="Coach">Coach</option>
                 <option value="Pro">Pro</option>
