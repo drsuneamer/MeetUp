@@ -9,6 +9,7 @@ import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +23,11 @@ import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @RequiredArgsConstructor
@@ -48,6 +51,9 @@ public class TeamServiceImpl implements TeamService {
         client.setAccessToken(mmSessionToken);
 
         Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
+
+        MattermostEx.apiException(mmTeamResponse.getStatus());
+
         JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
         List<Team> teamList = new ArrayList<>();
 
