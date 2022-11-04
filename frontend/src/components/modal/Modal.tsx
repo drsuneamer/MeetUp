@@ -43,7 +43,7 @@ const EventModal = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
-
+  const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -103,6 +103,9 @@ const EventModal = () => {
     console.log(e.currentTarget.value);
   };
 
+  const onContentChange = (e:any) => {
+    setContent(e.currentTarget.value)    
+  }
   const onAlarmChannel = (e:any, value:any) => {
     const alarmChannelValue = value.meetupId || undefined;
     setAlarmChannelId(alarmChannelValue);
@@ -118,7 +121,7 @@ const EventModal = () => {
 
   const parsedMeetingData:any = {
     title: title,
-    content: null,
+    content: content,
     start: newStartTime(),
     end: newEndTime(),
     meetupId: alarmChannelId,
@@ -262,7 +265,7 @@ const EventModal = () => {
               ) : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
-                 <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
+                 <input type="text" name="title" value={content} onChange={onContentChange} className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
                 </div>
               )}
               </div>
