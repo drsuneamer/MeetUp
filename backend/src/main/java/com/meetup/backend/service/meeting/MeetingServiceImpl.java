@@ -22,7 +22,6 @@ import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bis5.mattermost.client4.ApiResponse;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.model.Post;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by myeongseok on 2022/11/04
+ * updated by seongmin on 2022/11/04
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -78,7 +77,6 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public Long createMeeting(String userId, MeetingRequestDto meetingRequestDto) {
-        log.info("=======create meeting start========");
         if (meetingRequestDto.getStart().length() != "yyyy-MM-dd HH:mm:ss".length() || meetingRequestDto.getEnd().length() != "yyyy-MM-dd HH:mm:ss".length()) {
             throw new ApiException(DATE_FORMAT_EX);
         }
@@ -105,16 +103,26 @@ public class MeetingServiceImpl implements MeetingService {
 
         Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).build();
         MattermostClient client = Client.getClient();
+
+        String mmToken = authService.getMMSessionToken(userId);
+        log.info("mmToken = {}", mmToken);
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-        log.info("mattermost message = {}", message);
-        ApiResponse<Post> post = client.createPost(new Post(channel.getId(), message));
-        log.error("post response = {}", post.getRawResponse());
-        log.info("=======create meeting end========");
 
-        return meetingRepository.save(meeting).getId();
+        int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
+        if (status == 201 || status == 200) {
+            log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
+            return meetingRepository.save(meeting).getId();
+        } else if (status == 401) {
+            log.error("mattermost 미팅 신청 알림 보내기 실패 인증 정보 없음 status = {}", status);
+            throw new ApiException(EMPTY_MM_CREDENTIAL);
+        } else {
+            log.error("mattermost 미팅 신청 알림 보내기 실패 status = {}", status);
+            throw new ApiException(MATTERMOST_EXCEPTION);
+        }
+
     }
 
     // 미팅 정보 수정
