@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seungyong on 2022/11/02
+ * updated by seongmin on 2022/11/04
  */
 @Getter
 @RequiredArgsConstructor
@@ -31,7 +31,9 @@ public enum ExceptionEnum {
 
     DATE_FORMAT_EX(BAD_REQUEST, "40009", "date의 형식은 yyyy-MM-dd HH:mm:ss 입니다."),
 
-    EMPTY_CREDENTIAL(UNAUTHORIZED, "40108", "인증 정보가 없습니다."),
+    EMPTY_CREDENTIAL(UNAUTHORIZED, "40101", "인증 정보가 없습니다."),
+
+    EMPTY_MM_CREDENTIAL(UNAUTHORIZED, "40101", "메터모스트 인증 정보가 없습니다."),
 
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
 
