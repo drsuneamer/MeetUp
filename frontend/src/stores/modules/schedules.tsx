@@ -12,7 +12,7 @@ type scheduleInitialState = {
   };
   scheduleModal: {
     scheduleDetail: tScheduleDetail; // 일정 등록 디테일
-    // addMeeting: Array<tMeetingDetail>; // 미팅 등록 디테일
+    meetingDetail: tMeetingDetail; // 미팅 등록 디테일
   };
 };
 
@@ -69,24 +69,24 @@ const initialState: scheduleInitialState = {
       userId: '',
       userName: '',
     },
-    // addMeeting: [
-    //   {
-    //     id: '',
-    //     start: '',
-    //     end: '',
-    //     title: '',
-    //     content: '',
-    //     userId: '',
-    //     userName: '',
-    //     userWebex: '',
-    //     meetupId: '',
-    //     meetupName: '',
-    //     meetupColor: '',
-    //     meetupAdminUserId: '',
-    //     meetupAdminUserName: '',
-    //     meetupAdminUserWebex: '',
-    //   },
-    // ]
+    meetingDetail: [
+      {
+        id: '',
+        start: '',
+        end: '',
+        title: '',
+        content: '',
+        userId: '',
+        userName: '',
+        userWebex: '',
+        meetupId: '',
+        meetupName: '',
+        meetupColor: '',
+        meetupAdminUserId: '',
+        meetupAdminUserName: '',
+        meetupAdminUserWebex: '',
+      },
+    ],
   },
 };
 
@@ -129,7 +129,19 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      console.log('my schedule detail fetched: ', res.data);
+      // console.log('my schedule detail fetched: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
+      console.log('my meeting detail fetched: ', res.data);
       return res.data;
     });
     return res;
