@@ -16,6 +16,7 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/04
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -110,6 +111,9 @@ public class ChannelUserServiceImpl implements ChannelUserService {
             for (int k = 0; ; k++) {
 
                 Response mmChannelUserResponse = client.getChannelMembers(channel.getId(), Pager.of(k, 100)).getRawResponse();
+
+                MattermostEx.apiException(mmChannelUserResponse.getStatus());
+
                 JSONArray userArray = new JSONArray();
                 try {
                     userArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelUserResponse.getEntity());
