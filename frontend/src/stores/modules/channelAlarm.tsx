@@ -38,6 +38,7 @@ const AlarmChannelSlice = createSlice({
     [fetchAlarmChannelList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       state.alarmChannels = action.payload;
+      console.log(state.alarmChannels);
     },
     [fetchAlarmChannelList.rejected.toString()]: (state) => {
       state.loading = false;
