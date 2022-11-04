@@ -10,6 +10,7 @@ import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/10/30
+ * updated by seongmin on 2022/11/04
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -58,17 +59,9 @@ public class ChannelServiceImpl implements ChannelService {
         for (Team team : teamList) {
 
             Response mmChannelResponse = client.getChannelsForTeamForUser(team.getId(), user.getId()).getRawResponse();
-            int status = mmChannelResponse.getStatus();
-            if (status == 400) {
-                log.error("register channel 실패 status = {}", status);
-                throw new ApiException(MM_BAD_REQUEST);
-            } else if (status == 401) {
-                log.error("register channel 실패 status = {}", status);
-                throw new ApiException(EMPTY_MM_CREDENTIAL);
-            } else if (status == 403) {
-                log.error("register channel 실패 status = {}", status);
-                throw new ApiException(MM_FORBIDDEN);
-            }
+
+            MattermostEx.apiException(mmChannelResponse.getStatus());
+
             JSONArray channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
 
             for (int i = 0; i < channelArray.length(); i++) {

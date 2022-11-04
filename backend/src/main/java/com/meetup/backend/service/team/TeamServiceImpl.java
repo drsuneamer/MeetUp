@@ -9,6 +9,7 @@ import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,17 +51,9 @@ public class TeamServiceImpl implements TeamService {
         client.setAccessToken(mmSessionToken);
 
         Response mmTeamResponse = client.getTeamsForUser(user.getId()).getRawResponse();
-        int status = mmTeamResponse.getStatus();
-        if (status == 400) {
-            log.error("register team 실패 status = {}", status);
-            throw new ApiException(MM_BAD_REQUEST);
-        } else if (status == 401) {
-            log.error("register team 실패 status = {}", status);
-            throw new ApiException(EMPTY_MM_CREDENTIAL);
-        } else if (status == 403) {
-            log.error("register team 실패 status = {}", status);
-            throw new ApiException(MM_FORBIDDEN);
-        }
+
+        MattermostEx.apiException(mmTeamResponse.getStatus());
+
         JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
         List<Team> teamList = new ArrayList<>();
 
