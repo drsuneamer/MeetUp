@@ -89,6 +89,18 @@ class MeetupServiceImplTest {
 
     }
 
+    @AfterEach
+    void After() {
+        meetupRepository.deleteAll();
+        channelUserRepository.deleteAll();
+        channelRepository.deleteAll();
+        teamUserRepository.deleteAll();
+        teamRepository.deleteAll();
+        userRepository.deleteAll();
+
+        redisUtil.deleteData(mmId);
+    }
+
     @Test
     @DisplayName("밋업 생성")
     @Order(1)
@@ -123,6 +135,9 @@ class MeetupServiceImplTest {
     @Order(2)
     @DisplayName("밋업 변경")
     void updateMeetup() {
+
+        registerMeetUp();
+
         MeetupUpdateRequestDto meetupUpdateRequestDto = MeetupUpdateRequestDto.builder()
                 .color("color2")
                 .title("title2")
@@ -138,6 +153,9 @@ class MeetupServiceImplTest {
     @Order(3)
     @DisplayName("밋업목록 보기")
     void getResponseDtos() {
+
+        registerMeetUp();
+
         log.info(meetupService.getResponseDtos(mmId) + "");
         assertThat(meetupService.getResponseDtos(mmId)).isNotEmpty();
     }
@@ -146,6 +164,9 @@ class MeetupServiceImplTest {
     @Order(4)
     @DisplayName("밋업 정보 보기")
     void getMeetupInfo() {
+
+        registerMeetUp();
+
         log.info(meetupService.getMeetupInfo(meetupRepository.findByManager(User.builder().id(mmId).build()).get(0).getId()) + "");
         assertThat(meetupService.getMeetupInfo(meetupRepository.findByManager(User.builder().id(mmId).build()).get(0).getId())).isNotNull();
     }
@@ -154,6 +175,9 @@ class MeetupServiceImplTest {
     @Order(5)
     @DisplayName("달력 목록 보기")
     void getCalendarList() {
+
+        registerMeetUp();
+
         assertThat(meetupService.getCalendarList("syngmnbiytd8ugp5834doy1gme", channelUserService.getChannelUserByUser("syngmnbiytd8ugp5834doy1gme")).size()).isNotSameAs(0);
     }
 
@@ -161,6 +185,9 @@ class MeetupServiceImplTest {
     @DisplayName("밋업 삭제")
     @Order(6)
     void deleteMeetup() {
+
+        registerMeetUp();
+
         meetupService.deleteMeetup(meetupRepository.findByManager(User.builder().id(mmId).build()).get(0).getId(), mmId);
         assertThat(meetupRepository.findByManager(User.builder().id(mmId).build()).get(0).isDelete()).isSameAs(true);
     }
