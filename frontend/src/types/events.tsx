@@ -35,3 +35,11 @@ export type tSchedule = {
   meetupName: string,
   meetupColor: string
 }
+
+export type tScheduleDetail = {
+
+}
+
+export type tMettingDetail = {
+  
+}
