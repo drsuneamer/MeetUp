@@ -33,8 +33,8 @@ public class AllScheduleResponseDto {
                         schedule.getEnd(),
                         schedule.getTitle(),
                         schedule.getContent(),
-                        schedule.getUser().getNickname(),
                         schedule.getUser().getId(),
+                        schedule.getUser().getNickname(),
                         ((Meeting) schedule).getMeetup().getTitle(),
                         ((Meeting) schedule).getMeetup().getColor()
                 ));
@@ -45,8 +45,8 @@ public class AllScheduleResponseDto {
                         schedule.getEnd(),
                         schedule.getTitle(),
                         schedule.getContent(),
-                        schedule.getUser().getNickname(),
-                        schedule.getUser().getId()
+                        schedule.getUser().getId(),
+                        schedule.getUser().getNickname()
                 ));
             }
         }
@@ -57,8 +57,8 @@ public class AllScheduleResponseDto {
                     meeting.getEnd(),
                     meeting.getTitle(),
                     meeting.getContent(),
-                    meeting.getUser().getNickname(),
                     meeting.getUser().getId(),
+                    meeting.getUser().getNickname(),
                     meeting.getMeetup().getTitle(),
                     meeting.getMeetup().getColor()
             ));
