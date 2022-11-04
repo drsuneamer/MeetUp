@@ -129,7 +129,7 @@ public class AllScheduleResponseDto {
             return true;
         else if ((from.isBefore(start) || from.isEqual(start)) && (to.isAfter(end) || to.isEqual(end)))
             return true;
-        else if (from.isAfter(start) && to.isBefore(end))
+        else if ((from.isAfter(start) || from.isEqual(start)) && (to.isBefore(end) || to.isEqual(end)))
             return true;
         else
             return false;

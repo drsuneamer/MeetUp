@@ -48,7 +48,7 @@ public class JwtTokenProvider {
 
         Date tokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
-        log.info("tokenExpiresIn = {}", tokenExpiresIn);
+//        log.info("tokenExpiresIn = {}", tokenExpiresIn);
 
         // Access Token 생성
         String accessToken = Jwts.builder()
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
-        log.info("claims = {}", claims.toString());
+//        log.info("claims = {}", claims.toString());
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }

@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
                                     .build());
                 } else {
                     user = userRepository.findById(id).get();
-                    if (!user.getNickname().equals(nickname)) {
+                    if (!nickname.equals(user.getNickname())) {
                         user.setNickname(nickname);
                     }
                     String encodedPwd = passwordEncoder.encode(requestDto.getPassword());
