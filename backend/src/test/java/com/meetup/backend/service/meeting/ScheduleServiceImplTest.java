@@ -227,9 +227,9 @@ class ScheduleServiceImplTest {
         User coach1 = userRepository.findById("coach1").get();
 
         // user1이 con1에게 미팅 신청
-        meetingService.createMeeting(user1.getId(), new MeetingRequestDto("2022-10-28 10:00:00", "2022-10-28 11:00:00", "2팀 미팅신청", "마지막 미팅", consultantMeetup.getId()));
+        meetingService.createMeeting(user1.getId(), new MeetingRequestDto("2022-10-28 10:00:00", "2022-10-28 11:00:00", "2팀 미팅신청", "마지막 미팅", consultantMeetup.getId(), true));
         // con1이 coach1에게 미팅 신청
-        meetingService.createMeeting(con1.getId(), new MeetingRequestDto("2022-10-27 10:00:00", "2022-10-27 11:00:00", "컨코 미팅", "한시간 미팅", coachMeetup.getId()));
+        meetingService.createMeeting(con1.getId(), new MeetingRequestDto("2022-10-27 10:00:00", "2022-10-27 11:00:00", "컨코 미팅", "한시간 미팅", coachMeetup.getId(),true));
 
 
         AllScheduleResponseDto result = scheduleService.getScheduleByUserAndDate(user1.getId(), con1.getId(), "2022-10-23 10:00:00");
