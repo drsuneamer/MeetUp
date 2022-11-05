@@ -6,6 +6,8 @@ import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { detailSelector, scheduleSelector } from '../../stores/modules/schedules';
 
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
@@ -23,6 +25,8 @@ const DetailModal = () => {
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
+
+  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -112,39 +116,43 @@ const DetailModal = () => {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-        <div className="flex flex-col p-[20px]">
-          <div className="mt-[20px] flex">
+        <div className="flex flex-col p-[20px] ">
+          <div className="mt-[20px] flex ">
             <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
-            <p>A102 팀 미팅</p>
+            <p>{scheduleDetail.title}</p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-            <p>2022-11-03</p>
+            <p>{scheduleDetail.start.slice(0, 10)}</p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">시간</div>
-            <p>오전 10시 - 10시 30분</p>
+            <p>
+              {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
+            </p>
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
-            <p className="w-[450px]">
-              주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정 팀 미팅 신청합니다 어쩌고저쩌고 주제 선정
-              팀 미팅 신청합니다 어쩌고저쩌고주제 선정
-            </p>
+            <p className="w-[450px]">{scheduleDetail.content}</p>
           </div>
-          <div className="mt-[20px] flex flex-col">
-            <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
-            <div className="flex justify-center items-center gap-x-[50px]">
-              <div className="flex flex-col justify-center items-center">
-                <img className="w-[60px]" src={webex} alt="webex" />
-                <a href="#">이태희(컨설턴트)</a>
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <img className="w-[60px]" src={webex} alt="webex" />
-                <a href="#">박성민[서울_1반_A102]팀장</a>
+
+          {scheduleDetail ? (
+            <div></div>
+          ) : (
+            <div className="mt-[20px] flex flex-col">
+              <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
+              <div className="flex justify-center items-center gap-x-[50px]">
+                <div className="flex flex-col justify-center items-center">
+                  <img className="w-[60px]" src={webex} alt="webex" />
+                  <a href="#">이태희(컨설턴트)</a>
+                </div>
+                <div className="flex flex-col justify-center items-center">
+                  <img className="w-[60px]" src={webex} alt="webex" />
+                  <a href="#">박성민[서울_1반_A102]팀장</a>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="flex justify-center items-center gap-[20px] mt-[40px]">
           <button
@@ -165,10 +173,6 @@ const DetailModal = () => {
         className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
-
-          // if (handleToggleModal) {
-          //   handleToggleModal();
-          // }
         }}
       />
     </div>
