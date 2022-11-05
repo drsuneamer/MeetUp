@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/24
+ * updated by seongmin on 2022/11/06
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,32 +48,33 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ScheduleType type;
 
+    public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, boolean open, User user) {
+        this.start = start;
+        this.end = end;
+        this.title = title;
+        this.content = content;
+        this.isOpen = open;
+        this.user = user;
+    }
+
     public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, User user) {
         this.start = start;
         this.end = end;
         this.title = title;
         this.content = content;
-        this.isOpen = false;
         this.user = user;
     }
 
-
-    public Schedule(LocalDateTime start, LocalDateTime end, String title, User user) {
-        this.start = start;
-        this.end = end;
-        this.title = title;
-        this.isOpen = false;
-        this.user = user;
-    }
-
-    public void update(ScheduleUpdateRequestDto scheduleUpdateRequestDto){
+    public void update(ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         this.start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
         this.end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
         this.title = scheduleUpdateRequestDto.getTitle();
         this.content = scheduleUpdateRequestDto.getContent();
+        this.isOpen = scheduleUpdateRequestDto.isOpen();
 
     }
-    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto){
+
+    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
         this.start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
         this.end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         this.title = meetingUpdateRequestDto.getTitle();

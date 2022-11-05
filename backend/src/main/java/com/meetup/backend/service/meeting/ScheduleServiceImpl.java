@@ -4,14 +4,12 @@ import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
-import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
@@ -30,6 +28,10 @@ import java.util.List;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
+/**
+ * created by myeongseok on 2022/10/30
+ * updated by seongmin on 2022/11/06
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -76,7 +78,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         String title = scheduleRequestDto.getTitle();
         String content = scheduleRequestDto.getContent();
-        Schedule schedule = new Schedule(start, end, title, content, user);
+        log.info("isOpen = {}", scheduleRequestDto.isOpen());
+        Schedule schedule = new Schedule(start, end, title, content, scheduleRequestDto.isOpen(), user);
 
         return scheduleRepository.save(schedule).getId();
     }
@@ -147,6 +150,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
-        return AllScheduleResponseDto.of(schedules, meetingToMe);
+        return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
     }
 }

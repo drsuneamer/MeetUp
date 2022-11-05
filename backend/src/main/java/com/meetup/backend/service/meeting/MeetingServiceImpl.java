@@ -36,7 +36,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/06
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -191,7 +191,7 @@ public class MeetingServiceImpl implements MeetingService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
-        return AllScheduleResponseDto.of(schedules, meetingToMe);
+        return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
     }
 
 
