@@ -7,6 +7,7 @@ import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
+import com.meetup.backend.entity.schedule.ScheduleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
@@ -50,8 +51,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
-        if (!user.getId().equals(schedule.getUser().getId())) {
+        if (schedule.getType().equals(ScheduleType.Schedule) && !user.getId().equals(schedule.getUser().getId())) {
             throw new ApiException(ACCESS_DENIED);
+        }
+        if (schedule.getType().equals(ScheduleType.Meeting)) {
+            if (!user.getId().equals(schedule.getUser().getId()) && !((Meeting) schedule).getMeetup().getManager().getId().equals(user.getId())) {
+                throw new ApiException(ACCESS_DENIED);
+            }
         }
         return ScheduleResponseDto.builder().id(schedule.getId()).start(schedule.getStart()).end(schedule.getEnd()).title(schedule.getTitle()).content(schedule.getContent()).userId(user.getId()).userName(user.getNickname()).build();
     }
