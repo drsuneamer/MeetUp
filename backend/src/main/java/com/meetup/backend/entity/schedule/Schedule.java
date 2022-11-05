@@ -57,14 +57,6 @@ public class Schedule extends BaseEntity {
         this.user = user;
     }
 
-    public Schedule(LocalDateTime start, LocalDateTime end, String title, String content, User user) {
-        this.start = start;
-        this.end = end;
-        this.title = title;
-        this.content = content;
-        this.user = user;
-    }
-
     public void update(ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
         this.start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
         this.end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
@@ -79,6 +71,7 @@ public class Schedule extends BaseEntity {
         this.end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         this.title = meetingUpdateRequestDto.getTitle();
         this.content = meetingUpdateRequestDto.getContent();
+        this.isOpen = meetingUpdateRequestDto.isOpen();
 
     }
 }

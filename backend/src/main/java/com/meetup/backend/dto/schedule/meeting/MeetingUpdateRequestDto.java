@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * created by myeongseok on 2022/10/25
- * updated vy myeongseok 0n 2022/11/04
+ * updated vy seongmin on 2022/11/06
  */
 @Data
 @Builder
@@ -30,4 +30,6 @@ public class MeetingUpdateRequestDto {
     private String title;
 
     private String content;
+
+    private boolean open;
 }

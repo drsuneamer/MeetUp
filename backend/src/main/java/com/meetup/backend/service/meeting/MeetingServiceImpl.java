@@ -101,7 +101,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         }
 
-        Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).build();
+        Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).open(meetingRequestDto.isOpen()).build();
         MattermostClient client = Client.getClient();
 
         String mmToken = authService.getMMSessionToken(userId);
@@ -193,6 +193,4 @@ public class MeetingServiceImpl implements MeetingService {
         }
         return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
     }
-
-
 }

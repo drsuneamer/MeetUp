@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * created by seongmin on 2022/10/20
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/06
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,8 +27,8 @@ public class Meeting extends Schedule {
     private Meetup meetup;
 
     @Builder
-    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user, Meetup meetup) {
-        super(start, end, title, content, user);
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean open, User user, Meetup meetup) {
+        super(start, end, title, content, open, user);
         this.meetup = meetup;
     }
 
