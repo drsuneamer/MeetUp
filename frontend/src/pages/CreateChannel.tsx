@@ -4,7 +4,7 @@ import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../stores/ConfigHooks';
 
 import { axiosInstance } from '../components/auth/axiosConfig';
 
@@ -15,7 +15,7 @@ interface Category {
 }
 
 function CreateChannel() {
-  const t = useSelector((state: any) => state.teamId.value).id;
+  const t = useAppSelector((state: any) => state.teamId.value).id;
   const navigate = useNavigate();
 
   const [lv1Categories, setLv1] = useState<any>([]);
@@ -106,6 +106,7 @@ function CreateChannel() {
             <div className="font-bold text-title cursor-default">밋업 이름 (변경 가능)</div>
             <div className="flex justify-center">
               <input
+                defaultValue={category?.displayName}
                 onChange={titleChange}
                 type="text"
                 placeholder="ex. 서울_1반_A102"

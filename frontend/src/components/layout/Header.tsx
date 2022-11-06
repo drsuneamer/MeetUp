@@ -33,6 +33,7 @@ function Header() {
     });
   };
   const nickname = window.localStorage.getItem('nickname');
+  const role = window.localStorage.getItem('roleType');
 
   function logoutProps() {
     setModalType('logout');
@@ -55,7 +56,8 @@ function Header() {
           </button>
         </div>
 
-        <div className="flex mr-2">
+        <div className="flex mr-2 items-center">
+          <div className="font-script font-bold text-title mr-2 text-m mt-1">{role?.slice(5)}</div>
           <Link to="/settings">
             <div className="font-bold pr-1 underline underline-offset-2">{nickname}</div>
           </Link>

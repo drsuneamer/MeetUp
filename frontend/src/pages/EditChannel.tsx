@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../stores/ConfigHooks';
 import { axiosInstance } from '../components/auth/axiosConfig';
 import Spinner from '../components/common/Spinner';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,8 @@ function EditChannel() {
   const navigate = useNavigate();
   const [channel, setChannel] = useState<Channel>();
 
-  const channelId: number = useSelector((state: any) => state.channelId.value);
+  const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
+  console.log(channelId);
 
   // MM 채널 이름 수정
   const [title, setTitle] = useState('');
@@ -33,13 +34,9 @@ function EditChannel() {
   const openColor = () => {
     setOpen(!open);
   };
-  console.log(title, color);
 
   // 등록 (API 연결)
   const [record, setRecord] = useState({ title: title, color: '' });
-  //   setRecord({ title: title, color: color });
-  // }, [title, color]); // 각 값이 변경될 때마다 제출될 record에 반영
-
   useEffect(() => {
     axiosInstance.get(`/meetup/${channelId}`).then((res) => {
       setChannel(res.data);
