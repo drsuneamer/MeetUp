@@ -139,7 +139,7 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
-      console.log('my meeting detail fetched: ', res.data);
+      // console.log('my meeting detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -193,7 +193,6 @@ const scheduleSlice = createSlice({
     },
     [fetchMeetingDetail.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      console.log(action.payload);
       state.scheduleModal.meetingDetail = action.payload;
     },
     [fetchMeetingDetail.rejected.toString()]: (state) => {
@@ -207,7 +206,6 @@ const scheduleSlice = createSlice({
     [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       state.schedules = action.payload;
-      console.log(state.schedules);
     },
     [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;
