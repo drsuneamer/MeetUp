@@ -2,15 +2,15 @@ package com.meetup.backend.entity.team;
 
 import com.meetup.backend.entity.*;
 import com.meetup.backend.entity.user.User;
+import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * created by seungyoung on 2022/10/20
- * updated by seongmin on 2022/10/21
- * updated by seungyong on 2022/10/25
+ * created by seungyong on 2022/10/20
+ * updated by seungyong on 2022/11/06
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +20,9 @@ public class TeamUser implements Serializable {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
+
+    @Convert(converter = BooleanToYNConverter.class)
+    private boolean isActivate;
 
     @Id
     @ManyToOne
@@ -35,6 +38,7 @@ public class TeamUser implements Serializable {
     public TeamUser(Team team, User user) {
         this.team = team;
         this.user = user;
+        isActivate=true;
     }
 
     @Override
@@ -42,5 +46,9 @@ public class TeamUser implements Serializable {
         if (this.team.equals(((TeamUser) obj).getTeam()) && this.user.getId().equals(((TeamUser) obj).getUser().getId()))
             return true;
         return false;
+    }
+
+    public void changeActivate(Boolean isActivate){
+        this.isActivate=isActivate;
     }
 }
