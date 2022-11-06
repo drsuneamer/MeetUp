@@ -15,6 +15,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ExceptionEnum {
 
     USER_NOT_FOUND(BAD_REQUEST, "40001", "사용자를 찾을 수 없습니다."),
+
     BAD_REQUEST_LOGOUT(BAD_REQUEST, "40002", "잘못된 로그아웃 접근입니다."),
 
     TEAM_NOT_FOUND(BAD_REQUEST, "40003", "해당 팀을 찾을 수 없습니다."),
@@ -30,6 +31,8 @@ public enum ExceptionEnum {
     KEY_NOT_MATCHING(BAD_REQUEST, "40008", "키 값이 일치하지 않습니다."),
 
     DATE_FORMAT_EX(BAD_REQUEST, "40009", "date의 형식은 yyyy-MM-dd HH:mm:ss 입니다."),
+
+    TOO_SHOR_DURATION(BAD_REQUEST, "40010", "시작시간과 종료시각의 차이가 30분 이하입니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40108", "인증 정보가 없습니다."),
 
@@ -48,6 +51,7 @@ public enum ExceptionEnum {
     DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
 
     DUPLICATE_ID(CONFLICT, "40902", "아이디가 중복됩니다."),
+
     DUPLICATE_INSERT_DATETIME(CONFLICT, "40903", "기존에 있는 일정과 중복되어 등록이 불가합니다."),
 
     DUPLICATE_UPDATE_DATETIME(CONFLICT, "40904", "기존에 있는 일정과 중복되어 수정이 불가합니다."),
