@@ -2,14 +2,13 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 import Spinner from './common/Spinner';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
 import { fetchChannelList, channelSelector } from '../stores/modules/channels';
-import { useSelector } from 'react-redux';
 
 function ChannelList() {
   const dispatch = useAppDispatch();
-  const channel = useSelector(channelSelector);
+  const channel = useAppSelector(channelSelector);
 
   useEffect(() => {
     dispatch(fetchChannelList());
