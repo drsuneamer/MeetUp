@@ -1,7 +1,10 @@
 package com.meetup.backend.service.team;
 
+import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.entity.team.TeamUser;
+import com.meetup.backend.entity.user.User;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.team.TeamRepository;
@@ -10,11 +13,16 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -51,6 +59,12 @@ class TeamUserServiceImplTest {
 
     private String mmId;
 
+    @BeforeEach
+    void before() {
+        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+        mmId = loginResponse.getId();
+    }
+
     @AfterEach
     void After() {
         channelUserRepository.deleteAll();
@@ -63,12 +77,23 @@ class TeamUserServiceImplTest {
     @Test
     @DisplayName("사용자가 포함된 팀 목록을 반환")
     void getTeamByUser() {
-
-        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
-        mmId = loginResponse.getId();
-
         assertThat(teamUserService.getTeamByUser(mmId).size()).isNotSameAs(0);
-        log.info("team size = " + teamRepository.findAll().size());
+    }
+
+    @Test
+    @DisplayName("사용자 벼로 팀 비활성화 (밋업 생성시에 목록에 표시안됨)")
+    void activateTeamUser() {
+
+        List<TeamActivateRequestDto> teamActivateRequestDtoList = new ArrayList<>();
+        List<TeamUser> teamUserList = teamUserRepository.findByUser(User.builder().id(mmId).build());
+
+        Random random = new Random();
+        for (TeamUser teamUser : teamUserList) {
+            teamActivateRequestDtoList.add(new TeamActivateRequestDto(teamUser.getTeam().getId(), random.nextBoolean()));
+        }
+
+        teamUserService.activateTeamUser(mmId, teamActivateRequestDtoList);
 
     }
+
 }
