@@ -5,6 +5,7 @@ type ModalInitialState = {
   detailModalIsOpen: boolean;
   webexModalIsOpen: boolean;
   modalType: string;
+  memberListModalIsOpen: boolean;
 };
 
 const initialState: ModalInitialState = {
@@ -12,6 +13,7 @@ const initialState: ModalInitialState = {
   detailModalIsOpen: false,
   webexModalIsOpen: false,
   modalType: '',
+  memberListModalIsOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -28,10 +30,13 @@ const modalSlice = createSlice({
     setWebexModalOpen: (state) => {
       state.webexModalIsOpen = !state.webexModalIsOpen;
     },
+    setMemberListModalOpen: (state) => {
+      state.memberListModalIsOpen = !state.memberListModalIsOpen;
+    },
   },
 });
 
 const { reducer } = modalSlice;
 export const ModalSelector = (state: any) => state.modal;
-export const { setEventModalOpen, setDetailModalOpen, setWebexModalOpen } = modalSlice.actions;
+export const { setEventModalOpen, setDetailModalOpen, setWebexModalOpen, setMemberListModalOpen } = modalSlice.actions;
 export default reducer;

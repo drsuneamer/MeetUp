@@ -11,12 +11,27 @@ import members from './modules/members';
 import mycalendar from './modules/mycalendar';
 import schedules from './modules/schedules';
 import scheduleModal from './modules/schedules';
-import channelId from './modules/channelId';
-import alarmChannels from './modules/channelAlarm'
+import channelInfo from './modules/channelInfo';
+import alarmChannels from './modules/channelAlarm';
 import scheduleId from './modules/schedules';
 
 const store = configureStore({
-  reducer: { dates, events, modal, holidays, calendars, channels, teamId, channelId, members, mycalendar, schedules, scheduleModal, alarmChannels, scheduleId },
+  reducer: {
+    dates,
+    events,
+    modal,
+    holidays,
+    calendars,
+    channels,
+    teamId,
+    channelInfo,
+    members,
+    mycalendar,
+    schedules,
+    scheduleModal,
+    alarmChannels,
+    scheduleId,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

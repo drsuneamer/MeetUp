@@ -1,14 +1,13 @@
 import MeetupListItem from './MeetupListItem';
 import { tMeetup } from '../types/channels';
 import Spinner from './common/Spinner';
-import { useAppDispatch } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
 import { fetchCalendarList, calendarSelector } from '../stores/modules/meetups';
-import { useSelector } from 'react-redux';
 
 function MeetupList() {
   const dispatch = useAppDispatch();
-  const calendar = useSelector(calendarSelector);
+  const calendar = useAppSelector(calendarSelector);
 
   useEffect(() => {
     dispatch(fetchCalendarList());
