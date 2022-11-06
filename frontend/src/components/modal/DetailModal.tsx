@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { detailSelector, scheduleSelector } from '../../stores/modules/schedules';
+import { setEditModalOpen } from '../../stores/modules/modal';
 
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
@@ -98,6 +99,18 @@ const DetailModal = () => {
   // };
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
 
+  const handleEditEvent = () => {
+    dispatch(setEditModalOpen());
+    // dispatch(setDetailModalOpen());
+    handleToggleModal();
+    // console.log(detailModalIsOpen);
+    // setModalType('edit Meeting')
+    // console.log(editModalIsOpen);
+    // console.log(editModalIsOpen);
+    console.log('안녕')
+    // console.log(modalType);
+  }
+
   return (
     <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
@@ -156,7 +169,7 @@ const DetailModal = () => {
         </div>
         <div className="flex justify-center items-center gap-[20px] mt-[40px]">
           <button
-            // onClick={handleSubmit}
+            onClick={handleEditEvent}
             className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
           >
             밋업 수정하기

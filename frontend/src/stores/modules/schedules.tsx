@@ -150,6 +150,18 @@ export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', asyn
   }
 });
 
+export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.get('/meeting', thunkAPI).then((res) => {
+      console.log('my meeting detail edited: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
@@ -198,6 +210,17 @@ const scheduleSlice = createSlice({
       state.schedules = action.payload;
     },
     [fetchSchedule.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+     // PATCH: 미팅 수정하기
+    [editMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [editMeetingDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+    },
+    [editMeetingDetail.rejected.toString()]: (state) => {
       state.loading = false;
     },
   },
