@@ -69,24 +69,22 @@ const initialState: scheduleInitialState = {
       userId: '',
       userName: '',
     },
-    meetingDetail: [
-      {
-        id: '',
-        start: '',
-        end: '',
-        title: '',
-        content: '',
-        userId: '',
-        userName: '',
-        userWebex: '',
-        meetupId: '',
-        meetupName: '',
-        meetupColor: '',
-        meetupAdminUserId: '',
-        meetupAdminUserName: '',
-        meetupAdminUserWebex: '',
-      },
-    ],
+    meetingDetail: {
+      id: 0,
+      start: '',
+      end: '',
+      title: '',
+      content: '',
+      userId: '',
+      userName: '',
+      userWebex: '',
+      meetupId: '',
+      meetupName: '',
+      meetupColor: '',
+      meetupAdminUserId: '',
+      meetupAdminUserName: '',
+      meetupAdminUserWebex: '',
+    },
   },
 };
 
@@ -189,6 +187,19 @@ const scheduleSlice = createSlice({
       state.loading = false;
     },
 
+    // GET: 내 미팅 디테일 가져오기(모달)
+    [fetchMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [fetchMeetingDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+      console.log(action.payload);
+      state.scheduleModal.meetingDetail = action.payload;
+    },
+    [fetchMeetingDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
     // GET: 내 스케쥴 전체 가져오기(달력)
     [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
@@ -196,6 +207,7 @@ const scheduleSlice = createSlice({
     [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       state.schedules = action.payload;
+      console.log(state.schedules);
     },
     [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;

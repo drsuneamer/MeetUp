@@ -46,4 +46,19 @@ export type tScheduleDetail = {
   userName: string;
 };
 
-export type tMeetingDetail = {};
+export type tMeetingDetail = {
+  id: number;
+  start: string;
+  end: string;
+  title: string;
+  content: string;
+  userId: string;
+  userName: string;
+  userWebex: string;
+  meetupId: string;
+  meetupName: string;
+  meetupColor: string;
+  meetupAdminUserId: string;
+  meetupAdminUserName: string;
+  meetupAdminUserWebex: string;
+};
