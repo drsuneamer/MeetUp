@@ -13,8 +13,11 @@ import Tutorial from './pages/Tutorial';
 import Settings from './pages/Settings';
 import AdminSignup from './pages/AdminSignup';
 import PrivateRoutes from './components/auth/privateRoutes';
+import RouteChangeTracker from './components/RouteChangeTracker';
 
 function App() {
+  RouteChangeTracker();
+
   return (
     <div className="font-pre">
       <Routes>

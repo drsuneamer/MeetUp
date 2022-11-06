@@ -11,6 +11,7 @@ import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/10/30
+ * updated by seongmin on 2022/11/04
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -69,6 +70,9 @@ public class TeamUserServiceImpl implements TeamUserService {
             for (int k = 0; ; k++) {
 
                 Response mmTeamUserResponse = client.getTeamMembers(team.getId(), Pager.of(k, 200)).getRawResponse();
+
+                MattermostEx.apiException(mmTeamUserResponse.getStatus());
+
                 JSONArray userArray = new JSONArray();
 
                 try {

@@ -21,7 +21,7 @@ function MeetupList() {
     return null;
   }
   return (
-    <div className="MeetupList -z-10">
+    <div className="MeetupList">
       <h1 className="text-xl font-bold mb-[10px]">참여중인 달력</h1>
       {calendar.calendars.map((value: tMeetup, index: number) => (
         <MeetupListItem key={index} meetup={value} />

@@ -37,7 +37,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by myeongseok on 2022/11/04
+ * updated by seongmin on 2022/11/06
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -93,23 +93,45 @@ public class MeetingServiceImpl implements MeetingService {
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
+
         // 로그인 유저가 해당 밋업에 소속 되어있는지 확인
-        if (!channelUserRepository.existsByChannelAndUser(channel, loginUser))
+        if (!channelUserRepository.existsByChannelAndUser(channel, loginUser)) {
+            log.error("채널에 속해있지 않음");
             throw new ApiException(ACCESS_DENIED);
+
+        }
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
+
         // 일정 중복 확인
-        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || !managerAllScheduleResponseDto.isPossibleRegiser(start, end))
+        if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || !managerAllScheduleResponseDto.isPossibleRegiser(start, end)) {
+            log.error("스케줄 중복");
             throw new ApiException(DUPLICATE_INSERT_DATETIME);
 
-        Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).build();
+        }
+
+        Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).open(meetingRequestDto.isOpen()).build();
         MattermostClient client = Client.getClient();
+
+        String mmToken = authService.getMMSessionToken(userId);
+        log.info("mmToken = {}", mmToken);
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-        client.createPost(new Post(channel.getId(), message));
-        return meetingRepository.save(meeting).getId();
+
+        int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
+        if (status == 201 || status == 200) {
+            log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
+            return meetingRepository.save(meeting).getId();
+        } else if (status == 401) {
+            log.error("mattermost 미팅 신청 알림 보내기 실패 인증 정보 없음 status = {}", status);
+            throw new ApiException(EMPTY_MM_CREDENTIAL);
+        } else {
+            log.error("mattermost 미팅 신청 알림 보내기 실패 status = {}", status);
+            throw new ApiException(MATTERMOST_EXCEPTION);
+        }
+
     }
 
     // 미팅 정보 수정
@@ -182,8 +204,6 @@ public class MeetingServiceImpl implements MeetingService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
-        return AllScheduleResponseDto.of(schedules, meetingToMe);
+        return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
     }
-
-
 }

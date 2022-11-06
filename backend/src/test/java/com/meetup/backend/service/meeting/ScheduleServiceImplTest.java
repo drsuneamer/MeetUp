@@ -162,7 +162,7 @@ class ScheduleServiceImplTest {
     void createSchedule() {
         User user1 = userRepository.findById("user1").get();
         Long scheduleId = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                "2022-10-30 10:00:00", "2022-10-30 10:30:00", "title", "본문"
+                "2022-10-30 10:00:00", "2022-10-30 10:30:00", "title", "본문",true
         ));
         assertThat(scheduleRepository.findById(scheduleId).get().getTitle()).isEqualTo("title");
 
@@ -174,7 +174,7 @@ class ScheduleServiceImplTest {
         User user1 = userRepository.findById("user1").get();
         // 스케쥴 생성
         Long scheduleId = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title", "본문"
+                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title", "본문",true
         ));
         // 스케쥴 1개 생성 확인
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
@@ -182,7 +182,7 @@ class ScheduleServiceImplTest {
         // 1. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 끝이 기존 스케쥴의 시작보다 뒤 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                    "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1")
+                    "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");;
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
@@ -190,7 +190,7 @@ class ScheduleServiceImplTest {
         // 2. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 시작이 기존 스케쥴의 끝보다 앞 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                    "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+                    "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
@@ -198,7 +198,7 @@ class ScheduleServiceImplTest {
         // 3. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴을 전체 포함 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                    "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+                    "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
@@ -206,7 +206,7 @@ class ScheduleServiceImplTest {
         // 4. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴에 전체 포함됨 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                    "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2")
+                    "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("등록");
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(1);
@@ -218,18 +218,18 @@ class ScheduleServiceImplTest {
     void getScheduleByUserAndDate() {
         User user1 = userRepository.findById("user1").get();
         scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문",true
         ));
         User con1 = userRepository.findById("consultant").get();
         scheduleService.createSchedule(con1.getId(), new ScheduleRequestDto(
-                "2022-10-26 10:00:00", "2022-10-26 10:30:00", "title2", "con 본문"
+                "2022-10-26 10:00:00", "2022-10-26 10:30:00", "title2", "con 본문",true
         ));
         User coach1 = userRepository.findById("coach1").get();
 
         // user1이 con1에게 미팅 신청
-        meetingService.createMeeting(user1.getId(), new MeetingRequestDto("2022-10-28 10:00:00", "2022-10-28 11:00:00", "2팀 미팅신청", "마지막 미팅", consultantMeetup.getId()));
+        meetingService.createMeeting(user1.getId(), new MeetingRequestDto("2022-10-28 10:00:00", "2022-10-28 11:00:00", "2팀 미팅신청", "마지막 미팅", consultantMeetup.getId(), true));
         // con1이 coach1에게 미팅 신청
-        meetingService.createMeeting(con1.getId(), new MeetingRequestDto("2022-10-27 10:00:00", "2022-10-27 11:00:00", "컨코 미팅", "한시간 미팅", coachMeetup.getId()));
+        meetingService.createMeeting(con1.getId(), new MeetingRequestDto("2022-10-27 10:00:00", "2022-10-27 11:00:00", "컨코 미팅", "한시간 미팅", coachMeetup.getId(),true));
 
 
         AllScheduleResponseDto result = scheduleService.getScheduleByUserAndDate(user1.getId(), con1.getId(), "2022-10-23 10:00:00");
@@ -244,7 +244,7 @@ class ScheduleServiceImplTest {
     void getScheduleDetail() {
         User user = userRepository.findById("user1").get();
         Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
-                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문",true
         ));
         ScheduleResponseDto result = scheduleService.getScheduleResponseDtoById(user.getId(), scheduleId);
         assertThat(result.getTitle()).isEqualTo("title");
@@ -256,10 +256,10 @@ class ScheduleServiceImplTest {
     void updateSchedule() {
         User user1 = userRepository.findById("user1").get();
         Long scheduleId = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                "2022-10-30 20:00:00", "2022-10-30 20:30:00", "title1", "본문1"
+                "2022-10-30 20:00:00", "2022-10-30 20:30:00", "title1", "본문1",true
         ));
         Long scheduleId2 = scheduleService.createSchedule(user1.getId(), new ScheduleRequestDto(
-                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title2", "본문2"
+                "2022-10-30 10:00:00", "2022-10-30 11:00:00", "title2", "본문2",true
         ));
         // 스케쥴 2개 생성 확인
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
@@ -267,7 +267,7 @@ class ScheduleServiceImplTest {
         // 1. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 끝이 기존 스케쥴의 시작보다 뒤 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
-                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1")
+                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 10:30:00", "title1", "본문1",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
@@ -275,7 +275,7 @@ class ScheduleServiceImplTest {
         // 2. 스케쥴 중복 일정 생성 ( 생성할 스케쥴의 시작이 기존 스케쥴의 끝보다 앞 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
-                    scheduleId, "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+                    scheduleId, "2022-10-30 10:30:00", "2022-10-30 11:30:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
@@ -283,7 +283,7 @@ class ScheduleServiceImplTest {
         // 3. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴을 전체 포함 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
-                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2")
+                    scheduleId, "2022-10-30 09:30:00", "2022-10-30 11:30:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");;
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
@@ -291,14 +291,14 @@ class ScheduleServiceImplTest {
         // 4. 스케쥴 중복 일정 생성 ( 생성할 스케쥴이 기존 스케쥴에 전체 포함됨 _ 생성 실패해야함)
         assertThatThrownBy(() -> {
             scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
-                    scheduleId, "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2")
+                    scheduleId, "2022-10-30 10:10:00", "2022-10-30 10:20:00", "title2", "본문2",true)
             );
         }).isInstanceOf(ApiException.class).hasMessageContaining("중복").hasMessageContaining("수정");;
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 10:00:00").getScheduleResponseList().size()).isEqualTo(2);
 
         // 생성되야함 _ 그러므로 조회 된게 2개여야함
         scheduleService.updateSchedule(user1.getId(), new ScheduleUpdateRequestDto(
-                scheduleId, "2022-10-30 15:00:00", "2022-10-30 16:00:00", "modified title", "본문"
+                scheduleId, "2022-10-30 15:00:00", "2022-10-30 16:00:00", "modified title", "본문",true
         ));
 
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
@@ -314,7 +314,7 @@ class ScheduleServiceImplTest {
     void deleteSchedule() {
         User user = userRepository.findById("user1").get();
         Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
-                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문"
+                "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문",true
         ));
         scheduleService.deleteSchedule(user.getId(), scheduleId);
         assertThat(scheduleRepository.findById(scheduleId).isPresent()).isFalse();

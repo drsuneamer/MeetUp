@@ -9,13 +9,18 @@ import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
-import { 
-  scheduleSelector, 
-  myScheduleSelector, 
-  
-  meetingFromMeSelector, meetingToMeSelector, fetchSchedule } from '../stores/modules/schedules';
+import {
+  scheduleSelector,
+  myScheduleSelector,
+  meetingFromMeSelector,
+  meetingToMeSelector,
+  fetchSchedule,
+  fetchScheduleDetail,
+  fetchMeetingDetail,
+} from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
+import { tSchedule } from '../types/events';
 
 interface Week {
   name: string;
@@ -33,7 +38,7 @@ const WeeklyCalendarBody = () => {
 
   const dispatch = useAppDispatch();
   const rDispatch = useDispatch();
-  
+
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
   const param = useParams();
@@ -41,6 +46,22 @@ const WeeklyCalendarBody = () => {
   const sunday = getSundayOfWeek();
 
   const thunkAPI = [userId, sunday];
+
+  // useEffect(() => {
+  //   for (let i = 0; i < mySchedule.length; i+=1) {
+  //     if (mySchedule[i].userId !== userId) {
+
+  //     }
+  //   }
+  // })
+
+  // const [myScheduleId, setMyScheduleId] = useState<boolean>(false);
+  // for (let i = 0; i < mySchedule.length; i+=1) {
+  //   if (mySchedule[i].userId !== userId) {
+  //     setMyScheduleId(true)
+  //     console.log(myScheduleId)
+  //     }
+  //   }
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
@@ -105,11 +126,13 @@ const WeeklyCalendarBody = () => {
     dispatch(setEventModalOpen());
   };
 
-  const handleViewEvent = () => {
-    if (selectedEvent !== null) {
-      dispatch(setDetailModalOpen());
-      // setSelectedEventPosition(selectedEventPosition);
+  const handleViewEvent = (id: string, prop: string) => {
+    if (prop === 'myCalendar') {
+      dispatch(fetchScheduleDetail(id));
+    } else {
+      dispatch(fetchMeetingDetail(id));
     }
+    dispatch(setDetailModalOpen());
   };
 
   // const handleDeleteEvent = () => {
@@ -159,81 +182,107 @@ const WeeklyCalendarBody = () => {
                     return null;
                   })
                 : null}
-               {/* 나의 스케쥴(회색으로 블락) */}
-               {mySchedule.map((element, index) => {
-                  const startMinute = parseInt(element.start.slice(-5, -3));
-                  const startHour = parseInt(element.start.slice(-8, -5));
-                  const endMinute = parseInt(element.end.slice(-5, -3));
-                  const endHour = parseInt(element.end.slice(-8, -5));
+              {/* 나의 스케쥴(회색으로 블락) */}
+              {mySchedule.map((element, index) => {
+                const startMinute = parseInt(element.start.slice(-5, -3));
+                const startHour = parseInt(element.start.slice(-8, -5));
+                const endMinute = parseInt(element.end.slice(-5, -3));
+                const endHour = parseInt(element.end.slice(-8, -5));
 
-                  const top = startHour * 50 + startMinute;
-                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + startMinute;
+                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
-                  const scheduleDate = element.start.slice(0, 10)
+                const scheduleDate = element.start.slice(0, 10);
+                const scheduleId = element.id;
+                const ownerId = element.userName; // 이부분 api 고치면 userId 로 바꿀 것
+                const myId = localStorage.getItem('id');
 
-                  if (scheduleDate === stringDate) 
-                    return (
-                      <div
-                        key={`${scheduleDate}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
-                      >
-                        <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
-                          {element.title}
-                        </span>
-                      </div>
-                    )
-                  })}
-                {/* 나에게 신청한 스케쥴(컨설턴트 입장) */}
-                {meetingToMe.map((element, index) => {
-                  const startMinute = parseInt(element.start.slice(-5, -3));
-                  const startHour = parseInt(element.start.slice(-8, -5));
-                  const endMinute = parseInt(element.end.slice(-5, -3));
-                  const endHour = parseInt(element.end.slice(-8, -5));
+                if (scheduleDate === stringDate && ownerId === myId)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(scheduleId, 'myCalendar');
+                      }}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
+                else if (scheduleDate === stringDate && ownerId !== myId)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
+              })}
+              {/* 나에게 신청한 스케쥴(컨설턴트 입장) */}
+              {meetingToMe.map((element, index) => {
+                const startMinute = parseInt(element.start.slice(-5, -3));
+                const startHour = parseInt(element.start.slice(-8, -5));
+                const endMinute = parseInt(element.end.slice(-5, -3));
+                const endHour = parseInt(element.end.slice(-8, -5));
 
-                  const top = startHour * 50 + startMinute;
-                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + startMinute;
+                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
-                  const scheduleDate = element.start.slice(0, 10)
+                const scheduleDate = element.start.slice(0, 10);
+                const meetingId = element.id;
 
-                  if (scheduleDate === stringDate) 
-                    return (
-                      <div
-                        key={`${scheduleDate}${index}`}
-                        style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                        className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2`}
-                      >
-                        <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
-                          {element.title}
-                        </span>
-                      </div>
-                    )
-                  })}
-                {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
-                {meetingFromMe.map((element, index) => {
-                  const startMinute = parseInt(element.start.slice(-5, -3));
-                  const startHour = parseInt(element.start.slice(-8, -5));
-                  const endMinute = parseInt(element.end.slice(-5, -3));
-                  const endHour = parseInt(element.end.slice(-8, -5));
+                if (scheduleDate === stringDate)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top: top, height: height, background: `${element.meetupColor}` }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(meetingId, 'myCalendar');
+                      }}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
+              })}
+              {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
+              {meetingFromMe.map((element, index) => {
+                const startMinute = parseInt(element.start.slice(-5, -3));
+                const startHour = parseInt(element.start.slice(-8, -5));
+                const endMinute = parseInt(element.end.slice(-5, -3));
+                const endHour = parseInt(element.end.slice(-8, -5));
 
-                  const top = startHour * 50 + startMinute;
-                  let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + startMinute;
+                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
-                  const scheduleDate = element.start.slice(0, 10)
+                const scheduleDate = element.start.slice(0, 10);
+                const scheduleId = element.id;
 
-                  if (scheduleDate === stringDate) 
-                    return (
-                      <div
-                        key={`${scheduleDate}${index}`}
-                        style={{ top, height }}
-                        className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2`}
-                      >
-                        <span key={`${element.id}`} className={`w-full text-center text-background font-medium pt-2`}>
-                          {element.title}
-                        </span>
-                      </div>
-                    )
-                  })}
+                if (scheduleDate === stringDate)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(scheduleId, 'myCalendar');
+                      }}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-background font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
+              })}
               {hours.map((hour, index) => {
                 return (
                   <div
@@ -253,10 +302,10 @@ const WeeklyCalendarBody = () => {
               })}
               {selectedEventPosition !== null && (
                 <div
-                  className="fixed text-sm shadow rounded-lg bg-background cursor-pointer px-4 py-2"
+                  className="fixed text-sm shadow rounded-lg bg-background px-4 py-2"
                   style={selectedEventPosition}
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                    handleViewEvent();
+                    // handleViewEvent('');
                   }}
                 />
               )}
@@ -302,7 +351,7 @@ const WeeklyCalendarBody = () => {
         })}
       </div>
 
-      {selectedEventPosition !== null && (
+      {/* {selectedEventPosition !== null && (
         <div
           className="fixed text-sm shadow rounded bg-background cursor-pointer px-2 py-2"
           style={selectedEventPosition}
@@ -312,7 +361,7 @@ const WeeklyCalendarBody = () => {
         >
           자세히 보기
         </div>
-      )}
+      )} */}
     </div>
   );
 };
