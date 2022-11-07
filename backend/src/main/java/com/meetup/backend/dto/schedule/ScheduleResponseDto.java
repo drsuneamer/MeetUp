@@ -32,7 +32,9 @@ public class ScheduleResponseDto {
 
     private String userName;
 
-    private String webex;
+    private String myWebex;
+
+    private String diffWebex;
 
     public static ScheduleResponseDto of(Schedule schedule, User user) {
         return ScheduleResponseDto.builder()
@@ -41,9 +43,10 @@ public class ScheduleResponseDto {
                 .end(schedule.getEnd())
                 .title(schedule.getTitle())
                 .content(schedule.getContent())
-                .userId(user.getId())
-                .userName(user.getNickname())
-                .webex(user.getWebex())
+                .userId(schedule.getUser().getId())
+                .userName(schedule.getUser().getNickname())
+                .myWebex(user.getWebex())
+                .diffWebex(schedule.getUser().getWebex())
                 .build();
     }
 }
