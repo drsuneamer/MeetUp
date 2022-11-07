@@ -1,15 +1,18 @@
 package com.meetup.backend.controller;
 
+import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.dto.meetup.*;
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.entity.user.User;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
+import com.meetup.backend.service.user.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +47,8 @@ public class MeetUpController {
     private final MeetupService meetupService;
 
     private final AuthService authService;
+
+    private final UserService userService;
 
     @GetMapping("/team")
     @ApiOperation(value = ",해당 로그인 유저의 팀 목록 가져오기")
@@ -107,10 +112,12 @@ public class MeetUpController {
 
     }
 
-    @PostMapping("/channel/{teamId}")
+    @PostMapping("/channel")
     @ApiOperation(value = "팀 ID에 속하는 채널을 등록")
-
-    public ResponseEntity<?> registerNewChannel(@PathVariable("teamId") String teamId) {
+    public ResponseEntity<?> createNewChannel(@RequestBody ChannelCreateRequestDto channelCreateRequestDto) {
+        String userId = authService.getMyInfoSecret().getId();
+        String mmSessionToken = authService.getMMSessionToken(userId);
+        channelService.createNewChannel(userId, mmSessionToken, channelCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

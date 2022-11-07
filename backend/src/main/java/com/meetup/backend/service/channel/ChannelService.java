@@ -1,7 +1,9 @@
 package com.meetup.backend.service.channel;
 
+import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -14,5 +16,7 @@ import java.util.List;
 public interface ChannelService {
 
     List<Channel> registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList);
+
+    void createNewChannel(String userId, String mmSessionToken, ChannelCreateRequestDto channelCreateRequestDto);
 
 }

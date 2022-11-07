@@ -1,12 +1,15 @@
 package com.meetup.backend.service.channel;
 
+import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelType;
+import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
+import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
@@ -18,15 +21,12 @@ import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
@@ -40,6 +40,9 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Autowired
     private final ChannelRepository channelRepository;
+
+    @Autowired
+    private final ChannelUserRepository channelUserRepository;
 
     @Autowired
     private final UserRepository userRepository;
@@ -93,5 +96,46 @@ public class ChannelServiceImpl implements ChannelService {
             }
         }
         return channelList;
+    }
+
+    @Transactional
+    @Override
+    public void createNewChannel(String userId, String mmSessionToken, ChannelCreateRequestDto channelCreateRequestDto) {
+
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(mmSessionToken);
+
+        net.bis5.mattermost.model.Channel channel = new net.bis5.mattermost.model.Channel(
+                channelCreateRequestDto.getDisplayName(),
+                channelCreateRequestDto.getName(),
+                net.bis5.mattermost.model.ChannelType.valueOf(channelCreateRequestDto.getType()),
+                channelCreateRequestDto.getTeamId());
+
+        Response response = client.createChannel(channel).getRawResponse();
+        JSONObject resObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+        String channelId = resObj.getString("id");
+
+        Channel channelResult = channelRepository.save(Channel.builder()
+                .id(resObj.getString("id"))
+                .team(Team.builder().id(resObj.getString("team_id")).build())
+                .type(ChannelType.of(resObj.getString("type")))
+                .name(resObj.getString("name"))
+                .displyName(resObj.getString("display_name"))
+                .build());
+
+        for (String inviteUserId : channelCreateRequestDto.getInviteList()) {
+            client.addChannelMember(channelId, inviteUserId);
+            User user = userRepository.findById(inviteUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+            ChannelUser channelUser = ChannelUser.builder()
+                    .user(user)
+                    .channel(channelResult)
+                    .build();
+
+            channelUserRepository.save(channelUser);
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+        channelUserRepository.save(ChannelUser.builder().channel(channelResult).user(user).build());
+
     }
 }
