@@ -107,7 +107,7 @@ public class ChannelServiceImpl implements ChannelService {
 
         net.bis5.mattermost.model.Channel channel = new net.bis5.mattermost.model.Channel(
                 channelCreateRequestDto.getDisplayName(),
-                channelCreateRequestDto.getName(),
+                channelCreateRequestDto.getName().toLowerCase(),
                 net.bis5.mattermost.model.ChannelType.valueOf(channelCreateRequestDto.getType()),
                 channelCreateRequestDto.getTeamId());
 
