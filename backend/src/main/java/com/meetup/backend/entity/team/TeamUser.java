@@ -38,7 +38,7 @@ public class TeamUser implements Serializable {
     public TeamUser(Team team, User user) {
         this.team = team;
         this.user = user;
-        isActivate=true;
+        isActivate = true;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TeamUser implements Serializable {
         return false;
     }
 
-    public void changeActivate(Boolean isActivate){
-        this.isActivate=isActivate;
+    public void changeActivate() {
+        this.isActivate = !this.isActivate;
     }
 }

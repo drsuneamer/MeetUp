@@ -90,7 +90,8 @@ class TeamUserServiceImplTest {
 
         Random random = new Random();
         for (TeamUser teamUser : teamUserList) {
-            teamActivateRequestDtoList.add(new TeamActivateRequestDto(teamUser.getTeam().getId(), random.nextBoolean()));
+            if (random.nextBoolean())
+                teamActivateRequestDtoList.add(new TeamActivateRequestDto(teamUser.getTeam().getId()));
         }
 
         teamUserService.activateTeamUser(mmId, teamActivateRequestDtoList);

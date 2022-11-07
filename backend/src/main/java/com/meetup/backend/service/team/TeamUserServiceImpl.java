@@ -160,7 +160,7 @@ public class TeamUserServiceImpl implements TeamUserService {
             Team team = teamRepository.findById(teamActivateRequestDto.getTeamId()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
 
             TeamUser teamUser = teamUserRepository.findByTeamAndUser(team, user).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_USER_NOT_FOUND));
-            teamUser.changeActivate(teamActivateRequestDto.isActivate());
+            teamUser.changeActivate();
         }
 
 

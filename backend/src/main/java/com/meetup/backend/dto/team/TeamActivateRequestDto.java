@@ -17,7 +17,4 @@ public class TeamActivateRequestDto {
     @NotBlank
     private String teamId;
 
-    @NotNull
-    private boolean isActivate;
-
 }
