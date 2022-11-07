@@ -98,6 +98,7 @@ const EventModal = () => {
 
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
+    console.log(date);
   };
 
   const onContentChange = (e: any) => {
@@ -161,6 +162,7 @@ const EventModal = () => {
     const action = await dispatch(addMeeting(parsedMeetingData));
     if (isFulfilled(action)) {
       // const userId = localStorage.getItem('id')
+      console.log(startTime);
       handleToggleModal();
     }
   };

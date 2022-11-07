@@ -109,9 +109,10 @@ const DetailModal = () => {
     // console.log(editModalIsOpen);
     // console.log(editModalIsOpen);
     console.log('안녕')
+    console.log(meetingDetail.start)
+   
     // console.log(modalType);
   }
-
   return (
     <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
@@ -133,7 +134,7 @@ const DetailModal = () => {
         <div className="flex flex-col p-[20px] ">
           <div className="mt-[20px] flex ">
             <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
-            {detailModalSelector.modalType === 'myMeeting' ? (
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
               <p className="font-bold">{meetingDetail.title}</p>
             ) : (
               <p className="font-bold">{scheduleDetail.title}</p>
@@ -141,11 +142,11 @@ const DetailModal = () => {
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-            {detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">시간</div>
-            {detailModalSelector.modalType === 'myMeeting' ? (
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
               <p>
                 {meetingDetail.start.slice(11, 16)} - {meetingDetail.end.slice(11, 16)}
               </p>
@@ -157,14 +158,14 @@ const DetailModal = () => {
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
-            {detailModalSelector.modalType === 'myMeeting' ? (
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
               <p className="w-[450px]">{meetingDetail.content}</p>
             ) : (
               <p className="w-[450px]">{scheduleDetail.content}</p>
             )}
           </div>
 
-          {detailModalSelector.modalType === 'myMeeting' && meetingDetail.meetupAdminUserWebex ? (
+          {meetingDetail && detailModalSelector.modalType === 'myMeeting' && meetingDetail.meetupAdminUserWebex ? (
             <div className="mt-[20px] flex flex-col">
               <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
               <div className="flex justify-center items-center gap-x-[50px]">

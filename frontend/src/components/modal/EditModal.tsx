@@ -56,6 +56,9 @@ const EditModal = () => {
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value;
 
+  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+
+
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
@@ -244,117 +247,140 @@ const EditModal = () => {
     const action = await dispatch(editMeetingDetail(parsedMeetingData));
     if (isFulfilled(action)) {
       handleToggleModal()
-      dispatch(setDetailModalOpen());
+      // dispatch(setDetailModalOpen());
     }
   };
+  // const handleEditEvent() => {
+  //   console.log(valueTime)
+  // }
+  // const temp = {value: '030'}
+  const changeToStartTime = () => {
+    const startTime = meetingDetail.start.slice(11,15);
+    const newTime = startTime.replace(':', '');
+    if (newTime[0] === '0') {
+      const valueTime = startTime.slice(1,4);
+      // startTime.value = valueTime
+      return valueTime
+    } else {
+      const valueTime = newTime;
+      // startTime.value = valueTime
+      return valueTime
+    }
 
-  return (
-    <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
-      <div
-        className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-          e.stopPropagation();
-        }}
-      >
-        <svg
-          onClick={handleToggleModal}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
-          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+    console.log(meetingDetail.start)
+  }
+
+  if ( meetingDetail ) {
+
+    return (
+      <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+        <div
+          className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+            e.stopPropagation();
+          }}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-        <div>
-          <div className="mt-[20px]">
-            <div className="text-s text-title font-bold">
-                미팅명<span className="text-cancel">&#42;</span>
-            </div>
-            <input
-              type="text"
-              name="title"
-              value={title}
-              onChange={onTitleChange}
-              className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
-            />
-          </div>
-          <div className="mt-[20px]">
-            <div className="text-s text-title font-bold">
-              날짜<span className="text-cancel">&#42;</span>
-            </div>
-            <input
-              type="date"
-              value={date}
-              onChange={onDateChange}
-              className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
-            />
+          <svg
+            onClick={handleToggleModal}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2.5"
+            className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <div>
             <div className="mt-[20px]">
               <div className="text-s text-title font-bold">
-                시간<span className="text-cancel">&#42;</span>
+                  미팅명<span className="text-cancel">&#42;</span>
               </div>
-              <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
-                <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime} />
-                <span className="mx-2">-</span>
-                <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2.5"
-                  stroke="currentColor"
-                  className="w-7 h-7 ml-[181px]"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
+              <input
+                type="text"
+                name="title"
+                value={meetingDetail.title}
+                onChange={onTitleChange}
+                className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+              />
             </div>
             <div className="mt-[20px]">
-                <div>
-                  <div className="text-s text-title font-bold">내용</div>
-                  <input
-                    type="text"
-                    name="title"
-                    value={content}
-                    onChange={onContentChange}
-                    className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
-                  />
+              <div className="text-s text-title font-bold">
+                날짜<span className="text-cancel">&#42;</span>
+              </div>
+              <input
+                type="date"
+                value={meetingDetail.start.slice(0, 10)}
+                onChange={onDateChange}
+                className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+              />
+              <div className="mt-[20px]">
+                <div className="text-s text-title font-bold">
+                  시간<span className="text-cancel">&#42;</span>
                 </div>
-            </div>
-            <div className="mt-[20px]">
-                <div>
-                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
-                  <Autocomplete
-                    onChange={onAlarmChannel}
-                    className="w-[450px]"
-                    ListboxProps={{ style: { maxHeight: '150px' } }}
-                    {...defaultProps}
-                    id="select-channel"
-                    renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
-                  />
+                <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
+                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime} />
+                  <span className="mx-2">-</span>
+                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2.5"
+                    stroke="currentColor"
+                    className="w-7 h-7 ml-[181px]"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
+              </div>
+              <div className="mt-[20px]">
+                  <div>
+                    <div className="text-s text-title font-bold">내용</div>
+                    <input
+                      type="text"
+                      name="title"
+                      value={meetingDetail.content}
+                      onChange={onContentChange}
+                      className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+                    />
+                  </div>
+              </div>
+              <div className="mt-[20px]">
+                  <div>
+                    <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                    <Autocomplete
+                      onChange={onAlarmChannel}
+                      className="w-[450px]"
+                      ListboxProps={{ style: { maxHeight: '150px' } }}
+                      {...defaultProps}
+                      id="select-channel"
+                      renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
+                    />
+                  </div>
+              </div>
             </div>
+            <button
+              onClick={handleEditEvent}
+              className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button"
+            >
+              밋업 등록하기
+            </button>
           </div>
-          <button
-            onClick={handleEditEvent}
-            className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button"
-          >
-            밋업 등록하기
-          </button>
         </div>
+        <div
+          className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault();
+  
+            if (handleToggleModal) {
+              handleToggleModal();
+            }
+          }}
+        />
       </div>
-      <div
-        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault();
-
-          if (handleToggleModal) {
-            handleToggleModal();
-          }
-        }}
-      />
-    </div>
-  );
+    );
+  }
+  return (<div></div>)
 };
 
 export default EditModal;
