@@ -112,6 +112,14 @@ public class MeetUpController {
 
     }
 
+    @GetMapping("/channel/userList/{teamId}")
+    @ApiOperation(value = "채널 생성 후 참여할 유저 선택을 위해 해당 팀에 참여중인 인원 가져오기")
+    public ResponseEntity<?> getUserByTeam(@PathVariable("teamId") String teamId) {
+        String userId = authService.getMyInfoSecret().getId();
+        String mmSessionToken = authService.getMMSessionToken(userId);
+        return ResponseEntity.status(OK).body(teamUserService.getUserByTeam(mmSessionToken, teamId));
+    }
+
     @PostMapping("/channel")
     @ApiOperation(value = "팀 ID에 속하는 채널을 등록")
     public ResponseEntity<?> createNewChannel(@RequestBody ChannelCreateRequestDto channelCreateRequestDto) {

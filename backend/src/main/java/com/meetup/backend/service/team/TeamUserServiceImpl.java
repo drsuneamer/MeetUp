@@ -3,6 +3,7 @@ package com.meetup.backend.service.team;
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.dto.user.UserListInTeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -164,5 +166,25 @@ public class TeamUserServiceImpl implements TeamUserService {
         }
 
 
+    }
+
+    @Override
+    public List<UserListInTeamResponseDto> getUserByTeam(String mmSessionToken, String teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+        List<TeamUser> teamUserList = teamUserRepository.findByTeam(team);
+
+        List<UserListInTeamResponseDto> userListInTeamResponseDtoList = new ArrayList<>();
+        for (TeamUser teamUser : teamUserList) {
+            User user = teamUser.getUser();
+            if (user.getNickname() == null) {
+                MattermostClient client = Client.getClient();
+                client.setAccessToken(mmSessionToken);
+                Response response = client.getUser(user.getId()).getRawResponse();
+                JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+                user.setNickname(userObj.getString("nickname"));
+            }
+            userListInTeamResponseDtoList.add(UserListInTeamResponseDto.of(user));
+        }
+        return userListInTeamResponseDtoList;
     }
 }
