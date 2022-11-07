@@ -24,7 +24,6 @@ export const channelInfoSlice = createSlice({
   reducers: {
     update: (state, action) => {
       state.value = action.payload;
-      console.log(action.payload);
     },
   },
 });
