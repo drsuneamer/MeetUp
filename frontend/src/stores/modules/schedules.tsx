@@ -30,6 +30,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
     meetingToMe: [
@@ -43,6 +44,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
     scheduleResponseList: [
@@ -56,6 +58,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
   },
@@ -91,7 +94,7 @@ const initialState: scheduleInitialState = {
 export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule?targetId=${thunkAPI[0]}&date=${thunkAPI[1]} 00:00:00`).then((res) => {
-      // console.log('my schedule fetched: ', res.data);
+      console.log('my schedule fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -127,7 +130,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      // console.log('my schedule detail fetched: ', res.data);
+      console.log('my schedule detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -139,7 +142,7 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
-      // console.log('my meeting detail fetched: ', res.data);
+      console.log('my meeting detail fetched: ', res.data);
       return res.data;
     });
     return res;

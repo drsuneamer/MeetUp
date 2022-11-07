@@ -227,7 +227,7 @@ const WeeklyCalendarBody = () => {
                 const scheduleDate = element.start.slice(0, 10);
                 const meetingId = element.id;
 
-                if (scheduleDate === stringDate)
+                if (scheduleDate === stringDate && element.open)
                   return (
                     <div
                       key={`${scheduleDate}${index}`}
@@ -242,6 +242,17 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
+                else if (scheduleDate === stringDate && !element.open)
+                return (                    
+                  <div
+                    key={`${scheduleDate}${index}`}
+                    style={{ top, height }}
+                    className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line`}
+                  >
+                    <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                      {element.title}
+                    </span>
+                  </div>)
               })}
               {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
               {meetingFromMe.map((element, index) => {
