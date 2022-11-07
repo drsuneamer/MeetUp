@@ -1,6 +1,7 @@
 package com.meetup.backend.service.team;
 
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
+import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.entity.team.TeamUser;
@@ -81,7 +82,7 @@ class TeamUserServiceImplTest {
     }
 
     @Test
-    @DisplayName("사용자 벼로 팀 비활성화 (밋업 생성시에 목록에 표시안됨)")
+    @DisplayName("사용자 별로 팀 비활성화 (밋업 생성시에 목록에 표시안됨) & 팀 활성화목록 가져오기")
     void activateTeamUser() {
 
         List<TeamActivateRequestDto> teamActivateRequestDtoList = new ArrayList<>();
@@ -93,6 +94,12 @@ class TeamUserServiceImplTest {
         }
 
         teamUserService.activateTeamUser(mmId, teamActivateRequestDtoList);
+        teamUserService.getActivateTeamByUser(mmId);
+        for (TeamActivateResponseDto teamActivateResponseDto : teamUserService.getActivateTeamByUser(mmId)) {
+            log.info("===== team name = {}, is activate= {} =====", teamActivateResponseDto.getDisplayName(), teamActivateResponseDto.getIsActivate());
+        }
+
+        assertThat(teamUserService.getActivateTeamByUser(mmId).size()).isNotSameAs(0);
 
     }
 
