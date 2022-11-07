@@ -26,6 +26,7 @@ module.exports = {
       pre: ['Pretendard Variable'],
       damion: ['Damion'], // meetup logo
       dots: ['Raleway Dots'], // version
+      script: ['Nanum Pen Script'],
     },
     fontSize: {
       xs: '15px', // meetup title

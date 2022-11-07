@@ -4,6 +4,7 @@ import Modal from '../components/modal/Modal';
 import DetailModal from '../components/modal/DetailModal';
 import WebexModal from '../components/modal/WebexModal';
 import Layout from '../components/layout/Layout';
+import MemberListModal from '../components/modal/MemberListModal';
 import EditModal from '../components/modal/EditModal';
 
 const MeetUp = () => {
@@ -19,6 +20,7 @@ const MeetUp = () => {
           <DetailModal />
           <EditModal />
           <WebexModal />
+          <MemberListModal />
         </main>
 
         <button

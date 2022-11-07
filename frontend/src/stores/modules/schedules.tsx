@@ -69,24 +69,22 @@ const initialState: scheduleInitialState = {
       userId: '',
       userName: '',
     },
-    meetingDetail: [
-      {
-        id: '',
-        start: '',
-        end: '',
-        title: '',
-        content: '',
-        userId: '',
-        userName: '',
-        userWebex: '',
-        meetupId: '',
-        meetupName: '',
-        meetupColor: '',
-        meetupAdminUserId: '',
-        meetupAdminUserName: '',
-        meetupAdminUserWebex: '',
-      },
-    ],
+    meetingDetail: {
+      id: 0,
+      start: '',
+      end: '',
+      title: '',
+      content: '',
+      userId: '',
+      userName: '',
+      userWebex: '',
+      meetupId: '',
+      meetupName: '',
+      meetupColor: '',
+      meetupAdminUserId: '',
+      meetupAdminUserName: '',
+      meetupAdminUserWebex: '',
+    },
   },
 };
 
@@ -141,7 +139,7 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
-      console.log('my meeting detail fetched: ', res.data);
+      // console.log('my meeting detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -198,6 +196,18 @@ const scheduleSlice = createSlice({
       state.scheduleModal.scheduleDetail = action.payload;
     },
     [fetchScheduleDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+    // GET: 내 미팅 디테일 가져오기(모달)
+    [fetchMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [fetchMeetingDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+      state.scheduleModal.meetingDetail = action.payload;
+    },
+    [fetchMeetingDetail.rejected.toString()]: (state) => {
       state.loading = false;
     },
 

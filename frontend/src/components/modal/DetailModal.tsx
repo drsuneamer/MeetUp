@@ -28,6 +28,7 @@ const DetailModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
 
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
+  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -52,7 +53,7 @@ const DetailModal = () => {
   // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
-    dispatch(setDetailModalOpen());
+    dispatch(setDetailModalOpen('close'));
   }, []);
 
   // const handleSubmit = () => {
@@ -132,40 +133,50 @@ const DetailModal = () => {
         <div className="flex flex-col p-[20px] ">
           <div className="mt-[20px] flex ">
             <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
-            <p>{scheduleDetail.title}</p>
+            {detailModalSelector.modalType === 'myMeeting' ? (
+              <p className="font-bold">{meetingDetail.title}</p>
+            ) : (
+              <p className="font-bold">{scheduleDetail.title}</p>
+            )}
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-            <p>{scheduleDetail.start.slice(0, 10)}</p>
+            {detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">시간</div>
-            <p>
-              {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
-            </p>
+            {detailModalSelector.modalType === 'myMeeting' ? (
+              <p>
+                {meetingDetail.start.slice(11, 16)} - {meetingDetail.end.slice(11, 16)}
+              </p>
+            ) : (
+              <p>
+                {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
+              </p>
+            )}
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">내용</div>
-            <p className="w-[450px]">{scheduleDetail.content}</p>
+            {detailModalSelector.modalType === 'myMeeting' ? (
+              <p className="w-[450px]">{meetingDetail.content}</p>
+            ) : (
+              <p className="w-[450px]">{scheduleDetail.content}</p>
+            )}
           </div>
 
-          {scheduleDetail ? (
-            <div></div>
-          ) : (
+          {detailModalSelector.modalType === 'myMeeting' && meetingDetail.meetupAdminUserWebex ? (
             <div className="mt-[20px] flex flex-col">
               <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
               <div className="flex justify-center items-center gap-x-[50px]">
                 <div className="flex flex-col justify-center items-center">
-                  <img className="w-[60px]" src={webex} alt="webex" />
-                  <a href="#">이태희(컨설턴트)</a>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <img className="w-[60px]" src={webex} alt="webex" />
-                  <a href="#">박성민[서울_1반_A102]팀장</a>
+                  <a href={meetingDetail.meetupAdminUserWebex} className="flex flex-col justify-center items-center">
+                    <img className="w-[50px]" src={webex} alt="webex" />
+                    <p className="font-bold">{meetingDetail.meetupAdminUserName}</p>
+                  </a>
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
         <div className="flex justify-center items-center gap-[20px] mt-[40px]">
           <button
