@@ -94,7 +94,7 @@ const initialState: scheduleInitialState = {
 export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule?targetId=${thunkAPI[0]}&date=${thunkAPI[1]} 00:00:00`).then((res) => {
-      console.log('my schedule fetched: ', res.data);
+      // console.log('my schedule fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -118,7 +118,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
   console.log(thunkAPI);
   try {
     const res = await axiosInstance.post('/meeting ', thunkAPI).then((res) => {
-      console.log('meeting data created: ', res);
+      // console.log('meeting data created: ', res);
       return res.data;
     });
     return res.data;
@@ -130,7 +130,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      console.log('my schedule detail fetched: ', res.data);
+      // console.log('my schedule detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -142,7 +142,7 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
-      console.log('my meeting detail fetched: ', res.data);
+      // console.log('my meeting detail fetched: ', res.data);
       return res.data;
     });
     return res;
