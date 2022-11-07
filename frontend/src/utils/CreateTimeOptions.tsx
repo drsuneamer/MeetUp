@@ -16,7 +16,7 @@ export const createTimeOptions = (minutes: string[] = defaultMinutes): Option[] 
     minutes.forEach((min) => {
       options.push({
         value: index.toString() + min,
-        label: hour + ':' + min,
+        label: hour + ' ' + min + '분',
       });
     });
   });
