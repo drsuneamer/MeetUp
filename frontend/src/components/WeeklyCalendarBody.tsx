@@ -321,7 +321,7 @@ const WeeklyCalendarBody = () => {
               })}
               {hours.map((hour, index) => {
                 if (nows) {
-                  const top = nows.hours * 50 + nows.minutes;
+                  const top = nows.hours * 50 + nows.minutes * (5/6);
                   let height = 0;
 
                   if (hour === nows.parsedTimeNow) {
