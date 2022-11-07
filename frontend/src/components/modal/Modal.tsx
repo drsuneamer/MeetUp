@@ -146,7 +146,7 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    // window.location.reload()
+    window.location.reload()
   }, []);
 
   const handleSubmitToMe = async () => {
