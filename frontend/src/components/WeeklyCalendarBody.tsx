@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getHours } from '../utils/GetHours';
+import { getNow } from '../utils/GetNow';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
@@ -83,6 +84,10 @@ const WeeklyCalendarBody = () => {
 
   const hours = useMemo(() => {
     return getHours();
+  }, []);
+
+  const nows = useMemo(() => {
+    return getNow();
   }, []);
 
   function renderHoliday() {
@@ -213,17 +218,18 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
-                else if ( scheduleDate === stringDate && ownerId !== myId) {
-                  return (                    
-                  <div
-                    key={`${scheduleDate}${index}`}
-                    style={{ top, height }}
-                    className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 `}
-                  >
-                    <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
-                      {element.title}
-                    </span>
-                  </div> )
+                else if (scheduleDate === stringDate && ownerId !== myId) {
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 `}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                        {element.title}
+                      </span>
+                    </div>
+                  );
                 }
               })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
@@ -255,16 +261,17 @@ const WeeklyCalendarBody = () => {
                     </div>
                   );
                 else if (scheduleDate === stringDate && !element.open)
-                return (                    
-                  <div
-                    key={`${scheduleDate}${index}`}
-                    style={{ top, height }}
-                    className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line`}
-                  >
-                    <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
-                      비공개
-                    </span>
-                  </div>)
+                  return (
+                    <div
+                      key={`${scheduleDate}${index}`}
+                      style={{ top, height }}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line`}
+                    >
+                      <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                        비공개
+                      </span>
+                    </div>
+                  );
               })}
               {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
               {meetingFromMe.map((element, index) => {
@@ -299,7 +306,7 @@ const WeeklyCalendarBody = () => {
                 return (
                   <div
                     key={`${hour}${index}`}
-                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
+                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line "
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                       const rect = e.currentTarget.getBoundingClientRect();
                       const y = e.clientY - rect.top;
@@ -311,6 +318,17 @@ const WeeklyCalendarBody = () => {
                     }}
                   />
                 );
+              })}
+              {hours.map((hour, index) => {
+                if (nows) {
+                  const top = nows.hours * 50 + nows.minutes;
+                  let height = 0;
+
+                  if (hour === nows.parsedTimeNow) {
+                    return <div key={`${nows}${index}`} style={{ top, height }} className="absolute w-full h-[1.5px] bg-primary" />;
+                  }
+                }
+                return null;
               })}
               {selectedEventPosition !== null && (
                 <div
