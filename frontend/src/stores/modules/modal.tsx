@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 type ModalInitialState = {
   eventModalIsOpen: boolean;
   detailModalIsOpen: boolean;
+  editModalIsOpen: boolean;
   webexModalIsOpen: boolean;
   modalType: string;
   memberListModalIsOpen: boolean;
@@ -11,6 +12,7 @@ type ModalInitialState = {
 const initialState: ModalInitialState = {
   eventModalIsOpen: false,
   detailModalIsOpen: false,
+  editModalIsOpen: false,
   webexModalIsOpen: false,
   modalType: '',
   memberListModalIsOpen: false,
@@ -27,6 +29,9 @@ const modalSlice = createSlice({
       state.detailModalIsOpen = !state.detailModalIsOpen;
       state.modalType = action.payload;
     },
+    setEditModalOpen: (state) => {
+      state.editModalIsOpen =! state.editModalIsOpen;
+    },
     setWebexModalOpen: (state) => {
       state.webexModalIsOpen = !state.webexModalIsOpen;
     },
@@ -38,5 +43,5 @@ const modalSlice = createSlice({
 
 const { reducer } = modalSlice;
 export const ModalSelector = (state: any) => state.modal;
-export const { setEventModalOpen, setDetailModalOpen, setWebexModalOpen, setMemberListModalOpen } = modalSlice.actions;
+export const { setEventModalOpen, setDetailModalOpen, setEditModalOpen, setWebexModalOpen, setMemberListModalOpen } = modalSlice.actions;
 export default reducer;

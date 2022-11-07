@@ -151,6 +151,47 @@ export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', asyn
   }
 });
 
+export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.get('/meeting', thunkAPI).then((res) => {
+      console.log('my meeting detail edited: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const deleteMeetingDetail = createAsyncThunk('schedule/deleteMeetingDetail', async (thunkAPI:number) => {
+  const meetingId = thunkAPI;
+  console.log(meetingId);
+  try {
+    const res = await axiosInstance.delete(`/meeting/${meetingId}`).then((res) => {
+      console.log('deleted?', res);
+      return meetingId
+    });
+    return meetingId;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const deleteScheduleDetail = createAsyncThunk('schedule/deleteScheduleDetail', async (thunkAPI:string) => {
+  const scheduleId = thunkAPI;
+  console.log(scheduleId);
+  try {
+    console.log('hi!!!!!!!!!!!')
+    const res = await axiosInstance.delete(`/schedule/${scheduleId}`).then((res) => {
+      console.log('deleted schedule?', res);
+      return scheduleId
+    });
+    return scheduleId;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
@@ -213,8 +254,44 @@ const scheduleSlice = createSlice({
     [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;
     },
+
+     // PATCH: 미팅 수정하기
+    [editMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [editMeetingDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+    },
+    [editMeetingDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+     // DELETE: 미팅 삭제하기
+    [deleteMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [deleteMeetingDetail.fulfilled.toString()]: (state) => {
+      state.loading = false;
+      state.scheduleModal.meetingDetail = initialState.scheduleModal.meetingDetail;
+    },
+    [deleteMeetingDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+    // DELETE: 스케줄 삭제하기
+    [deleteScheduleDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [deleteScheduleDetail.fulfilled.toString()]: (state) => {
+      state.loading = false;
+      state.scheduleModal.scheduleDetail = initialState.scheduleModal.scheduleDetail;
+    },
+    [deleteScheduleDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+    },
   },
-});
+);
 
 const { reducer } = scheduleSlice;
 export const scheduleSelector = (state: RootState) => state.schedules;
