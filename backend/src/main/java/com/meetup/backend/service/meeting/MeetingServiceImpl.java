@@ -27,6 +27,7 @@ import net.bis5.mattermost.model.Post;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -77,17 +78,23 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public Long createMeeting(String userId, MeetingRequestDto meetingRequestDto) {
+        // 입력받은 시간 포멧 검사
         if (meetingRequestDto.getStart().length() != "yyyy-MM-dd HH:mm:ss".length() || meetingRequestDto.getEnd().length() != "yyyy-MM-dd HH:mm:ss".length()) {
             throw new ApiException(DATE_FORMAT_EX);
         }
         User loginUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
+        // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() <= 1800)
+            throw new ApiException(TOO_SHOR_DURATION);
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
+        // 로그인 유저가 해당 밋업에 소속 되어있는지 확인
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser)) {
             log.error("채널에 속해있지 않음");
             throw new ApiException(ACCESS_DENIED);
@@ -95,6 +102,8 @@ public class MeetingServiceImpl implements MeetingService {
         }
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
+
+        // 일정 중복 확인
         if (!userAllScheduleResponseDto.isPossibleRegiser(start, end) || !managerAllScheduleResponseDto.isPossibleRegiser(start, end)) {
             log.error("스케줄 중복");
             throw new ApiException(DUPLICATE_INSERT_DATETIME);
@@ -137,6 +146,10 @@ public class MeetingServiceImpl implements MeetingService {
         }
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
+        // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() <= 1800)
+            throw new ApiException(TOO_SHOR_DURATION);
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);
