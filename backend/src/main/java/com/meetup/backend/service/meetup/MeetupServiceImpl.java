@@ -13,6 +13,7 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ import java.util.List;
 
 /**
  * created by seungyong on 2022/10/24
- * updated by seungyong on 2022/11/01
+ * updated by seongmin on 2022/11/07
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -134,6 +135,9 @@ public class MeetupServiceImpl implements MeetupService {
                 User manager = meetup.getManager();
                 if (manager.getNickname() == null) {
                     Response userResponse = client.getUser(manager.getId()).getRawResponse();
+
+                    MattermostEx.apiException(userResponse.getStatus());
+
                     JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
                     String nickname = (String) jsonObject.get("nickname");
                     manager.setNickname(nickname);
