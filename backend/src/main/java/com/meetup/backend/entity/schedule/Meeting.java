@@ -1,5 +1,6 @@
 package com.meetup.backend.entity.schedule;
 
+import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.user.User;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 /**
  * created by seongmin on 2022/10/20
- * updated by myeongseok on 2022/10/25
+ * updated by seongmin on 2022/11/06
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,14 +27,18 @@ public class Meeting extends Schedule {
     private Meetup meetup;
 
     @Builder
-    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean isOpen, User user, Meetup meetup) {
-        super(start, end, title, content, user);
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean open, User user, Meetup meetup) {
+        super(start, end, title, content, open, user);
         this.meetup = meetup;
     }
 
-    @Builder
-    public Meeting(LocalDateTime start, LocalDateTime end, String title, User user, Meetup meetup) {
-        super(start, end, title, user);
-        this.meetup = meetup;
+//    @Builder
+//    public Meeting(LocalDateTime start, LocalDateTime end, String title, User user, Meetup meetup) {
+//        super(start, end, title, user);
+//        this.meetup = meetup;
+//    }
+
+    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
+        super.update(meetingUpdateRequestDto);
     }
 }

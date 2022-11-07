@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * created by myeongseok on 2022/10/27
+ * updated by myeongseok on 2022/11/06
  */
 @Data
 @Builder
@@ -30,5 +31,8 @@ public class ScheduleUpdateRequestDto {
     private String title;
 
     private String content;
+
+    private boolean open;
+
 
 }

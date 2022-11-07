@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/31
+ * updated by seongmin on 2022/11/06
  */
 @Data
 @AllArgsConstructor
@@ -21,47 +22,78 @@ public class AllScheduleResponseDto {
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
 
-    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings) {
+    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, String me) {
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
         List<MeetingResponse> meetingToMe = new ArrayList<>();
         List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
         for (Schedule schedule : scheduleList) {
-            if (schedule instanceof Meeting) {
-                meetingFromMe.add(new MeetingResponse(
-                        schedule.getId(),
-                        schedule.getStart(),
-                        schedule.getEnd(),
-                        schedule.getTitle(),
-                        schedule.getContent(),
-                        schedule.getUser().getNickname(),
-                        schedule.getUser().getId(),
-                        ((Meeting) schedule).getMeetup().getTitle(),
-                        ((Meeting) schedule).getMeetup().getColor()
-                ));
-            } else {
-                scheduleResponseList.add(new ScheduleResponse(
-                        schedule.getId(),
-                        schedule.getStart(),
-                        schedule.getEnd(),
-                        schedule.getTitle(),
-                        schedule.getContent(),
-                        schedule.getUser().getNickname(),
-                        schedule.getUser().getId()
-                ));
+            if (schedule instanceof Meeting) { // 스케줄 주인이 신청한 미팅 리스트
+                // 비공개이고, 나에게 신청한 미팅이 아니라면 내용 조회x
+                if (!schedule.isOpen() && !me.equals(((Meeting) schedule).getMeetup().getManager().getId())) {
+                    meetingFromMe.add(new MeetingResponse(
+                            schedule.getId(),
+                            false,
+                            schedule.getStart(),
+                            schedule.getEnd()
+                    ));
+                } else {
+                    meetingFromMe.add(new MeetingResponse(
+                            schedule.getId(),
+                            true,
+                            schedule.getStart(),
+                            schedule.getEnd(),
+                            schedule.getTitle(),
+                            schedule.getContent(),
+                            schedule.getUser().getId(),
+                            schedule.getUser().getNickname(),
+                            ((Meeting) schedule).getMeetup().getTitle(),
+                            ((Meeting) schedule).getMeetup().getColor()
+                    ));
+                }
+            } else { // 스케줄 주인의 개인 스케줄 리스트
+                if (!schedule.isOpen() && !me.equals(schedule.getUser().getId())) {
+                    scheduleResponseList.add(new ScheduleResponse(
+                            schedule.getId(),
+                            false,
+                            schedule.getStart(),
+                            schedule.getEnd()
+                    ));
+                } else {
+                    scheduleResponseList.add(new ScheduleResponse(
+                            schedule.getId(),
+                            true,
+                            schedule.getStart(),
+                            schedule.getEnd(),
+                            schedule.getTitle(),
+                            schedule.getContent(),
+                            schedule.getUser().getId(),
+                            schedule.getUser().getNickname()
+                    ));
+                }
             }
         }
-        for (Meeting meeting : meetings) {
-            meetingToMe.add(new MeetingResponse(
-                    meeting.getId(),
-                    meeting.getStart(),
-                    meeting.getEnd(),
-                    meeting.getTitle(),
-                    meeting.getContent(),
-                    meeting.getUser().getNickname(),
-                    meeting.getUser().getId(),
-                    meeting.getMeetup().getTitle(),
-                    meeting.getMeetup().getColor()
-            ));
+        for (Meeting meeting : meetings) { // 스케줄 주인이 신청 받은 미팅 리스트
+            if (!meeting.isOpen() && !me.equals(meeting.getUser().getId())) {
+                meetingToMe.add(new MeetingResponse(
+                        meeting.getId(),
+                        false,
+                        meeting.getStart(),
+                        meeting.getEnd()
+                ));
+            } else {
+                meetingToMe.add(new MeetingResponse(
+                        meeting.getId(),
+                        true,
+                        meeting.getStart(),
+                        meeting.getEnd(),
+                        meeting.getTitle(),
+                        meeting.getContent(),
+                        meeting.getUser().getId(),
+                        meeting.getUser().getNickname(),
+                        meeting.getMeetup().getTitle(),
+                        meeting.getMeetup().getColor()
+                ));
+            }
         }
         return new AllScheduleResponseDto(meetingFromMe, meetingToMe, scheduleResponseList);
     }
@@ -72,16 +104,22 @@ public class AllScheduleResponseDto {
 
         private String meetupColor;
 
-        public MeetingResponse(Long id, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName, String meetupName, String meetupColor) {
-            super(id, start, end, title, content, userId, userName);
+        public MeetingResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName, String meetupName, String meetupColor) {
+            super(id, open, start, end, title, content, userId, userName);
             this.meetupName = meetupName;
             this.meetupColor = meetupColor;
+        }
+
+        public MeetingResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end) {
+            super(id, open, start, end);
         }
     }
 
     @Getter
     private static class ScheduleResponse {
         private Long id;
+
+        private boolean open;
 
         private LocalDateTime start;
 
@@ -95,14 +133,22 @@ public class AllScheduleResponseDto {
 
         private String userName;
 
-        public ScheduleResponse(Long id, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName) {
+        public ScheduleResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName) {
             this.id = id;
+            this.open = open;
             this.start = start;
             this.end = end;
             this.title = title;
             this.content = content;
             this.userId = userId;
             this.userName = userName;
+        }
+
+        public ScheduleResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end) {
+            this.id = id;
+            this.open = open;
+            this.start = start;
+            this.end = end;
         }
     }
 
@@ -123,13 +169,13 @@ public class AllScheduleResponseDto {
     }
 
     public boolean isDuplicated(LocalDateTime start, LocalDateTime end, LocalDateTime from, LocalDateTime to) {
-        if (from.isAfter(start) && from.isBefore(end))
+        if (from.isBefore(end) && to.isAfter(end))
             return true;
-        else if (to.isAfter(start) && to.isBefore(end))
+        else if (from.isBefore(start) && to.isAfter(start))
             return true;
         else if ((from.isBefore(start) || from.isEqual(start)) && (to.isAfter(end) || to.isEqual(end)))
             return true;
-        else if (from.isAfter(start) && to.isBefore(end))
+        else if ((from.isAfter(start) || from.isEqual(start)) && (to.isBefore(end) || to.isEqual(end)))
             return true;
         else
             return false;

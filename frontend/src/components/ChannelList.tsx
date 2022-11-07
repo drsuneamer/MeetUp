@@ -2,14 +2,13 @@ import ChannelListItem from './ChannelListItem';
 import { tChannel } from '../types/channels';
 import Spinner from './common/Spinner';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { useEffect } from 'react';
 import { fetchChannelList, channelSelector } from '../stores/modules/channels';
-import { useSelector } from 'react-redux';
 
 function ChannelList() {
   const dispatch = useAppDispatch();
-  const channel = useSelector(channelSelector);
+  const channel = useAppSelector(channelSelector);
 
   useEffect(() => {
     dispatch(fetchChannelList());
@@ -23,7 +22,7 @@ function ChannelList() {
   }
 
   return (
-    <div className="ChannelList mb-[50px] -z-10">
+    <div className="ChannelList mb-[50px]">
       <div className="flex mb-[10px]">
         <h1 className="text-xl font-bold">밋업 관리하기</h1>
         <Link to="/create-channel" className="flex flex-col justify-center">

@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { tSchedule } from '../../types/events';
+import { tSchedule, tScheduleDetail, tMeetingDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import axios from 'axios';
 
 type scheduleInitialState = {
   loading: boolean;
@@ -10,6 +9,10 @@ type scheduleInitialState = {
     meetingFromMe: Array<tSchedule>;
     meetingToMe: Array<tSchedule>;
     scheduleResponseList: Array<tSchedule>;
+  };
+  scheduleModal: {
+    scheduleDetail: tScheduleDetail; // 일정 등록 디테일
+    meetingDetail: tMeetingDetail; // 미팅 등록 디테일
   };
 };
 
@@ -56,12 +59,39 @@ const initialState: scheduleInitialState = {
       },
     ],
   },
+  scheduleModal: {
+    scheduleDetail: {
+      id: '',
+      start: '',
+      end: '',
+      title: '',
+      content: '',
+      userId: '',
+      userName: '',
+    },
+    meetingDetail: {
+      id: 0,
+      start: '',
+      end: '',
+      title: '',
+      content: '',
+      userId: '',
+      userName: '',
+      userWebex: '',
+      meetupId: '',
+      meetupName: '',
+      meetupColor: '',
+      meetupAdminUserId: '',
+      meetupAdminUserName: '',
+      meetupAdminUserWebex: '',
+    },
+  },
 };
 
 export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule?targetId=${thunkAPI[0]}&date=${thunkAPI[1]} 00:00:00`).then((res) => {
-      console.log('my schedule fetched: ', res.data);
+      // console.log('my schedule fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -70,36 +100,52 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
   }
 });
 
-
-export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async(thunkAPI:any) => {
-  console.log(thunkAPI)
+export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (thunkAPI: any) => {
   try {
-    const res = await axiosInstance.post('/schedule',thunkAPI).then((res) => {
-      console.log('schedule data created: ', res);
+    const res = await axiosInstance.post('/schedule', thunkAPI).then((res) => {
       return res.data;
     });
     return res.data;
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-  // try {
-  //   console.log(thunkAPI);
-  //   const accessToken = window.localStorage.getItem('accessToken');
-  //   const res = await axios({
-  //     url: `${process.env.REACT_APP_BASE_URL}/api/schedule`,
-  //     method: 'post',
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //     data: thunkAPI,
-  //   }).then((res) => {
-  //     console.log('successfully registered schedule');
-  //     return res;
-  //   });
-  //   return res;
-  // } catch (err) {
-  //   return console.log(err);
-  // }
+});
+
+export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (thunkAPI: any) => {
+  console.log(thunkAPI);
+  try {
+    const res = await axiosInstance.post('/meeting ', thunkAPI).then((res) => {
+      console.log('meeting data created: ', res);
+      return res.data;
+    });
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
+      // console.log('my schedule detail fetched: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
+      // console.log('my meeting detail fetched: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 const scheduleSlice = createSlice({
@@ -107,7 +153,7 @@ const scheduleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    // POST
+    // POST: 내 스케쥴 생성하기
     [addSchedule.pending.toString()]: (state) => {
       state.loading = false;
     },
@@ -117,14 +163,49 @@ const scheduleSlice = createSlice({
     [addSchedule.rejected.toString()]: (state) => {
       state.loading = false;
     },
-    // GET
+
+    // POST: 미팅 생성하기
+    [addMeeting.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [addMeeting.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+    },
+    [addMeeting.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+    // GET: 내 스케쥴 디테일 가져오기(모달)
+    [fetchScheduleDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [fetchScheduleDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+      state.scheduleModal.scheduleDetail = action.payload;
+    },
+    [fetchScheduleDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+    // GET: 내 미팅 디테일 가져오기(모달)
+    [fetchMeetingDetail.pending.toString()]: (state) => {
+      state.loading = false;
+    },
+    [fetchMeetingDetail.fulfilled.toString()]: (state, action) => {
+      state.loading = true;
+      state.scheduleModal.meetingDetail = action.payload;
+    },
+    [fetchMeetingDetail.rejected.toString()]: (state) => {
+      state.loading = false;
+    },
+
+    // GET: 내 스케쥴 전체 가져오기(달력)
     [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
     },
     [fetchSchedule.fulfilled.toString()]: (state, action) => {
       state.loading = true;
       state.schedules = action.payload;
-      console.log(state.schedules)
     },
     [fetchSchedule.rejected.toString()]: (state) => {
       state.loading = false;
@@ -132,13 +213,12 @@ const scheduleSlice = createSlice({
   },
 });
 
-
 const { reducer } = scheduleSlice;
-export const scheduleSelector = (state:RootState) => state.schedules
+export const scheduleSelector = (state: RootState) => state.schedules;
 export const myScheduleSelector = (state: RootState) => state.schedules.schedules.scheduleResponseList;
 export const meetingToMeSelector = (state: RootState) => state.schedules.schedules.meetingToMe;
 export const meetingFromMeSelector = (state: RootState) => state.schedules.schedules.meetingFromMe;
-
+export const detailSelector = (state: RootState) => state.scheduleModal;
 // const { reducer } = ScheduleModalSlice;
 
 export default reducer;

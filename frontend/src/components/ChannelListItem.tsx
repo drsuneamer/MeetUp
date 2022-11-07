@@ -1,25 +1,38 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { tChannel } from '../types/channels';
-import { useDispatch } from 'react-redux';
-import { update } from '../stores/modules/channelId';
+import { useAppDispatch } from '../stores/ConfigHooks';
+import { update } from '../stores/modules/channelInfo';
+import { setMemberListModalOpen } from '../stores/modules/modal';
+import { fetchMemberList } from '../stores/modules/members';
 
 interface ChannelListItemProps {
   channel: tChannel;
 }
 
 export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const goEdit = () => {
-    dispatch(update(channel.id));
+  // 멤버를 불러올 채널의 id는 따로 redux를 이용하지 않고, dispatch 함수에 parameter로 바로 전달
+  const handleMemberListModal = () => {
+    dispatch(update({ id: channel.id, title: channel.title }));
+    dispatch(fetchMemberList(Number(channel.id)));
+    dispatch(setMemberListModalOpen());
+  };
+
+  // 톱니바퀴 버튼 누르면 -> 밋업 수정 페이지로 이동
+  const goEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation(); // 버블링으로 인해 멤버 모달까지 함께 뜨는 것을 막음
+    console.log(channel.id);
+    console.log(typeof channel.id);
+    dispatch(update({ id: channel.id }));
     navigate(`/edit-channel/${channel.id}`);
   };
 
   return (
-    <div className="ChannelListItem w-full mb-1 drop-shadow-button">
-      <div className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap">
+    <div className="ChannelListItem w-full mb-1 drop-shadow-button cursor-pointer">
+      <div onClick={handleMemberListModal} className="indexContext bg-offWhite w-full h-[40px] flex flex-wrap ">
         <div style={{ background: `${channel.color}` }} className="indexLable  w-3/12 h-[40px] flex justify-end">
           <div style={{ background: `${channel.color}` }} className=" mix-blend-multiply y w-1/6 h-[40px]" />
         </div>

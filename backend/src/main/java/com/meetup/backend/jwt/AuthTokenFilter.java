@@ -38,7 +38,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // request 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
-        log.info("doFilterInternal jwt = {}", jwt);
+//        log.info("doFilterInternal jwt = {}", jwt);
 
         // validation 으로 토큰 유효성 검사
         // 정상 토큰이면 Authentication 을 가져와서 SecurityContext 에 저장

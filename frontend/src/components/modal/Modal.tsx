@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
+import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -10,105 +11,122 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { addSchedule } from '../../stores/modules/schedules';
- 
-interface ChannelOptionType {
-  title: string;
-}
+import { addMeeting } from '../../stores/modules/schedules';
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { tAlarm } from '../../types/channels';
 
-const channels = [
-  { title: '서울_1반_팀장채널'},
-  { title: 'A101' },
-  { title: 'A102' },
-  { title: 'A103' },
-  { title: 'A104' },
-  { title: 'A105' },
-  { title: 'A106' },
-  { title: 'A107' },
-  { title: 'A102_scrum' },
-  { title: 'A102_jira_bot' },
-];
+// interface ChannelOptionType {
+//   title: string;
+// }
+
+// const channels = [
+//   { title: '서울_1반_팀장채널'},
+//   { title: 'A101' },
+//   { title: 'A102' },
+//   { title: 'A103' },
+//   { title: 'A104' },
+//   { title: 'A105' },
+//   { title: 'A106' },
+//   { title: 'A107' },
+//   { title: 'A102_scrum' },
+//   { title: 'A102_jira_bot' },
+// ];
 
 const EventModal = () => {
+  const channels = useSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
+  const [content, setContent] = useState<string>('');
+  const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
-  const startTimeValue = startTime.value
-  
-  const newStartTime =()  => {
-    if(startTimeValue.length === 3){
-      const startTimeNewValue = '0'+ startTimeValue
-      // console.log(startTimeNewValue)
-      const hour = startTimeNewValue.slice(0,2) + ':'
-      const minute = startTimeNewValue.slice(2,4) + ':'
-      const startTimeResult = hour + minute + '00'
-      const start = date + ' ' + startTimeResult  
-      return start
-    } 
-      const hour = startTimeValue.slice(0,2) + ':'
-      const minute = startTimeValue.slice(2,4) + ':'
-      const startTimeResult = hour + minute + '00'
-      const start = date + ' ' + startTimeResult 
-      return start
-  }
+  const startTimeValue = startTime.value;
+
+  const newStartTime = () => {
+    if (startTimeValue.length === 3) {
+      const startTimeNewValue = '0' + startTimeValue;
+      const hour = startTimeNewValue.slice(0, 2) + ':';
+      const minute = startTimeNewValue.slice(2, 4) + ':';
+      const startTimeResult = hour + minute + '00';
+      const start = date + ' ' + startTimeResult;
+      return start;
+    }
+    const hour = startTimeValue.slice(0, 2) + ':';
+    const minute = startTimeValue.slice(2, 4) + ':';
+    const startTimeResult = hour + minute + '00';
+    const start = date + ' ' + startTimeResult;
+    return start;
+  };
 
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
-  
-  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
-  const endTimeValue = endTime.value
 
-  const newEndTime =()  => {
-    if(endTimeValue.length === 3){
-      const endTimeNewValue = '0'+ endTimeValue
-      const hour = endTimeNewValue.slice(0,2) + ':'
-      const minute = endTimeNewValue.slice(2,4) + ':'
-      const endTimeResult = hour + minute + '00'
-      const end = date + ' ' + endTimeResult 
-      return end
-    } 
-      const hour = endTimeValue.slice(0,2) + ':'
-      const minute = endTimeValue.slice(2,4) + ':'
-      const endTimeResult = hour + minute + '00'
-      const end = date + ' ' + endTimeResult 
-      return end
-  }
+  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
+  const endTimeValue = endTime.value;
+
+  const newEndTime = () => {
+    if (endTimeValue.length === 3) {
+      const endTimeNewValue = '0' + endTimeValue;
+      const hour = endTimeNewValue.slice(0, 2) + ':';
+      const minute = endTimeNewValue.slice(2, 4) + ':';
+      const endTimeResult = hour + minute + '00';
+      const end = date + ' ' + endTimeResult;
+      return end;
+    }
+    const hour = endTimeValue.slice(0, 2) + ':';
+    const minute = endTimeValue.slice(2, 4) + ':';
+    const endTimeResult = hour + minute + '00';
+    const end = date + ' ' + endTimeResult;
+    return end;
+  };
 
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
-  
-  const onTitleChange = (e:any) => {
+
+  const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
-    console.log(e.currentTarget.value);
   };
 
-  const onDateChange = (e:any) => {
+  const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
-    console.log(e.currentTarget.value);
   };
 
-  const parsedData:any = {
+  const onContentChange = (e: any) => {
+    setContent(e.currentTarget.value);
+  };
+  const onAlarmChannel = (e: any, value: any) => {
+    const alarmChannelValue = value.meetupId || undefined;
+    setAlarmChannelId(alarmChannelValue);
+  };
+
+  const parsedData: any = {
     title: title,
     content: null,
     start: newStartTime(),
-    end: newEndTime()
+    end: newEndTime(),
   };
 
+  const parsedMeetingData: any = {
+    title: title,
+    content: content,
+    start: newStartTime(),
+    end: newEndTime(),
+    meetupId: alarmChannelId,
+  };
 
-  
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
-      setDate(date)
+      setDate(date);
 
       const foundTimeIndex = startSelectOptions.findIndex((option) => option.value === startTime);
       foundTimeIndex !== undefined ? setStartTimeIndex(foundTimeIndex) : setStartTimeIndex(0);
@@ -128,16 +146,25 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload()
+    // window.location.reload()
   }, []);
 
-  const handleSubmit = async() => {
-    const action = await dispatch(addSchedule(parsedData))
+  const handleSubmitToMe = async () => {
+    const action = await dispatch(addSchedule(parsedData));
     if (isFulfilled(action)) {
-      const userId = localStorage.getItem('id')
-      handleToggleModal()
-    } 
-  }
+      const userId = localStorage.getItem('id');
+      handleToggleModal();
+    }
+  };
+
+  const handleSubmitToYou = async () => {
+    const action = await dispatch(addMeeting(parsedMeetingData));
+    if (isFulfilled(action)) {
+      // const userId = localStorage.getItem('id')
+      handleToggleModal();
+    }
+  };
+
   const handleResetInput = useCallback(() => {
     setTitle('');
     setDate(getStringDateFormat(new Date()));
@@ -159,13 +186,20 @@ const EventModal = () => {
   }, []);
 
   const defaultProps = {
-    options: channels,
-    getOptionLabel: (option: ChannelOptionType) => option.title,
+    options: channels.alarmChannels,
+    getOptionLabel: (option: tAlarm) => option.displayName,
   };
   const flatProps = {
-    options: channels.map((option) => option.title),
+    options: channels && channels.alarmChannels.map((option: any) => option.displayname),
   };
-  const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
+
+  const params = useParams();
+  const userId = params.userId;
+
+  useEffect(() => {
+    dispatch(fetchAlarmChannelList(userId));
+  }, []);
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -175,93 +209,118 @@ const EventModal = () => {
           e.stopPropagation();
         }}
       >
-        <svg onClick={handleToggleModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          onClick={handleToggleModal}
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2.5"
+          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
           <div className={`${myCalendar ? 'mt-[50px]' : 'mt-[20px]'}`}>
             {myCalendar ? (
-            <div className="text-s text-title font-bold">제목<span className="text-cancel">&#42;</span></div>
-          ) : (
-            <div className="text-s text-title font-bold">미팅명<span className="text-cancel">&#42;</span></div>
-          )}
+              <div className="text-s text-title font-bold">
+                제목<span className="text-cancel">&#42;</span>
+              </div>
+            ) : (
+              <div className="text-s text-title font-bold">
+                미팅명<span className="text-cancel">&#42;</span>
+              </div>
+            )}
             <input
               type="text"
               name="title"
               value={title}
               onChange={onTitleChange}
-              className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
+              className={`${
+                myCalendar ? 'mb-[50px]' : 'mb-[0px]'
+              } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
+          <div className="mt-[20px]">
+            <div className="text-s text-title font-bold">
+              날짜<span className="text-cancel">&#42;</span>
+            </div>
+            <input
+              type="date"
+              value={date}
+              onChange={onDateChange}
+              className={`${
+                myCalendar ? 'mb-[50px]' : 'mb-[0px]'
+              } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
+            />
             <div className="mt-[20px]">
-              <div className="text-s text-title font-bold">날짜<span className="text-cancel">&#42;</span></div>
-              <input 
-                type="date" 
-                value={date} 
-                onChange={onDateChange} 
-                className={`${myCalendar ? 'mb-[50px]' : 'mb-[0px]'} w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
-              />
-              <div className="mt-[20px]">
-                <div className="text-s text-title font-bold">시간<span className="text-cancel">&#42;</span></div>
-                <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
-                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime} />
-                  <span className="mx-2">-</span>
-                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2.5"
-                    stroke="currentColor"
-                    className="w-7 h-7 ml-[181px]"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+              <div className="text-s text-title font-bold">
+                시간<span className="text-cancel">&#42;</span>
               </div>
-              <div className="mt-[20px]">
-                {myCalendar ? (
-                  null
-              ) : (
-                <div>
-                  <div className="text-s text-title font-bold">내용</div>
-                 <input type="text" name="title" className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"/>
-                </div>
-              )}
-              </div>
-              <div className="mt-[20px]">
-                {myCalendar ? (
-                    null
-                ) : (
-                  <div>
-                   <div className="text-s text-title font-bold">알림 보낼 채널</div>
-                   <Autocomplete
-                     className="w-[450px]"
-                     ListboxProps={{ style: { maxHeight: '150px' } }}
-                     {...defaultProps}
-                     id="select-channel"
-                     renderInput={(params) => (
-                      <TextField {...params} label="채널 선택하기" variant="standard" />
-                     )}
-                    />
-                  </div>
-                )}
+              <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
+                <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime} />
+                <span className="mx-2">-</span>
+                <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2.5"
+                  stroke="currentColor"
+                  className="w-7 h-7 ml-[181px]"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
             </div>
-            {myCalendar ? (
-               <button 
-               onClick={handleSubmit}
-               className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button">밋업 불가시간 설정하기</button>
-            ) : (
-              <button 
-              onClick={handleSubmit}
-              className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button">밋업 등록하기</button>
-            )}
-          
+            <div className="mt-[20px]">
+              {myCalendar ? null : (
+                <div>
+                  <div className="text-s text-title font-bold">내용</div>
+                  <input
+                    type="text"
+                    name="title"
+                    value={content}
+                    onChange={onContentChange}
+                    className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="mt-[20px]">
+              {myCalendar ? null : (
+                <div>
+                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                  <Autocomplete
+                    onChange={onAlarmChannel}
+                    className="w-[450px]"
+                    ListboxProps={{ style: { maxHeight: '150px' } }}
+                    {...defaultProps}
+                    id="select-channel"
+                    renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          {myCalendar ? (
+            <button
+              onClick={handleSubmitToMe}
+              className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button"
+            >
+              밋업 불가시간 설정하기
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmitToYou}
+              className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button"
+            >
+              밋업 등록하기
+            </button>
+          )}
         </div>
       </div>
       <div
-        className='w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]'
+        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
 

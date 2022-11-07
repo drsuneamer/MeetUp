@@ -11,13 +11,10 @@ import java.util.List;
  */
 public interface MeetingService {
     MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId);
-    List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String date);
-
-    List<MeetingResponseDto> getMeetingResponseDtoByUserAndDate(String loginUserId, String getUserId, Long meetupId, String date);
 
     Long createMeeting(String userId, MeetingRequestDto meetingRequestDto);
 
-    void updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto);
+    Long updateMeeting(String userId, MeetingUpdateRequestDto meetingUpdateRequestDto);
 
     void deleteMeeting(String userId, Long meetingId);
 }

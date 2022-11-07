@@ -19,7 +19,7 @@ const initialState: calendarInitialState = {
 export const fetchCalendarList = createAsyncThunk('calendar', async () => {
   try {
     const res = await axiosInstance.get('/meetup/calendar').then((res) => {
-      console.log('calendar data fetched: ', res.data);
+      // console.log('calendar data fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -33,9 +33,9 @@ const calendarSlice = createSlice({
   initialState,
   reducers: {
     setUserNickName(state, action) {
-      state.nickname = action.payload
-      console.log('nickname', state.nickname)
-    }
+      state.nickname = action.payload;
+      console.log('nickname', state.nickname);
+    },
   },
   extraReducers: {
     [fetchCalendarList.pending.toString()]: (state) => {

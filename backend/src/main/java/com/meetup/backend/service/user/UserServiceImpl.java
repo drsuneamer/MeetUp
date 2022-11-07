@@ -35,11 +35,12 @@ import java.io.BufferedInputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.meetup.backend.entity.user.RoleType.*;
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/11/03
+ * updated by seongmin on 2022/11/04
  */
 @Service
 @RequiredArgsConstructor
@@ -75,18 +76,33 @@ public class UserServiceImpl implements UserService {
                     user = userRepository.save(
                             User.builder()
                                     .id(id)
-                                    .role(RoleType.ROLE_Student)
+                                    .role(ROLE_Student)
                                     .nickname(nickname)
                                     .password(passwordEncoder.encode(requestDto.getPassword()))
                                     .firstLogin(false)
                                     .build());
                 } else {
                     user = userRepository.findById(id).get();
-                    user.setNickname(nickname);
-                    user.changePwd(passwordEncoder.encode(requestDto.getPassword()));
+                    if (!nickname.equals(user.getNickname())) {
+                        user.setNickname(nickname);
+                    }
+                    String encodedPwd = passwordEncoder.encode(requestDto.getPassword());
+                    if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+                        log.info("패스워드 변경");
+                        user.changePwd(encodedPwd);
+                    }
                 }
 
                 if (!user.isFirstLogin()) {
+                    if (nickname.contains("컨설턴트")) {
+                        user.changeRole(ROLE_Consultant);
+                    } else if (nickname.contains("교수")) {
+                        user.changeRole(ROLE_Professor);
+                    } else if (nickname.contains("코치")) {
+                        user.changeRole(ROLE_Coach);
+                    } else if (nickname.contains("프로")) {
+                        user.changeRole(ROLE_Pro);
+                    }
                     webhookNoticeService.firstLoginNotice(nickname);
                     user.setFirstLogin();
                     registerTeamAndChannel(mmToken, user);

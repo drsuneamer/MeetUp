@@ -1,55 +1,34 @@
-import { PropsWithChildren } from 'react';
-
 import { tMember } from '../../types/members';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { useEffect, useState } from 'react';
-import { fetchMemberList, memberSelector } from '../../stores/modules/members';
-import { channelSelector } from '../../stores/modules/channels';
+import { useCallback } from 'react';
+import { memberSelector } from '../../stores/modules/members';
 import MemberListItem from './MemberListItem';
-import Spinner from '../common/Spinner';
-import { useSelector } from 'react-redux';
-import { axiosInstance } from '../../components/auth/axiosConfig';
+import { setMemberListModalOpen } from '../../stores/modules/modal';
 
-interface ModalDefaultType {
-  onClickToggleModal: () => void;
-}
-
-
-function MemberListModal({ onClickToggleModal }: PropsWithChildren<ModalDefaultType>) {
+function MemberListModal() {
   const dispatch = useAppDispatch();
+  const channelTitle: string = useAppSelector((state: any) => state.channelInfo.value.title);
 
-  const [member, setMember] = useState([]);
-  const channel = useSelector(channelSelector);
-  const meetupId = channel.channels;
-
-  // console.log(meetUpId)
-  useEffect(() => {
-    axiosInstance
-      .get('/meetup/users/1')
-      .then((res) => {
-        setMember(res.data.userInfoDtoList);
-      })
-      .catch((err) => {
-        console.log('에러임');
-      });
+  // 받아온 member array를 nickname 순으로 정렬
+  const member = useAppSelector(memberSelector).members;
+  const memberSort = [...member].sort(function (a, b) {
+    return a.nickname < b.nickname ? -1 : a.nickname > b.nickname ? 1 : 0;
   });
 
-  useEffect(() => {
-    console.log('!!');
-    dispatch(fetchMemberList());
-  }, []);
+  // 모달 닫힘 관리
+  const { memberListModalIsOpen } = useAppSelector((state) => state.modal);
+  const handleToggleModal = useCallback(() => {
+    dispatch(setMemberListModalOpen());
+  }, [dispatch]);
 
-  // if ( !member.loading ) {
-  //   return <Spinner></Spinner>
-  // }
   if (!member) {
     return <div>멤버가 없습니다</div>;
   }
   return (
-    <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
+    <div className={`${memberListModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div className="w-[450px] h-[400px] bg-background z-10 rounded drop-shadow-shadow">
         <svg
-          onClick={onClickToggleModal}
+          onClick={handleToggleModal}
           xmlns="https://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -58,10 +37,9 @@ function MemberListModal({ onClickToggleModal }: PropsWithChildren<ModalDefaultT
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-        <p className="text-placeholder text-[16px] ml-[5px]">서울1반_팀장채널 내 멤버</p>
-        <div className="mt-[10px] h-[320px] overflow-auto scrollbar-hide">
-
-          {member.map((value: tMember, index: number) => (
+        <p className="text-placeholder text-[14px] ml-[12px]">{channelTitle} 채널 내 멤버</p>
+        <div className="mt-[10px] mx-3 h-[320px] overflow-auto scrollbar-hide">
+          {memberSort.map((value: tMember, index: number) => (
             <MemberListItem key={value.id} member={value} />
           ))}
         </div>
@@ -71,8 +49,8 @@ function MemberListModal({ onClickToggleModal }: PropsWithChildren<ModalDefaultT
         onClick={(e: React.MouseEvent) => {
           e.preventDefault();
 
-          if (onClickToggleModal) {
-            onClickToggleModal();
+          if (handleToggleModal) {
+            handleToggleModal();
           }
         }}
       />
