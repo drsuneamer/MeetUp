@@ -23,7 +23,7 @@ public class WebhookNoticeServiceImpl implements WebhookNoticeService {
 
     private final IncomingWebhookClient client;
     private final String ICON = "https://a106mtld.s3.ap-northeast-2.amazonaws.com/logo_square.png";
-    @Value("${spring.profile.active}")
+    @Value("${spring.profiles.active}")
     private String profile;
 
     @Override
