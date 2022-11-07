@@ -1,13 +1,15 @@
 import LogoImage from '../../assets/logo_title.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useCallback } from 'react';
-import DeleteModal from '../modal/DeleteModal';
 import { axiosInstance } from '../auth/axiosConfig';
+import { setDeleteModalOpen } from '../../stores/modules/modal';
+import { useAppDispatch } from '../../stores/ConfigHooks';
 
 function Header() {
   const userId = window.localStorage.getItem('id');
   const url = `/calendar/${userId}`;
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState('');
@@ -32,17 +34,22 @@ function Header() {
       }
     });
   };
+
   const nickname = window.localStorage.getItem('nickname');
   const role = window.localStorage.getItem('roleType');
 
-  function logoutProps() {
-    setModalType('logout');
-    onClickToggleModal();
-  }
+  // function logoutProps() {
+  //   setModalType('logout');
+  //   onClickToggleModal();
+  // }
+
+  const handleDeleteModal = () => {
+    dispatch(setDeleteModalOpen({ type: 'logout', function: 'logout' }));
+  };
 
   return (
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
-      {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>}
+      {/* {isOpenModal && <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}></DeleteModal>} */}
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div className="flex items-center">
           <div onClick={navTo} className="cursor-pointer">
@@ -57,7 +64,7 @@ function Header() {
         </div>
 
         <div className="flex mr-2 items-center">
-          <div className="font-script font-bold text-title mr-2 text-m mt-1">{role?.slice(5)}</div>
+          <div className="font-script font-bold text-title mr-2 text-m mt-1 cursor-default">{role?.slice(5)}</div>
           <Link to="/settings">
             <div className="font-bold pr-1 underline underline-offset-2">{nickname}</div>
           </Link>
@@ -68,7 +75,7 @@ function Header() {
             strokeWidth="1.5"
             stroke="currentColor"
             className="w-6 h-6 pt-0.5 cursor-pointer"
-            onClick={logoutProps}
+            onClick={handleDeleteModal}
           >
             <path
               strokeLinecap="round"
