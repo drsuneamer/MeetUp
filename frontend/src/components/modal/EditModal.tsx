@@ -245,56 +245,46 @@ const EditModal = () => {
 
   const handleEditEvent = () => {
     console.log('될까?');
-    // console.log(changeToStartTime('2022-11-10T24:30:00'));
+    console.log(changeToStartTime('2022-11-10T16:30:00'));
     console.log('안된다')
   }
-  // const handleEditEvent = async () => {
-  //   const action = await dispatch(editMeetingDetail(parsedMeetingData));
-  //   if (isFulfilled(action)) {
-  //     handleToggleModal()
-  //     // dispatch(setDetailModalOpen());
-  //   }
-  // };
-  // const handleEditEvent() => {
-  //   console.log(valueTime)
-  // }
-  // const temp = {value: '030'}
-  // const changeToStartTime = (a:string) => {
-  //   const newTime = a.slice(11,16)
-  //   const numberTime = Number(newTime.slice(0,2));
-  //   if (numberTime < 12) {
-  //     const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-  //     return labelTime
-  //   } else if (numberTime === 12) {  
-  //     const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-  //     return labelTime
-  //   } else if (12 < numberTime && numberTime < 24) {
-  //     const hour = (numberTime - 12).toString();
-  //     const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
-  //     return labelTime
-  //   }
-  // }
-  // const changeToStartTime = (a:string) => {
-  //   // const newStartTime = {value:'', label:''}
-  //   const startTime = a.slice(11,16);
-  //   const newTime = startTime.replace(':', '');
-  //   if (newTime[0] === '0') {
-  //     const valueTime = startTime.slice(1,4);
-  //     // newStartTime.value = valueTime
-  //     // const labelTime = '오전' + valueTime[0] + '시' + ' ' + valueTime.slice(1,3) + '분'
-  //     // newStartTime.label = labelTime
-  //     return valueTime;
-  //   } else {
-  //     const valueTime = newTime;
-   
-  //     const labelTime =  '오후' + valueTime.slice(0,2) + ''
-  //     // startTime.value = valueTime
-  //     return valueTime;
-  //   }
 
-  //   console.log(meetingDetail.start)
-  // }
+  const changeToStartTime = (a:string) => {
+    const newStartTime = {value:'', label:''}
 
+    const newTime = a.slice(11,16)
+    const numberTime = Number(newTime.slice(0,2));
+    console.log(newTime);
+    const newValue = newTime.replace(':', '');
+    if (newValue[0] ==='0') {
+      const valueTime = newValue.slice(1,4);
+      newStartTime.value = valueTime
+    } else {
+      const valueTime = newValue
+      newStartTime.value = valueTime
+    }
+
+
+    if (numberTime < 12) {
+      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newStartTime.label = labelTime
+    } else if (numberTime === 12) {  
+      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newStartTime.label = labelTime
+    } else if (12 < numberTime) {
+      const hour = (numberTime - 12).toString();
+      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
+      newStartTime.label = labelTime
+    }
+    console.log('========================')
+    console.log(channels.alarmChannels);
+    return newStartTime;
+  }
+
+  // const test = {meetupId: 25, displayName: 'testtest'}
+  // const [test, setTest] = useState<string>;
+  // const test = channels.alarmChannels[1]
+ 
   if ( meetingDetail ) {
 
     return (
@@ -343,9 +333,9 @@ const EditModal = () => {
                   시간<span className="text-cancel">&#42;</span>
                 </div>
                 <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
-                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime} />
+                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={changeToStartTime(meetingDetail.start)} />
                   <span className="mx-2">-</span>
-                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
+                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={changeToStartTime(meetingDetail.end)} />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -374,10 +364,13 @@ const EditModal = () => {
                   <div>
                     <div className="text-s text-title font-bold">알림 보낼 채널</div>
                     <Autocomplete
+                      // value ={value}
+
                       onChange={onAlarmChannel}
                       className="w-[450px]"
                       ListboxProps={{ style: { maxHeight: '150px' } }}
                       {...defaultProps}
+                      // defaultValue = {test}
                       id="select-channel"
                       renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
                     />
