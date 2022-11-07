@@ -77,7 +77,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 미팅이 open false
         // & 내가 신청한 미팅이 아님
         // & 내가 신청받은 미팅이 아님
-        return ScheduleResponseDto.builder().id(schedule.getId()).start(schedule.getStart()).end(schedule.getEnd()).title(schedule.getTitle()).content(schedule.getContent()).userId(user.getId()).userName(user.getNickname()).build();
+        return ScheduleResponseDto.of(schedule, user);
     }
 
     // 해당 user, 캘린더 주인 id, date로 정보 가져오기

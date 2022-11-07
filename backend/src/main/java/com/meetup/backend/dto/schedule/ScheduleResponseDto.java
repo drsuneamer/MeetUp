@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/25
+ * updated by seongmin on 2022/11/07
  */
 @Data
 @Builder
@@ -31,6 +32,8 @@ public class ScheduleResponseDto {
 
     private String userName;
 
+    private String webex;
+
     public static ScheduleResponseDto of(Schedule schedule, User user) {
         return ScheduleResponseDto.builder()
                 .id(schedule.getId())
@@ -40,6 +43,7 @@ public class ScheduleResponseDto {
                 .content(schedule.getContent())
                 .userId(user.getId())
                 .userName(user.getNickname())
+                .webex(user.getWebex())
                 .build();
     }
 }
