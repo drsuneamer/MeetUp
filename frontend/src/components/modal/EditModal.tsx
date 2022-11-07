@@ -245,11 +245,11 @@ const EditModal = () => {
 
   const handleEditEvent = () => {
     console.log('될까?');
-    console.log(changeToStartTime('2022-11-10T16:30:00'));
+    console.log(changeToTime('2022-11-10T16:30:00'));
     console.log('안된다')
   }
 
-  const changeToStartTime = (a:string) => {
+  const changeToTime = (a:string) => {
     const newStartTime = {value:'', label:''}
 
     const newTime = a.slice(11,16)
@@ -333,9 +333,9 @@ const EditModal = () => {
                   시간<span className="text-cancel">&#42;</span>
                 </div>
                 <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
-                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={changeToStartTime(meetingDetail.start)} />
+                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={changeToTime(meetingDetail.start)} />
                   <span className="mx-2">-</span>
-                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={changeToStartTime(meetingDetail.end)} />
+                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={changeToTime(meetingDetail.end)} />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
