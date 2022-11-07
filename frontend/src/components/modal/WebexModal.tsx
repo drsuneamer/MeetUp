@@ -30,6 +30,15 @@ function WebexModal() {
     });
   });
 
+  // 웹엑스 이동 if
+  const moveOut = () => {
+    if (webex.includes('https://') || webex.includes('http://')) {
+      window.open(webex, '_blank');
+    } else {
+      window.open('https://' + webex);
+    }
+  };
+
   return (
     <div className={`${webexModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
@@ -48,7 +57,7 @@ function WebexModal() {
             <p className="text-[16px] cursor-default">{webex}</p>
             {webex !== '아직 설정된 주소가 없습니다.' ? (
               <button
-                onClick={() => window.open(`${webex}`, '_blank')}
+                onClick={moveOut}
                 className="text-[16px] bg-title text-background hover:bg-hover mt-[40px] rounded w-[350px] h-s drop-shadow-button"
               >
                 {nickname}의 웹엑스로 이동하기

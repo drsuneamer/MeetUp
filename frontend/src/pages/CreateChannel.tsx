@@ -22,6 +22,7 @@ function CreateChannel() {
   const [lv2Categories, setLv2] = useState<any>([]);
 
   useEffect(() => {
+    console.log('?');
     axiosInstance.get('meetup/team').then((res) => {
       setLv1(res.data);
     });
@@ -48,6 +49,7 @@ function CreateChannel() {
   useEffect(() => {
     if (category !== undefined) {
       setChannelId(category.id);
+      setTitle(category.displayName);
     }
   }, [category]);
 
