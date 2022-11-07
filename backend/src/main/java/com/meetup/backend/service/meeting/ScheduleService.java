@@ -9,11 +9,11 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/07
  */
 public interface ScheduleService {
 
-    ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId);
+    ScheduleResponseDto getScheduleDetail(String userId, Long scheduleId);
 
     AllScheduleResponseDto getScheduleByUserAndDate(String loginUserId, String targetUserId, String date);
 
