@@ -250,7 +250,7 @@ const WeeklyCalendarBody = () => {
                     className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line`}
                   >
                     <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
-                      {element.title}
+                      비공개
                     </span>
                   </div>)
               })}
