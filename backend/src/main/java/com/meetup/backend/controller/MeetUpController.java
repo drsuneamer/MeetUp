@@ -138,14 +138,14 @@ public class MeetUpController {
         return ResponseEntity.status(OK).body(responseDto);
     }
 
-    @GetMapping("/team/all")
+    @GetMapping("/team/activate")
     @ApiOperation(value = "사용자가 참여한 모든 팀 가져오기 (비활성화 된 팀 포함)")
     public ResponseEntity<?> getAllTeamByUserId() {
 
-        return ResponseEntity.status(OK).body(null);
+        return ResponseEntity.status(OK).body(teamUserService.getActivateTeamByUser(authService.getMyInfoSecret().getId()));
     }
 
-    @PutMapping("/team")
+    @PutMapping("/team/activate")
     @ApiOperation(value = "팀을 비활성화(밋업 생성시에 표시 안됨)")
     public ResponseEntity<?> activateTeamById(@RequestBody List<TeamActivateRequestDto> teamActivateRequestDtoList) {
 

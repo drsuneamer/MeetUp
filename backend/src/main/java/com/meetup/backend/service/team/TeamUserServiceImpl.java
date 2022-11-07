@@ -1,6 +1,7 @@
 package com.meetup.backend.service.team;
 
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
+import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
@@ -135,6 +136,19 @@ public class TeamUserServiceImpl implements TeamUserService {
                     .collect(Collectors.toList()));
 
         }
+    }
+
+    @Override
+    public List<TeamActivateResponseDto> getActivateTeamByUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+
+        List<TeamActivateResponseDto> teamActivateResponseDtoList = new ArrayList<>();
+
+        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+            teamActivateResponseDtoList.add(TeamActivateResponseDto.of(teamUser));
+        }
+
+        return teamActivateResponseDtoList;
     }
 
     @Override

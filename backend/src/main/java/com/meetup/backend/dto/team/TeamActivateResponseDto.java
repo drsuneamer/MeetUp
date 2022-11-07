@@ -1,6 +1,7 @@
 package com.meetup.backend.dto.team;
 
 import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.entity.team.TeamUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +22,8 @@ public class TeamActivateResponseDto {
 
     private Boolean isActivate;
 
-    public static TeamActivateResponseDto of(Team team, boolean isActivate) {
-        return new TeamActivateResponseDto(team.getId(), team.getDisplayName(), isActivate);
+    public static TeamActivateResponseDto of(TeamUser teamUser) {
+        return new TeamActivateResponseDto(teamUser.getTeam().getId(), teamUser.getTeam().getDisplayName(), teamUser.isActivate());
     }
 
 }

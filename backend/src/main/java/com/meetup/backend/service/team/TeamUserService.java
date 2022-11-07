@@ -1,6 +1,7 @@
 package com.meetup.backend.service.team;
 
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
+import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 
@@ -15,6 +16,8 @@ public interface TeamUserService {
     List<TeamResponseDto> getTeamByUser(String userId);
 
     void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList);
+
+    List<TeamActivateResponseDto> getActivateTeamByUser(String userId);
 
     void activateTeamUser(String teamId, List<TeamActivateRequestDto> teamActivateRequestDtoList);
 
