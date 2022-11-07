@@ -210,28 +210,28 @@ const EditModal = () => {
   //   console.log(scheduleDetailId);
   // }
 
-  useEffect(() => {
-    console.log(scheduleDetailId)
+  // useEffect(() => {
+  //   console.log(scheduleDetailId)
     
-    const loadData = async () => {
-      console.log('hello')
-      const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
-      console.log('2')
-      if (isFulfilled(action)) {
-        console.log('1')
-        console.log(action)
-        return action.payload;
-      }
-    };
-    loadData().then(() => {
-      setTitle(title)
-      setContent(content)
-      setDate(date)
-      setStartTime(startTime)
-      setEndTime(endTime)
-      setAlarmChannelId(alarmChannelId)
-    })
-  }, []);
+  //   const loadData = async () => {
+  //     console.log('hello')
+  //     const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
+  //     console.log('2')
+  //     if (isFulfilled(action)) {
+  //       console.log('1')
+  //       console.log(action)
+  //       return action.payload;
+  //     }
+  //   };
+  //   loadData().then(() => {
+  //     setTitle(title)
+  //     setContent(content)
+  //     setDate(date)
+  //     setStartTime(startTime)
+  //     setEndTime(endTime)
+  //     setAlarmChannelId(alarmChannelId)
+  //   })
+  // }, []);
 
   
   const parsedMeetingData: any = {
@@ -243,32 +243,57 @@ const EditModal = () => {
     meetupId: alarmChannelId,
   };
 
-  const handleEditEvent = async () => {
-    const action = await dispatch(editMeetingDetail(parsedMeetingData));
-    if (isFulfilled(action)) {
-      handleToggleModal()
-      // dispatch(setDetailModalOpen());
-    }
-  };
+  const handleEditEvent = () => {
+    console.log('될까?');
+    // console.log(changeToStartTime('2022-11-10T24:30:00'));
+    console.log('안된다')
+  }
+  // const handleEditEvent = async () => {
+  //   const action = await dispatch(editMeetingDetail(parsedMeetingData));
+  //   if (isFulfilled(action)) {
+  //     handleToggleModal()
+  //     // dispatch(setDetailModalOpen());
+  //   }
+  // };
   // const handleEditEvent() => {
   //   console.log(valueTime)
   // }
   // const temp = {value: '030'}
-  const changeToStartTime = () => {
-    const startTime = meetingDetail.start.slice(11,15);
-    const newTime = startTime.replace(':', '');
-    if (newTime[0] === '0') {
-      const valueTime = startTime.slice(1,4);
-      // startTime.value = valueTime
-      return valueTime
-    } else {
-      const valueTime = newTime;
-      // startTime.value = valueTime
-      return valueTime
-    }
+  // const changeToStartTime = (a:string) => {
+  //   const newTime = a.slice(11,16)
+  //   const numberTime = Number(newTime.slice(0,2));
+  //   if (numberTime < 12) {
+  //     const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+  //     return labelTime
+  //   } else if (numberTime === 12) {  
+  //     const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+  //     return labelTime
+  //   } else if (12 < numberTime && numberTime < 24) {
+  //     const hour = (numberTime - 12).toString();
+  //     const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
+  //     return labelTime
+  //   }
+  // }
+  // const changeToStartTime = (a:string) => {
+  //   // const newStartTime = {value:'', label:''}
+  //   const startTime = a.slice(11,16);
+  //   const newTime = startTime.replace(':', '');
+  //   if (newTime[0] === '0') {
+  //     const valueTime = startTime.slice(1,4);
+  //     // newStartTime.value = valueTime
+  //     // const labelTime = '오전' + valueTime[0] + '시' + ' ' + valueTime.slice(1,3) + '분'
+  //     // newStartTime.label = labelTime
+  //     return valueTime;
+  //   } else {
+  //     const valueTime = newTime;
+   
+  //     const labelTime =  '오후' + valueTime.slice(0,2) + ''
+  //     // startTime.value = valueTime
+  //     return valueTime;
+  //   }
 
-    console.log(meetingDetail.start)
-  }
+  //   console.log(meetingDetail.start)
+  // }
 
   if ( meetingDetail ) {
 

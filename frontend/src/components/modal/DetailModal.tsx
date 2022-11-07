@@ -60,6 +60,9 @@ const DetailModal = () => {
     window.location.reload()
   }, []);
 
+  const toggleModal = useCallback(() => {
+    dispatch(setDetailModalOpen('close'));
+  }, []);
   // const handleSubmit = () => {
   //   const newEvent: NewEvent = {
   //     date,
@@ -108,7 +111,7 @@ const DetailModal = () => {
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
     // dispatch(setDetailModalOpen());
-    handleToggleModal();
+    toggleModal();
     // console.log(detailModalIsOpen);
     // setModalType('edit Meeting')
     // console.log(editModalIsOpen);
@@ -116,6 +119,8 @@ const DetailModal = () => {
     console.log(meetingDetail)
     console.log('안녕')
     console.log(meetingDetail.start)
+    console.log('==============')
+    console.log(startTime)
     // console.log(scheduleDetail.id)
    
     // console.log(modalType);
@@ -228,7 +233,7 @@ const DetailModal = () => {
                 일정 수정하기
               </button>
               <button
-                onClick={deleteSchedule}
+                onClick={deleteSchedule} 
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
               >
                 일정 삭제하기
