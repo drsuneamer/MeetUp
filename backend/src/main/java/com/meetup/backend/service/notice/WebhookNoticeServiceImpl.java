@@ -6,6 +6,7 @@ import net.bis5.mattermost.client4.hook.IncomingWebhookClient;
 import net.bis5.mattermost.model.IncomingWebhookRequest;
 import net.bis5.mattermost.model.SlackAttachment;
 import net.bis5.mattermost.model.SlackAttachmentField;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,9 +23,15 @@ public class WebhookNoticeServiceImpl implements WebhookNoticeService {
 
     private final IncomingWebhookClient client;
     private final String ICON = "https://a106mtld.s3.ap-northeast-2.amazonaws.com/logo_square.png";
+    @Value("${spring.profiles.active}")
+    private String profile;
 
     @Override
     public void firstLoginNotice(String nickname) {
+        if (profile.equals("local")) {
+            log.info("local");
+            return;
+        }
         IncomingWebhookRequest payload = new IncomingWebhookRequest();
         List<SlackAttachment> slackAttachments = new ArrayList<>();
         SlackAttachment slackAttachment = new SlackAttachment();
@@ -35,7 +42,7 @@ public class WebhookNoticeServiceImpl implements WebhookNoticeService {
         }
 
         SlackAttachmentField field = new SlackAttachmentField();
-        field.setTitle(nickname+" 첫 로그인");
+        field.setTitle(nickname + " 첫 로그인");
         field.setValue("https://meet-up.co.kr/admin-login");
         List<SlackAttachmentField> fields = new ArrayList<>();
         fields.add(field);
