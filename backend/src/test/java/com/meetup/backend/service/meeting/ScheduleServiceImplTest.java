@@ -246,7 +246,7 @@ class ScheduleServiceImplTest {
         Long scheduleId = scheduleService.createSchedule(user.getId(), new ScheduleRequestDto(
                 "2022-10-25 10:00:00", "2022-10-25 10:30:00", "title", "본문",true
         ));
-        ScheduleResponseDto result = scheduleService.getScheduleResponseDtoById(user.getId(), scheduleId);
+        ScheduleResponseDto result = scheduleService.getScheduleDetail(user.getId(), scheduleId);
         assertThat(result.getTitle()).isEqualTo("title");
         assertThat(result.getContent()).isEqualTo("본문");
     }

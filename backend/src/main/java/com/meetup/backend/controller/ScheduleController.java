@@ -33,7 +33,7 @@ public class ScheduleController {
     public ResponseEntity<?> getSchedule(@PathVariable("scheduleId") Long scheduleId) {
         log.info("scheduleId = {}", scheduleId);
         String userId = authService.getMyInfoSecret().getId();
-        ScheduleResponseDto scheduleResponseDto = scheduleService.getScheduleResponseDtoById(userId, scheduleId);
+        ScheduleResponseDto scheduleResponseDto = scheduleService.getScheduleDetail(userId, scheduleId);
         return ResponseEntity.status(OK).body(scheduleResponseDto);
 
     }
