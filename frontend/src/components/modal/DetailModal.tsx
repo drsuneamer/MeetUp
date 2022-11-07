@@ -251,9 +251,14 @@ const DetailModal = () => {
           </button>
         </div> */}
       </div>
-    );
-  }
-  return <div></div>
+      <div
+        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+        }}
+      />
+    </div>
+  );
 };
 
 export default DetailModal;
