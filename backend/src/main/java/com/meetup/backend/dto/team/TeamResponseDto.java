@@ -6,7 +6,7 @@ import lombok.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seongmin on 2022/10/30
+ * updated by seungyong on 2022/11/06
  */
 @Getter
 @AllArgsConstructor
@@ -20,9 +20,7 @@ public class TeamResponseDto {
 
     private TeamType type;
 
-    private boolean isActivate;
-
     public static TeamResponseDto of(Team team) {
-        return new TeamResponseDto(team.getId(), team.getDisplayName(), team.getType(), team.isActivate());
+        return new TeamResponseDto(team.getId(), team.getDisplayName(), team.getType());
     }
 }
