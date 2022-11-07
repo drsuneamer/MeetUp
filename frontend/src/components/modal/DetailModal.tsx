@@ -7,9 +7,11 @@ import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { detailSelector, scheduleSelector } from '../../stores/modules/schedules';
+import { deleteMeetingDetail, deleteScheduleDetail, detailSelector, scheduleSelector } from '../../stores/modules/schedules';
 import { setEditModalOpen } from '../../stores/modules/modal';
-
+import DeleteModal from '../modal/DeleteModal';
+import { axiosInstance } from '../auth/axiosConfig';
+import { tSchedule } from '../../types/events';
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
@@ -29,6 +31,7 @@ const DetailModal = () => {
 
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -54,6 +57,7 @@ const DetailModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
+    window.location.reload()
   }, []);
 
   // const handleSubmit = () => {
@@ -99,6 +103,7 @@ const DetailModal = () => {
   //   options: channels.map((option) => option.title),
   // };
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  
 
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
@@ -108,10 +113,28 @@ const DetailModal = () => {
     // setModalType('edit Meeting')
     // console.log(editModalIsOpen);
     // console.log(editModalIsOpen);
+    console.log(meetingDetail)
     console.log('안녕')
     console.log(meetingDetail.start)
+    // console.log(scheduleDetail.id)
    
     // console.log(modalType);
+  }
+  // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
+
+  // const meetingId = meetingDetail.id
+  // const handleDeleteEvent = async(meetingId:string) => {
+  //   console.log(meetingDetail.id)
+  //   const action = await dispatch(deleteMeetingDetail());
+  // }
+  const deleteMeeting = () => {
+    dispatch(deleteMeetingDetail(meetingDetail.id))
+    handleToggleModal()
+  }
+
+  const deleteSchedule = () => {
+    dispatch(deleteScheduleDetail(scheduleDetail.id))
+    handleToggleModal()
   }
   return (
     <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -179,7 +202,41 @@ const DetailModal = () => {
             </div>
           ) : null}
         </div>
-        <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+        {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
+              <button
+                onClick={handleEditEvent}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                밋업 수정하기
+              </button>
+              <button
+                onClick={deleteMeeting}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                밋업 삭제하기
+              </button>
+            </div>
+            ) : (
+              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
+              <button
+                onClick={handleEditEvent}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                일정 수정하기
+              </button>
+              <button
+                onClick={deleteSchedule}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                일정 삭제하기
+              </button>
+            </div>
+            )}
+        {/* <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
           <button
             onClick={handleEditEvent}
             className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
@@ -187,12 +244,12 @@ const DetailModal = () => {
             밋업 수정하기
           </button>
           <button
-            // onClick={handleSubmit}
+            onClick={handleDeleteEvent}
             className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
           >
             밋업 삭제하기
           </button>
-        </div>
+        </div> */}
       </div>
       <div
         className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
