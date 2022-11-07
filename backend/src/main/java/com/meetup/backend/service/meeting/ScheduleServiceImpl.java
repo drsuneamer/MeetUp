@@ -166,6 +166,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                 break;
             }
         }
+        List<Meetup> meetupsByLoginUser = meetupRepository.findByManager(loginUser);
+        for (Meetup meetup : meetupsByLoginUser) {
+            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), targetUser)) {
+                flag = true;
+                break;
+            }
+        }
+
         if (!flag) {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
