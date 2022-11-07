@@ -213,6 +213,18 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
+                else if ( scheduleDate === stringDate && ownerId !== myId) {
+                  return (                    
+                  <div
+                    key={`${scheduleDate}${index}`}
+                    style={{ top, height }}
+                    className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 `}
+                  >
+                    <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                      {element.title}
+                    </span>
+                  </div> )
+                }
               })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
               {meetingToMe.map((element, index) => {
