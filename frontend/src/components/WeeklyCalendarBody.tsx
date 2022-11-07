@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getHours } from '../utils/GetHours';
+import { getNow } from '../utils/GetNow';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
@@ -83,6 +84,10 @@ const WeeklyCalendarBody = () => {
 
   const hours = useMemo(() => {
     return getHours();
+  }, []);
+
+  const nows = useMemo(() => {
+    return getNow();
   }, []);
 
   function renderHoliday() {
@@ -299,7 +304,7 @@ const WeeklyCalendarBody = () => {
                 return (
                   <div
                     key={`${hour}${index}`}
-                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line"
+                    className="border-1 border-t border-l h-[50px] border-line hover:bg-line "
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                       const rect = e.currentTarget.getBoundingClientRect();
                       const y = e.clientY - rect.top;
@@ -311,6 +316,23 @@ const WeeklyCalendarBody = () => {
                     }}
                   />
                 );
+              })}
+              {hours.map((hour, index) => {
+                if (nows) {
+                  const top = nows.timeNow * 50;
+                  let height = 0
+  
+                  if ( hour === nows.parsedTimeNow ) {
+                    return (
+                      <div
+                        key={`${nows}${index}`}
+                        style={{ top, height }}
+                        className="absolute border-1 border-t border-l h-[50px] bg-[red] "
+                      />
+                    );
+                  }
+                }
+                return null
               })}
               {selectedEventPosition !== null && (
                 <div
