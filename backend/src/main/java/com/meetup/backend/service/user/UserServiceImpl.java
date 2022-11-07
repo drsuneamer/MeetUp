@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
                 TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication);
 
-                redisUtil.setData(authentication.getName(), mmToken, tokenDto.getTokenExpiresIn(), TimeUnit.MILLISECONDS);
+                redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
                 return LoginResponseDto.of(user, tokenDto);
             case 401:
                 throw new ApiException(EMPTY_CREDENTIAL);
