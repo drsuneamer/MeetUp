@@ -1,5 +1,7 @@
 package com.meetup.backend.service.team;
 
+import com.meetup.backend.dto.team.TeamActivateRequestDto;
+import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
@@ -7,6 +9,7 @@ import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
+import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
@@ -45,12 +48,17 @@ public class TeamUserServiceImpl implements TeamUserService {
     @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
+    private final TeamRepository teamRepository;
+
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         List<TeamResponseDto> teamResponseDtoList = new ArrayList<>();
 
         for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+            if (!teamUser.isActivate())
+                continue;
             teamResponseDtoList.add(TeamResponseDto.of(teamUser.getTeam()));
         }
 
@@ -128,5 +136,33 @@ public class TeamUserServiceImpl implements TeamUserService {
                     .collect(Collectors.toList()));
 
         }
+    }
+
+    @Override
+    public List<TeamActivateResponseDto> getActivateTeamByUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+
+        List<TeamActivateResponseDto> teamActivateResponseDtoList = new ArrayList<>();
+
+        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+            teamActivateResponseDtoList.add(TeamActivateResponseDto.of(teamUser));
+        }
+
+        return teamActivateResponseDtoList;
+    }
+
+    @Override
+    public void activateTeamUser(String userId, List<TeamActivateRequestDto> teamActivateRequestDtoList) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
+
+        for (TeamActivateRequestDto teamActivateRequestDto : teamActivateRequestDtoList) {
+            Team team = teamRepository.findById(teamActivateRequestDto.getTeamId()).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
+
+            TeamUser teamUser = teamUserRepository.findByTeamAndUser(team, user).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_USER_NOT_FOUND));
+            teamUser.changeActivate();
+        }
+
+
     }
 }

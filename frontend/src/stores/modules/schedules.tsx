@@ -30,6 +30,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
     meetingToMe: [
@@ -43,6 +44,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
     scheduleResponseList: [
@@ -56,6 +58,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
+        open: false,
       },
     ],
   },
@@ -115,7 +118,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
   console.log(thunkAPI);
   try {
     const res = await axiosInstance.post('/meeting ', thunkAPI).then((res) => {
-      console.log('meeting data created: ', res);
+      // console.log('meeting data created: ', res);
       return res.data;
     });
     return res.data;

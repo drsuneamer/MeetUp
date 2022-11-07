@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/31
- * updated by seongmin on 2022/11/06
+ * updated by seongmin on 2022/11/07
  */
 @Data
 @AllArgsConstructor
@@ -21,15 +21,16 @@ public class AllScheduleResponseDto {
     private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
-
+    // oner가 me한테 신청한게 안보임
     public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, String me) {
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
         List<MeetingResponse> meetingToMe = new ArrayList<>();
         List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
         for (Schedule schedule : scheduleList) {
-            if (schedule instanceof Meeting) { // 스케줄 주인이 신청한 미팅 리스트
-                // 비공개이고, 나에게 신청한 미팅이 아니라면 내용 조회x
-                if (!schedule.isOpen() && !me.equals(((Meeting) schedule).getMeetup().getManager().getId())) {
+            if (schedule instanceof Meeting) {
+                // 스케줄 주인이 신청한 미팅 리스트
+                Meeting meeting = (Meeting) schedule;
+                if (!schedule.isOpen() && !me.equals(schedule.getUser().getId()) && !me.equals(meeting.getMeetup().getManager().getId())) {
                     meetingFromMe.add(new MeetingResponse(
                             schedule.getId(),
                             false,
@@ -73,7 +74,7 @@ public class AllScheduleResponseDto {
             }
         }
         for (Meeting meeting : meetings) { // 스케줄 주인이 신청 받은 미팅 리스트
-            if (!meeting.isOpen() && !me.equals(meeting.getUser().getId())) {
+            if (!meeting.isOpen() && !me.equals(meeting.getMeetup().getManager().getId()) && !me.equals(meeting.getUser().getId())) {
                 meetingToMe.add(new MeetingResponse(
                         meeting.getId(),
                         false,

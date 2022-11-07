@@ -1,6 +1,7 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.meetup.*;
+import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.service.auth.AuthService;
@@ -24,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seongmin on 2022/11/01
+ * updated by seungyong on 2022/11/05
  */
 @RestController
 @Slf4j
@@ -135,5 +136,21 @@ public class MeetUpController {
         MeetupUserResponseDto responseDto = MeetupUserResponseDto.of(channelUserService.getMeetupUserByChannel(channel, authService.getMyInfoSecret().getId()));
 
         return ResponseEntity.status(OK).body(responseDto);
+    }
+
+    @GetMapping("/team/activate")
+    @ApiOperation(value = "사용자가 참여한 모든 팀 가져오기 (비활성화 된 팀 포함)")
+    public ResponseEntity<?> getAllTeamByUserId() {
+
+        return ResponseEntity.status(OK).body(teamUserService.getActivateTeamByUser(authService.getMyInfoSecret().getId()));
+    }
+
+    @PutMapping("/team/activate")
+    @ApiOperation(value = "팀을 비활성화(밋업 생성시에 표시 안됨)")
+    public ResponseEntity<?> activateTeamById(@RequestBody List<TeamActivateRequestDto> teamActivateRequestDtoList) {
+
+        teamUserService.activateTeamUser(authService.getMyInfoSecret().getId(), teamActivateRequestDtoList);
+
+        return ResponseEntity.status(OK).build();
     }
 }

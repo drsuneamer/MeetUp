@@ -21,11 +21,15 @@ public class MeetupResponseDto {
     @ApiModelProperty(example = "Meetup 색상")
     private String color;
 
+    @ApiModelProperty(example = "기존 채널 이름")
+    private String channelName;
+
     public static MeetupResponseDto of(Meetup meetup) {
         return MeetupResponseDto.builder()
                 .id(meetup.getId())
                 .title(meetup.getTitle())
                 .color(meetup.getColor())
+                .channelName(meetup.getChannel().getDisplayName())
                 .build();
     }
 

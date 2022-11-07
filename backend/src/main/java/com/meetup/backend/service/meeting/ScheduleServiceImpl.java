@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/06
+ * updated by seongmin on 2022/11/07
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -48,18 +49,36 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
     @Override
-    public ScheduleResponseDto getScheduleResponseDtoById(String userId, Long scheduleId) {
+    public ScheduleResponseDto getScheduleDetail(String userId, Long scheduleId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
-        if (schedule.getType().equals(ScheduleType.Schedule) && !user.getId().equals(schedule.getUser().getId())) {
-            throw new ApiException(ACCESS_DENIED);
-        }
-        if (schedule.getType().equals(ScheduleType.Meeting)) {
-            if (!user.getId().equals(schedule.getUser().getId()) && !((Meeting) schedule).getMeetup().getManager().getId().equals(user.getId())) {
-                throw new ApiException(ACCESS_DENIED);
+        if (schedule.getType().equals(ScheduleType.Schedule)) {
+//            if (!user.getId().equals(schedule.getUser().getId())) {
+//                throw new ApiException(ACCESS_DENIED);
+//            }
+            if (!schedule.isOpen() && schedule.getUser() != user) {
+                throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
             }
         }
-        return ScheduleResponseDto.builder().id(schedule.getId()).start(schedule.getStart()).end(schedule.getEnd()).title(schedule.getTitle()).content(schedule.getContent()).userId(user.getId()).userName(user.getNickname()).build();
+        if (schedule.getType().equals(ScheduleType.Meeting)) {
+            // 내가 미팅을 신청한 사람이 아니고, 내가 미팅을 신청받은 사람도 아니다
+//            if (!user.getId().equals(schedule.getUser().getId()) && !((Meeting) schedule).getMeetup().getManager().getId().equals(user.getId())) {
+//                throw new ApiException(ACCESS_DENIED);
+//            }
+            Meeting meeting = (Meeting) schedule;
+            if (!meeting.isOpen() && meeting.getUser() != user && meeting.getMeetup().getManager() != user) {
+                throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
+            }
+        }
+        // 스케줄 디테일 정보 조회 불가능 한 경우
+        // 스케줄이 open false
+        // & 내 스케줄이 아님
+
+        // 미팅 디테일 정보 조회 불가능 한 경우
+        // 미팅이 open false
+        // & 내가 신청한 미팅이 아님
+        // & 내가 신청받은 미팅이 아님
+        return ScheduleResponseDto.of(schedule, user);
     }
 
     // 해당 user, 캘린더 주인 id, date로 정보 가져오기
@@ -75,10 +94,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
+        // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() <= 1800)
+            throw new ApiException(TOO_SHOR_DURATION);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
-
         if (!allScheduleResponseDto.isPossibleRegiser(start, end))
             throw new ApiException(ExceptionEnum.DUPLICATE_INSERT_DATETIME);
 
@@ -101,6 +123,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
+        // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() <= 1800)
+            throw new ApiException(TOO_SHOR_DURATION);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
