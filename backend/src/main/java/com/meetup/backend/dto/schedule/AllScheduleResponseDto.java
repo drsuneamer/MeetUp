@@ -21,6 +21,7 @@ public class AllScheduleResponseDto {
     private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
+    // oner가 me한테 신청한게 안보임
     public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, String me) {
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
         List<MeetingResponse> meetingToMe = new ArrayList<>();
@@ -28,7 +29,8 @@ public class AllScheduleResponseDto {
         for (Schedule schedule : scheduleList) {
             if (schedule instanceof Meeting) {
                 // 스케줄 주인이 신청한 미팅 리스트
-                if (!schedule.isOpen() && !me.equals(schedule.getUser().getId())) {
+                Meeting meeting = (Meeting) schedule;
+                if (!schedule.isOpen() && !me.equals(schedule.getUser().getId()) && !me.equals(meeting.getMeetup().getManager().getId())) {
                     meetingFromMe.add(new MeetingResponse(
                             schedule.getId(),
                             false,

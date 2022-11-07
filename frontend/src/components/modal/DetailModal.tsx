@@ -7,8 +7,11 @@ import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
 import webex from '../../assets/webex_icon.png';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { detailSelector, scheduleSelector } from '../../stores/modules/schedules';
-
+import { deleteMeetingDetail, deleteScheduleDetail, detailSelector, scheduleSelector } from '../../stores/modules/schedules';
+import { setEditModalOpen } from '../../stores/modules/modal';
+import DeleteModal from '../modal/DeleteModal';
+import { axiosInstance } from '../auth/axiosConfig';
+import { tSchedule } from '../../types/events';
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
@@ -28,6 +31,7 @@ const DetailModal = () => {
 
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -53,6 +57,7 @@ const DetailModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
+    window.location.reload()
   }, []);
 
   // const handleSubmit = () => {
@@ -98,100 +103,162 @@ const DetailModal = () => {
   //   options: channels.map((option) => option.title),
   // };
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
-
-  if (meetingDetail || scheduleDetail) {
-
-    return (
-      <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
-        <div
-          className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
-          onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-            e.stopPropagation();
-          }}
-        >
-          <svg
-            xmlns="https://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2.5"
-            className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
-            onClick={handleToggleModal}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-          <div className="flex flex-col p-[20px] ">
-            <div className="mt-[20px] flex ">
-              <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
-              {detailModalSelector.modalType === 'myMeeting' ? (
-                <p className="font-bold">{meetingDetail.title}</p>
-              ) : (
-                <p className="font-bold">{scheduleDetail.title}</p>
-              )}
-            </div>
-            <div className="mt-[20px] flex">
-              <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-              {detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
-            </div>
-            <div className="mt-[20px] flex">
-              <div className="text-s text-title font-bold mr-[15px]">시간</div>
-              {detailModalSelector.modalType === 'myMeeting' ? (
-                <p>
-                  {meetingDetail.start.slice(11, 16)} - {meetingDetail.end.slice(11, 16)}
-                </p>
-              ) : (
-                <p>
-                  {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
-                </p>
-              )}
-            </div>
-            <div className="mt-[20px] flex">
-              <div className="text-s text-title font-bold mr-[15px]">내용</div>
-              {detailModalSelector.modalType === 'myMeeting' ? (
-                <p className="w-[450px]">{meetingDetail.content}</p>
-              ) : (
-                <p className="w-[450px]">{scheduleDetail.content}</p>
-              )}
-            </div>
   
-            {detailModalSelector.modalType === 'myMeeting' && meetingDetail.meetupAdminUserWebex ? (
-              <div className="mt-[20px] flex flex-col">
-                <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
-                <div className="flex justify-center items-center gap-x-[50px]">
-                  <div className="flex flex-col justify-center items-center">
-                    <a href={meetingDetail.meetupAdminUserWebex} className="flex flex-col justify-center items-center">
-                      <img className="w-[50px]" src={webex} alt="webex" />
-                      <p className="font-bold">{meetingDetail.meetupAdminUserName}</p>
-                    </a>
-                  </div>
+
+  const handleEditEvent = () => {
+    dispatch(setEditModalOpen());
+    // dispatch(setDetailModalOpen());
+    handleToggleModal();
+    // console.log(detailModalIsOpen);
+    // setModalType('edit Meeting')
+    // console.log(editModalIsOpen);
+    // console.log(editModalIsOpen);
+    console.log(meetingDetail)
+    console.log('안녕')
+    console.log(meetingDetail.start)
+    // console.log(scheduleDetail.id)
+   
+    // console.log(modalType);
+  }
+  // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
+
+  // const meetingId = meetingDetail.id
+  // const handleDeleteEvent = async(meetingId:string) => {
+  //   console.log(meetingDetail.id)
+  //   const action = await dispatch(deleteMeetingDetail());
+  // }
+  const deleteMeeting = () => {
+    dispatch(deleteMeetingDetail(meetingDetail.id))
+    handleToggleModal()
+  }
+
+  const deleteSchedule = () => {
+    dispatch(deleteScheduleDetail(scheduleDetail.id))
+    handleToggleModal()
+  }
+  return (
+    <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+      <div
+        className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          e.stopPropagation();
+        }}
+      >
+        <svg
+          xmlns="https://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2.5"
+          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+          onClick={handleToggleModal}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <div className="flex flex-col p-[20px] ">
+          <div className="mt-[20px] flex ">
+            <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <p className="font-bold">{meetingDetail.title}</p>
+            ) : (
+              <p className="font-bold">{scheduleDetail.title}</p>
+            )}
+          </div>
+          <div className="mt-[20px] flex">
+            <div className="text-s text-title font-bold mr-[15px]">날짜</div>
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
+          </div>
+          <div className="mt-[20px] flex">
+            <div className="text-s text-title font-bold mr-[15px]">시간</div>
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <p>
+                {meetingDetail.start.slice(11, 16)} - {meetingDetail.end.slice(11, 16)}
+              </p>
+            ) : (
+              <p>
+                {scheduleDetail.start.slice(11, 16)} - {scheduleDetail.end.slice(11, 16)}
+              </p>
+            )}
+          </div>
+          <div className="mt-[20px] flex">
+            <div className="text-s text-title font-bold mr-[15px]">내용</div>
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <p className="w-[450px]">{meetingDetail.content}</p>
+            ) : (
+              <p className="w-[450px]">{scheduleDetail.content}</p>
+            )}
+          </div>
+
+          {meetingDetail && detailModalSelector.modalType === 'myMeeting' && meetingDetail.meetupAdminUserWebex ? (
+            <div className="mt-[20px] flex flex-col">
+              <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
+              <div className="flex justify-center items-center gap-x-[50px]">
+                <div className="flex flex-col justify-center items-center">
+                  <a href={meetingDetail.meetupAdminUserWebex} className="flex flex-col justify-center items-center">
+                    <img className="w-[50px]" src={webex} alt="webex" />
+                    <p className="font-bold">{meetingDetail.meetupAdminUserName}</p>
+                  </a>
                 </div>
               </div>
-            ) : null}
-          </div>
-          <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-            <button
-              // onClick={handleSubmit}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
-            >
-              밋업 수정하기
-            </button>
-            <button
-              // onClick={handleSubmit}
-              className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
-            >
-              밋업 삭제하기
-            </button>
-          </div>
+            </div>
+          ) : null}
         </div>
-        <div
-          className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault();
-          }}
-        />
+        {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
+              <button
+                onClick={handleEditEvent}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                밋업 수정하기
+              </button>
+              <button
+                onClick={deleteMeeting}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                밋업 삭제하기
+              </button>
+            </div>
+            ) : (
+              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
+              <button
+                onClick={handleEditEvent}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                일정 수정하기
+              </button>
+              <button
+                onClick={deleteSchedule}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                일정 삭제하기
+              </button>
+            </div>
+            )}
+        {/* <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+          
+          <button
+            onClick={handleEditEvent}
+            className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+          >
+            밋업 수정하기
+          </button>
+          <button
+            onClick={handleDeleteEvent}
+            className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+          >
+            밋업 삭제하기
+          </button>
+        </div> */}
       </div>
-    );
-  }
-  return <div></div>
+      <div
+        className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault();
+        }}
+      />
+    </div>
+  );
 };
 
 export default DetailModal;
