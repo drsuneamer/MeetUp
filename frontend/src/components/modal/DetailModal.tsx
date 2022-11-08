@@ -32,102 +32,16 @@ const DetailModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
 
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-  // const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
-
-  // useEffect(() => {
-  //   if (eventModalData !== null) {
-  //     const { date, startTime } = eventModalData;
-  //     setDate(date);
-
-  //     const foundTimeIndex = startSelectOptions.findIndex((option) => option.value === startTime);
-
-  //     foundTimeIndex !== undefined ? setStartTimeIndex(foundTimeIndex) : setStartTimeIndex(0);
-  //   } else {
-  //     handleResetInput();
-  //   }
-  // }, [eventModalData]);
-
-  // useEffect(() => {
-  //   setStartTime(startSelectOptions[startTimeIndex]);
-
-  //   if (startTimeIndex > endTimeIndex) {
-  //     setEndTimeIndex(startTimeIndex);
-  //     setEndTime(startSelectOptions[startTimeIndex]);
-  //   }
-  // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
-    // window.location.reload();
   }, []);
-
-  // const handleSubmit = () => {
-  //   const newEvent: NewEvent = {
-  //     date,
-  //     eventDetail: {
-  //       title: title !== '' ? title : '제목 없음',
-  //       start: startTime.value,
-  //       end: endTime.value,
-  //     },
-  //   };
-
-  //   dispatch(addEvent(newEvent));
-  //   handleToggleModal();
-  //   handleResetInput();
-  // };
-
-  // const handleResetInput = useCallback(() => {
-  //   setTitle('');
-  //   setDate(getStringDateFormat(new Date()));
-  //   setStartTime(startSelectOptions[0]);
-  //   setStartTimeIndex(0);
-  //   setEndTime(endSelectOptions[0]);
-  //   setEndTimeIndex(0);
-  // }, []);
-
-  // const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
-  //   const i = index as number;
-  //   setStartTimeIndex(i);
-  //   setStartTime(selected);
-  // }, []);
-
-  // const handleEndSelectClick = useCallback((selected: Option, index?: number) => {
-  //   setEndTimeIndex(index as number);
-  //   setEndTime(selected);
-  // }, []);
-
-  // const defaultProps = {
-  //   options: channels,
-  //   getOptionLabel: (option: ChannelOptionType) => option.title,
-  // };
-  // const flatProps = {
-  //   options: channels.map((option) => option.title),
-  // };
-  // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
 
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
-    // dispatch(setDetailModalOpen());
     handleToggleModal();
-    // console.log(detailModalIsOpen);
-    // setModalType('edit Meeting')
-    // console.log(editModalIsOpen);
-    // console.log(editModalIsOpen);
-    // console.log(scheduleDetail);
-    console.log('안녕');
-    // console.log(scheduleDetail.start);
-    // console.log(scheduleDetail.id)
-
-    // console.log(modalType);
   };
-  // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
 
-  // const meetingId = meetingDetail.id
-  // const handleDeleteEvent = async(meetingId:string) => {
-  //   console.log(meetingDetail.id)
-  //   const action = await dispatch(deleteMeetingDetail());
-  // }
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
@@ -198,14 +112,23 @@ const DetailModal = () => {
   
             {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
               <div className="mt-[20px] flex flex-col">
-                <div className="text-s text-title font-bold mb-[10px]">웹엑스 미팅 참여하기</div>
-                <div className="flex justify-center items-center gap-x-[50px]">
-                  <div className="flex flex-col justify-center items-center">
-                    <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
-                      <img className="w-[50px]" src={webex} alt="webex" />
-                      {/* 웹엑스 유저네임으로 변경해야 함 */}
-                      <p className="font-bold">{scheduleDetail.userName}</p> 
-                    </a>
+                <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
+                <div className="flex justify-center gap-[20px] mt-[10px]">
+                  <div className="flex justify-center items-center gap-x-[50px]">
+                    <div className="flex flex-col justify-center items-center">
+                      <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
+                        <img className="w-[50px]" src={webex} alt="webex" />
+                        <p className="font-bold">{scheduleDetail.userName}</p> 
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex justify-center items-center gap-x-[50px]">
+                    <div className="flex flex-col justify-center items-center">
+                      <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
+                        <img className="w-[50px]" src={webex} alt="webex" />
+                        <p className="font-bold">{localStorage.getItem('nickname')}</p> 
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -236,21 +159,6 @@ const DetailModal = () => {
               </button>
             </div>
           )}
-          {/* <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-            
-            <button
-              onClick={handleEditEvent}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
-            >
-              밋업 수정하기
-            </button>
-            <button
-              onClick={handleDeleteEvent}
-              className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
-            >
-              밋업 삭제하기
-            </button>
-          </div> */}
         </div>
         <div
           className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
