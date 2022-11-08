@@ -34,13 +34,13 @@ public enum ExceptionEnum {
 
     MM_BAD_REQUEST(BAD_REQUEST, "40010", "잘못된 mattermost api 요청입니다."),
 
-    TOO_SHOR_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
+    TOO_SHORT_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
 
-    TEAM_USER_NOT_FOUND(BAD_REQUEST, "40011", "유저가 속한 팀 정보를 찾을 수 없습니다."),
+    TEAM_USER_NOT_FOUND(BAD_REQUEST, "40012", "유저가 속한 팀 정보를 찾을 수 없습니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40101", "인증 정보가 없습니다."),
 
-    EMPTY_MM_CREDENTIAL(UNAUTHORIZED, "40101", "메터모스트 인증 정보가 없습니다."),
+    EMPTY_MM_CREDENTIAL(UNAUTHORIZED, "40102", "메터모스트 인증 정보가 없습니다."),
 
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
 
@@ -67,6 +67,7 @@ public enum ExceptionEnum {
     DUPLICATE_CHANNEL_NAME(CONFLICT, "40905", "기존에 있는 채널네임이 중복되어 새로운 채널생성이 불가능합니다."),
 
     DUPLICATE_MEETUP(CONFLICT, "40906", "해당 채널은 이미 생성된 밋업이 있습니다."),
+    DUPLICATE_GROUP(CONFLICT, "40907", "그룹(내가 리더인 그룹) 이름이 중복됩니다."),
 
     MATTERMOST_EXCEPTION(INTERNAL_SERVER_ERROR, "50001", "매터모스트 에러, 잠시 후 다시 시도해주세요.");
 
