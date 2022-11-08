@@ -107,15 +107,15 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
 });
 
 export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (thunkAPI: any) => {
-  try {
     const res = await axiosInstance.post('/schedule', thunkAPI).then((res) => {
       return res.data;
-    });
-    return res.data;
-  } catch (err) {
-    console.log(err);
+    }).catch((err) => {
+      if (err.response.status === 409) {
+        alert('일정이 중복되었습니다.')
+      }
+    })
   }
-});
+);
 
 export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (thunkAPI: any) => {
   // console.log(thunkAPI);
