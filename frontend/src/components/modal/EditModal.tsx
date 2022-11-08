@@ -40,31 +40,23 @@ import { find } from 'lodash';
 // ];
 
 const EditModal = () => {
-
   const channels = useSelector(alarmChannelSelector);
-  // useEffect(() => {
-  //   dispatch(fetchAlarmChannelList());
-  // }, []);
-  
-  // const editModalSelector = useSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
-
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
   const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
+  
   const changeToStartTime = () => {
     const newStartTime = {value:'', label:''}
-
-    const newTime = meetingDetail.start.slice(11,16)
+    const newTime = scheduleDetail.start.slice(11,16)
     const numberTime = Number(newTime.slice(0,2));
     
     const newValue = newTime.replace(':', '');
@@ -94,7 +86,7 @@ const EditModal = () => {
   const changeToEndTime = () => {
     const newEndTime = {value:'', label:''}
 
-    const newTime = meetingDetail.end.slice(11,16)
+    const newTime = scheduleDetail.end.slice(11,16)
     const numberTime = Number(newTime.slice(0,2));
     
     const newValue = newTime.replace(':', '');
@@ -120,9 +112,9 @@ const EditModal = () => {
     }
     return newEndTime;
   }
-  const test = changeToStartTime();
+  const start = changeToStartTime();
   const [startTime, setStartTime] = useState<Option>({value:'', label:''})
-  const testTest = changeToEndTime();
+  const end = changeToEndTime();
   const [endTime, setEndTime] = useState<Option>({value:'', label:''})
 
   // const [startTime, setStartTime] = useState<Option>(changeToTime(meetingDetail.start));
@@ -130,6 +122,7 @@ const EditModal = () => {
   // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
 
+  // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
 
 
@@ -208,9 +201,9 @@ const EditModal = () => {
 
  
   useEffect(() => {
-    setStartTime(test);
-    setEndTime(testTest)
-  },[meetingDetail])
+    setStartTime(start);
+    setEndTime(end)
+  },[scheduleDetail])
 
   // useEffect(() => {
   //   setStartTime(startSelectOptions[startTimeIndex]);
@@ -386,7 +379,7 @@ const EditModal = () => {
 
   // const test = {meetupId: 25, displayName: 'testtest'}
 
-  if ( meetingDetail ) {
+  if ( scheduleDetail ) {
 
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -414,7 +407,7 @@ const EditModal = () => {
               <input
                 type="text"
                 name="title"
-                defaultValue={meetingDetail.title}
+                defaultValue={scheduleDetail.title}
                 onChange={onTitleChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -425,7 +418,7 @@ const EditModal = () => {
               </div>
               <input
                 type="date"
-                defaultValue={meetingDetail.start.slice(0, 10)}
+                defaultValue={scheduleDetail.start.slice(0, 10)}
                 onChange={onDateChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -455,7 +448,7 @@ const EditModal = () => {
                     <input
                       type="text"
                       name="title"
-                      defaultValue={meetingDetail.content}
+                      defaultValue={scheduleDetail.content}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />
