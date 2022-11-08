@@ -18,6 +18,9 @@ const Header = () => {
   // const [isMyCalendar, setIsMyCalendar] = useState(false)
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
+  const userId = window.localStorage.getItem('id');
+  const url = `/calendar/${userId}`;
+
   useEffect(() => {
     if (params.userId === `${localStorage.getItem('id')}`) {
       // setIsMyCalendar(true)
@@ -76,8 +79,12 @@ const Header = () => {
         {myCalendar ? (
           <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 캘린더</div>
         ) : (
-          <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">{nickname}의 캘린더</div>
+          <>
+            <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">{nickname}의 캘린더</div>
+            <a href={url} className='absolute right-3 top-6 text-title font-semibold cursor-pointer'>🗓️내 캘린더로 돌아가기</a>
+          </>
         )}
+        
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />

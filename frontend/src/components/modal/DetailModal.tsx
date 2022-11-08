@@ -12,11 +12,13 @@ import { setEditModalOpen } from '../../stores/modules/modal';
 import DeleteModal from '../modal/DeleteModal';
 import { axiosInstance } from '../auth/axiosConfig';
 import { tSchedule } from '../../types/events';
+import { setDeleteModalOpen } from '../../stores/modules/modal';
+
 const DetailModal = () => {
+  const dispatch = useAppDispatch();
   const detailModalSelector = useSelector(ModalSelector);
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
-  const dispatch = useAppDispatch();
 
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
@@ -31,7 +33,7 @@ const DetailModal = () => {
 
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id
+  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
   // useEffect(() => {
   //   if (eventModalData !== null) {
@@ -57,7 +59,7 @@ const DetailModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
-    window.location.reload()
+    // window.location.reload();
   }, []);
 
   // const handleSubmit = () => {
@@ -103,7 +105,6 @@ const DetailModal = () => {
   //   options: channels.map((option) => option.title),
   // };
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
-  
 
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
@@ -113,13 +114,13 @@ const DetailModal = () => {
     // setModalType('edit Meeting')
     // console.log(editModalIsOpen);
     // console.log(editModalIsOpen);
-    console.log(meetingDetail)
-    console.log('안녕')
-    console.log(meetingDetail.start)
+    console.log(meetingDetail);
+    console.log('안녕');
+    console.log(meetingDetail.start);
     // console.log(scheduleDetail.id)
-   
+
     // console.log(modalType);
-  }
+  };
   // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
 
   // const meetingId = meetingDetail.id
@@ -128,14 +129,15 @@ const DetailModal = () => {
   //   const action = await dispatch(deleteMeetingDetail());
   // }
   const deleteMeeting = () => {
-    dispatch(deleteMeetingDetail(meetingDetail.id))
-    handleToggleModal()
-  }
+    dispatch(setDeleteModalOpen(['delete', 'meeting']));
+    handleToggleModal();
+  };
 
   const deleteSchedule = () => {
-    dispatch(deleteScheduleDetail(scheduleDetail.id))
-    handleToggleModal()
-  }
+    dispatch(setDeleteModalOpen(['delete', 'schedule']));
+    handleToggleModal();
+  };
+
   return (
     <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
@@ -165,7 +167,11 @@ const DetailModal = () => {
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">날짜</div>
-            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? <p>{meetingDetail.start.slice(0, 10)}</p> : <p>{scheduleDetail.start.slice(0, 10)}</p>}
+            {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <p>{meetingDetail.start.slice(0, 10)}</p>
+            ) : (
+              <p>{scheduleDetail.start.slice(0, 10)}</p>
+            )}
           </div>
           <div className="mt-[20px] flex">
             <div className="text-s text-title font-bold mr-[15px]">시간</div>
@@ -203,38 +209,30 @@ const DetailModal = () => {
           ) : null}
         </div>
         {meetingDetail && detailModalSelector.modalType === 'myMeeting' ? (
-              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-          
-              <button
-                onClick={handleEditEvent}
-                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
-              >
-                밋업 수정하기
-              </button>
-              <button
-                onClick={deleteMeeting}
-                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
-              >
-                밋업 삭제하기
-              </button>
-            </div>
-            ) : (
-              <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-          
-              <button
-                onClick={handleEditEvent}
-                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
-              >
-                일정 수정하기
-              </button>
-              <button
-                onClick={deleteSchedule}
-                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
-              >
-                일정 삭제하기
-              </button>
-            </div>
-            )}
+          <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+            <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              밋업 수정하기
+            </button>
+            <button
+              onClick={deleteMeeting}
+              className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+            >
+              밋업 삭제하기
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+            <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              일정 수정하기
+            </button>
+            <button
+              onClick={deleteSchedule}
+              className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+            >
+              일정 삭제하기
+            </button>
+          </div>
+        )}
         {/* <div className="flex justify-center items-center gap-[20px] mt-[40px]">
           
           <button

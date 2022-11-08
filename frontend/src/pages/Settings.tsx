@@ -50,6 +50,11 @@ function Settings() {
             </button>
           </div>
           <input
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                submit();
+              }
+            }}
             onChange={onInput}
             type="text"
             placeholder={url}
