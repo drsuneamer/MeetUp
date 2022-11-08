@@ -49,7 +49,7 @@ const EditModal = () => {
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   
@@ -211,7 +211,7 @@ const EditModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen());
-    window.location.reload()
+    // window.location.reload()
   }, []);
 
   // const handleSubmitToMe = async () => {
@@ -342,10 +342,6 @@ const EditModal = () => {
   //   // }
   // })
  
-
-    console.log(scheduleDetail.start)
-  }
-
   if ( scheduleDetail ) {
 
     return (

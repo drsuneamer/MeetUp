@@ -87,15 +87,16 @@ const DetailModal = () => {
 
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
     // dispatch(setDetailModalOpen());
     handleToggleModal();
     // console.log(detailModalIsOpen);
     // setModalType('edit Meeting')
     // console.log(editModalIsOpen);
     // console.log(editModalIsOpen);
-    console.log(meetingDetail)
-    console.log('안녕')
-    console.log(meetingDetail.start)
+    // console.log(meetingDetail)
+    // console.log('안녕')
+    // console.log(meetingDetail.start)
     // console.log(scheduleDetail.id)
    
     // console.log(modalType);
