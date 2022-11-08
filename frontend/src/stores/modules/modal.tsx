@@ -10,7 +10,7 @@ type ModalInitialState = {
   modalType: string;
   memberListModalIsOpen: boolean; // 밋업 관리하기의 밋업 클릭 시 멤버 리스트 확인
   deleteModalIsOpen: boolean; // 로그아웃 / 삭제 확인 모달
-  deleteModalType: string[];
+  deleteModalType: string[]; // 0번 인덱스에는 로그아웃/삭제 여부를, 1번 인덱스에는 어떤 것을 삭제하는지
 };
 
 const initialState: ModalInitialState = {

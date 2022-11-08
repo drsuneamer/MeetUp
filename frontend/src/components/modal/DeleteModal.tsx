@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { deleteMeetingDetail, deleteScheduleDetail, detailSelector } from '../../stores/modules/schedules';
 
 function DeleteModal() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
@@ -16,7 +16,7 @@ function DeleteModal() {
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
 
   const handleToggleModal = useCallback(() => {
-    dispatch(setDeleteModalOpen({ title: '', function: '' }));
+    dispatch(setDeleteModalOpen('close'));
   }, [dispatch]);
 
   const logout = async () => {
@@ -28,6 +28,8 @@ function DeleteModal() {
     });
   };
 
+  // ['delete', 'schedule] || ['delete', 'meeting']
+  // 스케줄/미팅 여부에 따라 다른 함수 dispatch
   const handleDelete = () => {
     if (deleteModalType[1] === 'schedule') {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
