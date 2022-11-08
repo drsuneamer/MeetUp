@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 /**
  * created by myeongseok on 2022/10/23
- * updated by myeongseok on 2022/11/04
+ * updated by seongmin on 2022/11/08
  */
 @RestController
 @Slf4j
@@ -35,14 +35,14 @@ public class MeetingController {
 
     private final ChannelUserService channelUserService;
 
-    @GetMapping("/{meetingId}")
-    @ApiOperation(value = "알림을 보낼 채널 선택")
-    public ResponseEntity<?> getMeetingDetail(@PathVariable("meetingId") Long meetingId) {
-        log.info("meetingId = {}", meetingId);
-        String userId = authService.getMyInfoSecret().getId();
-        MeetingResponseDto meetingResponseDto = meetingService.getMeetingResponseDtoById(userId, meetingId);
-        return ResponseEntity.status(OK).body(meetingResponseDto);
-    }
+//    @GetMapping("/{meetingId}")
+//    @ApiOperation(value = "알림을 보낼 채널 선택")
+//    public ResponseEntity<?> getMeetingDetail(@PathVariable("meetingId") Long meetingId) {
+//        log.info("meetingId = {}", meetingId);
+//        String userId = authService.getMyInfoSecret().getId();
+//        MeetingResponseDto meetingResponseDto = meetingService.getMeetingResponseDtoById(userId, meetingId);
+//        return ResponseEntity.status(OK).body(meetingResponseDto);
+//    }
 
     @PostMapping
     @ApiOperation(value = "meeting 일정 등록(나 -> 컨설턴트)")
