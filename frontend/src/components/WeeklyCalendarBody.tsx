@@ -44,10 +44,13 @@ const WeeklyCalendarBody = () => {
 
   const thunkAPI = [userId, sunday];
 
-  const scrollRef = useRef();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  // scrollRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'})
 
   
   useEffect(() => {
+    scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'end'})
+
     async function fetchAndSetHolidays() {
       await dispatch(fetchHolidays());
     }
@@ -312,7 +315,7 @@ const WeeklyCalendarBody = () => {
                   let height = 0;
 
                   if (hour === nows.parsedTimeNow) {
-                    return <div key={`${nows}${index}`} style={{ top, height }} className="absolute w-full h-[1.5px] bg-primary" />;
+                    return <div ref={scrollRef} key={`${nows}${index}`} id="current" style={{ top, height }} className="absolute w-full h-[1.5px] bg-primary" />;
                   }
                 }
                 return null;
