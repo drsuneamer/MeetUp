@@ -87,7 +87,7 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() <= 1800)
+        if (duration.getSeconds() < 1800)
             throw new ApiException(TOO_SHOR_DURATION);
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
@@ -148,7 +148,7 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() <= 1800)
+        if (duration.getSeconds() < 1800)
             throw new ApiException(TOO_SHOR_DURATION);
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
