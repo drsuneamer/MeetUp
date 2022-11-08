@@ -150,10 +150,14 @@ const EventModal = () => {
   };
 
   const handleSubmitToYou = async () => {
-    const action = await dispatch(addMeeting(parsedMeetingData));
-    if (isFulfilled(action)) {
-      handleToggleModal();
-      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
+    if (!parsedMeetingData.title ) {
+      alert('미팅명은 필수 입력사항입니다')
+    } else if ( parsedData ) {
+      const action = await dispatch(addMeeting(parsedMeetingData));
+      if (isFulfilled(action)) {
+        handleToggleModal();
+        dispatch(fetchSchedule([userId, getSundayOfWeek()]));
+      }
     }
   };
 
