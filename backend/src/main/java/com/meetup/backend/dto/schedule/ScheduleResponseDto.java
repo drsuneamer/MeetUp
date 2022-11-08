@@ -1,6 +1,8 @@
 package com.meetup.backend.dto.schedule;
 
+import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
+import com.meetup.backend.entity.schedule.ScheduleType;
 import com.meetup.backend.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/25
- * updated by seongmin on 2022/11/07
+ * updated by seongmin on 2022/11/08
  */
 @Data
 @Builder
@@ -19,6 +21,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ScheduleResponseDto {
     private Long id;
+
+    private ScheduleType type;
 
     private LocalDateTime start;
 
@@ -37,8 +41,9 @@ public class ScheduleResponseDto {
     private String diffWebex;
 
     public static ScheduleResponseDto of(Schedule schedule, User user) {
-        return ScheduleResponseDto.builder()
+        ScheduleResponseDto result = ScheduleResponseDto.builder()
                 .id(schedule.getId())
+                .type(schedule.getType())
                 .start(schedule.getStart())
                 .end(schedule.getEnd())
                 .title(schedule.getTitle())
@@ -48,6 +53,15 @@ public class ScheduleResponseDto {
                 .myWebex(user.getWebex())
                 .diffWebex(schedule.getUser().getWebex())
                 .build();
+
+        if (schedule.getType().equals(ScheduleType.Meeting)) {
+            Meeting meeting = (Meeting) schedule;
+            result.setUserId(meeting.getMeetup().getManager().getId());
+            result.setUserName(meeting.getMeetup().getManager().getNickname());
+            result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
+        }
+        return result;
+
     }
 }
 

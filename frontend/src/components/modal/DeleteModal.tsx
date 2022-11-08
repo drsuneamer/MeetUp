@@ -12,7 +12,7 @@ function DeleteModal() {
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
 
-  const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
+  // const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
   const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
 
@@ -35,12 +35,7 @@ function DeleteModal() {
     if (deleteModalType[1] === 'schedule') {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
     } else if (deleteModalType[1] === 'meeting') {
-      dispatch(deleteMeetingDetail(meetingDetail.id));
-    } else if (deleteModalType[1] === 'meetup') {
-      axiosInstance.delete(`/meetup/${channelId}`).then((res) => {
-        navigate(`/calendar/${localStorage.getItem('id')}`);
-        handleToggleModal();
-      });
+      dispatch(deleteMeetingDetail(scheduleDetail.id));
     }
   };
 
