@@ -49,7 +49,7 @@ const EventModal = () => {
   };
 
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
+  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex+1), [startTimeIndex+1]);
 
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
@@ -129,7 +129,7 @@ const EventModal = () => {
 
     if (startTimeIndex > endTimeIndex) {
       setEndTimeIndex(startTimeIndex);
-      setEndTime(startSelectOptions[startTimeIndex]);
+      setEndTime(startSelectOptions[startTimeIndex+1]);
     }
   }, [startTimeIndex]);
 
@@ -139,9 +139,13 @@ const EventModal = () => {
   }, []);
 
   const handleSubmitToMe = async () => {
-    const action = await dispatch(addSchedule(parsedData));
-    if (isFulfilled(action)) {
-      handleToggleModal();
+    if (!parsedData.title) {
+      alert('제목은 필수 입력사항입니다')
+    } else if ( parsedData ) {
+      const action = await dispatch(addSchedule(parsedData));
+      if (isFulfilled(action)) {
+        handleToggleModal();
+      }
     }
   };
 
