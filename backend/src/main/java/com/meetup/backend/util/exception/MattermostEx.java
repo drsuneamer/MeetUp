@@ -21,6 +21,9 @@ public class MattermostEx {
         } else if (status == 403) {
             log.error("권한이 없습니다 status = {}", status);
             throw new ApiException(MM_FORBIDDEN);
+        } else {
+            log.error("mattermost error. status = {}", status);
+            throw new ApiException(MATTERMOST_EXCEPTION);
         }
     }
 }
