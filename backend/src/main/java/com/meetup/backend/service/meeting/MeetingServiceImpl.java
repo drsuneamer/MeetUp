@@ -20,13 +20,18 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.exception.MattermostEx;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.model.Post;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedInputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -119,19 +124,33 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-
-        int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
-        if (status == 201 || status == 200) {
-            log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
-            return meetingRepository.save(meeting).getId();
-        } else if (status == 401) {
-            log.error("mattermost 미팅 신청 알림 보내기 실패 인증 정보 없음 status = {}", status);
-            throw new ApiException(EMPTY_MM_CREDENTIAL);
+        if (meetingRequestDto.isOpen()) {
+            int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
+            if (status == 201 || status == 200) {
+                log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
+                return meetingRepository.save(meeting).getId();
+            }
+            MattermostEx.apiException(status);
         } else {
-            log.error("mattermost 미팅 신청 알림 보내기 실패 status = {}", status);
-            throw new ApiException(MATTERMOST_EXCEPTION);
+            Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
+            int status = directChannelResponse.getStatus();
+            MattermostEx.apiException(status);
+
+            BufferedInputStream entity = (BufferedInputStream) directChannelResponse.getEntity();
+            JSONTokener tokener = new JSONTokener(entity);
+            JSONObject jsonObject = new JSONObject(tokener);
+            String id = (String) jsonObject.get("id");
+
+            Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
+            if (dmResponse.getStatus() == 201) {
+                log.info("mattermost 미팅 신청 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
+                return meetingRepository.save(meeting).getId();
+            }
+            MattermostEx.apiException(dmResponse.getStatus());
         }
 
+
+        return meetingRepository.save(meeting).getId();
     }
 
     // 미팅 정보 수정
