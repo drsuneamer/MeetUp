@@ -5,6 +5,7 @@ import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 import { useAppSelector } from '../stores/ConfigHooks';
+import Alert from '@mui/material/Alert';
 
 import { axiosInstance } from '../components/auth/axiosConfig';
 
@@ -15,14 +16,13 @@ interface Category {
 }
 
 function CreateChannel() {
-  const t = useAppSelector((state: any) => state.teamId.value).id;
+  const teamId = useAppSelector((state: any) => state.teamId.value).id;
   const navigate = useNavigate();
 
   const [lv1Categories, setLv1] = useState<any>([]);
   const [lv2Categories, setLv2] = useState<any>([]);
 
   useEffect(() => {
-    console.log('?');
     axiosInstance.get('meetup/team').then((res) => {
       setLv1(res.data);
     });
@@ -37,10 +37,10 @@ function CreateChannel() {
   }
 
   useEffect(() => {
-    axiosInstance.get(`/meetup/channel/${t}`).then((res) => {
+    axiosInstance.get(`/meetup/channel/${teamId}`).then((res) => {
       setLv2(res.data);
     });
-  }, [t]);
+  }, [teamId]);
 
   // 알림을 받을 채널 선택하기
   const [category, setCategory] = useState<Category>();
@@ -76,18 +76,38 @@ function CreateChannel() {
     setRecord({ channelId: channelId, title: title, color: color });
   }, [channelId, title, color]); // 각 값이 변경될 때마다 제출될 record에 반영
 
-  const onSubmit = async () => {
-    await axiosInstance.post('/meetup/', record).then((res) => {
-      if (res.status === 201) {
-        navigate(`/calendar/${localStorage.getItem('id')}`);
-      }
-    });
+  const [again, setAgain] = useState(false);
+
+  const onSubmit = () => {
+    axiosInstance
+      .post('/meetup/', record)
+      .then((res) => {
+        if (res.status === 201) {
+          navigate(`/calendar/${localStorage.getItem('id')}`);
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.errorCode === '40906') {
+          setAgain(true);
+        }
+      });
   };
+
+  useEffect(() => {
+    // 중복 오류 안내 -> 3초 뒤에 사라짐
+    const timer = setTimeout(() => {
+      setAgain(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [again]);
 
   if (lv1Categories.length > 0) {
     return (
       <Layout>
-        <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
+        <div className="text-m mx-[20vw] pt-[15vh] pb-[180px]">
           <div className="mb-10">
             <div className="font-bold text-title cursor-default">알림을 받을 채널 선택하기</div>
             <div className="relative">
@@ -127,8 +147,19 @@ function CreateChannel() {
                 className="rounded-full m-[5px] w-[30px] h-[30px] cursor-pointer"
               ></div>
               {open ? (
-                <div onClick={openColor} className="absolute z-30">
+                <div className="flex absolute z-30 items-start">
                   <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
+                  <svg
+                    onClick={openColor}
+                    xmlns="https://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="3"
+                    stroke="#6C91F4"
+                    className="w-6 h-6 cursor-pointer ml-2"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
                 </div>
               ) : (
                 <div></div>
@@ -139,9 +170,21 @@ function CreateChannel() {
             </div>
           </div>
 
-          <button onClick={onSubmit} className="z-30 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover">
-            밋업 생성하기
-          </button>
+          <div className="relative">
+            {again ? (
+              <Alert severity="error" className="absolute w-full bottom-[11vh]">
+                해당 채널로 생성된 밋업이 이미 존재합니다!
+              </Alert>
+            ) : (
+              ''
+            )}
+            <button
+              onClick={onSubmit}
+              className="z-30 mt-7 bg-title rounded drop-shadow-shadow text-background font-medium w-full h-s my-2 hover:bg-hover"
+            >
+              밋업 생성하기
+            </button>
+          </div>
         </div>
       </Layout>
     );

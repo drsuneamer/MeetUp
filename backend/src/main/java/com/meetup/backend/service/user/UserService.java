@@ -12,7 +12,7 @@ import com.meetup.backend.entity.user.User;
 public interface UserService {
     LoginResponseDto login(LoginRequestDto requestDto);
 
-    void logout(String id);
+    void logout(String mmSessionToken);
 
 //    User registerUser(String userId);
 

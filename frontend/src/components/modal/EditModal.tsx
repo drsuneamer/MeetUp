@@ -13,13 +13,12 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addSchedule } from '../../stores/modules/schedules';
-import { addMeeting, editMeetingDetail } from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
-import { detailSelector, fetchMeetingDetail } from '../../stores/modules/schedules'; 
+import { detailSelector } from '../../stores/modules/schedules'; 
 import { find } from 'lodash';
 
 // interface ChannelOptionType {
@@ -121,10 +120,6 @@ const EditModal = () => {
 
   // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
-
-  // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-
 
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
@@ -276,7 +271,15 @@ const EditModal = () => {
   // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
   // const handleSubmitToMe = () => {
-
+  //   console.log('되야만해..')
+  //   console.log(myScheduleId);
+  //   console.log(meetingToMeId);
+  //   console.log(meetingFromMeId);
+  //   console.log('===========');
+  //   console.log(scheduleDetail);
+  //   console.log(startTime);
+  //   console.log('========================')
+  //   console.log(scheduleDetailId);
   // }
 
   // useEffect(() => {
@@ -311,53 +314,16 @@ const EditModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
   };
-  
-  // const handleEditEvent = async () => {
-  //   console.log('수정?')
-  //   console.log(startTime);
-  //   const action = dispatch(editMeetingDetail(parsedMeetingData))
-  //   if (isFulfilled(action)) {
-  //     handleToggleModal();
-  //     dispatch(setDetailModalOpen('myMeeting'))
-  //   }
-  // }
-  const handleEditEvent =  () => {
-    console.log('수정?')
-  }
 
-  // const changeToTime = () => {
-  //   const newStartTime = {value:'', label:''}
-
-  //   const newTime = meetingDetail.start.slice(11,16)
-  //   const numberTime = Number(newTime.slice(0,2));
-    
-  //   const newValue = newTime.replace(':', '');
-  //   if (newValue[0] ==='0') {
-  //     const valueTime = newValue.slice(1,4);
-  //     newStartTime.value = valueTime
-  //   } else {
-  //     const valueTime = newValue
-  //     newStartTime.value = valueTime
-  //   }
-
-
-  //   if (numberTime < 12) {
-  //     const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-  //     newStartTime.label = labelTime
-  //   } else if (numberTime === 12) {  
-  //     const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-  //     newStartTime.label = labelTime
-  //   } else if (12 < numberTime) {
-  //     const hour = (numberTime - 12).toString();
-  //     const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
-  //     newStartTime.label = labelTime
-  //   }
-  //   // console.log('========================')
-  //   // console.log(channels.alarmChannels);
-  //   // console.log('========================')
-  //   // console.log(findAlarmChannel(1))
-  //   // console.log(meetingDetail.meetupId)
-  //   return newStartTime;
+  const handleEditEvent = async () => {
+    const action = await dispatch(editMeetingDetail(parsedMeetingData));
+    if (isFulfilled(action)) {
+      handleToggleModal()
+      // dispatch(setDetailModalOpen());
+    }
+  };
+  // const handleEditEvent() => {
+  //   console.log(valueTime)
   // }
 
   // const test = changeToTime();
@@ -377,7 +343,8 @@ const EditModal = () => {
   // })
  
 
-  // const test = {meetupId: 25, displayName: 'testtest'}
+    console.log(scheduleDetail.start)
+  }
 
   if ( scheduleDetail ) {
 

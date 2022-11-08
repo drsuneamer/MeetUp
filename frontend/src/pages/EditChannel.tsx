@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
-import { useAppSelector } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { axiosInstance } from '../components/auth/axiosConfig';
 import Spinner from '../components/common/Spinner';
 import { useNavigate } from 'react-router-dom';
+import { setDeleteModalOpen } from '../stores/modules/modal';
+import DeleteModal from '../components/modal/DeleteModal';
 
 interface Channel {
   id: number;
@@ -16,10 +18,11 @@ interface Channel {
 
 function EditChannel() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [channel, setChannel] = useState<Channel>();
 
   const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
-  console.log(channelId);
 
   // MM 채널 이름 수정
   const [title, setTitle] = useState('');
@@ -51,16 +54,11 @@ function EditChannel() {
   }, [title, color]);
 
   const onDelete = () => {
-    axiosInstance.delete(`/meetup/${channelId}`).then((res) => {
-      navigate(`/calendar/${localStorage.getItem('id')}`);
-    });
+    dispatch(setDeleteModalOpen(['delete', 'meetup']));
   };
 
   const onSubmit = () => {
-    console.log(title, color);
-    console.log(record);
     axiosInstance.put(`/meetup/${channelId}`, record).then((res) => {
-      console.log(res);
       if (res.status === 201) {
         navigate(`/calendar/${localStorage.getItem('id')}`);
       }
@@ -70,6 +68,8 @@ function EditChannel() {
   if (channel) {
     return (
       <Layout>
+        <div className="z-50"></div>
+
         <div className="text-m mx-[20vw] pt-[20vh] pb-[180px]">
           <div className="mb-10 z-30">
             <div className="font-bold text-title">알림을 받을 채널 선택하기</div>
@@ -101,8 +101,19 @@ function EditChannel() {
                 className="rounded-full m-[5px] w-[30px] h-[30px] cursor-pointer"
               ></div>
               {open ? (
-                <div onClick={openColor} className="absolute z-30">
+                <div className="flex absolute z-30 items-start">
                   <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
+                  <svg
+                    onClick={openColor}
+                    xmlns="https://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="3"
+                    stroke="#6C91F4"
+                    className="w-6 h-6 cursor-pointer ml-2"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
                 </div>
               ) : (
                 <div></div>
