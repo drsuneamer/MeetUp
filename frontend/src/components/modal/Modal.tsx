@@ -1,47 +1,25 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
-import { addEvent } from '../../stores/modules/events';
-import { NewEvent } from '../../types/events';
 import SingleSelect from '../common/SingleSelect';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { setMyCalendar } from '../../stores/modules/mycalendar';
-import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
-import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
-
-// interface ChannelOptionType {
-//   title: string;
-// }
-
-// const channels = [
-//   { title: '서울_1반_팀장채널'},
-//   { title: 'A101' },
-//   { title: 'A102' },
-//   { title: 'A103' },
-//   { title: 'A104' },
-//   { title: 'A105' },
-//   { title: 'A106' },
-//   { title: 'A107' },
-//   { title: 'A102_scrum' },
-//   { title: 'A102_jira_bot' },
-// ];
+import Switch from '@mui/material/Switch';
 
 const EventModal = () => {
-  const channels = useSelector(alarmChannelSelector);
+  const channels = useAppSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
+  
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
@@ -91,6 +69,12 @@ const EventModal = () => {
     return end;
   };
 
+  const [checked, setChecked] = useState(false);
+
+  const switchHandler = (e:any) => {
+    setChecked(e.target.checked)
+  }
+
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
@@ -115,6 +99,7 @@ const EventModal = () => {
     content: null,
     start: newStartTime(),
     end: newEndTime(),
+    open: checked
   };
 
   const parsedMeetingData: any = {
@@ -123,6 +108,7 @@ const EventModal = () => {
     start: newStartTime(),
     end: newEndTime(),
     meetupId: alarmChannelId,
+    open: checked
   };
 
   useEffect(() => {
@@ -154,8 +140,6 @@ const EventModal = () => {
   const handleSubmitToMe = async () => {
     const action = await dispatch(addSchedule(parsedData));
     if (isFulfilled(action)) {
-      const userId = localStorage.getItem('id');
-      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
       handleToggleModal();
     }
   };
@@ -163,8 +147,6 @@ const EventModal = () => {
   const handleSubmitToYou = async () => {
     const action = await dispatch(addMeeting(parsedMeetingData));
     if (isFulfilled(action)) {
-      // const userId = localStorage.getItem('id')
-      console.log(startTime);
       handleToggleModal();
       dispatch(fetchSchedule([userId, getSundayOfWeek()]));
     }
@@ -206,6 +188,7 @@ const EventModal = () => {
     dispatch(fetchAlarmChannelList(userId));
   }, []);
 
+
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
       <div
@@ -225,7 +208,7 @@ const EventModal = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[50px]' : 'mt-[20px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[15px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -241,11 +224,11 @@ const EventModal = () => {
               value={title}
               onChange={onTitleChange}
               className={`${
-                myCalendar ? 'mb-[50px]' : 'mb-[0px]'
+                myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
-          <div className="mt-[20px]">
+          <div className="mt-[15px]">
             <div className="text-s text-title font-bold">
               날짜<span className="text-cancel">&#42;</span>
             </div>
@@ -254,10 +237,10 @@ const EventModal = () => {
               value={date}
               onChange={onDateChange}
               className={`${
-                myCalendar ? 'mb-[50px]' : 'mb-[0px]'
+                myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
-            <div className="mt-[20px]">
+            <div className="mt-[15px]">
               <div className="text-s text-title font-bold">
                 시간<span className="text-cancel">&#42;</span>
               </div>
@@ -277,7 +260,7 @@ const EventModal = () => {
                 </svg>
               </div>
             </div>
-            <div className="mt-[20px]">
+            <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
@@ -291,7 +274,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[20px]">
+            <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">알림 보낼 채널</div>
@@ -306,18 +289,23 @@ const EventModal = () => {
                 </div>
               )}
             </div>
+            <div className="mt-[40px] mb-[30px]">
+              <div className="text-s text-title font-bold">공개 설정</div>
+              <Switch checked={checked} onChange={switchHandler} />
+              {checked ? <span className='text-title text-xs'>공개</span> : <span className='text-title text-xs'>비공개</span>}
+            </div>
           </div>
           {myCalendar ? (
             <button
               onClick={handleSubmitToMe}
-              className="font-bold bg-title hover:bg-hover text-background mt-[70px] rounded w-[450px] h-s drop-shadow-button"
+              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
             >
               밋업 불가시간 설정하기
             </button>
           ) : (
             <button
               onClick={handleSubmitToYou}
-              className="font-bold bg-title hover:bg-hover text-background mt-[50px] rounded w-[450px] h-s drop-shadow-button"
+              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mt-[15px] h-s drop-shadow-button"
             >
               밋업 등록하기
             </button>
