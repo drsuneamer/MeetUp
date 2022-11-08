@@ -211,7 +211,7 @@ const EditModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen());
-    // window.location.reload()
+    window.location.reload()
   }, []);
 
   // const handleSubmitToMe = async () => {
