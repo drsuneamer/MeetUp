@@ -36,7 +36,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
         <div style={{ background: `${channel.color}` }} className="indexLable  w-3/12 h-[40px] flex justify-end">
           <div style={{ background: `${channel.color}` }} className=" mix-blend-multiply y w-1/6 h-[40px]" />
         </div>
-        <span className="channelName leading-[40px] w-7/12 text-center overflow-hidden">{channel.title}</span>
+        <span className="channelName leading-[40px] w-7/12 text-center overflow-hidden ">{channel.title}</span>
         <div className="ColDiv flex flex-col justify-center">
           {/* settings button */}
           <span className="w-2/12 text-center cursor-pointer" onClick={goEdit}>
