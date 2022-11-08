@@ -1,14 +1,15 @@
 package com.meetup.backend.dto.user;
 
 import com.meetup.backend.entity.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 /**
  * created by seungyong on 2022/11/07
  */
-@Getter
+@Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserListInTeamResponseDto {
 
     private String id;

@@ -21,4 +21,5 @@ public interface ChannelUserRepository extends JpaRepository<ChannelUser, Long> 
     List<ChannelUser> findByChannel(Channel channel);
 
     boolean existsByChannelAndUser(Channel channel, User user);
+
 }

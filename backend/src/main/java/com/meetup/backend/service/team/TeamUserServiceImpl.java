@@ -176,14 +176,15 @@ public class TeamUserServiceImpl implements TeamUserService {
         List<UserListInTeamResponseDto> userListInTeamResponseDtoList = new ArrayList<>();
         for (TeamUser teamUser : teamUserList) {
             User user = teamUser.getUser();
+            UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
             if (user.getNickname() == null) {
                 MattermostClient client = Client.getClient();
                 client.setAccessToken(mmSessionToken);
                 Response response = client.getUser(user.getId()).getRawResponse();
                 JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
-                user.setNickname(userObj.getString("nickname"));
+                userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
             }
-            userListInTeamResponseDtoList.add(UserListInTeamResponseDto.of(user));
+            userListInTeamResponseDtoList.add(userListInTeamResponseDto);
         }
         return userListInTeamResponseDtoList;
     }

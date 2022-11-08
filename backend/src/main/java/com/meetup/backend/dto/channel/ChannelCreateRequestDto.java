@@ -1,5 +1,6 @@
 package com.meetup.backend.dto.channel;
 
+import com.meetup.backend.entity.channel.ChannelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +28,7 @@ public class ChannelCreateRequestDto {
     private String name;
 
     @NotBlank
-    private String type;
+    private ChannelType type;
 
     List<String> inviteList;
 

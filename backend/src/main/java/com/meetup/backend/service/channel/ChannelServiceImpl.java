@@ -112,7 +112,7 @@ public class ChannelServiceImpl implements ChannelService {
         net.bis5.mattermost.model.Channel channel = new net.bis5.mattermost.model.Channel(
                 channelCreateRequestDto.getDisplayName(),
                 channelCreateRequestDto.getName().toLowerCase(),
-                net.bis5.mattermost.model.ChannelType.valueOf(channelCreateRequestDto.getType()),
+                net.bis5.mattermost.model.ChannelType.of(channelCreateRequestDto.getType().getCode()),
                 channelCreateRequestDto.getTeamId());
 
         Response response = client.createChannel(channel).getRawResponse();
@@ -127,6 +127,7 @@ public class ChannelServiceImpl implements ChannelService {
                 .displyName(resObj.getString("display_name"))
                 .build());
 
+        List<ChannelUser> channelUserList = new ArrayList<>();
         for (String inviteUserId : channelCreateRequestDto.getInviteList()) {
             client.addChannelMember(channelId, inviteUserId);
             User user = userRepository.findById(inviteUserId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
@@ -135,8 +136,10 @@ public class ChannelServiceImpl implements ChannelService {
                     .channel(channelResult)
                     .build();
 
-            channelUserRepository.save(channelUser);
+            channelUserList.add(channelUser);
+
         }
+        channelUserRepository.saveAll(channelUserList);
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         channelUserRepository.save(ChannelUser.builder().channel(channelResult).user(user).build());
