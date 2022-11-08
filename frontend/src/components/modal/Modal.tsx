@@ -7,7 +7,7 @@ import SingleSelect from '../common/SingleSelect';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
-import { isFulfilled } from '@reduxjs/toolkit';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
@@ -135,7 +135,7 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload();
+    // window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
@@ -145,6 +145,8 @@ const EventModal = () => {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
         handleToggleModal();
+      } else if ( isRejected(action) ) {
+        console.log(action)
       }
     }
   };
