@@ -289,8 +289,9 @@ const EventModal = () => {
               )}
             </div>
             <div className="mt-[40px] mb-[30px]">
-              <div className="text-s text-title font-bold">스케쥴 공개 설정</div>
+              <div className="text-s text-title font-bold">공개 설정</div>
               <Switch checked={checked} onChange={switchHandler} />
+              {checked ? <span className='text-title text-xs'>공개</span> : <span className='text-title text-xs'>비공개</span>}
             </div>
           </div>
           {myCalendar ? (
