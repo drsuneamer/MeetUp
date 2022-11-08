@@ -4,14 +4,13 @@ import { getNow } from '../utils/GetNow';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { getThisWeek } from '../utils/GetThisWeek';
 import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
-import { deleteEvent, setEventModalData } from '../stores/modules/events';
-import { setEventModalOpen, ModalSelector } from '../stores/modules/modal';
+import { setEventModalData } from '../stores/modules/events';
+import { setEventModalOpen } from '../stores/modules/modal';
 import { setDetailModalOpen } from '../stores/modules/modal';
-import { SelectedEvent } from '../types/events';
+import { SelectedEvent, tSchedule } from '../types/events';
 import { useSelector, useDispatch } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
 import {
-  scheduleSelector,
   myScheduleSelector,
   meetingFromMeSelector,
   meetingToMeSelector,
@@ -21,7 +20,6 @@ import {
 } from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
-import { tSchedule } from '../types/events';
 
 interface Week {
   name: string;
@@ -31,7 +29,6 @@ interface Week {
 const WeeklyCalendarBody = () => {
   const { currentDate } = useAppSelector((state) => state.dates);
   const { events } = useAppSelector((state) => state.events);
-  const { schedules } = useAppSelector((state) => state.schedules);
   const { holidays } = useSelector(holidaySelector);
   const mySchedule = useSelector(myScheduleSelector);
   const meetingToMe = useSelector(meetingToMeSelector);
@@ -47,22 +44,6 @@ const WeeklyCalendarBody = () => {
   const sunday = getSundayOfWeek();
 
   const thunkAPI = [userId, sunday];
-
-  // useEffect(() => {
-  //   for (let i = 0; i < mySchedule.length; i+=1) {
-  //     if (mySchedule[i].userId !== userId) {
-
-  //     }
-  //   }
-  // })
-
-  // const [myScheduleId, setMyScheduleId] = useState<boolean>(false);
-  // for (let i = 0; i < mySchedule.length; i+=1) {
-  //   if (mySchedule[i].userId !== userId) {
-  //     setMyScheduleId(true)
-  //     console.log(myScheduleId)
-  //     }
-  //   }
 
   useEffect(() => {
     async function fetchAndSetHolidays() {
@@ -189,7 +170,7 @@ const WeeklyCalendarBody = () => {
                   })
                 : null}
               {/* 나의 스케쥴(회색으로 블락) */}
-              {mySchedule.map((element, index) => {
+              {mySchedule.map((element:tSchedule, index:number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -233,7 +214,7 @@ const WeeklyCalendarBody = () => {
                 }
               })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
-              {meetingToMe.map((element, index) => {
+              {meetingToMe.map((element:tSchedule, index:number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -274,7 +255,7 @@ const WeeklyCalendarBody = () => {
                   );
               })}
               {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
-              {meetingFromMe.map((element, index) => {
+              {meetingFromMe.map((element:tSchedule, index:number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
