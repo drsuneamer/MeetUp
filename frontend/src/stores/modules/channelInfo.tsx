@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 /* 
   밋업 목록의 톱니바퀴를 눌렀을 때
   그 선택한 밋업의 id값을
-  edit-channel/{id} 페이지로 보내거나
+  edit-meetup/{id} 페이지로 보내거나
 
   밋업 목록의 인덱스를 눌렀을 때
   선택한 밋업의 title값을
