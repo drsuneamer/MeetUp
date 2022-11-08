@@ -51,6 +51,9 @@ public class MeetupServiceImpl implements MeetupService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
+        if (meetupRepository.existsByManagerAndChannel(user, Channel.builder().id(meetupRequestDto.getChannelId()).build())) {
+            throw new ApiException(ExceptionEnum.DUPLICATE_MEETUP);
+        }
         Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
         Meetup meetup = Meetup.builder()
