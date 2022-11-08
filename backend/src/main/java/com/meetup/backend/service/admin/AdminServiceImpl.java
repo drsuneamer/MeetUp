@@ -53,7 +53,7 @@ public class AdminServiceImpl implements AdminService {
             if (!userRepository.findById(id).orElseThrow(() -> new ApiException(USER_NOT_FOUND)).getRole().equals(RoleType.ROLE_Admin)) {
                 throw new ApiException(ADMIN_ACCESS_DENIED);
             }
-            return jwtTokenProvider.generateJwtToken(authentication);
+            return jwtTokenProvider.generateJwtToken(authentication, "admin");
         } catch (BadCredentialsException e) {
             throw new ApiException(ID_PWD_NOT_MATCHING);
         }
