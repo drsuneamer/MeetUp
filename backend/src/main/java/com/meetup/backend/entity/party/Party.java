@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 /**
  * created by myeongseok on 2022/10/25
+ * updated by seonmgin on 2022/11/08
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,4 +20,8 @@ public class Party extends BaseEntity {
     private Long id;
 
     private String name;
+
+    public Party(String name) {
+        this.name = name;
+    }
 }
