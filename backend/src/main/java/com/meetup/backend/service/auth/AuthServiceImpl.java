@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * created by seongmin on 2022/10/25
+ * updated by seongmin on 2022/11/08
  */
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final RedisUtil redisUtil;
+//    private final RedisUtil redisUtil;
 
     @Override
     public UserInfoDto getMyInfoSecret() {
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getMMSessionToken(String id) {
-        return redisUtil.getData(id);
+//        return redisUtil.getData(id);
+        return SecurityUtil.getCurrentMMSessionToken();
     }
 }
