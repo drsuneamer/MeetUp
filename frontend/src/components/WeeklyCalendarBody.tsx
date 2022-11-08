@@ -8,7 +8,7 @@ import { setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { setDetailModalOpen } from '../stores/modules/modal';
 import { SelectedEvent, tSchedule } from '../types/events';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
 import {
   myScheduleSelector,
@@ -35,7 +35,6 @@ const WeeklyCalendarBody = () => {
   const meetingFromMe = useSelector(meetingFromMeSelector);
 
   const dispatch = useAppDispatch();
-  const rDispatch = useDispatch();
 
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
@@ -45,9 +44,12 @@ const WeeklyCalendarBody = () => {
 
   const thunkAPI = [userId, sunday];
 
+  const scrollRef = useRef();
+
+  
   useEffect(() => {
     async function fetchAndSetHolidays() {
-      await rDispatch(fetchHolidays());
+      await dispatch(fetchHolidays());
     }
 
     // console.log('sunday of this week', getSundayOfWeek())
@@ -134,6 +136,7 @@ const WeeklyCalendarBody = () => {
   //   }
   // };
 
+
   return (
     <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
       <div className="flex flex-col h-fit">
@@ -212,6 +215,7 @@ const WeeklyCalendarBody = () => {
                     </div>
                   );
                 }
+                return null
               })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
               {meetingToMe.map((element:tSchedule, index:number) => {
@@ -253,6 +257,7 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
+                  return null
               })}
               {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
               {meetingFromMe.map((element:tSchedule, index:number) => {
@@ -282,6 +287,7 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
+                  return null
               })}
               {hours.map((hour, index) => {
                 return (
