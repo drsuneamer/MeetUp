@@ -13,6 +13,7 @@ import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
+import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
 const EventModal = () => {
   const channels = useAppSelector(alarmChannelSelector);

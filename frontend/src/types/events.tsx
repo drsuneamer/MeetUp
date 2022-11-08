@@ -38,16 +38,6 @@ export type tSchedule = {
 };
 
 export type tScheduleDetail = {
-  id: string;
-  start: string;
-  end: string;
-  title: string;
-  content: string;
-  userId: string;
-  userName: string;
-};
-
-export type tMeetingDetail = {
   id: number;
   start: string;
   end: string;
@@ -55,11 +45,23 @@ export type tMeetingDetail = {
   content: string;
   userId: string;
   userName: string;
-  userWebex: string;
-  meetupId: string;
-  meetupName: string;
-  meetupColor: string;
-  meetupAdminUserId: string;
-  meetupAdminUserName: string;
-  meetupAdminUserWebex: string;
+  myWebex: string;
+  diffWebex: string;
 };
+
+// export type tMeetingDetail = {
+//   id: number;
+//   start: string;
+//   end: string;
+//   title: string;
+//   content: string;
+//   userId: string;
+//   userName: string;
+//   userWebex: string;
+//   meetupId: string;
+//   meetupName: string;
+//   meetupColor: string;
+//   meetupAdminUserId: string;
+//   meetupAdminUserName: string;
+//   meetupAdminUserWebex: string;
+// };
