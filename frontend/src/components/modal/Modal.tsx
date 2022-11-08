@@ -8,11 +8,32 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addSchedule } from '../../stores/modules/schedules';
+import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
+<<<<<<< HEAD
 import Switch from '@mui/material/Switch';
+=======
+import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
+
+// interface ChannelOptionType {
+//   title: string;
+// }
+
+// const channels = [
+//   { title: '서울_1반_팀장채널'},
+//   { title: 'A101' },
+//   { title: 'A102' },
+//   { title: 'A103' },
+//   { title: 'A104' },
+//   { title: 'A105' },
+//   { title: 'A106' },
+//   { title: 'A107' },
+//   { title: 'A102_scrum' },
+//   { title: 'A102_jira_bot' },
+// ];
+>>>>>>> 24bd6140feba48be427c71f468707f73c5d74508
 
 const EventModal = () => {
   const channels = useAppSelector(alarmChannelSelector);
@@ -134,12 +155,17 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload()
+    // window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
     const action = await dispatch(addSchedule(parsedData));
     if (isFulfilled(action)) {
+<<<<<<< HEAD
+=======
+      const userId = localStorage.getItem('id');
+      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
+>>>>>>> 24bd6140feba48be427c71f468707f73c5d74508
       handleToggleModal();
     }
   };
@@ -148,6 +174,7 @@ const EventModal = () => {
     const action = await dispatch(addMeeting(parsedMeetingData));
     if (isFulfilled(action)) {
       handleToggleModal();
+      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
     }
   };
 
