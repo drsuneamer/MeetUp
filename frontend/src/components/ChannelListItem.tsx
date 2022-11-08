@@ -27,7 +27,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
     console.log(channel.id);
     console.log(typeof channel.id);
     dispatch(update({ id: channel.id }));
-    navigate(`/edit-channel/${channel.id}`);
+    navigate(`/edit-meetup/${channel.id}`);
   };
 
   return (
