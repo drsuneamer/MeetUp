@@ -15,11 +15,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { addSchedule } from '../../stores/modules/schedules';
 import { addMeeting, editMeetingDetail } from '../../stores/modules/schedules';
-import { alarmChannelSelector } from '../../stores/modules/channelAlarm';
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
 import { detailSelector, fetchMeetingDetail } from '../../stores/modules/schedules'; 
+import { find } from 'lodash';
 
 // interface ChannelOptionType {
 //   title: string;
@@ -39,7 +40,12 @@ import { detailSelector, fetchMeetingDetail } from '../../stores/modules/schedul
 // ];
 
 const EditModal = () => {
+
   const channels = useSelector(alarmChannelSelector);
+  // useEffect(() => {
+  //   dispatch(fetchAlarmChannelList());
+  // }, []);
+  
   // const editModalSelector = useSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
 
@@ -53,10 +59,47 @@ const EditModal = () => {
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
-  const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
+  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
+  const changeToTime = () => {
+    const newStartTime = {value:'', label:''}
+
+    const newTime = meetingDetail.start.slice(11,16)
+    const numberTime = Number(newTime.slice(0,2));
+    
+    const newValue = newTime.replace(':', '');
+    if (newValue[0] ==='0') {
+      const valueTime = newValue.slice(1,4);
+      newStartTime.value = valueTime
+    } else {
+      const valueTime = newValue
+      newStartTime.value = valueTime
+    }
+
+
+    if (numberTime < 12) {
+      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newStartTime.label = labelTime
+    } else if (numberTime === 12) {  
+      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newStartTime.label = labelTime
+    } else if (12 < numberTime) {
+      const hour = (numberTime - 12).toString();
+      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
+      newStartTime.label = labelTime
+    }
+    return newStartTime;
+  }
+  const test = changeToTime();
+  const [startTime, setStartTime] = useState<Option>({value:'', label:''})
+  
+
+  // const [startTime, setStartTime] = useState<Option>(changeToTime(meetingDetail.start));
+
+  // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
 
-  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
+  // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
 
 
   const newStartTime = () => {
@@ -110,6 +153,7 @@ const EditModal = () => {
   const onContentChange = (e: any) => {
     setContent(e.currentTarget.value);
   };
+
   const onAlarmChannel = (e: any, value: any) => {
     const alarmChannelValue = value.meetupId || undefined;
     setAlarmChannelId(alarmChannelValue);
@@ -132,15 +176,18 @@ const EditModal = () => {
   // };
 
  
-  
   useEffect(() => {
-    setStartTime(startSelectOptions[startTimeIndex]);
+    setStartTime(test);
+  },[meetingDetail])
 
-    if (startTimeIndex > endTimeIndex) {
-      setEndTimeIndex(startTimeIndex);
-      setEndTime(startSelectOptions[startTimeIndex]);
-    }
-  }, [startTimeIndex]);
+  // useEffect(() => {
+  //   setStartTime(startSelectOptions[startTimeIndex]);
+
+  //   if (startTimeIndex > endTimeIndex) {
+  //     setEndTimeIndex(startTimeIndex);
+  //     setEndTime(startSelectOptions[startTimeIndex]);
+  //   }
+  // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen());
@@ -183,6 +230,7 @@ const EditModal = () => {
     setEndTime(selected);
   }, []);
 
+
   const defaultProps = {
     options: channels.alarmChannels,
     getOptionLabel: (option: tAlarm) => option.displayName,
@@ -190,24 +238,20 @@ const EditModal = () => {
   const flatProps = {
     options: channels && channels.alarmChannels.map((option: any) => option.displayname),
   };
+
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
+  
+  // const params = useParams();
+  // const userId = params.userId;
 
-
-  const myScheduleId = useSelector(myScheduleSelector).map((schedule: tSchedule) => schedule.id);
-  const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
-  const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
-  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
+  
+  // const myScheduleId = useSelector(myScheduleSelector).map((schedule: tSchedule) => schedule.id);
+  // const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
+  // const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
+  // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
   // const handleSubmitToMe = () => {
-  //   console.log('되야만해..')
-  //   console.log(myScheduleId);
-  //   console.log(meetingToMeId);
-  //   console.log(meetingFromMeId);
-  //   console.log('===========');
-  //   console.log(scheduleDetail);
-  //   console.log(startTime);
-  //   console.log('========================')
-  //   console.log(scheduleDetailId);
+
   // }
 
   // useEffect(() => {
@@ -242,49 +286,79 @@ const EditModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
   };
-
-  const handleEditEvent = () => {
-    console.log('될까?');
-    console.log(changeToTime('2022-11-10T16:30:00'));
-    console.log('안된다')
+  
+  // const handleEditEvent = async () => {
+  //   console.log('수정?')
+  //   console.log(startTime);
+  //   const action = dispatch(editMeetingDetail(parsedMeetingData))
+  //   if (isFulfilled(action)) {
+  //     handleToggleModal();
+  //     dispatch(setDetailModalOpen('myMeeting'))
+  //   }
+  // }
+  const handleEditEvent =  () => {
+    console.log('수정?')
   }
 
-  const changeToTime = (a:string) => {
-    const newStartTime = {value:'', label:''}
+  // const changeToTime = () => {
+  //   const newStartTime = {value:'', label:''}
 
-    const newTime = a.slice(11,16)
-    const numberTime = Number(newTime.slice(0,2));
-    console.log(newTime);
-    const newValue = newTime.replace(':', '');
-    if (newValue[0] ==='0') {
-      const valueTime = newValue.slice(1,4);
-      newStartTime.value = valueTime
-    } else {
-      const valueTime = newValue
-      newStartTime.value = valueTime
-    }
+  //   const newTime = meetingDetail.start.slice(11,16)
+  //   const numberTime = Number(newTime.slice(0,2));
+    
+  //   const newValue = newTime.replace(':', '');
+  //   if (newValue[0] ==='0') {
+  //     const valueTime = newValue.slice(1,4);
+  //     newStartTime.value = valueTime
+  //   } else {
+  //     const valueTime = newValue
+  //     newStartTime.value = valueTime
+  //   }
 
 
-    if (numberTime < 12) {
-      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newStartTime.label = labelTime
-    } else if (numberTime === 12) {  
-      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newStartTime.label = labelTime
-    } else if (12 < numberTime) {
-      const hour = (numberTime - 12).toString();
-      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
-      newStartTime.label = labelTime
-    }
-    console.log('========================')
-    console.log(channels.alarmChannels);
-    return newStartTime;
-  }
+  //   if (numberTime < 12) {
+  //     const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+  //     newStartTime.label = labelTime
+  //   } else if (numberTime === 12) {  
+  //     const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+  //     newStartTime.label = labelTime
+  //   } else if (12 < numberTime) {
+  //     const hour = (numberTime - 12).toString();
+  //     const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
+  //     newStartTime.label = labelTime
+  //   }
+  //   // console.log('========================')
+  //   // console.log(channels.alarmChannels);
+  //   // console.log('========================')
+  //   // console.log(findAlarmChannel(1))
+  //   // console.log(meetingDetail.meetupId)
+  //   return newStartTime;
+  // }
+
+  // const test = changeToTime();
+  // const [foundChannel, setFoundChannel] = useState<tAlarm>()
+  // useEffect(()=> {
+  //   findAlarmChannel(meetingDetail.meetupId)
+  //   // const findAlarmChannel = (a:any) => {
+  //   //   const found = channels.alarmChannels.find(e => e.meetupId === a);
+  //   //   // const foundMeetupId = found!.meetupId
+  //   //   // test.meetupId = foundMeetupId
+  //   //   // const foundDisplayName = found!.displayName
+  //   //   // test.displayName = foundDisplayName
+  //   //   // setFoundChannel(findAlarmChannel(meetingDetail.meetupId))
+  //   //   console.log(foundChannel)
+  //   //   return foundChannel
+  //   // }
+  // })
+  // const findAlarmChannel = (a:any) => {
+  //   const found = channels.alarmChannels.find(e => e.meetupId === a);
+  //   console.log(found)
+  //   return found
+  // }
+
 
   // const test = {meetupId: 25, displayName: 'testtest'}
-  // const [test, setTest] = useState<string>;
-  // const test = channels.alarmChannels[1]
- 
+
   if ( meetingDetail ) {
 
     return (
@@ -313,7 +387,7 @@ const EditModal = () => {
               <input
                 type="text"
                 name="title"
-                value={meetingDetail.title}
+                defaultValue={meetingDetail.title}
                 onChange={onTitleChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -324,7 +398,7 @@ const EditModal = () => {
               </div>
               <input
                 type="date"
-                value={meetingDetail.start.slice(0, 10)}
+                defaultValue={meetingDetail.start.slice(0, 10)}
                 onChange={onDateChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -333,9 +407,9 @@ const EditModal = () => {
                   시간<span className="text-cancel">&#42;</span>
                 </div>
                 <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
-                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={changeToTime(meetingDetail.start)} />
+                  <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime}  />
                   <span className="mx-2">-</span>
-                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={changeToTime(meetingDetail.end)} />
+                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={startTime} />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -354,7 +428,7 @@ const EditModal = () => {
                     <input
                       type="text"
                       name="title"
-                      value={meetingDetail.content}
+                      defaultValue={meetingDetail.content}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />
@@ -364,13 +438,10 @@ const EditModal = () => {
                   <div>
                     <div className="text-s text-title font-bold">알림 보낼 채널</div>
                     <Autocomplete
-                      // value ={value}
-
                       onChange={onAlarmChannel}
                       className="w-[450px]"
                       ListboxProps={{ style: { maxHeight: '150px' } }}
                       {...defaultProps}
-                      // defaultValue = {test}
                       id="select-channel"
                       renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
                     />

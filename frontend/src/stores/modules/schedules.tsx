@@ -106,6 +106,7 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
 export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.post('/schedule', thunkAPI).then((res) => {
+      console.log(res)
       return res.data;
     });
     return res.data;
@@ -153,7 +154,7 @@ export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', asyn
 
 export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', async (thunkAPI: any) => {
   try {
-    const res = await axiosInstance.get('/meeting', thunkAPI).then((res) => {
+    const res = await axiosInstance.patch('/meeting', thunkAPI).then((res) => {
       console.log('my meeting detail edited: ', res.data);
       return res.data;
     });
