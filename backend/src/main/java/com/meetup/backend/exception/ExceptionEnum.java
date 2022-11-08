@@ -36,11 +36,11 @@ public enum ExceptionEnum {
 
     TOO_SHOR_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
 
-    TEAM_USER_NOT_FOUND(BAD_REQUEST, "40011", "유저가 속한 팀 정보를 찾을 수 없습니다."),
+    TEAM_USER_NOT_FOUND(BAD_REQUEST, "40012", "유저가 속한 팀 정보를 찾을 수 없습니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40101", "인증 정보가 없습니다."),
 
-    EMPTY_MM_CREDENTIAL(UNAUTHORIZED, "40101", "메터모스트 인증 정보가 없습니다."),
+    EMPTY_MM_CREDENTIAL(UNAUTHORIZED, "40102", "메터모스트 인증 정보가 없습니다."),
 
     ACCESS_DENIED(FORBIDDEN, "40301", "권한이 없습니다."),
 
