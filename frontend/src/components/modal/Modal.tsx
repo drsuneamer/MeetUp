@@ -13,10 +13,11 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addSchedule } from '../../stores/modules/schedules';
+import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
+import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
 // interface ChannelOptionType {
 //   title: string;
@@ -147,13 +148,14 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload()
+    // window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
     const action = await dispatch(addSchedule(parsedData));
     if (isFulfilled(action)) {
       const userId = localStorage.getItem('id');
+      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
       handleToggleModal();
     }
   };
@@ -164,6 +166,7 @@ const EventModal = () => {
       // const userId = localStorage.getItem('id')
       console.log(startTime);
       handleToggleModal();
+      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
     }
   };
 
