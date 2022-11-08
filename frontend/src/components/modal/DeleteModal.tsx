@@ -14,6 +14,7 @@ function DeleteModal() {
 
   const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
+  const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDeleteModalOpen('close'));
@@ -35,6 +36,11 @@ function DeleteModal() {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
     } else if (deleteModalType[1] === 'meeting') {
       dispatch(deleteMeetingDetail(meetingDetail.id));
+    } else if (deleteModalType[1] === 'meetup') {
+      axiosInstance.delete(`/meetup/${channelId}`).then((res) => {
+        navigate(`/calendar/${localStorage.getItem('id')}`);
+        handleToggleModal();
+      });
     }
   };
 
@@ -54,9 +60,16 @@ function DeleteModal() {
         {deleteModalType[0] === 'delete' ? (
           <div>
             <div className="flex flex-col justify-center items-center text-l font-bold mt-[30px]">
-              <div>
-                등록한 <span className="text-cancel">일정</span>을
-              </div>
+              {deleteModalType[1] === 'meetup' ? (
+                <div>
+                  선택한 <span className="text-cancel">밋업</span>을
+                </div>
+              ) : (
+                <div>
+                  등록한 <span className="text-cancel">일정</span>을
+                </div>
+              )}
+
               <div>
                 <span className="text-cancel">삭제</span>하시겠습니까?
               </div>
