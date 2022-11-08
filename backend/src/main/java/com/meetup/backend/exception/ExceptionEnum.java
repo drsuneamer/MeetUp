@@ -66,6 +66,8 @@ public enum ExceptionEnum {
 
     DUPLICATE_CHANNEL_NAME(CONFLICT, "40905", "기존에 있는 채널네임이 중복되어 새로운 채널생성이 불가능합니다."),
 
+    DUPLICATE_MEETUP(CONFLICT, "40906", "해당 채널은 이미 생성된 밋업이 있습니다."),
+
     MATTERMOST_EXCEPTION(INTERNAL_SERVER_ERROR, "50001", "매터모스트 에러, 잠시 후 다시 시도해주세요.");
 
     private final HttpStatus status;
