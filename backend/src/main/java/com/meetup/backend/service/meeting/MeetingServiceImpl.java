@@ -93,7 +93,7 @@ public class MeetingServiceImpl implements MeetingService {
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
         if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHOR_DURATION);
+            throw new ApiException(TOO_SHORT_DURATION);
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
@@ -168,7 +168,7 @@ public class MeetingServiceImpl implements MeetingService {
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
         if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHOR_DURATION);
+            throw new ApiException(TOO_SHORT_DURATION);
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);

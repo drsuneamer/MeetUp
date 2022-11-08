@@ -97,7 +97,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
         if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHOR_DURATION);
+            throw new ApiException(TOO_SHORT_DURATION);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
@@ -126,7 +126,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
         if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHOR_DURATION);
+            throw new ApiException(TOO_SHORT_DURATION);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);

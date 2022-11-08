@@ -34,7 +34,7 @@ public enum ExceptionEnum {
 
     MM_BAD_REQUEST(BAD_REQUEST, "40010", "잘못된 mattermost api 요청입니다."),
 
-    TOO_SHOR_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
+    TOO_SHORT_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
 
     TEAM_USER_NOT_FOUND(BAD_REQUEST, "40012", "유저가 속한 팀 정보를 찾을 수 없습니다."),
 
