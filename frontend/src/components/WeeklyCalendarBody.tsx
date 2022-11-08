@@ -16,7 +16,6 @@ import {
   meetingToMeSelector,
   fetchSchedule,
   fetchScheduleDetail,
-  fetchMeetingDetail,
 } from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
@@ -120,7 +119,7 @@ const WeeklyCalendarBody = () => {
       dispatch(fetchScheduleDetail(id));
       dispatch(setDetailModalOpen('myCalendar'));
     } else {
-      dispatch(fetchMeetingDetail(id));
+      dispatch(fetchScheduleDetail(id));
       dispatch(setDetailModalOpen('myMeeting'));
     }
   };

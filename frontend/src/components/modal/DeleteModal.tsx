@@ -12,7 +12,7 @@ function DeleteModal() {
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
 
-  const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
+  // const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
 
   const handleToggleModal = useCallback(() => {
@@ -34,7 +34,7 @@ function DeleteModal() {
     if (deleteModalType[1] === 'schedule') {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
     } else if (deleteModalType[1] === 'meeting') {
-      dispatch(deleteMeetingDetail(meetingDetail.id));
+      dispatch(deleteMeetingDetail(scheduleDetail.id));
     }
   };
 

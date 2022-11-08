@@ -13,13 +13,12 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addSchedule } from '../../stores/modules/schedules';
-import { addMeeting, editMeetingDetail } from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
 import { alarmChannelSelector } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
-import { detailSelector, fetchMeetingDetail } from '../../stores/modules/schedules'; 
+import { detailSelector } from '../../stores/modules/schedules'; 
 
 // interface ChannelOptionType {
 //   title: string;
@@ -55,9 +54,6 @@ const EditModal = () => {
 
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value;
-
-  const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-
 
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
@@ -96,8 +92,6 @@ const EditModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-
-  const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
@@ -192,12 +186,8 @@ const EditModal = () => {
   };
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
-
-  const myScheduleId = useSelector(myScheduleSelector).map((schedule: tSchedule) => schedule.id);
-  const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
-  const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
-  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
+  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
+  const scheduleDetailId = useAppSelector(detailSelector).scheduleModal.scheduleDetail.id;
   // const handleSubmitToMe = () => {
   //   console.log('되야만해..')
   //   console.log(myScheduleId);
@@ -210,28 +200,27 @@ const EditModal = () => {
   //   console.log(scheduleDetailId);
   // }
 
-  useEffect(() => {
-    console.log(scheduleDetailId)
-    
-    const loadData = async () => {
-      console.log('hello')
-      const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
-      console.log('2')
-      if (isFulfilled(action)) {
-        console.log('1')
-        console.log(action)
-        return action.payload;
-      }
-    };
-    loadData().then(() => {
-      setTitle(title)
-      setContent(content)
-      setDate(date)
-      setStartTime(startTime)
-      setEndTime(endTime)
-      setAlarmChannelId(alarmChannelId)
-    })
-  }, []);
+  // useEffect(() => {    
+  //   const loadData = async () => {
+  //     if (scheduleDetail ) {
+
+  //       const action = await dispatch(fetchScheduleDetail(scheduleDetail.id))
+  //       if (isFulfilled(action)) {
+  //         console.log(action)
+  //         return action.payload;
+  //       }
+  //     }
+  //     return null
+  //   };
+  //   loadData().then(() => {
+  //     setTitle(title)
+  //     setContent(content)
+  //     setDate(date)
+  //     setStartTime(startTime)
+  //     setEndTime(endTime)
+  //     setAlarmChannelId(alarmChannelId)
+  //   })
+  // }, []);
 
   
   const parsedMeetingData: any = {
@@ -255,7 +244,7 @@ const EditModal = () => {
   // }
   // const temp = {value: '030'}
   const changeToStartTime = () => {
-    const startTime = meetingDetail.start.slice(11,15);
+    const startTime = scheduleDetail.start.slice(11,15);
     const newTime = startTime.replace(':', '');
     if (newTime[0] === '0') {
       const valueTime = startTime.slice(1,4);
@@ -267,10 +256,10 @@ const EditModal = () => {
       return valueTime
     }
 
-    console.log(meetingDetail.start)
+    console.log(scheduleDetail.start)
   }
 
-  if ( meetingDetail ) {
+  if ( scheduleDetail ) {
 
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -298,7 +287,7 @@ const EditModal = () => {
               <input
                 type="text"
                 name="title"
-                value={meetingDetail.title}
+                value={scheduleDetail.title}
                 onChange={onTitleChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -309,7 +298,7 @@ const EditModal = () => {
               </div>
               <input
                 type="date"
-                value={meetingDetail.start.slice(0, 10)}
+                value={scheduleDetail.start.slice(0, 10)}
                 onChange={onDateChange}
                 className="mb-[0px] w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
               />
@@ -339,7 +328,7 @@ const EditModal = () => {
                     <input
                       type="text"
                       name="title"
-                      value={meetingDetail.content}
+                      value={scheduleDetail.content}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />

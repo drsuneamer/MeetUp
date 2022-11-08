@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { tSchedule, tScheduleDetail, tMeetingDetail } from '../../types/events';
+import { tSchedule, tScheduleDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 import { Navigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ type scheduleInitialState = {
   };
   scheduleModal: {
     scheduleDetail: tScheduleDetail; // 일정 등록 디테일
-    meetingDetail: tMeetingDetail; // 미팅 등록 디테일
+    // meetingDetail: tMeetingDetail; // 미팅 등록 디테일
   };
 };
 
@@ -65,15 +65,6 @@ const initialState: scheduleInitialState = {
   },
   scheduleModal: {
     scheduleDetail: {
-      id: '',
-      start: '',
-      end: '',
-      title: '',
-      content: '',
-      userId: '',
-      userName: '',
-    },
-    meetingDetail: {
       id: 0,
       start: '',
       end: '',
@@ -81,14 +72,25 @@ const initialState: scheduleInitialState = {
       content: '',
       userId: '',
       userName: '',
-      userWebex: '',
-      meetupId: '',
-      meetupName: '',
-      meetupColor: '',
-      meetupAdminUserId: '',
-      meetupAdminUserName: '',
-      meetupAdminUserWebex: '',
+      diffWebex: '',
+      myWebex: '',
     },
+    // meetingDetail: {
+    //   id: 0,
+    //   start: '',
+    //   end: '',
+    //   title: '',
+    //   content: '',
+    //   userId: '',
+    //   userName: '',
+    //   userWebex: '',
+    //   meetupId: '',
+    //   meetupName: '',
+    //   meetupColor: '',
+    //   meetupAdminUserId: '',
+    //   meetupAdminUserName: '',
+    //   meetupAdminUserWebex: '',
+    // },
   },
 };
 
@@ -131,19 +133,7 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      // console.log('my schedule detail fetched: ', res.data);
-      return res.data;
-    });
-    return res;
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-export const fetchMeetingDetail = createAsyncThunk('schedule/fetchMeeting', async (thunkAPI: any) => {
-  try {
-    const res = await axiosInstance.get(`/meeting/${thunkAPI}`).then((res) => {
-      // console.log('my meeting detail fetched: ', res.data);
+      console.log('my schedule detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -178,7 +168,7 @@ export const deleteMeetingDetail = createAsyncThunk('schedule/deleteMeetingDetai
   }
 });
 
-export const deleteScheduleDetail = createAsyncThunk('schedule/deleteScheduleDetail', async (thunkAPI: string) => {
+export const deleteScheduleDetail = createAsyncThunk('schedule/deleteScheduleDetail', async (thunkAPI: number) => {
   const scheduleId = thunkAPI;
   // console.log(scheduleId);
   try {
@@ -231,18 +221,6 @@ const scheduleSlice = createSlice({
       state.loading = false;
     },
 
-    // GET: 내 미팅 디테일 가져오기(모달)
-    [fetchMeetingDetail.pending.toString()]: (state) => {
-      state.loading = false;
-    },
-    [fetchMeetingDetail.fulfilled.toString()]: (state, action) => {
-      state.loading = true;
-      state.scheduleModal.meetingDetail = action.payload;
-    },
-    [fetchMeetingDetail.rejected.toString()]: (state) => {
-      state.loading = false;
-    },
-
     // GET: 내 스케쥴 전체 가져오기(달력)
     [fetchSchedule.pending.toString()]: (state) => {
       state.loading = false;
@@ -272,7 +250,7 @@ const scheduleSlice = createSlice({
     },
     [deleteMeetingDetail.fulfilled.toString()]: (state) => {
       state.loading = false;
-      state.scheduleModal.meetingDetail = initialState.scheduleModal.meetingDetail;
+      state.scheduleModal.scheduleDetail = initialState.scheduleModal.scheduleDetail;
       window.location.reload();
     },
     [deleteMeetingDetail.rejected.toString()]: (state) => {
