@@ -45,8 +45,6 @@ const WeeklyCalendarBody = () => {
   const thunkAPI = [userId, sunday];
 
   const scrollRef = useRef<HTMLDivElement>(null);
-  // scrollRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'})
-
   
   useEffect(() => {
     scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'end'})
@@ -195,7 +193,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(scheduleId, 'myCalendar');
                       }}
@@ -210,7 +208,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 `}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2 scrollbar-hide`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
                         {element.title}
@@ -238,7 +236,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
                       }}
@@ -253,7 +251,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[16px] border-solid border-background border-2 bg-line scrollbar-hide`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
                         비공개
@@ -280,7 +278,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2`}
+                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[16px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
                       }}
@@ -348,7 +346,7 @@ const WeeklyCalendarBody = () => {
                   <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer border-2 border-solid border-background`}
+                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer border-2 border-solid border-background scrollbar-hide`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >
                     <div className="mr-1">{title}</div>
