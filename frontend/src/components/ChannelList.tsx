@@ -25,7 +25,7 @@ function ChannelList() {
     <div className="ChannelList mb-[50px]">
       <div className="flex mb-[10px]">
         <h1 className="text-xl font-bold">밋업 관리하기</h1>
-        <Link to="/create-channel" className="flex flex-col justify-center">
+        <Link to="/create-meetup" className="flex flex-col justify-center">
           {/* plus button */}
           <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-7 h-7 text-point">
             <path
