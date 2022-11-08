@@ -13,12 +13,13 @@ import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
+import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
 const EventModal = () => {
   const channels = useAppSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
-  
+
   const dispatch = useAppDispatch();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
@@ -71,9 +72,9 @@ const EventModal = () => {
 
   const [checked, setChecked] = useState(false);
 
-  const switchHandler = (e:any) => {
-    setChecked(e.target.checked)
-  }
+  const switchHandler = (e: any) => {
+    setChecked(e.target.checked);
+  };
 
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
@@ -99,7 +100,7 @@ const EventModal = () => {
     content: null,
     start: newStartTime(),
     end: newEndTime(),
-    open: checked
+    open: checked,
   };
 
   const parsedMeetingData: any = {
@@ -108,7 +109,7 @@ const EventModal = () => {
     start: newStartTime(),
     end: newEndTime(),
     meetupId: alarmChannelId,
-    open: checked
+    open: checked,
   };
 
   useEffect(() => {
@@ -187,7 +188,6 @@ const EventModal = () => {
   useEffect(() => {
     dispatch(fetchAlarmChannelList(userId));
   }, []);
-
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -292,14 +292,11 @@ const EventModal = () => {
             <div className="mt-[40px] mb-[30px]">
               <div className="text-s text-title font-bold">공개 설정</div>
               <Switch checked={checked} onChange={switchHandler} />
-              {checked ? <span className='text-title text-xs'>공개</span> : <span className='text-title text-xs'>비공개</span>}
+              {checked ? <span className="text-title text-xs">공개</span> : <span className="text-title text-xs">비공개</span>}
             </div>
           </div>
           {myCalendar ? (
-            <button
-              onClick={handleSubmitToMe}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
-            >
+            <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
               밋업 불가시간 설정하기
             </button>
           ) : (
