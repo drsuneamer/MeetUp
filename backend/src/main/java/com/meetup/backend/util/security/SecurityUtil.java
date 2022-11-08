@@ -7,7 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * created by seongmin on 2022/10/20
  */
 public class SecurityUtil {
-    private SecurityUtil() { }
+    private SecurityUtil() {
+    }
 
     public static String getCurrentId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -15,7 +16,15 @@ public class SecurityUtil {
         if (authentication == null || authentication.getName() == null) {
             throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
-
         return authentication.getName();
+    }
+
+    public static String getCurrentMMSessionToken() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
+        }
+        return (String) authentication.getCredentials();
     }
 }

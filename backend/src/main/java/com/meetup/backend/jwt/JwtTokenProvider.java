@@ -1,6 +1,8 @@
 package com.meetup.backend.jwt;
 
 import com.meetup.backend.dto.token.TokenDto;
+import com.meetup.backend.exception.ApiException;
+import com.meetup.backend.exception.ExceptionEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -20,6 +22,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static com.meetup.backend.exception.ExceptionEnum.*;
+
 /**
  * created by seongmin on 2022/10/20
  */
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String MM_SESSION_TOKEN = "mmToken";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 11; // 11시간
 //    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24; // 24시간
@@ -38,7 +43,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto generateJwtToken(Authentication authentication) {
+    public TokenDto generateJwtToken(Authentication authentication, String mmSessionToken) {
 
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -54,6 +59,7 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim(MM_SESSION_TOKEN, mmSessionToken)
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -78,7 +84,10 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 //        log.info("claims = {}", claims.toString());
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new ApiException(EMPTY_CREDENTIAL);
+        }
+        if(claims.get(MM_SESSION_TOKEN) == null) {
+            throw new ApiException(EMPTY_MM_CREDENTIAL);
         }
 
         // claims 에서 권한 정보 가져오기
@@ -87,9 +96,10 @@ public class JwtTokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
+
         UserDetails principal = new User(claims.getSubject(), "", authorities);
 
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, claims.get(MM_SESSION_TOKEN), authorities);
     }
 
     private Claims parseClaims(String accessToken) {
