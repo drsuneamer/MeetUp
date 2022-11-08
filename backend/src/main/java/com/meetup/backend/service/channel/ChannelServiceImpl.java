@@ -105,6 +105,10 @@ public class ChannelServiceImpl implements ChannelService {
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
+        if (channelRepository.findByName(channelCreateRequestDto.getName()).isPresent()) {
+            throw new ApiException(ExceptionEnum.DUPLICATE_CHANNEL_NAME);
+        }
+
         net.bis5.mattermost.model.Channel channel = new net.bis5.mattermost.model.Channel(
                 channelCreateRequestDto.getDisplayName(),
                 channelCreateRequestDto.getName().toLowerCase(),
