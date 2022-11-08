@@ -32,12 +32,20 @@ public class PartyUser extends BaseEntity {
     private Party party;
 
     @Convert(converter = BooleanToYNConverter.class)
-    private boolean isLeader;
+    private boolean leader;
 
     @Builder
-    public PartyUser(User user, Party party, boolean isLeader) {
+    public PartyUser(User user, Party party, boolean leader) {
         this.user = user;
         this.party = party;
-        this.isLeader = isLeader;
+        this.leader = leader;
+    }
+
+    public void setParty(Party party) {
+        if (this.party != null) {
+            this.party.getPartyUsers().remove(this);
+        }
+        this.party = party;
+        party.getPartyUsers().add(this);
     }
 }

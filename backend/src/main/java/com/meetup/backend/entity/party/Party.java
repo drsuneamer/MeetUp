@@ -1,11 +1,14 @@
 package com.meetup.backend.entity.party;
 
 import com.meetup.backend.entity.BaseEntity;
+import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/25
@@ -21,7 +24,17 @@ public class Party extends BaseEntity {
 
     private String name;
 
+    @OneToMany(mappedBy = "party", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PartyUser> partyUsers = new ArrayList<>();
+
     public Party(String name) {
         this.name = name;
+    }
+
+    public void addPartyUser(PartyUser partyUser) {
+        partyUsers.add(partyUser);
+        if (partyUser.getParty() != this) {
+            partyUser.setParty(this);
+        }
     }
 }
