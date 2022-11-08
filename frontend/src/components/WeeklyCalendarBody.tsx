@@ -46,7 +46,7 @@ const WeeklyCalendarBody = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'end'})
+    scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'center'})
 
     async function fetchAndSetHolidays() {
       await dispatch(fetchHolidays());

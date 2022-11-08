@@ -11,7 +11,7 @@ import DeleteModal from '../components/modal/DeleteModal';
 const MeetUp = () => {
   return (
     <Layout>
-      <div className={'h-screen flex flex-col overflow-hidden '}>
+      <div className={'h-screen flex flex-col overflow-y-scroll scrollbar-hide '}>
         <main className={'flex flex-1'}>
           <div className={'flex basis-3/12'}>
             <Sidebar />
