@@ -82,17 +82,6 @@ public class ChannelServiceImpl implements ChannelService {
                                 .type(ChannelType.of(channelObj.getString("type")))
                                 .build()));
                 channelList.add(channel);
-//                if (channelRepository.findById(channelObj.getString("id")).isEmpty()) {
-//                    channel = Channel.builder()
-//                            .id(channelObj.getString("id"))
-//                            .team(team)
-//                            .name(channelObj.getString("name"))
-//                            .displyName(channelObj.getString("display_name"))
-//                            .type(ChannelType.of(channelObj.getString("type")))
-//                            .build();
-//                    channelRepository.save(channel);
-//                    channelList.add(channel);
-//                }
             }
         }
         return channelList;
@@ -105,7 +94,7 @@ public class ChannelServiceImpl implements ChannelService {
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
 
-        if (channelRepository.findByName(channelCreateRequestDto.getName()).isPresent()) {
+        if (channelRepository.existsByName(channelCreateRequestDto.getName())) {
             throw new ApiException(ExceptionEnum.DUPLICATE_CHANNEL_NAME);
         }
 
