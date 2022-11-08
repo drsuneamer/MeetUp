@@ -61,7 +61,7 @@ const EditModal = () => {
 
   const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
-  const changeToTime = () => {
+  const changeToStartTime = () => {
     const newStartTime = {value:'', label:''}
 
     const newTime = meetingDetail.start.slice(11,16)
@@ -90,9 +90,40 @@ const EditModal = () => {
     }
     return newStartTime;
   }
-  const test = changeToTime();
+
+  const changeToEndTime = () => {
+    const newEndTime = {value:'', label:''}
+
+    const newTime = meetingDetail.end.slice(11,16)
+    const numberTime = Number(newTime.slice(0,2));
+    
+    const newValue = newTime.replace(':', '');
+    if (newValue[0] ==='0') {
+      const valueTime = newValue.slice(1,4);
+      newEndTime.value = valueTime
+    } else {
+      const valueTime = newValue
+      newEndTime.value = valueTime
+    }
+
+
+    if (numberTime < 12) {
+      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newEndTime.label = labelTime
+    } else if (numberTime === 12) {  
+      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
+      newEndTime.label = labelTime
+    } else if (12 < numberTime) {
+      const hour = (numberTime - 12).toString();
+      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
+      newEndTime.label = labelTime
+    }
+    return newEndTime;
+  }
+  const test = changeToStartTime();
   const [startTime, setStartTime] = useState<Option>({value:'', label:''})
-  
+  const testTest = changeToEndTime();
+  const [endTime, setEndTime] = useState<Option>({value:'', label:''})
 
   // const [startTime, setStartTime] = useState<Option>(changeToTime(meetingDetail.start));
 
@@ -121,7 +152,7 @@ const EditModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
 
-  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
+  // const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
 
   const newEndTime = () => {
@@ -178,6 +209,7 @@ const EditModal = () => {
  
   useEffect(() => {
     setStartTime(test);
+    setEndTime(testTest)
   },[meetingDetail])
 
   // useEffect(() => {
@@ -350,12 +382,7 @@ const EditModal = () => {
   //   //   return foundChannel
   //   // }
   // })
-  // const findAlarmChannel = (a:any) => {
-  //   const found = channels.alarmChannels.find(e => e.meetupId === a);
-  //   console.log(found)
-  //   return found
-  // }
-
+ 
 
   // const test = {meetupId: 25, displayName: 'testtest'}
 
@@ -409,7 +436,7 @@ const EditModal = () => {
                 <div className="flex items-center w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point">
                   <SingleSelect className="text-sm w-[180px]" options={startSelectOptions} onChange={handleStartSelectClick} selected={startTime}  />
                   <span className="mx-2">-</span>
-                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={startTime} />
+                  <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
