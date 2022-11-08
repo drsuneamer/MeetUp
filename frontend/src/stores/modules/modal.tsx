@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { axiosInstance } from '../../components/auth/axiosConfig';
+import { createSlice } from '@reduxjs/toolkit';
 
 // 화면 위에 표시될 각 모달의 온오프 상태를 관리합니다.
 
@@ -11,7 +10,7 @@ type ModalInitialState = {
   modalType: string;
   memberListModalIsOpen: boolean; // 밋업 관리하기의 밋업 클릭 시 멤버 리스트 확인
   deleteModalIsOpen: boolean; // 로그아웃 / 삭제 확인 모달
-  deleteModalType: string;
+  deleteModalType: string[];
 };
 
 const initialState: ModalInitialState = {
@@ -22,19 +21,8 @@ const initialState: ModalInitialState = {
   modalType: '',
   memberListModalIsOpen: false,
   deleteModalIsOpen: false,
-  deleteModalType: '',
+  deleteModalType: [],
 };
-
-export const logout = createAsyncThunk('logout', async () => {
-  try {
-    const res = await axiosInstance.get('/meetup/calendar').then((res) => {
-      return res.status;
-    });
-    return res;
-  } catch (err) {
-    console.log(err);
-  }
-});
 
 const modalSlice = createSlice({
   name: 'modal',
@@ -60,17 +48,6 @@ const modalSlice = createSlice({
       state.deleteModalIsOpen = !state.deleteModalIsOpen;
       state.deleteModalType = action.payload;
     },
-  },
-  extraReducers: {
-    [logout.pending.toString()]: (state) => {},
-    [logout.fulfilled.toString()]: (state, action) => {
-      if (action.payload === 200) {
-        window.localStorage.clear();
-
-        window.location.reload();
-      }
-    },
-    [logout.rejected.toString()]: (state) => {},
   },
 });
 

@@ -1,48 +1,39 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '../../stores/ConfigHooks';
-import { logout, setDeleteModalOpen } from '../../stores/modules/modal';
-import { ModalSelector } from '../../stores/modules/modal';
+import { setDeleteModalOpen } from '../../stores/modules/modal';
 import { axiosInstance } from '../auth/axiosConfig';
-import { Link, useNavigate } from 'react-router-dom';
-
-// import { PropsWithChildren } from 'react';
-
-// interface ModalDefaultType {
-//   onClickToggleModal: () => void; // 함수 타입 정의
-// }
-
-// interface ModalList extends ModalDefaultType {
-//   props: string;
-//   submit: () => void;
-// }
-
-// interface LogoutModal extends ModalList {
-//   submit: () => void;
-// }
-
-// interface Modal {
-//   props: string;
-//   submit: () => void;
-// }
+import { useNavigate } from 'react-router-dom';
+import { deleteMeetingDetail, deleteScheduleDetail, detailSelector } from '../../stores/modules/schedules';
 
 function DeleteModal() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const props = 'delete';
-  // const deleteModalSelector = useAppSelector(ModalSelector);
-  // console.log(deleteModalSelector);
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
-  // console.log(deleteModalIsOpen);
-  // console.log(deleteModalType.type);
+
+  const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
+  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDeleteModalOpen({ title: '', function: '' }));
   }, [dispatch]);
 
-  const getLogout = () => {
-    dispatch(logout());
+  const logout = async () => {
+    await axiosInstance.get('/user/logout').then((res) => {
+      if (res.status === 200) {
+        window.localStorage.clear();
+        navigate('/');
+      }
+    });
+  };
+
+  const handleDelete = () => {
+    if (deleteModalType[1] === 'schedule') {
+      dispatch(deleteScheduleDetail(scheduleDetail.id));
+    } else if (deleteModalType[1] === 'meeting') {
+      dispatch(deleteMeetingDetail(meetingDetail.id));
+    }
   };
 
   return (
@@ -58,7 +49,7 @@ function DeleteModal() {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
-        {deleteModalType === 'delete' ? (
+        {deleteModalType[0] === 'delete' ? (
           <div>
             <div className="flex flex-col justify-center items-center text-l font-bold mt-[30px]">
               <div>
@@ -68,7 +59,10 @@ function DeleteModal() {
                 <span className="text-cancel">삭제</span>하시겠습니까?
               </div>
             </div>
-            <button className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button">
+            <button
+              onClick={handleDelete}
+              className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button"
+            >
               삭제하기
             </button>
           </div>
@@ -78,7 +72,7 @@ function DeleteModal() {
               <span className="text-cancel">로그아웃 </span>하시겠습니까?
             </div>
             <button
-              onClick={getLogout}
+              onClick={logout}
               className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background mt-[40px] rounded w-[350px] h-s drop-shadow-button"
             >
               로그아웃하기
