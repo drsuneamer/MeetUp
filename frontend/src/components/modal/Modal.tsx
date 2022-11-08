@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addSchedule } from '../../stores/modules/schedules';
+import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
@@ -134,7 +134,7 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload()
+    // window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
@@ -148,6 +148,7 @@ const EventModal = () => {
     const action = await dispatch(addMeeting(parsedMeetingData));
     if (isFulfilled(action)) {
       handleToggleModal();
+      dispatch(fetchSchedule([userId, getSundayOfWeek()]));
     }
   };
 

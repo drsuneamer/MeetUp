@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final RedisUtil redisUtil;
+//    private final RedisUtil redisUtil;
     private final PasswordEncoder passwordEncoder;
     private final TeamService teamService;
     private final ChannelService channelService;
@@ -112,9 +112,9 @@ public class UserServiceImpl implements UserService {
 
                 Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-                TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication);
+                TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication, mmToken);
 
-                redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
+//                redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
                 return LoginResponseDto.of(user, tokenDto);
             case 401:
                 throw new ApiException(EMPTY_CREDENTIAL);
@@ -125,16 +125,16 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void logout(String id) {
+    public void logout(String mmSessionToken) {
         MattermostClient client = Client.getClient();
-        client.setAccessToken(redisUtil.getData(id));
+        client.setAccessToken(mmSessionToken);
         int status = client.logout().getRawResponse().getStatus();
         if (status == 400) {
             throw new ApiException(BAD_REQUEST_LOGOUT);
         } else if (status == 403) {
             throw new ApiException(ACCESS_DENIED);
         }
-        redisUtil.deleteData(id);
+//        redisUtil.deleteData(id);
     }
 
     @Override
