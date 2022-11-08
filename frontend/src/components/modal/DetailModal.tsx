@@ -12,8 +12,11 @@ import { setEditModalOpen } from '../../stores/modules/modal';
 import DeleteModal from '../modal/DeleteModal';
 import { axiosInstance } from '../auth/axiosConfig';
 import { tSchedule } from '../../types/events';
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+
 const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
+
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const dispatch = useAppDispatch();
@@ -106,21 +109,22 @@ const DetailModal = () => {
   //   options: channels.map((option) => option.title),
   // };
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
-  
+
 
   const handleEditEvent = () => {
     dispatch(setEditModalOpen());
+    dispatch(fetchAlarmChannelList(meetingDetail.meetupAdminUserId))
     // dispatch(setDetailModalOpen());
     toggleModal();
     // console.log(detailModalIsOpen);
     // setModalType('edit Meeting')
     // console.log(editModalIsOpen);
     // console.log(editModalIsOpen);
-    console.log(meetingDetail)
-    console.log('안녕')
-    console.log(meetingDetail.start)
-    console.log('==============')
-    console.log(startTime)
+    // console.log(meetingDetail)
+    // console.log('안녕')
+    // console.log(meetingDetail.start)
+    // console.log('==============')
+    // console.log(startTime)
     // console.log(scheduleDetail.id)
    
     // console.log(modalType);
