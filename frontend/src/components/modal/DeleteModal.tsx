@@ -36,6 +36,11 @@ function DeleteModal() {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
     } else if (deleteModalType[1] === 'meeting') {
       dispatch(deleteMeetingDetail(scheduleDetail.id));
+    } else if (deleteModalType[1] === 'meetup') {
+      axiosInstance.delete(`/meetup/${channelId}`).then((res) => {
+        navigate(`/calendar/${localStorage.getItem('id')}`);
+        handleToggleModal();
+      });
     }
   };
 
