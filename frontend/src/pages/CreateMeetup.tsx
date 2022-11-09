@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
@@ -155,7 +155,7 @@ function CreateMeetup() {
           </div>
 
           <div className="z-30">
-            <div className="font-bold text-title cursor-default">달력에 표시할 색상 선택</div>
+            <div className="font-bold text-title cursor-default">달력에 표시할 색상</div>
             <div className="flex mt-2 mb-12">
               {/* 색상 선택 */}
               <div
@@ -166,7 +166,10 @@ function CreateMeetup() {
               {open ? (
                 <div className="flex absolute z-30 items-start">
                   <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
-                  <svg
+                  <button onClick={openColor} className="ml-1 bg-primary text-background px-2 text-xs rounded">
+                    선택
+                  </button>
+                  {/* <svg
                     onClick={openColor}
                     xmlns="https://www.w3.org/2000/svg"
                     fill="none"
@@ -176,7 +179,7 @@ function CreateMeetup() {
                     className="w-6 h-6 cursor-pointer ml-2"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
+                  </svg> */}
                 </div>
               ) : (
                 <div></div>

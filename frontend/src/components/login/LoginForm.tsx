@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { KeyboardEvent } from 'react';
 import LoginSpinner from '../common/LoginSpinner';
 
+import cryptoJs from 'crypto-js';
+
 function LoginForm() {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_BASE_URL;
@@ -18,6 +20,34 @@ function LoginForm() {
   const [cert, setCert] = useState(false);
   const [error, setError] = useState(false);
 
+  // 비밀번호 암호화
+  const secretKey: string = process.env.REACT_APP_CRYPTO_SECRET_KEY; // 32자리 비밀키
+  const iv = process.env.REACT_APP_CRYPTO_IV; // 16자리 iv
+
+  const encrypt = (text: string) => {
+    const cipher = cryptoJs.AES.encrypt(text, cryptoJs.enc.Utf8.parse(secretKey), {
+      iv: cryptoJs.enc.Utf8.parse(iv),
+      padding: cryptoJs.pad.Pkcs7,
+      mode: cryptoJs.mode.CBC,
+    });
+
+    return cipher.toString();
+  };
+
+  // 복호화
+  const decrypt = (encryptedText: string) => {
+    const decipher = cryptoJs.AES.decrypt(encryptedText, cryptoJs.enc.Utf8.parse(secretKey), {
+      iv: cryptoJs.enc.Utf8.parse(iv),
+      padding: cryptoJs.pad.Pkcs7,
+      mode: cryptoJs.mode.CBC,
+    });
+
+    return decipher.toString(cryptoJs.enc.Utf8);
+  };
+
+  // console.log(encrypt('sy'));
+
+  // console.log(decrypt('WTwpIlkAlCrfBnL6pbVZug=='));
   const notYet = () => {
     // 개인정보동의 미동의 상태로 로그인 버튼 누른 경우(alert 유발)
     setAlert(true);
@@ -33,7 +63,8 @@ function LoginForm() {
   };
 
   const onChangePW = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPW(e.target.value);
+    setPW(encrypt(e.target.value));
+    // setPW(e.target.value);
   };
 
   const enterLogin = (e: KeyboardEvent<HTMLInputElement>): void => {
@@ -71,6 +102,7 @@ function LoginForm() {
 
   // 로그인 API 연결
   const onSubmit = async () => {
+    console.log(login);
     // 로딩 화면으로 전환
     setLoad(true);
     await axios
