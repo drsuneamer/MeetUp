@@ -31,7 +31,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
-        open: false,
+        open: false, 
       },
     ],
     meetingToMe: [
@@ -74,6 +74,7 @@ const initialState: scheduleInitialState = {
       userName: '',
       diffWebex: '',
       myWebex: '',
+      meetupId: 0,
     },
     // meetingDetail: {
     //   id: 0,
@@ -148,6 +149,19 @@ export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', 
   try {
     // console.log('안된다');
     const res = await axiosInstance.patch('/meeting', thunkAPI).then((res) => {
+      // console.log('my meeting detail edited: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+export const editScheduleDetail = createAsyncThunk('schedule/editScheduleDetail', async (thunkAPI: any) => {
+  try {
+    // console.log('안된다');
+    const res = await axiosInstance.patch('/schedule', thunkAPI).then((res) => {
       // console.log('my meeting detail edited: ', res.data);
       return res.data;
     });

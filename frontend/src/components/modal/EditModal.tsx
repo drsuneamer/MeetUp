@@ -13,7 +13,7 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, editScheduleDetail,fetchScheduleDetail} from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
@@ -47,9 +47,9 @@ const EditModal = () => {
   const { editModalType } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [title, setTitle] = useState<string>(scheduleDetail.title);
+  const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
-  const [content, setContent] = useState<string>(scheduleDetail.content);
+  const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
@@ -171,11 +171,7 @@ const EditModal = () => {
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
-    if (e.currentTarget.value === null) {
-      setTitle(scheduleDetail.title);
-    } else {
-      setTitle(e.currentTarget.value);
-    }
+    setTitle(e.currentTarget.value);
   };
 
   const onDateChange = (e: any) => {
@@ -206,11 +202,16 @@ const EditModal = () => {
   //   meetupId: alarmChannelId,
   // };
 
+  useEffect(() => {
+    setTitle(scheduleDetail.title);
+    setContent(scheduleDetail.content);
+    setStartTime(start);
+    setEndTime(end);
+  
+  },[scheduleDetail])
 
   useEffect(() => {
-
-    setStartTime(start);
-    setEndTime(end)
+    setAlarmChannelId(scheduleDetail.meetupId);
   },[scheduleDetail])
 
   // useEffect(() => {
@@ -316,7 +317,14 @@ const EditModal = () => {
   //   })
   // }, []);
 
-  
+  const parsedData: any = {
+    title: title,
+    content: null,
+    start: newStartTime(),
+    end: newEndTime(),
+    open: checked,
+  };
+
   const parsedMeetingData: any = {
     id: scheduleDetailId,
     title: title,
@@ -324,25 +332,87 @@ const EditModal = () => {
     start: newStartTime(),
     end: newEndTime(),
     meetupId: alarmChannelId,
+    open: checked,
   };
 
-  // const handleEditEvent = async () => {
-  //   const action = await dispatch(editMeetingDetail(parsedMeetingData));
-  //   if (isFulfilled(action)) {
-  //     console.log()
-  //     handleToggleModal();
-  //     dispatch(setDetailModalOpen('?'));
-  //   }
-  // };
-  const handleEditEvent = () => {
-    // console.log(channels.alarmChannels)
-    // console.log(scheduleDetailId)
-    if ( parsedMeetingData.title !== '') {
-      console.log('parsedMeetingData:',parsedMeetingData)
+  const editSchedule = async () => {
+    if (!parsedData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else {
+      const action = await dispatch(editScheduleDetail(parsedData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        dispatch(setDetailModalOpen('?'));
+      }
     } 
-    console.log('====================')
-    console.log('scheduleDetail:', scheduleDetail)
-  } 
+
+  const editMeeting = async () => {
+    if (!parsedMeetingData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else {
+      const action = await dispatch(editMeetingDetail(parsedMeetingData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        dispatch(setDetailModalOpen('myMeeting'));
+      }
+    } 
+  };
+
+  };
+
+  const newTitle = () => {
+    if (parsedMeetingData.title === '') {
+      parsedMeetingData.title = scheduleDetail.title
+      console.log('--is in title?--')
+      console.log(parsedMeetingData.title)
+    } else {
+      parsedMeetingData.title = title
+      console.log('---else?---')
+      console.log(parsedMeetingData.title)
+    }
+  }
+  
+  const newContent = () => {
+    if (parsedMeetingData.content === '') {
+      parsedMeetingData.content = scheduleDetail.content
+      console.log('--is in content?--')
+      console.log(parsedMeetingData.content)
+    } else {
+      parsedMeetingData.content = content
+      console.log('---else?---')
+      console.log(parsedMeetingData.content)
+    }
+  }
+  // const handleEditEvent = () => {
+  //   // console.log(channels.alarmChannels)
+  //   // console.log(scheduleDetailId)
+  //   // if ( parsedMeetingData.title !== '') {
+  //   //   console.log('parsedMeetingData:',parsedMeetingData)
+  //   // } 
+  //   if (parsedMeetingData.title === '') {
+  //     parsedMeetingData.title = scheduleDetail.title
+  //     console.log('--is in title?--')
+  //     console.log(parsedMeetingData.title)
+  //   } else {
+  //     parsedMeetingData.title = title
+  //     console.log('---else?---')
+  //     console.log(parsedMeetingData.title)
+  //   }
+  //   if (parsedMeetingData.content === '') {
+  //     parsedMeetingData.content = scheduleDetail.content
+  //     console.log('--is in content?--')
+  //     console.log(parsedMeetingData.content)
+  //   } else {
+  //     parsedMeetingData.content = content
+  //     console.log('---else?---')
+  //     console.log(parsedMeetingData.content)
+  //   }
+  //   // console.log(parsedMeetingData)
+  //   // console.log('====================')
+  //   // console.log('scheduleDetail:', scheduleDetail)
+  // } 
   // const temp = {value: '030'}
   // const changeToStartTime = () => {
   //   const startTime = scheduleDetail.start.slice(11,15);
@@ -394,7 +464,8 @@ const EditModal = () => {
               <input
                 type="text"
                 name="title"
-                defaultValue={scheduleDetail.title}
+                // defaultValue={scheduleDetail.title}
+                value={title}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule'? 'mb-[40px]' : 'mb-[0px]'
@@ -472,14 +543,14 @@ const EditModal = () => {
             </div>
             {editModalType === 'schedule'? (
               <button
-                onClick={handleEditEvent}
+                onClick={editSchedule}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
               >
                 일정 등록하기
               </button>
               ) : (
               <button
-                onClick={handleEditEvent}
+                onClick={editMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
                 밋업 등록하기
