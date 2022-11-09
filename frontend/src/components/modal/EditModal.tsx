@@ -215,7 +215,7 @@ const EditModal = () => {
   // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
-    dispatch(setEditModalOpen('close'));
+    dispatch(setEditModalOpen('close''close'));
     window.location.reload();
   }, []);
 
