@@ -52,8 +52,7 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
-  if ( scheduleDetail ) {
-
+  if (scheduleDetail) {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
@@ -109,7 +108,7 @@ const DetailModal = () => {
                 <p className="w-[450px]">{scheduleDetail.content}</p>
               )}
             </div>
-  
+
             {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
               <div className="mt-[20px] flex flex-col">
                 <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
@@ -118,7 +117,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.userName}</p> 
+                        <p className="font-bold">{scheduleDetail.userName}</p>
                       </a>
                     </div>
                   </div>
@@ -126,7 +125,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{localStorage.getItem('nickname')}</p> 
+                        <p className="font-bold">{localStorage.getItem('nickname')}</p>
                       </a>
                     </div>
                   </div>
@@ -136,9 +135,9 @@ const DetailModal = () => {
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              {/* <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 밋업 수정하기
-              </button>
+              </button> */}
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
@@ -148,9 +147,9 @@ const DetailModal = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              {/* <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 일정 수정하기
-              </button>
+              </button> */}
               <button
                 onClick={deleteSchedule}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
@@ -169,7 +168,7 @@ const DetailModal = () => {
       </div>
     );
   }
-  return null
+  return null;
 };
 
 export default DetailModal;

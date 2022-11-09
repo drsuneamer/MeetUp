@@ -34,7 +34,7 @@ const calendarSlice = createSlice({
   reducers: {
     setUserNickName(state, action) {
       state.nickname = action.payload;
-      console.log('nickname', state.nickname);
+      // console.log('nickname', state.nickname);
     },
   },
   extraReducers: {

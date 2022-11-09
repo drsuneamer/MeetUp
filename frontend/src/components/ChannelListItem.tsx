@@ -24,8 +24,8 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
   // 톱니바퀴 버튼 누르면 -> 밋업 수정 페이지로 이동
   const goEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation(); // 버블링으로 인해 멤버 모달까지 함께 뜨는 것을 막음
-    console.log(channel.id);
-    console.log(typeof channel.id);
+    // console.log(channel.id);
+    // console.log(typeof channel.id);
     dispatch(update({ id: channel.id }));
     navigate(`/edit-meetup/${channel.id}`);
   };

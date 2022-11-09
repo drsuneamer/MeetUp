@@ -13,12 +13,12 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, fetchScheduleDetail } from '../../stores/modules/schedules';
 import { alarmChannelSelector } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
-import { detailSelector } from '../../stores/modules/schedules'; 
+import { detailSelector } from '../../stores/modules/schedules';
 
 // interface ChannelOptionType {
 //   title: string;
@@ -125,8 +125,6 @@ const EditModal = () => {
   //   meetupId: alarmChannelId,
   // };
 
- 
-  
   useEffect(() => {
     setStartTime(startSelectOptions[startTimeIndex]);
 
@@ -138,7 +136,7 @@ const EditModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen());
-    window.location.reload()
+    window.location.reload();
   }, []);
 
   // const handleSubmitToMe = async () => {
@@ -200,7 +198,7 @@ const EditModal = () => {
   //   console.log(scheduleDetailId);
   // }
 
-  // useEffect(() => {    
+  // useEffect(() => {
   //   const loadData = async () => {
   //     if (scheduleDetail ) {
 
@@ -222,7 +220,6 @@ const EditModal = () => {
   //   })
   // }, []);
 
-  
   const parsedMeetingData: any = {
     id: scheduleDetailId,
     title: title,
@@ -235,7 +232,7 @@ const EditModal = () => {
   const handleEditEvent = async () => {
     const action = await dispatch(editMeetingDetail(parsedMeetingData));
     if (isFulfilled(action)) {
-      handleToggleModal()
+      handleToggleModal();
       // dispatch(setDetailModalOpen());
     }
   };
@@ -244,23 +241,22 @@ const EditModal = () => {
   // }
   // const temp = {value: '030'}
   const changeToStartTime = () => {
-    const startTime = scheduleDetail.start.slice(11,15);
+    const startTime = scheduleDetail.start.slice(11, 15);
     const newTime = startTime.replace(':', '');
     if (newTime[0] === '0') {
-      const valueTime = startTime.slice(1,4);
+      const valueTime = startTime.slice(1, 4);
       // startTime.value = valueTime
-      return valueTime
+      return valueTime;
     } else {
       const valueTime = newTime;
       // startTime.value = valueTime
-      return valueTime
+      return valueTime;
     }
 
-    console.log(scheduleDetail.start)
-  }
+    // console.log(scheduleDetail.start)
+  };
 
-  if ( scheduleDetail ) {
-
+  if (scheduleDetail) {
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
@@ -282,7 +278,7 @@ const EditModal = () => {
           <div>
             <div className="mt-[20px]">
               <div className="text-s text-title font-bold">
-                  미팅명<span className="text-cancel">&#42;</span>
+                미팅명<span className="text-cancel">&#42;</span>
               </div>
               <input
                 type="text"
@@ -323,29 +319,29 @@ const EditModal = () => {
                 </div>
               </div>
               <div className="mt-[20px]">
-                  <div>
-                    <div className="text-s text-title font-bold">내용</div>
-                    <input
-                      type="text"
-                      name="title"
-                      value={scheduleDetail.content}
-                      onChange={onContentChange}
-                      className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
-                    />
-                  </div>
+                <div>
+                  <div className="text-s text-title font-bold">내용</div>
+                  <input
+                    type="text"
+                    name="title"
+                    value={scheduleDetail.content}
+                    onChange={onContentChange}
+                    className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
+                  />
+                </div>
               </div>
               <div className="mt-[20px]">
-                  <div>
-                    <div className="text-s text-title font-bold">알림 보낼 채널</div>
-                    <Autocomplete
-                      onChange={onAlarmChannel}
-                      className="w-[450px]"
-                      ListboxProps={{ style: { maxHeight: '150px' } }}
-                      {...defaultProps}
-                      id="select-channel"
-                      renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
-                    />
-                  </div>
+                <div>
+                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                  <Autocomplete
+                    onChange={onAlarmChannel}
+                    className="w-[450px]"
+                    ListboxProps={{ style: { maxHeight: '150px' } }}
+                    {...defaultProps}
+                    id="select-channel"
+                    renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
+                  />
+                </div>
               </div>
             </div>
             <button
@@ -360,7 +356,7 @@ const EditModal = () => {
           className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
           onClick={(e: React.MouseEvent) => {
             e.preventDefault();
-  
+
             if (handleToggleModal) {
               handleToggleModal();
             }
@@ -369,7 +365,7 @@ const EditModal = () => {
       </div>
     );
   }
-  return (<div></div>)
+  return <div></div>;
 };
 
 export default EditModal;

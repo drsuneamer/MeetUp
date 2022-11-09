@@ -6,7 +6,7 @@ import DeleteModal from '../modal/DeleteModal';
 
 function Header() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const userId = window.localStorage.getItem('id');
   const nickname = window.localStorage.getItem('nickname');
@@ -18,7 +18,6 @@ function Header() {
     window.location.reload();
   };
 
-
   // DeleteModal에 logout 타입으로 사용됨을 전달 + 모달 온오프
   const handleLogoutModal = () => {
     dispatch(setDeleteModalOpen('logout'));
@@ -28,15 +27,15 @@ function Header() {
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
       <DeleteModal />
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
-        <div className="flex items-center cursor-pointer"  onClick={navTo}>
+        <div className="flex items-center cursor-pointer" onClick={navTo}>
           {/* 로고 클릭 시 본인 달력으로 이동 */}
-            <img className="h-s ml-2" src={LogoImage} alt="logo" />
+          <img className="h-s ml-2" src={LogoImage} alt="logo" />
           {/* 현재 버전 명시 - 클릭시 깃북으로 이동*/}
           <button
             onClick={() => window.open('https://meetup.gitbook.io/meetup-docs/release-notes', '_blank')}
             className="drop-shadow-shadow mt-1 border-placeholder bg-title text-background px-3 rounded h-[30px] font-bold ml-3 text-s font-dots pb-1"
           >
-            v 1.1.0
+            v 1.1.1
           </button>
         </div>
 

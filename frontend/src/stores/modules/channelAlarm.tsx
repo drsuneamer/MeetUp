@@ -38,7 +38,7 @@ const AlarmChannelSlice = createSlice({
     },
     [fetchAlarmChannelList.rejected.toString()]: (state) => {
       state.loading = false;
-      console.log('rejected');
+      // console.log('rejected');
     },
   },
 });

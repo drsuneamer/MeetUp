@@ -84,7 +84,7 @@ const EventModal = () => {
 
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
-    console.log(date);
+    // console.log(date);
   };
 
   const onContentChange = (e: any) => {
@@ -146,7 +146,7 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         handleToggleModal();
       } else if (isRejected(action)) {
-        console.log(action);
+        // console.log(action);
       }
     }
   };

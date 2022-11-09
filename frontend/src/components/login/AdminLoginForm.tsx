@@ -23,7 +23,7 @@ function AdminLoginForm() {
 
   const onSubmit = async () => {
     await axios.post(`${baseURL}/admin/login`, login).then((res) => {
-      console.log(res);
+      // console.log(res);
       if (res.status === 200) {
         // 로그인 완료 시 localstorage에 accesstoken, nickname 저장 후 메인('/') 이동
         window.localStorage.setItem('accessToken', res.data.accessToken);
