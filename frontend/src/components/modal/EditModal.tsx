@@ -215,7 +215,7 @@ const EditModal = () => {
   // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
-    dispatch(setEditModalOpen());
+    dispatch(setEditModalOpen('close'));
     window.location.reload();
   }, []);
 
@@ -288,11 +288,6 @@ const EditModal = () => {
   // }
 
   // useEffect(() => {
-<<<<<<< HEAD
-  //   console.log(scheduleDetailId)
-    
-=======
->>>>>>> 3bcc64839b11f67e81d23c1fd58f682b022123b4
   //   const loadData = async () => {
   //     console.log('hello')
   //     const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
@@ -337,23 +332,21 @@ const EditModal = () => {
   //   console.log(parsedMeetingData)
   // }
   // const temp = {value: '030'}
-  const changeToStartTime = () => {
-    const startTime = scheduleDetail.start.slice(11,15);
-    const newTime = startTime.replace(':', '');
-    if (newTime[0] === '0') {
-      const valueTime = startTime.slice(1,4);
-      // startTime.value = valueTime
-      return valueTime
-    } else {
-      const valueTime = newTime;
-      // startTime.value = valueTime
-      return valueTime
-    }
+  // const changeToStartTime = () => {
+  //   const startTime = scheduleDetail.start.slice(11,15);
+  //   const newTime = startTime.replace(':', '');
+  //   if (newTime[0] === '0') {
+  //     const valueTime = startTime.slice(1,4);
+  //     // startTime.value = valueTime
+  //     return valueTime
+  //   } else {
+  //     const valueTime = newTime;
+  //     // startTime.value = valueTime
+  //     return valueTime
+  //   }
 
-    console.log(scheduleDetail.start)
-  }
-
-  if ( scheduleDetail ) {
+  //   console.log(scheduleDetail.start)
+  // }
 
   if (scheduleDetail) {
     return (
