@@ -77,14 +77,18 @@ const Header = () => {
       <header className="flex flex-col relative items-center px-4 justify-center w-full h-[80px] mt-[50px]">
         <img src={webexIcon} alt="webex-icon" className="absolute left-0 w-9 cursor-pointer" onClick={handleWebexModal} />
         {myCalendar ? (
-          <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 캘린더</div>
+          <div className="absolute left-10  bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 캘린더</div>
         ) : (
           <>
-            <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">{nickname}의 캘린더</div>
-            <a href={url} className='absolute right-3 top-6 text-title font-semibold cursor-pointer'>🗓️내 캘린더로 돌아가기</a>
+            <div className="absolute left-10 bg-point w-[27%] text-center py-1 px-4 drop-shadow-button rounded text-background truncate">
+              {nickname}의 캘린더
+            </div>
+            <a href={url} className="absolute right-3 top-6 text-title font-semibold cursor-pointer">
+              🗓️내 캘린더로 돌아가기
+            </a>
           </>
         )}
-        
+
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />
