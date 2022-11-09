@@ -15,7 +15,7 @@ const initialState: channelAlarmInitialState = {
 export const fetchAlarmChannelList = createAsyncThunk('meeting', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/meeting/channel/${thunkAPI}`).then((res) => {
-      //   console.log('alarm channel data fetched: ', res.data);
+        // console.log('alarm channel data fetched: ', res.data);
       return res.data;
     });
     return res;

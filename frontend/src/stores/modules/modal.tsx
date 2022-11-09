@@ -6,6 +6,7 @@ type ModalInitialState = {
   eventModalIsOpen: boolean;
   detailModalIsOpen: boolean;
   editModalIsOpen: boolean;
+  editModalType: string;
   webexModalIsOpen: boolean; // 웹엑스 로고 누르면 링크로 이동하는 모달 확인
   modalType: string;
   memberListModalIsOpen: boolean; // 밋업 관리하기의 밋업 클릭 시 멤버 리스트 확인
@@ -17,6 +18,7 @@ const initialState: ModalInitialState = {
   eventModalIsOpen: false,
   detailModalIsOpen: false,
   editModalIsOpen: false,
+  editModalType: '',
   webexModalIsOpen: false,
   modalType: '',
   memberListModalIsOpen: false,
@@ -35,8 +37,9 @@ const modalSlice = createSlice({
       state.detailModalIsOpen = !state.detailModalIsOpen;
       state.modalType = action.payload;
     },
-    setEditModalOpen: (state) => {
+    setEditModalOpen: (state,action) => {
       state.editModalIsOpen = !state.editModalIsOpen;
+      state.editModalType = action.payload;
     },
     setWebexModalOpen: (state) => {
       state.webexModalIsOpen = !state.webexModalIsOpen;

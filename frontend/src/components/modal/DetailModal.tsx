@@ -14,9 +14,13 @@ import { axiosInstance } from '../auth/axiosConfig';
 import { tSchedule } from '../../types/events';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
 
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+
 const DetailModal = () => {
   const dispatch = useAppDispatch();
   const detailModalSelector = useSelector(ModalSelector);
+  const { editModalType } = useAppSelector((state) => state.modal);
+
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
 
@@ -37,11 +41,74 @@ const DetailModal = () => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  const handleEditEvent = () => {
-    dispatch(setEditModalOpen());
-    handleToggleModal();
-  };
+  // const handleSubmit = () => {
+  //   const newEvent: NewEvent = {
+  //     date,
+  //     eventDetail: {
+  //       title: title !== '' ? title : '제목 없음',
+  //       start: startTime.value,
+  //       end: endTime.value,
+  //     },
+  //   };
 
+  //   dispatch(addEvent(newEvent));
+  //   handleToggleModal();
+  //   handleResetInput();
+  // };
+
+  // const handleResetInput = useCallback(() => {
+  //   setTitle('');
+  //   setDate(getStringDateFormat(new Date()));
+  //   setStartTime(startSelectOptions[0]);
+  //   setStartTimeIndex(0);
+  //   setEndTime(endSelectOptions[0]);
+  //   setEndTimeIndex(0);
+  // }, []);
+
+  // const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
+  //   const i = index as number;
+  //   setStartTimeIndex(i);
+  //   setStartTime(selected);
+  // }, []);
+
+  // const handleEndSelectClick = useCallback((selected: Option, index?: number) => {
+  //   setEndTimeIndex(index as number);
+  //   setEndTime(selected);
+  // }, []);
+
+  // const defaultProps = {
+  //   options: channels,
+  //   getOptionLabel: (option: ChannelOptionType) => option.title,
+  // };
+  // const flatProps = {
+  //   options: channels.map((option) => option.title),
+  // };
+  // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
+  
+
+  const editMeeting = () => {
+    dispatch(setEditModalOpen('meeting'));
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
+    // dispatch(setDetailModalOpen());
+    handleToggleModal();
+    // console.log(detailModalIsOpen);
+    // setModalType('edit Meeting')
+    // console.log(editModalIsOpen);
+    // console.log(editModalIsOpen);
+    // console.log(meetingDetail)
+    // console.log('안녕')
+    // console.log(meetingDetail.start)
+    // console.log(scheduleDetail.id)
+   
+    // console.log(modalType);
+  }
+  // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
+
+  const editSchedule = () => {
+    dispatch(setEditModalOpen('schedule'));
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
+    handleToggleModal(); 
+  }
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
@@ -52,7 +119,8 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
-  if (scheduleDetail) {
+  if ( scheduleDetail ) {
+
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
@@ -108,7 +176,7 @@ const DetailModal = () => {
                 <p className="w-[450px]">{scheduleDetail.content}</p>
               )}
             </div>
-
+  
             {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
               <div className="mt-[20px] flex flex-col">
                 <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
@@ -117,7 +185,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.userName}</p>
+                        <p className="font-bold">{scheduleDetail.userName}</p> 
                       </a>
                     </div>
                   </div>
@@ -125,7 +193,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{localStorage.getItem('nickname')}</p>
+                        <p className="font-bold">{localStorage.getItem('nickname')}</p> 
                       </a>
                     </div>
                   </div>
@@ -135,9 +203,9 @@ const DetailModal = () => {
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              {/* <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 밋업 수정하기
-              </button> */}
+              </button>
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
@@ -147,11 +215,11 @@ const DetailModal = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              {/* <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button onClick={editSchedule} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 일정 수정하기
-              </button> */}
+              </button>
               <button
-                onClick={deleteSchedule}
+                onClick={deleteSchedule} 
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
               >
                 일정 삭제하기
@@ -168,7 +236,7 @@ const DetailModal = () => {
       </div>
     );
   }
-  return null;
+  return null
 };
 
 export default DetailModal;
