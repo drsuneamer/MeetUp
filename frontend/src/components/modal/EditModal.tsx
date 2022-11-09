@@ -206,7 +206,9 @@ const EditModal = () => {
   //   meetupId: alarmChannelId,
   // };
 
+
   useEffect(() => {
+
     setStartTime(start);
     setEndTime(end)
   },[scheduleDetail])
@@ -335,10 +337,12 @@ const EditModal = () => {
   const handleEditEvent = () => {
     // console.log(channels.alarmChannels)
     // console.log(scheduleDetailId)
-    console.log('parsedMeetingData:',parsedMeetingData)
+    if ( parsedMeetingData.title !== '') {
+      console.log('parsedMeetingData:',parsedMeetingData)
+    } 
     console.log('====================')
     console.log('scheduleDetail:', scheduleDetail)
-  }
+  } 
   // const temp = {value: '030'}
   // const changeToStartTime = () => {
   //   const startTime = scheduleDetail.start.slice(11,15);
