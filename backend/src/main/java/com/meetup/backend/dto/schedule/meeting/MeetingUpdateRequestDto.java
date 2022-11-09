@@ -1,21 +1,19 @@
 package com.meetup.backend.dto.schedule.meeting;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
  * created by myeongseok on 2022/10/25
- * updated vy seongmin on 2022/11/06
+ * updated vy seongmin on 2022/11/09
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class MeetingUpdateRequestDto {
     @NotNull
     private Long Id;
@@ -30,6 +28,9 @@ public class MeetingUpdateRequestDto {
     private String title;
 
     private String content;
+
+    @NotNull(message = "미팅의 meetupId는 필수 입니다.")
+    private Long meetupId;
 
     private boolean open;
 }
