@@ -19,6 +19,7 @@ import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/module
 const DetailModal = () => {
   const dispatch = useAppDispatch();
   const detailModalSelector = useSelector(ModalSelector);
+  const { editModalType } = useAppSelector((state) => state.modal);
 
   const { detailModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
@@ -85,8 +86,8 @@ const DetailModal = () => {
   // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
   
 
-  const handleEditEvent = () => {
-    dispatch(setEditModalOpen());
+  const editMeeting = () => {
+    dispatch(setEditModalOpen('meeting'));
     dispatch(fetchAlarmChannelList(scheduleDetail.userId))
     // dispatch(setDetailModalOpen());
     handleToggleModal();
@@ -103,6 +104,11 @@ const DetailModal = () => {
   }
   // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
 
+  const editSchedule = () => {
+    dispatch(setEditModalOpen('schedule'));
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
+    handleToggleModal(); 
+  }
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
@@ -197,7 +203,7 @@ const DetailModal = () => {
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 밋업 수정하기
               </button>
               <button
@@ -209,7 +215,7 @@ const DetailModal = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={handleEditEvent} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button onClick={editSchedule} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 일정 수정하기
               </button>
               <button
