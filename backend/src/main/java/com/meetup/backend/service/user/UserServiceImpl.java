@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService {
                             .teamId(teamId)
                             .displayName("MeetUp! 테스트용 채널")
                             .type(ChannelType.Open)
-                            .name("meetup_test_channel")
+                            .name("meetup__test_channel")
                             .inviteList(inviteList)
                             .build());
                 }
