@@ -158,6 +158,19 @@ export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', 
   }
 });
 
+export const editScheduleDetail = createAsyncThunk('schedule/editScheduleDetail', async (thunkAPI: any) => {
+  try {
+    // console.log('안된다');
+    const res = await axiosInstance.patch('/schedule', thunkAPI).then((res) => {
+      // console.log('my meeting detail edited: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 export const deleteMeetingDetail = createAsyncThunk('schedule/deleteMeetingDetail', async (thunkAPI: number) => {
   const meetingId = thunkAPI;
   // console.log(meetingId);

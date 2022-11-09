@@ -13,7 +13,7 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, editScheduleDetail,fetchScheduleDetail} from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
@@ -317,7 +317,14 @@ const EditModal = () => {
   //   })
   // }, []);
 
-  
+  const parsedData: any = {
+    title: title,
+    content: null,
+    start: newStartTime(),
+    end: newEndTime(),
+    open: checked,
+  };
+
   const parsedMeetingData: any = {
     id: scheduleDetailId,
     title: title,
@@ -328,7 +335,19 @@ const EditModal = () => {
     open: checked,
   };
 
-  const handleEditEvent = async () => {
+  const editSchedule = async () => {
+    if (!parsedData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else {
+      const action = await dispatch(editScheduleDetail(parsedData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        dispatch(setDetailModalOpen('?'));
+      }
+    } 
+
+  const editMeeting = async () => {
     if (!parsedMeetingData.title) {
       alert('제목은 필수 입력사항입니다');
     } else {
@@ -340,9 +359,8 @@ const EditModal = () => {
       }
     } 
   };
-  // const handleEditEvent = () => {
-  //   console.log(parsedMeetingData)
-  // }
+
+  };
 
   const newTitle = () => {
     if (parsedMeetingData.title === '') {
@@ -525,14 +543,14 @@ const EditModal = () => {
             </div>
             {editModalType === 'schedule'? (
               <button
-                onClick={handleEditEvent}
+                onClick={editSchedule}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
               >
                 일정 등록하기
               </button>
               ) : (
               <button
-                onClick={handleEditEvent}
+                onClick={editMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
                 밋업 등록하기
