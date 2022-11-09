@@ -348,6 +348,7 @@ const EditModal = () => {
   //   console.log(scheduleDetail.start)
   // }
 
+  
   if (scheduleDetail) {
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
