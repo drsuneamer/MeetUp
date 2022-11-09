@@ -212,34 +212,6 @@ public class UserServiceImpl implements UserService {
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
         channelUserService.registerChannelUserFromMattermost(mmToken, channels);
-
-        if (user.getRole().equals(ROLE_Consultant)) {
-            for (Team team : teams) {
-                if (!team.getDisplayName().contains("자율"))
-                    continue;
-                String teamId = team.getId();
-                for (Channel channel : channelRepository.findByTeam(Team.builder().id(teamId).build())) {
-                    if (!channel.getName().equals("town-square"))
-                        continue;
-                    String channelId = channel.getId();
-                    List<ChannelUser> channelUserList = channelUserRepository.findByChannel(Channel.builder().id(channelId).build());
-                    List<String> inviteList = new ArrayList<>();
-                    for (ChannelUser channelUser : channelUserList) {
-                        inviteList.add(channelUser.getUser().getId());
-                    }
-                    if (!channelRepository.existsByName("meetup__test_channel")) {
-                        channelService.createNewChannel(user.getId(), mmToken, ChannelCreateRequestDto.builder()
-                                .teamId(teamId)
-                                .displayName("MeetUp! 테스트용 채널")
-                                .type(ChannelType.Open)
-                                .name("meetup__test_channel")
-                                .inviteList(inviteList)
-                                .build());
-                    }
-                }
-            }
-        }
-
     }
 
     @Override
