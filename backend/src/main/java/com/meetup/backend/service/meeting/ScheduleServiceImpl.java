@@ -101,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        if (!allScheduleResponseDto.isPossibleRegiser(start, end))
+        if (!allScheduleResponseDto.isPossibleRegister(start, end))
             throw new ApiException(ExceptionEnum.DUPLICATE_INSERT_DATETIME);
 
         String title = scheduleRequestDto.getTitle();
@@ -130,7 +130,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        if (!allScheduleResponseDto.isPossibleRegiser(start, end))
+        if (!allScheduleResponseDto.isPossibleRegister(start, end))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
         schedule.update(scheduleUpdateRequestDto);

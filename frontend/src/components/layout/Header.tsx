@@ -35,7 +35,7 @@ function Header() {
             onClick={() => window.open('https://meetup.gitbook.io/meetup-docs/release-notes', '_blank')}
             className="drop-shadow-shadow mt-1 border-placeholder bg-title text-background px-3 rounded h-[30px] font-bold ml-3 text-s font-dots pb-1"
           >
-            v 1.1.1
+            v 1.1.2
           </button>
         </div>
 

@@ -15,12 +15,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class AllScheduleResponseDto {
 
 
     private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
+
     // oner가 me한테 신청한게 안보임
     public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, String me) {
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
@@ -114,6 +116,14 @@ public class AllScheduleResponseDto {
         public MeetingResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end) {
             super(id, open, start, end);
         }
+
+        @Override
+        public String toString() {
+            return "MeetingResponse{" +
+                    "meetupName='" + meetupName + '\'' +
+                    ", meetupColor='" + meetupColor + '\'' +
+                    super.toString();
+        }
     }
 
     @Getter
@@ -151,20 +161,66 @@ public class AllScheduleResponseDto {
             this.start = start;
             this.end = end;
         }
+
+        @Override
+        public String toString() {
+            return "ScheduleResponse{" +
+                    "id=" + id +
+                    ", open=" + open +
+                    ", start=" + start +
+                    ", end=" + end +
+                    ", title='" + title + '\'' +
+                    ", content='" + content + '\'' +
+                    ", userId='" + userId + '\'' +
+                    ", userName='" + userName + '\'' +
+                    '}';
+        }
     }
 
-    public boolean isPossibleRegiser(LocalDateTime from, LocalDateTime to) {
+    public boolean isPossibleRegister(LocalDateTime from, LocalDateTime to) {
         for (MeetingResponse meetingResponse : meetingFromMe) {
-            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to))
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to)) {
                 return false;
+            }
         }
         for (MeetingResponse meetingResponse : meetingToMe) {
-            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to))
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to)) {
                 return false;
+            }
         }
         for (ScheduleResponse ScheduleResponse : scheduleResponseList) {
-            if (isDuplicated(ScheduleResponse.getStart(), ScheduleResponse.getEnd(), from, to))
+            if (isDuplicated(ScheduleResponse.getStart(), ScheduleResponse.getEnd(), from, to)) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isPossibleRegister(LocalDateTime from, LocalDateTime to, Long updateId) {
+        for (MeetingResponse meetingResponse : meetingFromMe) {
+            if (meetingResponse.getId().equals(updateId)) {
+                continue;
+            }
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to)) {
+                return false;
+
+            }
+        }
+        for (MeetingResponse meetingResponse : meetingToMe) {
+            if (meetingResponse.getId().equals(updateId)) {
+                continue;
+            }
+            if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to)) {
+                return false;
+            }
+        }
+        for (ScheduleResponse ScheduleResponse : scheduleResponseList) {
+            if (ScheduleResponse.getId().equals(updateId)) {
+                continue;
+            }
+            if (isDuplicated(ScheduleResponse.getStart(), ScheduleResponse.getEnd(), from, to)) {
+                return false;
+            }
         }
         return true;
     }

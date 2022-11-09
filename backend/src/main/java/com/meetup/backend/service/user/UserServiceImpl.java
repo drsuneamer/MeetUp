@@ -1,14 +1,33 @@
 package com.meetup.backend.service.user;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.channel.ChannelType;
+import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.jwt.JwtTokenProvider;
+import com.meetup.backend.repository.channel.ChannelRepository;
+import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.channel.ChannelService;
@@ -23,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -31,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +60,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/09
  */
 @Service
 @RequiredArgsConstructor
@@ -48,6 +69,8 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ChannelRepository channelRepository;
+    private final ChannelUserRepository channelUserRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     //    private final RedisUtil redisUtil;
@@ -58,9 +81,29 @@ public class UserServiceImpl implements UserService {
     private final ChannelUserService channelUserService;
     private final WebhookNoticeService webhookNoticeService;
 
+    @Value("${crypto.secret}")
+    private String secretKey;
+
+    @Value("${crypto.iv}")
+    private String iv;
+
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(secretKey.getBytes(), "AES"),
+                    new IvParameterSpec(iv.getBytes()));
+
+            String originPwd = new String(cipher.doFinal(Base64.getDecoder().decode(requestDto.getPassword().getBytes("UTF-8"))));
+            requestDto.setPassword(originPwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new ApiException(PASSWORD_DECRYPTION_ERROR);
+        }
+
         MattermostClient client = Client.getClient();
         Response mmLoginResponse = client.login(requestDto.getId(), requestDto.getPassword()).getRawResponse();
         switch (mmLoginResponse.getStatus()) {
