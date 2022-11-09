@@ -1,5 +1,18 @@
 package com.meetup.backend.service.user;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
@@ -29,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -46,7 +60,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/09
  */
 @Service
 @RequiredArgsConstructor
@@ -67,9 +81,29 @@ public class UserServiceImpl implements UserService {
     private final ChannelUserService channelUserService;
     private final WebhookNoticeService webhookNoticeService;
 
+    @Value("${crypto.secret}")
+    private final String secretKey;
+
+    @Value("${crypto.iv}")
+    private final String iv;
+
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(secretKey.getBytes(), "AES"),
+                    new IvParameterSpec(iv.getBytes()));
+
+            String originPwd = new String(cipher.doFinal(Base64.getDecoder().decode(requestDto.getPassword().getBytes("UTF-8"))));
+            requestDto.setPassword(originPwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new ApiException(PASSWORD_DECRYPTION_ERROR);
+        }
+
         MattermostClient client = Client.getClient();
         Response mmLoginResponse = client.login(requestDto.getId(), requestDto.getPassword()).getRawResponse();
         switch (mmLoginResponse.getStatus()) {
