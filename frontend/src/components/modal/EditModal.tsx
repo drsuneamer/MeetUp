@@ -171,7 +171,11 @@ const EditModal = () => {
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
-    setTitle(e.currentTarget.value);
+    if (e.currentTarget.value === null) {
+      setTitle(scheduleDetail.title);
+    } else {
+      setTitle(e.currentTarget.value);
+    }
   };
 
   const onDateChange = (e: any) => {
@@ -179,7 +183,11 @@ const EditModal = () => {
   };
 
   const onContentChange = (e: any) => {
-    setContent(e.currentTarget.value);
+    if (e.currentTarget.value === null) {
+      setContent(scheduleDetail.content);
+    } else {
+      setContent(e.currentTarget.value);
+    }
   };
 
   const onAlarmChannel = (e: any, value: any) => {
@@ -198,8 +206,6 @@ const EditModal = () => {
   //   meetupId: alarmChannelId,
   // };
 
- 
-  
   useEffect(() => {
     setStartTime(start);
     setEndTime(end)
@@ -216,7 +222,7 @@ const EditModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen('close'));
-    window.location.reload();
+    // window.location.reload();
   }, []);
 
   // const handleSubmitToMe = async () => {
@@ -318,19 +324,21 @@ const EditModal = () => {
     meetupId: alarmChannelId,
   };
 
-  const handleEditEvent = async () => {
-    const action = await dispatch(editMeetingDetail(parsedMeetingData));
-    if (isFulfilled(action)) {
-      console.log()
-      handleToggleModal();
-      // dispatch(setDetailModalOpen());
-    }
-  };
-  // const handleEditEvent = () => {
-  //   console.log('====================')
-  //   console.log(scheduleDetailId)
-  //   console.log(parsedMeetingData)
-  // }
+  // const handleEditEvent = async () => {
+  //   const action = await dispatch(editMeetingDetail(parsedMeetingData));
+  //   if (isFulfilled(action)) {
+  //     console.log()
+  //     handleToggleModal();
+  //     dispatch(setDetailModalOpen('?'));
+  //   }
+  // };
+  const handleEditEvent = () => {
+    // console.log(channels.alarmChannels)
+    // console.log(scheduleDetailId)
+    console.log('parsedMeetingData:',parsedMeetingData)
+    console.log('====================')
+    console.log('scheduleDetail:', scheduleDetail)
+  }
   // const temp = {value: '030'}
   // const changeToStartTime = () => {
   //   const startTime = scheduleDetail.start.slice(11,15);
