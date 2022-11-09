@@ -288,6 +288,11 @@ const EditModal = () => {
   // }
 
   // useEffect(() => {
+<<<<<<< HEAD
+  //   console.log(scheduleDetailId)
+    
+=======
+>>>>>>> 3bcc64839b11f67e81d23c1fd58f682b022123b4
   //   const loadData = async () => {
   //     console.log('hello')
   //     const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
