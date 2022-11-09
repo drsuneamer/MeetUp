@@ -193,13 +193,15 @@ public class UserServiceImpl implements UserService {
                     for (ChannelUser channelUser : channelUserList) {
                         inviteList.add(channelUser.getUser().getId());
                     }
-                    channelService.createNewChannel(user.getId(), mmToken, ChannelCreateRequestDto.builder()
-                            .teamId(teamId)
-                            .displayName("MeetUp! 테스트용 채널")
-                            .type(ChannelType.Open)
-                            .name("meetup__test_channel")
-                            .inviteList(inviteList)
-                            .build());
+                    if (!channelRepository.existsByName("meetup__test_channel")) {
+                        channelService.createNewChannel(user.getId(), mmToken, ChannelCreateRequestDto.builder()
+                                .teamId(teamId)
+                                .displayName("MeetUp! 테스트용 채널")
+                                .type(ChannelType.Open)
+                                .name("meetup__test_channel")
+                                .inviteList(inviteList)
+                                .build());
+                    }
                 }
             }
         }
