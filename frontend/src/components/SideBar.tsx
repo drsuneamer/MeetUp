@@ -54,7 +54,7 @@ function SideBar() {
       <div className="relative h-1/8 top-[450px]">
         <button
           onClick={syncRequest}
-          className="bg-title hover:bg-hover text-background rounded w-full h-s drop-shadow-button flex justify-center items-center space-x-2 absolute bottom-2"
+          className="bg-title hover:bg-hover text-background rounded w-full h-s drop-shadow-button flex justify-center items-center space-x-2 absolute -bottom-[10vh]"
         >
           {!syncChecked && isClicked ? (
             <CircularProgress sx={{ color: 'white' }} size="1.5rem" />
