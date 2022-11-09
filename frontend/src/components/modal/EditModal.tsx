@@ -329,12 +329,16 @@ const EditModal = () => {
   };
 
   const handleEditEvent = async () => {
-    const action = await dispatch(editMeetingDetail(parsedMeetingData));
-    if (isFulfilled(action)) {
-      console.log()
-      handleToggleModal();
-      dispatch(setDetailModalOpen('myMeeting'));
-    }
+    if (!parsedMeetingData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else {
+      const action = await dispatch(editMeetingDetail(parsedMeetingData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        dispatch(setDetailModalOpen('myMeeting'));
+      }
+    } 
   };
   // const handleEditEvent = () => {
   //   console.log(parsedMeetingData)
