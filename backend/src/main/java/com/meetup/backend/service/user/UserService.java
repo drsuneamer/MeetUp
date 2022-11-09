@@ -16,7 +16,7 @@ public interface UserService {
 
 //    User registerUser(String userId);
 
-    String getNickname(String userId);
+    String getNickname(String userId, String mmSessionToken);
 
     void registerTeamAndChannel(String mmToken, User user);
 
