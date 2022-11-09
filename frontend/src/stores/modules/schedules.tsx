@@ -31,7 +31,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
-        open: false,
+        open: false, 
       },
     ],
     meetingToMe: [
@@ -74,6 +74,7 @@ const initialState: scheduleInitialState = {
       userName: '',
       diffWebex: '',
       myWebex: '',
+      meetupId: 0,
     },
     // meetingDetail: {
     //   id: 0,
