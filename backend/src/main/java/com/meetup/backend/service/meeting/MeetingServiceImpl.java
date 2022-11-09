@@ -187,9 +187,9 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
-        String message = "## 미팅 신청이 수정되었습니다. \n" + "### 기존 \n" +
+        String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" +
                 "### " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n"
-                + "### 수정 후 \n" + "### " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+                + "#### 수정 후 \n" + "### " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
 
         if (meetingUpdateRequestDto.isOpen()) {
