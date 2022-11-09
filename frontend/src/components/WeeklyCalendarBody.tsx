@@ -7,18 +7,14 @@ import { getSundayOfWeek } from '../utils/GetSundayOfWeek';
 import { setEventModalData } from '../stores/modules/events';
 import { setEventModalOpen } from '../stores/modules/modal';
 import { setDetailModalOpen } from '../stores/modules/modal';
+import { toCurrentTime } from '../stores/modules/mycalendar';
 import { SelectedEvent, tSchedule } from '../types/events';
 import { useSelector } from 'react-redux';
 import { holidaySelector, fetchHolidays } from '../stores/modules/holidays';
-import {
-  myScheduleSelector,
-  meetingFromMeSelector,
-  meetingToMeSelector,
-  fetchSchedule,
-  fetchScheduleDetail,
-} from '../stores/modules/schedules';
+import { myScheduleSelector, meetingFromMeSelector, meetingToMeSelector, fetchSchedule, fetchScheduleDetail } from '../stores/modules/schedules';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
+import { myCalendarSelector } from '../stores/modules/mycalendar';
 
 interface Week {
   name: string;
@@ -43,11 +39,23 @@ const WeeklyCalendarBody = () => {
 
   const thunkAPI = [userId, sunday];
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({behavior: 'smooth', block:'center'})
+  const myCalendar = useAppSelector(myCalendarSelector);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const moveScroll = () => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    // window.scrollTo({ top: Number(scrollRef.current?.style.top.slice(0, -2)), behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (myCalendar.mycalendar.currentTime) {
+      // console.log(myCalendar.mycalendar.currentTime);
+      moveScroll();
+      dispatch(toCurrentTime(false));
+    }
+  }, [myCalendar.mycalendar.currentTime]);
+  useEffect(() => {
     async function fetchAndSetHolidays() {
       await dispatch(fetchHolidays());
     }
@@ -136,7 +144,6 @@ const WeeklyCalendarBody = () => {
   //   }
   // };
 
-
   return (
     <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
       <div className="flex flex-col h-fit">
@@ -173,7 +180,7 @@ const WeeklyCalendarBody = () => {
                   })
                 : null}
               {/* 나의 스케쥴(회색으로 블락) */}
-              {mySchedule.map((element:tSchedule, index:number) => {
+              {mySchedule.map((element: tSchedule, index: number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -210,15 +217,15 @@ const WeeklyCalendarBody = () => {
                       className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[12px] border-solid border-background border-2 scrollbar-hide`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
-                      {element.title ? element.title : '비공개'}
+                        {element.title ? element.title : '비공개'}
                       </span>
                     </div>
                   );
                 }
-                return null
+                return null;
               })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
-              {meetingToMe.map((element:tSchedule, index:number) => {
+              {meetingToMe.map((element: tSchedule, index: number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -257,10 +264,10 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
-                  return null
+                return null;
               })}
               {/* 내가 신청한 미팅(다른 컨설턴트/코치에게) */}
-              {meetingFromMe.map((element:tSchedule, index:number) => {
+              {meetingFromMe.map((element: tSchedule, index: number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -287,7 +294,7 @@ const WeeklyCalendarBody = () => {
                       </span>
                     </div>
                   );
-                  return null
+                return null;
               })}
               {hours.map((hour, index) => {
                 return (
@@ -308,11 +315,19 @@ const WeeklyCalendarBody = () => {
               })}
               {hours.map((hour, index) => {
                 if (nows) {
-                  const top = nows.hours * 50 + nows.minutes * (5/6);
+                  const top = nows.hours * 50 + nows.minutes * (5 / 6);
                   let height = 0;
 
                   if (hour === nows.parsedTimeNow) {
-                    return <div ref={scrollRef} key={`${nows}${index}`} id="current" style={{ top, height }} className="absolute w-full h-[1.5px] bg-primary" />;
+                    return (
+                      <div
+                        ref={scrollRef}
+                        key={`${nows}${index}`}
+                        id="current"
+                        style={{ top, height }}
+                        className="absolute w-full h-[1.5px] bg-primary"
+                      />
+                    );
                   }
                 }
                 return null;
