@@ -20,6 +20,7 @@ import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
 import { detailSelector } from '../../stores/modules/schedules'; 
 import { find } from 'lodash';
+import Switch from '@mui/material/Switch';
 
 // interface ChannelOptionType {
 //   title: string;
@@ -40,17 +41,17 @@ import { find } from 'lodash';
 
 const EditModal = () => {
   const channels = useSelector(alarmChannelSelector);
+  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState<string>(scheduleDetail.title);
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>(scheduleDetail.content);
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
   // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   
   const changeToStartTime = () => {
@@ -159,6 +160,12 @@ const EditModal = () => {
     return end;
   };
 
+  const [checked, setChecked] = useState(false);
+
+  const switchHandler = (e: any) => {
+    setChecked(e.target.checked);
+  };
+
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
@@ -178,23 +185,25 @@ const EditModal = () => {
     setAlarmChannelId(alarmChannelValue);
   };
 
-  // const parsedData: any = {
-  //   title: title,
-  //   content: null,
-  //   start: newStartTime(),
-  //   end: newEndTime(),
-  // };
+  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
-  // const parsedMeetingData: any = {
-  //   id: scheduleDetailId,
-  //   title: title,
-  //   content: content,
-  //   start: newStartTime(),
-  //   end: newEndTime(),
-  //   meetupId: alarmChannelId,
-  // };
-
- 
+  const parsedData: any = {
+    title: title,
+    content: null,
+    start: newStartTime(),
+    end: newEndTime(),
+    open: checked,
+  };
+  
+  const parsedMeetingData: any = {
+    id: scheduleDetailId,
+    title: title,
+    content: content,
+    start: newStartTime(),
+    end: newEndTime(),
+    open: checked,
+  };
+  
   useEffect(() => {
     setStartTime(start);
     setEndTime(end)
@@ -222,13 +231,13 @@ const EditModal = () => {
   //   }
   // };
 
-  const handleSubmitToYou = async () => {
-    const action = await dispatch(addMeeting(parsedMeetingData));
-    if (isFulfilled(action)) {
-      // const userId = localStorage.getItem('id')
-      handleToggleModal();
-    }
-  };
+  // const handleSubmitToYou = async () => {
+  //   const action = await dispatch(addMeeting(parsedMeetingData));
+  //   if (isFulfilled(action)) {
+  //     // const userId = localStorage.getItem('id')
+  //     handleToggleModal();
+  //   }
+  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -269,7 +278,7 @@ const EditModal = () => {
   // const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
   // const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
   // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
+  // const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
   // const handleSubmitToMe = () => {
   //   console.log('되야만해..')
   //   console.log(myScheduleId);
@@ -306,24 +315,18 @@ const EditModal = () => {
   // }, []);
 
   
-  const parsedMeetingData: any = {
-    id: scheduleDetailId,
-    title: title,
-    content: content,
-    start: newStartTime(),
-    end: newEndTime(),
-    meetupId: alarmChannelId,
-  };
-
   const handleEditEvent = async () => {
     const action = await dispatch(editMeetingDetail(parsedMeetingData));
     if (isFulfilled(action)) {
-      handleToggleModal()
+      console.log()
+      handleToggleModal();
       // dispatch(setDetailModalOpen());
     }
   };
-  // const handleEditEvent() => {
-  //   console.log(valueTime)
+  // const handleEditEvent = () => {
+  //   console.log('====================')
+  //   console.log(scheduleDetailId)
+  //   console.log(parsedMeetingData)
   // }
 
   // const test = changeToTime();
@@ -428,7 +431,12 @@ const EditModal = () => {
                       id="select-channel"
                       renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
                     />
-                  </div>
+                  </div> 
+              </div>
+              <div className="mt-[40px] mb-[30px]">
+                <div className="text-s text-title font-bold">공개 설정</div>
+                <Switch checked={checked} onChange={switchHandler} />
+                {checked ? <span className="text-title text-xs">공개</span> : <span className="text-title text-xs">비공개</span>}
               </div>
             </div>
             <button
