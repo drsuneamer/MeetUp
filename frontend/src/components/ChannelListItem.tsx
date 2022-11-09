@@ -24,8 +24,8 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
   // 톱니바퀴 버튼 누르면 -> 밋업 수정 페이지로 이동
   const goEdit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation(); // 버블링으로 인해 멤버 모달까지 함께 뜨는 것을 막음
-    console.log(channel.id);
-    console.log(typeof channel.id);
+    // console.log(channel.id);
+    // console.log(typeof channel.id);
     dispatch(update({ id: channel.id }));
     navigate(`/edit-meetup/${channel.id}`);
   };
@@ -36,7 +36,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
         <div style={{ background: `${channel.color}` }} className="indexLable  w-3/12 h-[40px] flex justify-end">
           <div style={{ background: `${channel.color}` }} className=" mix-blend-multiply y w-1/6 h-[40px]" />
         </div>
-        <span className="channelName leading-[40px] w-7/12 text-center overflow-hidden">{channel.title}</span>
+        <span className="channelName leading-[40px] w-7/12 text-center overflow-hidden truncate">{channel.title}</span>
         <div className="ColDiv flex flex-col justify-center">
           {/* settings button */}
           <span className="w-2/12 text-center cursor-pointer" onClick={goEdit}>

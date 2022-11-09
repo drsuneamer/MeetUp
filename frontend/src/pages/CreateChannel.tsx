@@ -62,7 +62,7 @@ function CreateChannel() {
   // };
 
   const selectTeam = (e: any, value: any) => {
-    console.log(value.displayName);
+    // console.log(value.displayName);
     // setAlarmChannelId(alarmChannelValue);
   };
 

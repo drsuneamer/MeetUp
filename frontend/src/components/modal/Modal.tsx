@@ -49,7 +49,7 @@ const EventModal = () => {
   };
 
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex+1), [startTimeIndex+1]);
+  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
 
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
@@ -84,7 +84,7 @@ const EventModal = () => {
 
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
-    console.log(date);
+    // console.log(date);
   };
 
   const onContentChange = (e: any) => {
@@ -129,32 +129,32 @@ const EventModal = () => {
 
     if (startTimeIndex > endTimeIndex) {
       setEndTimeIndex(startTimeIndex);
-      setEndTime(startSelectOptions[startTimeIndex+1]);
+      setEndTime(startSelectOptions[startTimeIndex + 1]);
     }
   }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    // window.location.reload();
+    window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다')
-    } else if ( parsedData ) {
+      alert('제목은 필수 입력사항입니다');
+    } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
         handleToggleModal();
-      } else if ( isRejected(action) ) {
-        console.log(action)
+      } else if (isRejected(action)) {
+        // console.log(action);
       }
     }
   };
 
   const handleSubmitToYou = async () => {
-    if (!parsedMeetingData.title ) {
-      alert('미팅명은 필수 입력사항입니다')
-    } else if ( parsedData ) {
+    if (!parsedMeetingData.title) {
+      alert('미팅명은 필수 입력사항입니다');
+    } else if (parsedData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
         handleToggleModal();
@@ -218,7 +218,7 @@ const EventModal = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[15px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[10px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -299,7 +299,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[40px] mb-[30px]">
+            <div className={myCalendar ? 'mt-[40px] mb-[30px]' : 'mt-[20px] mb-[20px]'}>
               <div className="text-s text-title font-bold">공개 설정</div>
               <Switch checked={checked} onChange={switchHandler} />
               {checked ? <span className="text-title text-xs">공개</span> : <span className="text-title text-xs">비공개</span>}
@@ -312,7 +312,7 @@ const EventModal = () => {
           ) : (
             <button
               onClick={handleSubmitToYou}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mt-[15px] h-s drop-shadow-button"
+              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
             >
               밋업 등록하기
             </button>

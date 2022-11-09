@@ -77,7 +77,7 @@ function LoginForm() {
       .post(`${baseURL}/user/login`, login)
       .then((res) => {
         if (res.status === 200) {
-          console.log(res);
+          // console.log(res);
           // 로그인 완료 시 localstorage에 accesstoken, nickname, id 저장 후 메인('/') 이동
           window.localStorage.setItem('id', res.data.id);
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);

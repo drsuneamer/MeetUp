@@ -6,6 +6,7 @@ import com.meetup.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * created by seongmin on 2022/10/21
@@ -18,5 +19,7 @@ public interface MeetupRepository extends JpaRepository<Meetup, Long> {
     List<Meetup> findByChannelIn(List<Channel> channelList);
 
     boolean existsByManagerAndChannel(User manager, Channel channel);
+
+    Optional<Meetup> findByManagerAndChannel(User manager, Channel channel);
 
 }

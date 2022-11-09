@@ -189,22 +189,16 @@ const EditModal = () => {
 
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
-  const parsedData: any = {
-    title: title,
-    content: null,
-    start: newStartTime(),
-    end: newEndTime(),
-    open: checked,
-  };
-  
-  const parsedMeetingData: any = {
-    id: scheduleDetailId,
-    title: title,
-    content: content,
-    start: newStartTime(),
-    end: newEndTime(),
-    open: checked,
-  };
+  // const parsedMeetingData: any = {
+  //   id: scheduleDetailId,
+  //   title: title,
+  //   content: content,
+  //   start: newStartTime(),
+  //   end: newEndTime(),
+  //   meetupId: alarmChannelId,
+  // };
+
+ 
   
   useEffect(() => {
     setStartTime(start);
@@ -221,8 +215,8 @@ const EditModal = () => {
   // }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
-    dispatch(setEditModalOpen('close'));
-    // window.location.reload()
+    dispatch(setEditModalOpen());
+    window.location.reload();
   }, []);
 
   // const handleSubmitToMe = async () => {
@@ -294,8 +288,11 @@ const EditModal = () => {
   // }
 
   // useEffect(() => {
+<<<<<<< HEAD
   //   console.log(scheduleDetailId)
     
+=======
+>>>>>>> 3bcc64839b11f67e81d23c1fd58f682b022123b4
   //   const loadData = async () => {
   //     console.log('hello')
   //     const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
@@ -317,6 +314,15 @@ const EditModal = () => {
   // }, []);
 
   
+  const parsedMeetingData: any = {
+    id: scheduleDetailId,
+    title: title,
+    content: content,
+    start: newStartTime(),
+    end: newEndTime(),
+    meetupId: alarmChannelId,
+  };
+
   const handleEditEvent = async () => {
     const action = await dispatch(editMeetingDetail(parsedMeetingData));
     if (isFulfilled(action)) {
@@ -330,25 +336,26 @@ const EditModal = () => {
   //   console.log(scheduleDetailId)
   //   console.log(parsedMeetingData)
   // }
+  // const temp = {value: '030'}
+  const changeToStartTime = () => {
+    const startTime = scheduleDetail.start.slice(11,15);
+    const newTime = startTime.replace(':', '');
+    if (newTime[0] === '0') {
+      const valueTime = startTime.slice(1,4);
+      // startTime.value = valueTime
+      return valueTime
+    } else {
+      const valueTime = newTime;
+      // startTime.value = valueTime
+      return valueTime
+    }
 
-  // const test = changeToTime();
-  // const [foundChannel, setFoundChannel] = useState<tAlarm>()
-  // useEffect(()=> {
-  //   findAlarmChannel(meetingDetail.meetupId)
-  //   // const findAlarmChannel = (a:any) => {
-  //   //   const found = channels.alarmChannels.find(e => e.meetupId === a);
-  //   //   // const foundMeetupId = found!.meetupId
-  //   //   // test.meetupId = foundMeetupId
-  //   //   // const foundDisplayName = found!.displayName
-  //   //   // test.displayName = foundDisplayName
-  //   //   // setFoundChannel(findAlarmChannel(meetingDetail.meetupId))
-  //   //   console.log(foundChannel)
-  //   //   return foundChannel
-  //   // }
-  // })
- 
+    console.log(scheduleDetail.start)
+  }
+
   if ( scheduleDetail ) {
 
+  if (scheduleDetail) {
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
@@ -478,7 +485,7 @@ const EditModal = () => {
           className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
           onClick={(e: React.MouseEvent) => {
             e.preventDefault();
-  
+
             if (handleToggleModal) {
               handleToggleModal();
             }
@@ -487,7 +494,7 @@ const EditModal = () => {
       </div>
     );
   }
-  return (<div></div>)
+  return <div></div>;
 };
 
 export default EditModal;
