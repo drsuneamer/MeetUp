@@ -55,6 +55,6 @@ public class UserController {
 
     @GetMapping("/nickname/{userId}")
     public ResponseEntity<?> getUserNickname(@PathVariable("userId") String userId) {
-        return ResponseEntity.status(OK).body(userService.getNickname(userId));
+        return ResponseEntity.status(OK).body(userService.getNickname(userId, authService.getMMSessionToken(authService.getMyInfoSecret().getId())));
     }
 }

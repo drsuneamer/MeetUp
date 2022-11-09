@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-//    private final RedisUtil redisUtil;
+    //    private final RedisUtil redisUtil;
     private final PasswordEncoder passwordEncoder;
     private final TeamService teamService;
     private final ChannelService channelService;
@@ -138,9 +138,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getNickname(String userId) {
+    public String getNickname(String userId, String mmSessionToken) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        return user.getNickname();
+        if (user.getNickname() != null) {
+            return user.getNickname();
+        } else {
+            MattermostClient client = Client.getClient();
+            client.setAccessToken(mmSessionToken);
+            Response response = client.getUser(userId).getRawResponse();
+            JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+            return userObj.getString("nickname");
+        }
     }
 //
 //    @Override
