@@ -146,9 +146,9 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 
 export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', async (thunkAPI: any) => {
   try {
-    console.log('안된다')
+    // console.log('안된다');
     const res = await axiosInstance.patch('/meeting', thunkAPI).then((res) => {
-      console.log('my meeting detail edited: ', res.data);
+      // console.log('my meeting detail edited: ', res.data);
       return res.data;
     });
     return res;
