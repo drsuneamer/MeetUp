@@ -1,15 +1,8 @@
 package com.meetup.backend.service.user;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.*;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -22,7 +15,6 @@ import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelType;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.team.Team;
-import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.jwt.JwtTokenProvider;
@@ -36,24 +28,24 @@ import com.meetup.backend.service.notice.WebhookNoticeService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.util.converter.JsonConverter;
-import com.meetup.backend.util.redis.RedisUtil;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.meetup.backend.entity.user.RoleType.*;
 import static com.meetup.backend.exception.ExceptionEnum.*;
@@ -104,15 +96,28 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(PASSWORD_DECRYPTION_ERROR);
         }
 
-        MattermostClient client = Client.getClient();
-        Response mmLoginResponse = client.login(requestDto.getId(), requestDto.getPassword()).getRawResponse();
-        switch (mmLoginResponse.getStatus()) {
-            case 200:
-                JSONObject jsonRes = JsonConverter.toJson((BufferedInputStream) mmLoginResponse.getEntity());
-                String id = (String) jsonRes.get("id");
-                String mmToken = mmLoginResponse.getHeaderString("Token");
+        String url = "https://meeting.ssafy.com/api/v4/users/login";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-                String nickname = (String) jsonRes.get("nickname");
+        Map<String, Object> map = new HashMap<>();
+        map.put("login_id", requestDto.getId());
+        map.put("password", requestDto.getPassword());
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<Map> res = restTemplate.postForEntity(url, entity, Map.class);
+
+        Map body = res.getBody();
+
+        switch (res.getStatusCodeValue()) {
+            case 200:
+
+                String id = (String) body.get("id");
+                String mmToken = res.getHeaders().get("Token").get(0);
+                String nickname = (String) body.get("nickname");
+
                 User user;
                 if (userRepository.findById(id).isEmpty()) {
                     user = userRepository.save(
@@ -165,7 +170,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public void logout(String mmSessionToken) {
         MattermostClient client = Client.getClient();
@@ -212,34 +216,6 @@ public class UserServiceImpl implements UserService {
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
         channelUserService.registerChannelUserFromMattermost(mmToken, channels);
-
-        if (user.getRole().equals(ROLE_Consultant)) {
-            for (Team team : teams) {
-                if (!team.getDisplayName().contains("자율"))
-                    continue;
-                String teamId = team.getId();
-                for (Channel channel : channelRepository.findByTeam(Team.builder().id(teamId).build())) {
-                    if (!channel.getName().equals("town-square"))
-                        continue;
-                    String channelId = channel.getId();
-                    List<ChannelUser> channelUserList = channelUserRepository.findByChannel(Channel.builder().id(channelId).build());
-                    List<String> inviteList = new ArrayList<>();
-                    for (ChannelUser channelUser : channelUserList) {
-                        inviteList.add(channelUser.getUser().getId());
-                    }
-                    if (!channelRepository.existsByName("meetup__test_channel")) {
-                        channelService.createNewChannel(user.getId(), mmToken, ChannelCreateRequestDto.builder()
-                                .teamId(teamId)
-                                .displayName("MeetUp! 테스트용 채널")
-                                .type(ChannelType.Open)
-                                .name("meetup__test_channel")
-                                .inviteList(inviteList)
-                                .build());
-                    }
-                }
-            }
-        }
-
     }
 
     @Override

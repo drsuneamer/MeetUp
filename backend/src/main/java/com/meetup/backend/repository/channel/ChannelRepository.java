@@ -1,7 +1,6 @@
 package com.meetup.backend.repository.channel;
 
 import com.meetup.backend.entity.channel.Channel;
-import com.meetup.backend.entity.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,8 +12,5 @@ import java.util.List;
 public interface ChannelRepository extends JpaRepository<Channel, String> {
 
     boolean existsByName(String name);
-
-    List<Channel> findByTeam(Team team);
-
 
 }
