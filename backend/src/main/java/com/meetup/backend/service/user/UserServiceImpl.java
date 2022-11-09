@@ -1,15 +1,20 @@
 package com.meetup.backend.service.user;
 
+import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.channel.ChannelType;
+import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.jwt.JwtTokenProvider;
+import com.meetup.backend.repository.channel.ChannelRepository;
+import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.channel.ChannelService;
@@ -32,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +55,8 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ChannelRepository channelRepository;
+    private final ChannelUserRepository channelUserRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     //    private final RedisUtil redisUtil;
@@ -94,7 +102,7 @@ public class UserServiceImpl implements UserService {
                 }
 
                 if (!user.isFirstLogin()) {
-                    if (nickname.contains("컨설턴트")) {
+                    if (nickname.contains("컨설턴트") || nickname.contains("consultant")) {
                         user.changeRole(ROLE_Consultant);
                     } else if (nickname.contains("교수")) {
                         user.changeRole(ROLE_Professor);
@@ -170,6 +178,32 @@ public class UserServiceImpl implements UserService {
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
         channelUserService.registerChannelUserFromMattermost(mmToken, channels);
+
+        if (user.getRole().equals(ROLE_Consultant)) {
+            for (Team team : teams) {
+                if (!team.getDisplayName().contains("자율"))
+                    continue;
+                String teamId = team.getId();
+                for (Channel channel : channelRepository.findByTeam(Team.builder().id(teamId).build())) {
+                    if (!channel.getName().equals("town-square"))
+                        continue;
+                    String channelId = channel.getId();
+                    List<ChannelUser> channelUserList = channelUserRepository.findByChannel(Channel.builder().id(channelId).build());
+                    List<String> inviteList = new ArrayList<>();
+                    for (ChannelUser channelUser : channelUserList) {
+                        inviteList.add(channelUser.getUser().getId());
+                    }
+                    channelService.createNewChannel(user.getId(), mmToken, ChannelCreateRequestDto.builder()
+                            .teamId(teamId)
+                            .displayName("MeetUp! 테스트용 채널")
+                            .type(ChannelType.Open)
+                            .name("meetup_test_channel")
+                            .inviteList(inviteList)
+                            .build());
+                }
+            }
+        }
+
     }
 
     @Override
