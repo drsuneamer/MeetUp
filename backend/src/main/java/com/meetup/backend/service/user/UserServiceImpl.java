@@ -109,10 +109,6 @@ public class UserServiceImpl implements UserService {
 
         ResponseEntity<Map> res = restTemplate.postForEntity(url, entity, Map.class);
 
-        log.info("res = {}", res.getHeaders());
-        HttpStatus statusCode = res.getStatusCode();
-        log.info("res.getStatusCode() = {}", statusCode);
-        log.info("res.getBody() = {}", res.getBody());
         Map body = res.getBody();
 
         switch (res.getStatusCodeValue()) {
@@ -120,11 +116,8 @@ public class UserServiceImpl implements UserService {
 
                 String id = (String) body.get("id");
                 String mmToken = res.getHeaders().get("Token").get(0);
-
                 String nickname = (String) body.get("nickname");
-                log.info("id = {}", id);
-                log.info("mmToken = {}", mmToken);
-                log.info("nickname = {}", nickname);
+
                 User user;
                 if (userRepository.findById(id).isEmpty()) {
                     user = userRepository.save(
