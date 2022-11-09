@@ -82,10 +82,10 @@ public class UserServiceImpl implements UserService {
     private final WebhookNoticeService webhookNoticeService;
 
     @Value("${crypto.secret}")
-    private final String secretKey;
+    private String secretKey;
 
     @Value("${crypto.iv}")
-    private final String iv;
+    private String iv;
 
     @Override
     @Transactional
