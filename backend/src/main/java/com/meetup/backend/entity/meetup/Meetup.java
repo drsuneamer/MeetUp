@@ -44,8 +44,14 @@ public class Meetup extends BaseEntity {
         this.color = color;
     }
 
-    public void deleteMeetup(Boolean isDelete) {
-        this.isDelete = isDelete;
+    public void deleteMeetup() {
+        this.isDelete = true;
+    }
+
+    public void reviveMeetup(String title, String color) {
+        this.isDelete = false;
+        this.title = title;
+        this.color = color;
     }
 
     @Builder
