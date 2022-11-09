@@ -52,7 +52,13 @@ public class MeetupServiceImpl implements MeetupService {
         if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
         if (meetupRepository.existsByManagerAndChannel(user, Channel.builder().id(meetupRequestDto.getChannelId()).build())) {
-            throw new ApiException(ExceptionEnum.DUPLICATE_MEETUP);
+            Meetup meetup = meetupRepository.findByManagerAndChannel(user, Channel.builder().id(meetupRequestDto.getChannelId()).build()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
+            if (!meetup.isDelete()) {
+                throw new ApiException(ExceptionEnum.DUPLICATE_MEETUP);
+            } else {
+                meetup.reviveMeetup(meetupRequestDto.getTitle(), meetupRequestDto.getColor());
+                return;
+            }
         }
         Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
@@ -91,7 +97,7 @@ public class MeetupServiceImpl implements MeetupService {
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
         if (meetup.getManager().getId().equals(user.getId()))
-            meetup.deleteMeetup(true);
+            meetup.deleteMeetup();
         else
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
     }
