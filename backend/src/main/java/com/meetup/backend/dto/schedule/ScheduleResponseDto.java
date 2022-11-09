@@ -40,6 +40,8 @@ public class ScheduleResponseDto {
 
     private String diffWebex;
 
+    private Long meetupId;
+
     public static ScheduleResponseDto of(Schedule schedule, User user) {
         ScheduleResponseDto result = ScheduleResponseDto.builder()
                 .id(schedule.getId())
@@ -59,6 +61,7 @@ public class ScheduleResponseDto {
             result.setUserId(meeting.getMeetup().getManager().getId());
             result.setUserName(meeting.getMeetup().getManager().getNickname());
             result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
+            result.setMeetupId(meeting.getMeetup().getId());
         }
         return result;
 
