@@ -44,7 +44,7 @@ const WeeklyCalendarBody = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const moveScroll = () => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'start' });
     // window.scrollTo({ top: Number(scrollRef.current?.style.top.slice(0, -2)), behavior: 'smooth' });
   };
 
