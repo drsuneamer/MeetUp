@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * created by seungyong on 2022/10/24
- * updated by seongmin on 2022/11/07
+ * updated by seongmin on 2022/11/10
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -146,8 +146,14 @@ public class MeetupServiceImpl implements MeetupService {
                     Response userResponse = client.getUser(manager.getId()).getRawResponse();
 
                     MattermostEx.apiException(userResponse.getStatus());
-
-                    JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
+                    } catch (ClassCastException e) {
+                        log.error(e.getMessage());
+                        log.info("userResponse.getEntity() = {}", userResponse.getEntity());
+                        e.printStackTrace();
+                    }
                     String nickname = (String) jsonObject.get("nickname");
                     manager.setNickname(nickname);
                 }
