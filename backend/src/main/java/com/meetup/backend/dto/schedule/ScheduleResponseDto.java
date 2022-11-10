@@ -32,6 +32,10 @@ public class ScheduleResponseDto {
 
     private String content;
 
+    private String managerId;
+
+    private String managerName;
+
     private String userId;
 
     private String userName;
@@ -58,8 +62,8 @@ public class ScheduleResponseDto {
 
         if (schedule.getType().equals(ScheduleType.Meeting)) {
             Meeting meeting = (Meeting) schedule;
-            result.setUserId(meeting.getMeetup().getManager().getId());
-            result.setUserName(meeting.getMeetup().getManager().getNickname());
+            result.setManagerId(meeting.getMeetup().getManager().getId());
+            result.setManagerName(meeting.getMeetup().getManager().getNickname());
             result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
             result.setMeetupId(meeting.getMeetup().getId());
         }
