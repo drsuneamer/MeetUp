@@ -34,10 +34,72 @@ const WeeklyCalendarBody = () => {
   const [holidayThisWeek, setHolidayThisWeek] = useState(Array<Week>);
 
   const param = useParams();
+
+  
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
+
+  const hours = useMemo(() => {
+    return getHours();
+  }, []);
+
+  const nows = useMemo(() => {
+    return getNow();
+  }, []);
+
   const userId = param.userId;
-  const sunday = getSundayOfWeek();
+
+  const sunday = useMemo(() => {
+    const date = new Date(currentDate);
+    const firstDayOfTheMonth = date.getDay();
+
+    console.log(date.getMonth())
+
+    if (date.getDate() <= firstDayOfTheMonth) {
+      if (weekly[0].date<10){
+        const sunday = '0' + weekly[0].date.toString()
+        if ( date.getMonth() < 10 ) {
+          const thisMonth = '0' + date.getMonth()
+          return `${date.getFullYear()}-${thisMonth}-${sunday}`
+        } 
+        return `${date.getFullYear()}-${date.getMonth()}-${sunday}`
+      } else {
+        const sunday = weekly[0].date
+        if ( date.getMonth() < 10 ) {
+          const thisMonth = '0' + date.getMonth()
+          return `${date.getFullYear()}-${thisMonth}-${sunday}`
+        }
+        return `${date.getFullYear()}-${date.getMonth()}-${sunday}`
+      }
+    } else {
+      if (weekly[0].date<10){
+        const sunday = '0' + weekly[0].date.toString()
+        if ( date.getMonth() < 10 ) {
+          const thisMonth = '0' + date.getMonth()
+          return `${date.getFullYear()}-${thisMonth}-${sunday}`
+        } 
+        return `${date.getFullYear()}-${date.getMonth() +1}-${sunday}`
+      } else {
+        const sunday = weekly[0].date
+        if ( date.getMonth() < 10 ) {
+          if (date.getMonth() === 9 ) {
+            const thisMonth = 10
+            return `${date.getFullYear()}-${thisMonth}-${sunday}`
+          }
+          const thisMonth = '0' + date.getMonth()+1
+          return `${date.getFullYear()}-0${date.getMonth()+1}-${sunday}`
+        }
+        return `${date.getFullYear()}-${date.getMonth()+1}-${sunday}`
+      }
+    }
+
+
+  
+  }, [currentDate]);
 
   const thunkAPI = [userId, sunday];
+  console.log(thunkAPI)
 
   const myCalendar = useAppSelector(myCalendarSelector);
 
@@ -69,17 +131,6 @@ const WeeklyCalendarBody = () => {
     }
   }, [holidays, currentDate]);
 
-  const weekly = useMemo(() => {
-    return getThisWeek(currentDate);
-  }, [currentDate]);
-
-  const hours = useMemo(() => {
-    return getHours();
-  }, []);
-
-  const nows = useMemo(() => {
-    return getNow();
-  }, []);
 
   function renderHoliday() {
     const holidayResult: Week[] = [];
