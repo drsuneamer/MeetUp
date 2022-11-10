@@ -12,8 +12,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isFulfilled } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, editScheduleDetail,fetchScheduleDetail} from '../../stores/modules/schedules';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { addMeeting, editMeetingDetail, editScheduleDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
@@ -207,9 +207,8 @@ const EditModal = () => {
     setContent(scheduleDetail.content);
     setStartTime(start);
     setEndTime(end);
-  
   },[scheduleDetail])
-
+ 
   useEffect(() => {
     setAlarmChannelId(scheduleDetail.meetupId);
   },[scheduleDetail])
@@ -225,7 +224,7 @@ const EditModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen('close'));
-    // window.location.reload();
+    window.location.reload();
   }, []);
 
   // const handleSubmitToMe = async () => {
@@ -318,6 +317,7 @@ const EditModal = () => {
   // }, []);
 
   const parsedData: any = {
+    id: scheduleDetailId,
     title: title,
     content: null,
     start: newStartTime(),
@@ -335,56 +335,35 @@ const EditModal = () => {
     open: checked,
   };
 
-  const editSchedule = async () => {
-    if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
-    } else {
+  // const handleEditMeeting = async () => {
+  //   if (!parsedMeetingData.title) {
+  //     alert('제목은 필수 입력사항입니다');
+  //   } else {
+  //     const action = await dispatch(editMeetingDetail(parsedMeetingData));
+  //     if (isFulfilled(action)) {
+  //       console.log()
+  //       handleToggleModal();
+  //       // dispatch(setDetailModalOpen('myMeeting'));
+  //     }
+  //   } 
+  // };
+  const handleEditMeeting = () => {
+    console.log(parsedMeetingData)
+  }
+
+  const handleEditSchedule = async () => {
+    if(!parsedData.title) {
+      alert('제목은 필수 입력사항입니다')
+    } else if (parsedData) {
       const action = await dispatch(editScheduleDetail(parsedData));
       if (isFulfilled(action)) {
-        console.log()
-        handleToggleModal();
-        dispatch(setDetailModalOpen('?'));
+        // handleToggleModal()
+      } else if (isRejected(action)) {
+        console.log(action);
       }
-    } 
-
-  const editMeeting = async () => {
-    if (!parsedMeetingData.title) {
-      alert('제목은 필수 입력사항입니다');
-    } else {
-      const action = await dispatch(editMeetingDetail(parsedMeetingData));
-      if (isFulfilled(action)) {
-        console.log()
-        handleToggleModal();
-        dispatch(setDetailModalOpen('myMeeting'));
-      }
-    } 
-  };
-
-  };
-
-  const newTitle = () => {
-    if (parsedMeetingData.title === '') {
-      parsedMeetingData.title = scheduleDetail.title
-      console.log('--is in title?--')
-      console.log(parsedMeetingData.title)
-    } else {
-      parsedMeetingData.title = title
-      console.log('---else?---')
-      console.log(parsedMeetingData.title)
     }
   }
-  
-  const newContent = () => {
-    if (parsedMeetingData.content === '') {
-      parsedMeetingData.content = scheduleDetail.content
-      console.log('--is in content?--')
-      console.log(parsedMeetingData.content)
-    } else {
-      parsedMeetingData.content = content
-      console.log('---else?---')
-      console.log(parsedMeetingData.content)
-    }
-  }
+
   // const handleEditEvent = () => {
   //   // console.log(channels.alarmChannels)
   //   // console.log(scheduleDetailId)
@@ -454,18 +433,18 @@ const EditModal = () => {
             <div className={`${editModalType === 'schedule'? 'mt-[30px]' : 'mt-[15px]'}`}>
               {editModalType === 'schedule' ? (
                 <div className="text-s text-title font-bold">
-                  미팅명<span className="text-cancel">&#42;</span>
+                  제목<span className="text-cancel">&#42;</span>
                 </div>
               ) : (
                 <div className="text-s text-title font-bold">
-                  제목<span className="text-cancel">&#42;</span>
+                  미팅명<span className="text-cancel">&#42;</span>
               </div>
               )}
               <input
                 type="text"
                 name="title"
-                // defaultValue={scheduleDetail.title}
-                value={title}
+                defaultValue={scheduleDetail.title}
+                // value={title}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule'? 'mb-[40px]' : 'mb-[0px]'
@@ -543,14 +522,14 @@ const EditModal = () => {
             </div>
             {editModalType === 'schedule'? (
               <button
-                onClick={editSchedule}
+                onClick={handleEditSchedule}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
               >
                 일정 등록하기
               </button>
               ) : (
               <button
-                onClick={editMeeting}
+                onClick={handleEditMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
                 밋업 등록하기
