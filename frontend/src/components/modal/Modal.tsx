@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
+import { addSchedule, editScheduleDetail, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
@@ -25,13 +25,14 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [meetupId, setMeetupId] = useState<number|null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
+  
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value;
-
+  
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
@@ -47,13 +48,13 @@ const EventModal = () => {
     const start = date + ' ' + startTimeResult;
     return start;
   };
-
+  
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
-
+  
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
-
+  
   const newEndTime = () => {
     if (endTimeValue.length === 3) {
       const endTimeNewValue = '0' + endTimeValue;
@@ -69,24 +70,32 @@ const EventModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-
+  
   const [checked, setChecked] = useState(false);
-
+  
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
+  
+  const newAlarmChannel = () => {
+    if (checked === false) {
+      setMeetupId(null)
+    } else {
+      setMeetupId(alarmChannelId)
+    }
+  }
 
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
-
+  
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
   };
-
+  
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
     // console.log(date);
   };
-
+  
   const onContentChange = (e: any) => {
     setContent(e.currentTarget.value);
   };
@@ -94,7 +103,7 @@ const EventModal = () => {
     const alarmChannelValue = value.meetupId || undefined;
     setAlarmChannelId(alarmChannelValue);
   };
-
+  
   const parsedData: any = {
     title: title,
     content: null,
@@ -102,6 +111,9 @@ const EventModal = () => {
     end: newEndTime(),
     open: checked,
   };
+  
+  // const param = useParams();
+  // const managerId = param.userId; 
 
   const parsedMeetingData: any = {
     title: title,
@@ -111,19 +123,23 @@ const EventModal = () => {
     meetupId: alarmChannelId,
     open: checked,
   };
+  
+  // useEffect (() => {
+  //   newAlarmChannel()
+  // },[checked])
 
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
       setDate(date);
-
+      
       const foundTimeIndex = startSelectOptions.findIndex((option) => option.value === startTime);
       foundTimeIndex !== undefined ? setStartTimeIndex(foundTimeIndex) : setStartTimeIndex(0);
     } else {
       handleResetInput();
     }
   }, [eventModalData]);
-
+  
   useEffect(() => {
     setStartTime(startSelectOptions[startTimeIndex]);
 
@@ -138,6 +154,7 @@ const EventModal = () => {
     window.location.reload();
   }, []);
 
+
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
       alert('제목은 필수 입력사항입니다');
@@ -150,19 +167,34 @@ const EventModal = () => {
       }
     }
   };
-
+  
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
       alert('미팅명은 필수 입력사항입니다');
-    } else if (parsedData) {
+    } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
-        handleToggleModal();
+        // handleToggleModal();
         dispatch(fetchSchedule([userId, getSundayOfWeek()]));
+        console.log('왔다!');
+      }
+    }
+    if (!parsedMeetingData.meetupId) {
+      alert('참여중인 밋업은 필수 입력사항입니다');
+    } else if (parsedMeetingData) {
+      const action = await dispatch(addMeeting(parsedMeetingData));
+      if (isFulfilled(action)) {
+        // handleToggleModal();
+        dispatch(fetchSchedule([userId, getSundayOfWeek()]));
+        console.log('왔다!');
       }
     }
   };
 
+  // const handleSubmitToYou = () => {
+  //   console.log(checked);
+  //   console.log(parsedMeetingData)
+  // }
   const handleResetInput = useCallback(() => {
     setTitle('');
     setDate(getStringDateFormat(new Date()));
@@ -287,7 +319,10 @@ const EventModal = () => {
             <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                  <div className="text-s text-title font-bold">
+                    참여중인 밋업
+                    <span className="text-cancel">&#42;</span>
+                  </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
                     className="w-[450px]"
