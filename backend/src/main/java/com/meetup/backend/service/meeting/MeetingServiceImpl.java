@@ -43,7 +43,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/09
+ * updated by seongmin on 2022/11/10
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -136,8 +136,14 @@ public class MeetingServiceImpl implements MeetingService {
             Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
-
-            JSONObject resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            JSONObject resObj = new JSONObject();
+            try {
+                resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                e.printStackTrace();
+            }
             String id = resObj.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
@@ -203,8 +209,14 @@ public class MeetingServiceImpl implements MeetingService {
             Response directChannelResponse = client.createDirectChannel(userId, meetup.getManager().getId()).getRawResponse();
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
-
-            JSONObject resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            JSONObject resObject = new JSONObject();
+            try {
+                resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                e.printStackTrace();
+            }
             String id = resObject.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();

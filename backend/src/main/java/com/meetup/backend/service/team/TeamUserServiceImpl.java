@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/10
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -181,7 +181,15 @@ public class TeamUserServiceImpl implements TeamUserService {
                 MattermostClient client = Client.getClient();
                 client.setAccessToken(mmSessionToken);
                 Response response = client.getUser(user.getId()).getRawResponse();
-                JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+                JSONObject userObj = new JSONObject();
+                try {
+                    userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                    log.info("response.getEntity() = {}", response.getEntity());
+                    e.printStackTrace();
+                }
                 userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
             }
             userListInTeamResponseDtoList.add(userListInTeamResponseDto);

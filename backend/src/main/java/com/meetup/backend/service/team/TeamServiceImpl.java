@@ -27,7 +27,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/10
  */
 @Service
 @RequiredArgsConstructor
@@ -54,7 +54,14 @@ public class TeamServiceImpl implements TeamService {
 
         MattermostEx.apiException(mmTeamResponse.getStatus());
 
-        JSONArray teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+        JSONArray teamArray = new JSONArray();
+        try {
+            teamArray = JsonConverter.toJsonArray((BufferedInputStream) mmTeamResponse.getEntity());
+        } catch (ClassCastException e) {
+            log.error(e.getMessage());
+            log.info("mmTeamResponse.getEntity() = {}", mmTeamResponse.getEntity());
+            e.printStackTrace();
+        }
         List<Team> teamList = new ArrayList<>();
 
         for (int i = 0; i < teamArray.length(); i++) {
