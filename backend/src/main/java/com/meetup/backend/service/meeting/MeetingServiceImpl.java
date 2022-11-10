@@ -263,7 +263,9 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
-        from = from.minusDays(p);
+        if (p == 1) {
+            from = from.minusDays(p);
+        }
         LocalDateTime to = from.plusDays(p);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 
