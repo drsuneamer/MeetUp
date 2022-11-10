@@ -21,6 +21,7 @@ import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -64,8 +65,14 @@ public class ChannelServiceImpl implements ChannelService {
             Response mmChannelResponse = client.getChannelsForTeamForUser(team.getId(), user.getId()).getRawResponse();
 
             MattermostEx.apiException(mmChannelResponse.getStatus());
-
-            JSONArray channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
+            JSONArray channelArray = new JSONArray();
+            try {
+                channelArray = JsonConverter.toJsonArray((BufferedInputStream) mmChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("mmChannelUserResponse.getEntity() = {}", mmChannelResponse.getEntity());
+                e.printStackTrace();
+            }
 
             for (int i = 0; i < channelArray.length(); i++) {
 
@@ -105,7 +112,14 @@ public class ChannelServiceImpl implements ChannelService {
                 channelCreateRequestDto.getTeamId());
 
         Response response = client.createChannel(channel).getRawResponse();
-        JSONObject resObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+        JSONObject resObj = new JSONObject();
+        try {
+            resObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+        } catch (ClassCastException e) {
+            log.error(e.getMessage());
+            log.info("response.getEntity() = {}", response.getEntity());
+            e.printStackTrace();
+        }
         String channelId = resObj.getString("id");
 
         Channel channelResult = channelRepository.save(Channel.builder()

@@ -88,8 +88,14 @@ public class ChannelUserServiceImpl implements ChannelUserService {
             String nickname = channelUser.getUser().getNickname();
             if (nickname == null) {
                 Response userResponse = client.getUser(channelUser.getUser().getId()).getRawResponse();
-                JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
-                nickname = (String) jsonObject.get("nickname");
+                try {
+                    JSONObject jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
+                    nickname = (String) jsonObject.get("nickname");
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                    log.info("userResponse.getEntity() = {}", userResponse.getEntity());
+                    e.printStackTrace();
+                }
             }
             UserInfoDto userInfoDto = UserInfoDto.of(channelUser.getUser().getId(), nickname);
             userInfoDtoList.add(userInfoDto);
