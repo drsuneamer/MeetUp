@@ -35,7 +35,6 @@ const WeeklyCalendarBody = () => {
 
   const param = useParams();
 
-  
   const weekly = useMemo(() => {
     return getThisWeek(currentDate);
   }, [currentDate]);
@@ -55,31 +54,30 @@ const WeeklyCalendarBody = () => {
     const firstDayOfTheMonth = date.getDay();
 
     if (date.getDate() <= firstDayOfTheMonth) {
-      if (weekly[0].date < 10 ) {
-        if ( date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`;
         }
-        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`
+        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`;
       } else {
-        if ( date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`;
         }
-        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`
+        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`;
       }
     } else {
-      if (weekly[0].date < 10 ) {
-        if ( date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()+1}-0${weekly[0].date}`
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-0${weekly[0].date}`;
         }
-        return `${date.getFullYear()}-${date.getMonth()+1}-0${weekly[0].date}`
+        return `${date.getFullYear()}-${date.getMonth() + 1}-0${weekly[0].date}`;
       } else {
-        if ( date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()+1}-${weekly[0].date}`
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-${weekly[0].date}`;
         }
-        return `${date.getFullYear()}-${date.getMonth()+1}-${weekly[0].date}`
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${weekly[0].date}`;
       }
     }
-  
   }, [currentDate]);
 
   const thunkAPI = [userId, sunday];
@@ -113,7 +111,6 @@ const WeeklyCalendarBody = () => {
       dispatch(fetchSchedule(thunkAPI));
     }
   }, [holidays, currentDate]);
-
 
   function renderHoliday() {
     const holidayResult: Week[] = [];
