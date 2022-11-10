@@ -1,7 +1,6 @@
 package com.meetup.backend.entity.party;
 
 import com.meetup.backend.entity.BaseEntity;
-import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,8 +26,8 @@ public class Party extends BaseEntity {
     @OneToMany(mappedBy = "party", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PartyUser> partyUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PartySchedule> partySchedules = new ArrayList<>();
+    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PartyMeeting> partyMeetings = new ArrayList<>();
 
     public Party(String name) {
         this.name = name;
