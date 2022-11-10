@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { axiosInstance } from '../components/auth/axiosConfig';
 import { Navigate } from 'react-router-dom';
 
+import { useDidMountEffect } from '../hooks/useDidMountEffect';
+
 interface User {
   id: string;
   nickname: string;
@@ -29,7 +31,7 @@ function Admin() {
     setGet(false);
   };
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     axiosInstance.post('/admin/role', [post]).then((res) => {
       setGet(true);
     });

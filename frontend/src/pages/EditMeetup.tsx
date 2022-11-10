@@ -6,7 +6,6 @@ import { axiosInstance } from '../components/auth/axiosConfig';
 import Spinner from '../components/common/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { setDeleteModalOpen } from '../stores/modules/modal';
-import DeleteModal from '../components/modal/DeleteModal';
 
 interface Channel {
   id: number;
@@ -103,17 +102,9 @@ function EditChannel() {
               {open ? (
                 <div className="flex absolute z-30 items-start">
                   <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
-                  <svg
-                    onClick={openColor}
-                    xmlns="https://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="3"
-                    stroke="#6C91F4"
-                    className="w-6 h-6 cursor-pointer ml-2"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg>
+                  <button onClick={openColor} className="ml-1 bg-primary text-background px-2 text-s rounded">
+                    선택
+                  </button>
                 </div>
               ) : (
                 <div></div>
