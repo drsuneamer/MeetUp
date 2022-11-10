@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seongmin on 2022/11/09
+ * updated by seongmin on 2022/11/10
  */
 @Getter
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public enum ExceptionEnum {
     TOO_SHORT_DURATION(BAD_REQUEST, "40011", "시작시간과 종료시각의 차이가 30분 이하입니다."),
 
     TEAM_USER_NOT_FOUND(BAD_REQUEST, "40012", "유저가 속한 팀 정보를 찾을 수 없습니다."),
+    PARTY_NOT_FOUND(BAD_REQUEST, "40013", "해당 그룹을 찾을 수 없습니다."),
 
     EMPTY_CREDENTIAL(UNAUTHORIZED, "40101", "인증 정보가 없습니다."),
 
@@ -55,6 +56,7 @@ public enum ExceptionEnum {
     MEETUP_ACCESS_DENIED(FORBIDDEN, "40306", "해당 밋업 작업에 대한 권한이 없습니다."),
 
     MM_FORBIDDEN(FORBIDDEN, "40307", "해당 mattermost api 권한이 없습니다."),
+    PARTY_ACCESS_DENIED(FORBIDDEN, "40308", "해당 그룹에 대한 권한이 없습니다."),
 
     DUPLICATE_NICKNAME(CONFLICT, "40901", "닉네임이 중복됩니다."),
 
