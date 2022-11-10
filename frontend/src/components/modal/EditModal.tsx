@@ -48,7 +48,11 @@ const EditModal = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
-  const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
+  const newDate = () => {
+    const dateTime = scheduleDetail.start.slice(0,10) 
+    return dateTime
+  }
+  const [date, setDate] = useState<string>(newDate());
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -161,6 +165,11 @@ const EditModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
+
+  // const newDate = () => {
+  //   const dateTime = scheduleDetail.start.slice(0,10) 
+  //   return dateTime
+  // }
 
   const [checked, setChecked] = useState(false);
 
@@ -335,21 +344,21 @@ const EditModal = () => {
     open: checked,
   };
 
-  // const handleEditMeeting = async () => {
-  //   if (!parsedMeetingData.title) {
-  //     alert('제목은 필수 입력사항입니다');
-  //   } else {
-  //     const action = await dispatch(editMeetingDetail(parsedMeetingData));
-  //     if (isFulfilled(action)) {
-  //       console.log()
-  //       handleToggleModal();
-  //       // dispatch(setDetailModalOpen('myMeeting'));
-  //     }
-  //   } 
-  // };
-  const handleEditMeeting = () => {
-    console.log(parsedMeetingData)
-  }
+  const handleEditMeeting = async () => {
+    if (!parsedMeetingData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else {
+      const action = await dispatch(editMeetingDetail(parsedMeetingData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        // dispatch(setDetailModalOpen('myMeeting'));
+      }
+    } 
+  };
+  // const handleEditMeeting = () => {
+  //   console.log(parsedMeetingData)
+  // }
 
   const handleEditSchedule = async () => {
     if(!parsedData.title) {
