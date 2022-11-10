@@ -60,8 +60,6 @@ public class MeetUpController {
     @GetMapping("/channel/{teamId}")
     @ApiOperation(value = "팀 ID에 해당하는 채널 목록 가져오기")
     public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") @NotBlank String teamId) {
-        log.info("채널 리스트 반환");
-        log.info("teamId = {}", teamId);
         return ResponseEntity.status(OK).body(channelUserService.getChannelByUser(authService.getMyInfoSecret().getId(), teamId));
     }
 
@@ -118,8 +116,6 @@ public class MeetUpController {
     @GetMapping("/userList/{teamId}")
     @ApiOperation(value = "채널 생성 후 참여할 유저 선택을 위해 해당 팀에 참여중인 인원 가져오기")
     public ResponseEntity<?> getUserByTeam(@PathVariable("teamId") String teamId) {
-        log.info("팀 멤버 리스트 반환");
-        log.info("teamId = {}", teamId);
         String userId = authService.getMyInfoSecret().getId();
         String mmSessionToken = authService.getMMSessionToken(userId);
         return ResponseEntity.status(OK).body(teamUserService.getUserByTeam(mmSessionToken, teamId));
@@ -161,7 +157,6 @@ public class MeetUpController {
     @GetMapping("/team/activate")
     @ApiOperation(value = "사용자가 참여한 모든 팀 가져오기 (비활성화 된 팀 포함)")
     public ResponseEntity<?> getAllTeamByUserId() {
-        log.info("팀 목록 반환");
         return ResponseEntity.status(OK).body(teamUserService.getActivateTeamByUser(authService.getMyInfoSecret().getId()));
     }
 
