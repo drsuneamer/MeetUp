@@ -19,6 +19,7 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
+import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
@@ -136,10 +137,8 @@ public class MeetingServiceImpl implements MeetingService {
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
 
-            BufferedInputStream entity = (BufferedInputStream) directChannelResponse.getEntity();
-            JSONTokener tokener = new JSONTokener(entity);
-            JSONObject jsonObject = new JSONObject(tokener);
-            String id = (String) jsonObject.get("id");
+            JSONObject resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            String id = resObj.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
             if (dmResponse.getStatus() == 201) {
@@ -205,10 +204,8 @@ public class MeetingServiceImpl implements MeetingService {
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
 
-            BufferedInputStream entity = (BufferedInputStream) directChannelResponse.getEntity();
-            JSONTokener tokener = new JSONTokener(entity);
-            JSONObject jsonObject = new JSONObject(tokener);
-            String id = (String) jsonObject.get("id");
+            JSONObject resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            String id = resObject.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
             if (dmResponse.getStatus() == 201) {

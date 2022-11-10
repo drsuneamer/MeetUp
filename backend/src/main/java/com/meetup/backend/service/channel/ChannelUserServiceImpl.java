@@ -61,6 +61,8 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
 
         for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
+            if (!channelUser.getChannel().getTeam().getId().equals(teamId))
+                continue;
             channelResponseDtoList.add(ChannelResponseDto.of(channelUser.getChannel()));
         }
 
