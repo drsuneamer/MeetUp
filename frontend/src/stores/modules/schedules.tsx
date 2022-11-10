@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tSchedule, tScheduleDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import { Navigate } from 'react-router-dom';
 
 type scheduleInitialState = {
   loading: boolean;
@@ -75,7 +74,7 @@ const initialState: scheduleInitialState = {
       managerName: '',
       diffWebex: '',
       myWebex: '',
-    }
+    },
   },
 };
 
@@ -92,7 +91,7 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
 });
 
 export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (thunkAPI: any) => {
-  const res = await axiosInstance
+  await axiosInstance
     .post('/schedule', thunkAPI)
     .then((res) => {
       return res.data;
@@ -105,16 +104,13 @@ export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (
 });
 
 export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (thunkAPI: any) => {
-  // console.log(thunkAPI);
-  try {
-    const res = await axiosInstance.post('/meeting ', thunkAPI).then((res) => {
+  await axiosInstance
+    .post('/meeting ', thunkAPI)
+    .then((res) => {
       // console.log('meeting data created: ', res);
       return res.data;
-    });
-    return res.data;
-  } catch (err) {
-    console.log(err);
-  }
+    })
+    .catch((err) => console.log(err));
 });
 
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
