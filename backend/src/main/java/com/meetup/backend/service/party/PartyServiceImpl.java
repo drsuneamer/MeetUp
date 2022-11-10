@@ -76,4 +76,17 @@ public class PartyServiceImpl implements PartyService {
                 .map(partyUser -> UserInfoDto.of(partyUser.getUser()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public void deleteParty(String userId, Long partyId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        Party party = partyRepository.findById(partyId).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+        PartyUser partyUser = partyUserRepository.findByUserAndParty(user, party).orElseThrow(() -> new ApiException(PARTY_ACCESS_DENIED));
+        if (partyUser.isLeader()) {
+            partyRepository.delete(party);
+        } else {
+            partyUserRepository.delete(partyUser);
+        }
+    }
 }

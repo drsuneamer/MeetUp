@@ -16,4 +16,6 @@ public interface PartyService {
     List<PartyResponseDto> getMyParty(String userId);
 
     List<UserInfoDto> getPartyMembers(String userId, Long partyId);
+
+    void deleteParty(String userId, Long partyId);
 }
