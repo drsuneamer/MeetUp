@@ -3,6 +3,7 @@ import { useAppDispatch } from '../../stores/ConfigHooks';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
 import LogoImage from '../../assets/logo_title.png';
 import DeleteModal from '../modal/DeleteModal';
+import CreateGroupModal from '../modal/CreateGroupModal';
 
 function Header() {
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ function Header() {
 
   return (
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
+      <CreateGroupModal />
       <DeleteModal />
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
         <div className="flex items-center cursor-pointer" onClick={navTo}>
