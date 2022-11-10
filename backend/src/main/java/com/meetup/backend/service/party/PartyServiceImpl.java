@@ -59,7 +59,7 @@ public class PartyServiceImpl implements PartyService {
         List<PartyUser> myPartyList = partyUserRepository.findByUser(user);
 
         return myPartyList.stream()
-                .map(partyUser -> PartyResponseDto.of(partyUser.getParty()))
+                .map(PartyResponseDto::of)
                 .collect(Collectors.toList());
     }
 

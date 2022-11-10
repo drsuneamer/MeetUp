@@ -13,10 +13,11 @@ import lombok.Getter;
 public class PartyResponseDto {
     private Long id;
     private String name;
+    private boolean leader;
     // 그룹 색?
 
-    public static PartyResponseDto of(Party party) {
-        return new PartyResponseDto(party.getId(), party.getName());
+    public static PartyResponseDto of(PartyUser partyUser) {
+        return new PartyResponseDto(partyUser.getParty().getId(), partyUser.getParty().getName(), partyUser.isLeader());
 
     }
 }
