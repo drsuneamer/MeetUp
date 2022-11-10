@@ -22,6 +22,7 @@ function CreateMeetup() {
   const [lv1Categories, setLv1] = useState<any>([]);
   const [lv2Categories, setLv2] = useState<any>([]);
 
+  // 전체 팀 목록 가져오기
   useEffect(() => {
     axiosInstance.get('meetup/team').then((res) => {
       setLv1(res.data);
@@ -36,6 +37,7 @@ function CreateMeetup() {
     }
   }
 
+  // 팀을 선택하면 채널 목록 가져오기
   useEffect(() => {
     axiosInstance.get(`/meetup/channel/${teamId}`).then((res) => {
       setLv2(res.data);
@@ -166,20 +168,9 @@ function CreateMeetup() {
               {open ? (
                 <div className="flex absolute z-30 items-start">
                   <ColorPicker color={color} onChange={(color) => setColor(color.hex)} />
-                  <button onClick={openColor} className="ml-1 bg-primary text-background px-2 text-xs rounded">
+                  <button onClick={openColor} className="ml-1 bg-primary text-background px-2 text-s rounded">
                     선택
                   </button>
-                  {/* <svg
-                    onClick={openColor}
-                    xmlns="https://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="3"
-                    stroke="#6C91F4"
-                    className="w-6 h-6 cursor-pointer ml-2"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                  </svg> */}
                 </div>
               ) : (
                 <div></div>

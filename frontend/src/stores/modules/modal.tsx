@@ -12,6 +12,7 @@ type ModalInitialState = {
   memberListModalIsOpen: boolean; // 밋업 관리하기의 밋업 클릭 시 멤버 리스트 확인
   deleteModalIsOpen: boolean; // 로그아웃 / 삭제 확인 모달
   deleteModalType: string[]; // 0번 인덱스에는 로그아웃/삭제 여부를, 1번 인덱스에는 어떤 것을 삭제하는지
+  createGroupModalIsOpen: boolean; // 마이페이지 안의 그룹 생성 모달 (더하기버튼)
 };
 
 const initialState: ModalInitialState = {
@@ -24,6 +25,7 @@ const initialState: ModalInitialState = {
   memberListModalIsOpen: false,
   deleteModalIsOpen: false,
   deleteModalType: [],
+  createGroupModalIsOpen: false,
 };
 
 const modalSlice = createSlice({
@@ -37,7 +39,7 @@ const modalSlice = createSlice({
       state.detailModalIsOpen = !state.detailModalIsOpen;
       state.modalType = action.payload;
     },
-    setEditModalOpen: (state,action) => {
+    setEditModalOpen: (state, action) => {
       state.editModalIsOpen = !state.editModalIsOpen;
       state.editModalType = action.payload;
     },
@@ -51,11 +53,21 @@ const modalSlice = createSlice({
       state.deleteModalIsOpen = !state.deleteModalIsOpen;
       state.deleteModalType = action.payload;
     },
+    setCreateGroupModalOpen: (state) => {
+      state.createGroupModalIsOpen = !state.createGroupModalIsOpen;
+    },
   },
 });
 
 const { reducer } = modalSlice;
 export const ModalSelector = (state: any) => state.modal;
-export const { setEventModalOpen, setDetailModalOpen, setEditModalOpen, setWebexModalOpen, setMemberListModalOpen, setDeleteModalOpen } =
-  modalSlice.actions;
+export const {
+  setEventModalOpen,
+  setDetailModalOpen,
+  setEditModalOpen,
+  setWebexModalOpen,
+  setMemberListModalOpen,
+  setDeleteModalOpen,
+  setCreateGroupModalOpen,
+} = modalSlice.actions;
 export default reducer;
