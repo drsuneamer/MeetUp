@@ -94,7 +94,7 @@ const DetailModal = () => {
                 <>
                   <div className="mt-[20px] flex ">
                     <div className="text-s text-title font-bold mr-[15px]">신청자</div>
-                    <p className="font-bold">{scheduleDetail.userName}</p>
+                    <p>{scheduleDetail.userName}</p>
                   </div>
                 </>
               ) : null}
