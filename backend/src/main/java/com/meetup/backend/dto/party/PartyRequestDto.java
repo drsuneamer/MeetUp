@@ -1,5 +1,6 @@
 package com.meetup.backend.dto.party;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class PartyRequestDto {
 
     @NotBlank(message = "그룹 이름은 필수 입력값입니다.")
