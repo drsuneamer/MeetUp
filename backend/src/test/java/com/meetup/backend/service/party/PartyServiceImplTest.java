@@ -11,6 +11,7 @@ import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,7 @@ class PartyServiceImplTest {
     private PartyUserRepository partyUserRepository;
 
     private Party party1;
+    private Party party2;
 
     @BeforeEach
     void before() {
@@ -81,7 +83,7 @@ class PartyServiceImplTest {
         party1.addPartyUser(new PartyUser(user2, party1, false));
         party1.addPartyUser(new PartyUser(user3, party1, false));
 
-        Party party2 = new Party("두번째 그룹");
+        party2 = new Party("두번째 그룹");
         party2.addPartyUser(new PartyUser(user1, party2, false));
         party2.addPartyUser(new PartyUser(user2, party2, true));
         party2.addPartyUser(new PartyUser(user3, party2, false));
@@ -89,6 +91,13 @@ class PartyServiceImplTest {
 
         partyRepository.save(party1);
         partyRepository.save(party2);
+    }
+
+    @AfterEach
+    void after() {
+        partyUserRepository.deleteAll();
+        partyRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -125,5 +134,21 @@ class PartyServiceImplTest {
 
         assertThat(partyMembers.size()).isEqualTo(2);
         assertThat(partyMembers.stream().map(UserInfoDto::getId).collect(Collectors.toList())).contains("user2").contains("user3");
+    }
+
+    @Test
+    @DisplayName("그룹 삭제")
+    void deleteParty() {
+        User user1 = userRepository.findById("user1").get();
+
+        assertThat(partyRepository.findById(party1.getId())).isNotEmpty();
+        assertThat(partyUserRepository.findByParty(party2).size()).isEqualTo(4);
+
+        partyService.deleteParty(user1.getId(), party1.getId()); // 그룹 리더가 그룹 삭제
+        partyService.deleteParty(user1.getId(), party2.getId()); // 그룹원이 그룹 나가기
+
+        assertThat(partyRepository.findById(party1.getId())).isEmpty();
+        assertThat(partyUserRepository.findByParty(party2).size()).isEqualTo(3);
+        assertThat(partyUserRepository.findByParty(party2).stream().map(PartyUser::getUser).collect(Collectors.toList())).doesNotContain(user1);
     }
 }
