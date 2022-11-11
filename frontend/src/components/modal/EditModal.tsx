@@ -48,11 +48,7 @@ const EditModal = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
-  const newDate = () => {
-    const dateTime = scheduleDetail.start.slice(0,10) 
-    return dateTime
-  }
-  const [date, setDate] = useState<string>(newDate());
+  const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -60,6 +56,10 @@ const EditModal = () => {
   // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   
+  const newDate = () => {
+    const dateTime = scheduleDetail.start.slice(0,10) 
+    return dateTime
+  }
   const changeToStartTime = () => {
     const newStartTime = {value:'', label:''}
     const newTime = scheduleDetail.start.slice(11,16)
@@ -127,6 +127,7 @@ const EditModal = () => {
 
   // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
+  
 
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
@@ -141,8 +142,11 @@ const EditModal = () => {
     const minute = startTimeValue.slice(2, 4) + ':';
     const startTimeResult = hour + minute + '00';
     const start = date + ' ' + startTimeResult;
+
     return start;
   };
+
+
 
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
@@ -170,6 +174,14 @@ const EditModal = () => {
   //   const dateTime = scheduleDetail.start.slice(0,10) 
   //   return dateTime
   // }
+
+  useEffect(()=>{
+    newStartTime()
+  }, [date, start])
+
+  useEffect(() => {
+    newEndTime()
+  },[date, end])
 
   const [checked, setChecked] = useState(false);
 
@@ -214,6 +226,7 @@ const EditModal = () => {
   useEffect(() => {
     setTitle(scheduleDetail.title);
     setContent(scheduleDetail.content);
+    setDate(newDate());
     setStartTime(start);
     setEndTime(end);
   },[scheduleDetail])
@@ -354,23 +367,42 @@ const EditModal = () => {
         handleToggleModal();
         // dispatch(setDetailModalOpen('myMeeting'));
       }
-    } 
+    }
+    if (!parsedMeetingData.meetupId) {
+      alert('참여중인 밋업은 필수 입력사항입니다');
+    } else if (parsedMeetingData) {
+      const action = await dispatch(editMeetingDetail(parsedMeetingData));
+      if (isFulfilled(action)) {
+        console.log()
+        handleToggleModal();
+        // dispatch(setDetailModalOpen('myMeeting'));
+      }
+    }
   };
+
   // const handleEditMeeting = () => {
+  //   console.log(newDate())
+  //   console.log(newStartTime())
+  //   console.log('------데이터 들어오는거 확인-----')
   //   console.log(parsedMeetingData)
   // }
 
-  const handleEditSchedule = async () => {
-    if(!parsedData.title) {
-      alert('제목은 필수 입력사항입니다')
-    } else if (parsedData) {
-      const action = await dispatch(editScheduleDetail(parsedData));
-      if (isFulfilled(action)) {
-        // handleToggleModal()
-      } else if (isRejected(action)) {
-        console.log(action);
-      }
-    }
+  // const handleEditSchedule = async () => {
+  //   if(!parsedData.title) {
+  //     alert('제목은 필수 입력사항입니다')
+  //   } else if (parsedData) {
+  //     const action = await dispatch(editScheduleDetail(parsedData));
+  //     if (isFulfilled(action)) {
+  //       // handleToggleModal()
+  //     } else if (isRejected(action)) {
+  //       console.log(action);
+  //     }
+  //   }
+  // }
+
+  const handleEditSchedule = () => {
+    console.log(parsedData)
+    console.log(newStartTime())
   }
 
   // const handleEditEvent = () => {
