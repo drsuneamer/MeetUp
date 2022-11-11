@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { axiosInstance } from '../components/auth/axiosConfig';
 import { Navigate } from 'react-router-dom';
 
+import { useDidMountEffect } from '../hooks/useDidMountEffect';
+
 interface User {
   id: string;
   nickname: string;
@@ -29,7 +31,7 @@ function Admin() {
     setGet(false);
   };
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     axiosInstance.post('/admin/role', [post]).then((res) => {
       setGet(true);
     });
@@ -82,13 +84,30 @@ function Admin() {
     window.location.reload();
   };
 
+  const logout = () => {
+    alert('로그아웃');
+    window.localStorage.clear();
+  };
+
   return (
     <div>
       {/* 헤더 */}
       <div onClick={reload} className="fixed relative flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line">
         <img className="h-s ml-2" src={LogoImage} alt="logo" />
         <button className="bg-footer rounded absolute left-[180px] mt-1 px-2 drop-shadow-shadow">동기화</button>
-        <div className="font-bold cursor-default mr-4">관리자</div>
+        <div className="flex">
+          <div className="font-bold cursor-default mr-1">관리자</div>
+          <svg
+            xmlns="https://www.w3.org/2000/svg"
+            fill="none"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6 pt-0.5 cursor-pointer mr-4 z-5"
+            onClick={logout}
+          >
+            <path d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+          </svg>
+        </div>
       </div>
 
       {/* 내용 */}

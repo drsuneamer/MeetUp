@@ -130,7 +130,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        if (!allScheduleResponseDto.isPossibleRegister(start, end))
+        if (!allScheduleResponseDto.isPossibleRegister(start, end, scheduleUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
         schedule.update(scheduleUpdateRequestDto);
@@ -178,6 +178,9 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        if (p == 1) {
+            from = from.minusDays(p);
+        }
         LocalDateTime to = from.plusDays(p);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 

@@ -19,6 +19,7 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
+import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.converter.StringToLocalDateTime;
 import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
@@ -42,7 +43,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/09
+ * updated by seongmin on 2022/11/10
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -135,11 +136,15 @@ public class MeetingServiceImpl implements MeetingService {
             Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
-
-            BufferedInputStream entity = (BufferedInputStream) directChannelResponse.getEntity();
-            JSONTokener tokener = new JSONTokener(entity);
-            JSONObject jsonObject = new JSONObject(tokener);
-            String id = (String) jsonObject.get("id");
+            JSONObject resObj = new JSONObject();
+            try {
+                resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                e.printStackTrace();
+            }
+            String id = resObj.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
             if (dmResponse.getStatus() == 201) {
@@ -204,11 +209,15 @@ public class MeetingServiceImpl implements MeetingService {
             Response directChannelResponse = client.createDirectChannel(userId, meetup.getManager().getId()).getRawResponse();
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
-
-            BufferedInputStream entity = (BufferedInputStream) directChannelResponse.getEntity();
-            JSONTokener tokener = new JSONTokener(entity);
-            JSONObject jsonObject = new JSONObject(tokener);
-            String id = (String) jsonObject.get("id");
+            JSONObject resObject = new JSONObject();
+            try {
+                resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                e.printStackTrace();
+            }
+            String id = resObject.getString("id");
 
             Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
             if (dmResponse.getStatus() == 201) {
@@ -254,7 +263,9 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
-        from = from.minusDays(p);
+        if (p == 1) {
+            from = from.minusDays(p);
+        }
         LocalDateTime to = from.plusDays(p);
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 

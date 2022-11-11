@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tSchedule, tScheduleDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
-import { Navigate } from 'react-router-dom';
 
 type scheduleInitialState = {
   loading: boolean;
@@ -13,7 +12,6 @@ type scheduleInitialState = {
   };
   scheduleModal: {
     scheduleDetail: tScheduleDetail; // 일정 등록 디테일
-    // meetingDetail: tMeetingDetail; // 미팅 등록 디테일
   };
 };
 
@@ -72,27 +70,13 @@ const initialState: scheduleInitialState = {
       content: '',
       userId: '',
       userName: '',
+      managerId: '',
+      managerName: '',
       diffWebex: '',
       myWebex: '',
       meetupId: 0,
       open: false,
     },
-    // meetingDetail: {
-    //   id: 0,
-    //   start: '',
-    //   end: '',
-    //   title: '',
-    //   content: '',
-    //   userId: '',
-    //   userName: '',
-    //   userWebex: '',
-    //   meetupId: '',
-    //   meetupName: '',
-    //   meetupColor: '',
-    //   meetupAdminUserId: '',
-    //   meetupAdminUserName: '',
-    //   meetupAdminUserWebex: '',
-    // },
   },
 };
 
@@ -109,7 +93,7 @@ export const fetchSchedule = createAsyncThunk('schedule/fetch', async (thunkAPI:
 });
 
 export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (thunkAPI: any) => {
-  const res = await axiosInstance
+  await axiosInstance
     .post('/schedule', thunkAPI)
     .then((res) => {
       return res.data;
@@ -122,22 +106,19 @@ export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (
 });
 
 export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (thunkAPI: any) => {
-  // console.log(thunkAPI);
-  try {
-    const res = await axiosInstance.post('/meeting ', thunkAPI).then((res) => {
+  await axiosInstance
+    .post('/meeting ', thunkAPI)
+    .then((res) => {
       // console.log('meeting data created: ', res);
       return res.data;
-    });
-    return res.data;
-  } catch (err) {
-    console.log(err);
-  }
+    })
+    .catch((err) => console.log(err));
 });
 
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      // console.log('my schedule detail fetched: ', res.data);
+      console.log('my schedule detail fetched: ', res.data);
       return res.data;
     });
     return res;
@@ -148,7 +129,6 @@ export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', a
 
 export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', async (thunkAPI: any) => {
   try {
-    // console.log('안된다');
     const res = await axiosInstance.patch('/meeting', thunkAPI).then((res) => {
       // console.log('my meeting detail edited: ', res.data);
       return res.data;

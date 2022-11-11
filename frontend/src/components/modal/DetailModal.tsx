@@ -41,72 +41,15 @@ const DetailModal = () => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  // const handleSubmit = () => {
-  //   const newEvent: NewEvent = {
-  //     date,
-  //     eventDetail: {
-  //       title: title !== '' ? title : '제목 없음',
-  //       start: startTime.value,
-  //       end: endTime.value,
-  //     },
-  //   };
-
-  //   dispatch(addEvent(newEvent));
-  //   handleToggleModal();
-  //   handleResetInput();
-  // };
-
-  // const handleResetInput = useCallback(() => {
-  //   setTitle('');
-  //   setDate(getStringDateFormat(new Date()));
-  //   setStartTime(startSelectOptions[0]);
-  //   setStartTimeIndex(0);
-  //   setEndTime(endSelectOptions[0]);
-  //   setEndTimeIndex(0);
-  // }, []);
-
-  // const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
-  //   const i = index as number;
-  //   setStartTimeIndex(i);
-  //   setStartTime(selected);
-  // }, []);
-
-  // const handleEndSelectClick = useCallback((selected: Option, index?: number) => {
-  //   setEndTimeIndex(index as number);
-  //   setEndTime(selected);
-  // }, []);
-
-  // const defaultProps = {
-  //   options: channels,
-  //   getOptionLabel: (option: ChannelOptionType) => option.title,
-  // };
-  // const flatProps = {
-  //   options: channels.map((option) => option.title),
-  // };
-  // const [value, setValue] = React.useState<ChannelOptionType | null>(null);
-  
-
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
-    // dispatch(setDetailModalOpen());
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId))
     handleToggleModal();
-    // console.log(detailModalIsOpen);
-    // setModalType('edit Meeting')
-    // console.log(editModalIsOpen);
-    // console.log(editModalIsOpen);
-    // console.log(meetingDetail)
-    // console.log('안녕')
-    // console.log(meetingDetail.start)
-    // console.log(scheduleDetail.id)
-   
-    // console.log(modalType);
   }
-  // const meetingId = useSelector(detailSelector).scheduleModal.meetingDetail.id;
 
   const editSchedule = () => {
     dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.userId))
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId))
     handleToggleModal(); 
   }
   const deleteMeeting = () => {
@@ -120,7 +63,6 @@ const DetailModal = () => {
   };
 
   if ( scheduleDetail ) {
-
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
@@ -148,6 +90,14 @@ const DetailModal = () => {
                 <p className="font-bold">{scheduleDetail.title}</p>
               )}
             </div>
+              {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
+                <>
+                  <div className="mt-[20px] flex ">
+                    <div className="text-s text-title font-bold mr-[15px]">신청자</div>
+                    <p>{scheduleDetail.userName}</p>
+                  </div>
+                </>
+              ) : null}
             <div className="mt-[20px] flex">
               <div className="text-s text-title font-bold mr-[15px]">날짜</div>
               {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
@@ -185,7 +135,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.userName}</p> 
+                        <p className="font-bold">{scheduleDetail.managerName}</p> 
                       </a>
                     </div>
                   </div>

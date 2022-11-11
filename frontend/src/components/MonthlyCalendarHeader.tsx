@@ -4,7 +4,7 @@ import IconLeft from './common/IconLeft';
 import IconRight from './common/IconRight';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { setCurrentDate, setToday } from '../stores/modules/dates';
-import { setMyCalendar } from '../stores/modules/mycalendar';
+import { setMyCalendar, toCurrentTime } from '../stores/modules/mycalendar';
 // import { calendarSelector } from '../stores/modules/meetups';
 import { axiosInstance } from './auth/axiosConfig';
 import { useParams } from 'react-router-dom';
@@ -17,6 +17,10 @@ const Header = () => {
   const dispatch = useAppDispatch();
   // const [isMyCalendar, setIsMyCalendar] = useState(false)
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
+
+  const toTime = () => {
+    dispatch(toCurrentTime(true));
+  };
 
   const userId = window.localStorage.getItem('id');
   const url = `/calendar/${userId}`;
@@ -77,14 +81,18 @@ const Header = () => {
       <header className="flex flex-col relative items-center px-4 justify-center w-full h-[80px] mt-[50px]">
         <img src={webexIcon} alt="webex-icon" className="absolute left-0 w-9 cursor-pointer" onClick={handleWebexModal} />
         {myCalendar ? (
-          <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 캘린더</div>
+          <div className="absolute left-10  bg-point py-1 px-8 drop-shadow-button rounded text-background">나의 캘린더</div>
         ) : (
           <>
-            <div className="absolute left-10 bg-point py-1 px-8 drop-shadow-button rounded text-background">{nickname}의 캘린더</div>
-            <a href={url} className='absolute right-3 top-6 text-title font-semibold cursor-pointer'>🗓️내 캘린더로 돌아가기</a>
+            <div className="absolute left-10 bg-point w-[27%] text-center py-1 px-4 drop-shadow-button rounded text-background truncate">
+              {nickname}의 캘린더
+            </div>
+            <a href={url} className="absolute right-3 top-6 text-title font-semibold cursor-pointer">
+              🗓️내 캘린더로 돌아가기
+            </a>
           </>
         )}
-        
+
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />
@@ -96,10 +104,16 @@ const Header = () => {
             <IconRight className="w-8 h-8" />
           </Button>
         </div>
-        <Button onClick={handleTodayBtnClick} className="group rounded px-3 mr-5 ml-5 hover:bg-hover bg-primary text-[white]">
-          오늘
-          {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
-        </Button>
+        <div className="flex justify-center items-center text-center gap-1">
+          <Button onClick={handleTodayBtnClick} className="group rounded px-3 hover:bg-hover bg-primary text-[white]">
+            오늘
+            {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
+          </Button>
+          <Button onClick={toTime} className="group rounded px-3 hover:bg-hover bg-primary text-[white]">
+            현재시간
+            {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
+          </Button>
+        </div>
       </header>
     </>
   );

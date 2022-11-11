@@ -1,10 +1,10 @@
 package com.meetup.backend.repository.party;
 
-import com.meetup.backend.entity.party.PartySchedule;
+import com.meetup.backend.entity.party.PartyMeeting;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * created by seongmin on 2022/11/08
  */
-public interface PartyScheduleRepository extends JpaRepository<PartySchedule, Long> {
+public interface PartyMeetingRepository extends JpaRepository<PartyMeeting, Long> {
 }

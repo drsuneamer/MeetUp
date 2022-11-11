@@ -550,7 +550,7 @@ const EditModal = () => {
                 }`}>
                 <div className="text-s text-title font-bold">공개 설정</div>
                 <Switch checked={checked} onChange={switchHandler} />
-                {checked ? <span className="text-title text-xs">공개</span> : <span className="text-title text-xs">비공개</span>}
+                {checked ? <span className="text-title text-xs">공개: 알림받을 채널에 알림이 갑니다.</span> : <span className="text-title text-xs">비공개: 캘린더 주인에게 DM으로 알림이 갑니다.</span>}
               </div>
             </div>
             {editModalType === 'schedule'? (

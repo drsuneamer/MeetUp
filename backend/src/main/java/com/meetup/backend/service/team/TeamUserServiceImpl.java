@@ -13,6 +13,7 @@ import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
+import com.meetup.backend.service.AsyncService;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.exception.MattermostEx;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/10
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +53,9 @@ public class TeamUserServiceImpl implements TeamUserService {
 
     @Autowired
     private final TeamRepository teamRepository;
+
+    @Autowired
+    private final AsyncService asyncService;
 
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
@@ -173,19 +177,44 @@ public class TeamUserServiceImpl implements TeamUserService {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamUser> teamUserList = teamUserRepository.findByTeam(team);
 
-        List<UserListInTeamResponseDto> userListInTeamResponseDtoList = new ArrayList<>();
-        for (TeamUser teamUser : teamUserList) {
-            User user = teamUser.getUser();
-            UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
-            if (user.getNickname() == null) {
-                MattermostClient client = Client.getClient();
-                client.setAccessToken(mmSessionToken);
-                Response response = client.getUser(user.getId()).getRawResponse();
-                JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
-                userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
-            }
-            userListInTeamResponseDtoList.add(userListInTeamResponseDto);
-        }
-        return userListInTeamResponseDtoList;
+        List<UserListInTeamResponseDto> result = new ArrayList<>();
+
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(mmSessionToken);
+
+        asyncService.getResult(client, teamUserList).thenAccept(result::addAll).join();
+        return result;
+
+//        for (TeamUser teamUser : teamUserList) {
+//            log.info("idx = {}", idx++);
+//            User user = teamUser.getUser();
+//            UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
+//
+//            if (user.getNickname() != null) {
+//                continue;
+//            }
+//
+//
+//            // 비동기
+//            asyncService.getNickname(client, userListInTeamResponseDto).thenAccept(result::add);
+//
+//            Response response = client.getUser(user.getId()).getRawResponse();
+//            JSONObject userObj = new JSONObject();
+//            try {
+//                userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+//
+//            } catch (ClassCastException e) {
+//                log.error(e.getMessage());
+//                log.info("response.getEntity() = {}", response.getEntity());
+//                e.printStackTrace();
+//            }
+
+//            userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
+//            result.add(userListInTeamResponseDto);
+//            log.info("result.size = {}", result.size());
+//        }
+//        log.info("service 결과 result.size = {}", result.size());
+//
+//        return result;
     }
 }

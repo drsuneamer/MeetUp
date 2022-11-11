@@ -17,6 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -50,13 +58,31 @@ class UserServiceImplTest {
     @Value("${mattermost.password}")
     private String password;
 
+    @Value("${crypto.secret}")
+    private String secretKey;
+
+    @Value("${crypto.iv}")
+    private String iv;
+
     private String mmId;
 
     private String mmSessionToken;
 
     @BeforeEach
     void Before() {
-        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+        String encryptPassword;
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE,
+                    new SecretKeySpec(secretKey.getBytes(), "AES"),
+                    new IvParameterSpec(iv.getBytes()));
+
+            encryptPassword = new String(Base64.getEncoder().encode(cipher.doFinal(password.getBytes("UTF-8"))));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, encryptPassword));
         mmId = loginResponse.getId();
         mmSessionToken = redisUtil.getData(mmId);
     }
@@ -110,8 +136,7 @@ class UserServiceImplTest {
     @Test
     @DisplayName("닉네임 불러오기")
     void getNickname() {
-
-        assertThat(userService.getNickname(mmId)).isNotNull();
+        assertThat(userService.getNickname(mmId, mmSessionToken)).isEqualTo(userRepository.findById(mmId).get().getNickname());
 
     }
 

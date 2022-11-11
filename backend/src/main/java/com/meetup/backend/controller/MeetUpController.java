@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class MeetUpController {
 
     @GetMapping("/channel/{teamId}")
     @ApiOperation(value = "팀 ID에 해당하는 채널 목록 가져오기")
-    public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") String teamId) {
+    public ResponseEntity<?> getChannelByUserId(@PathVariable("teamId") @NotBlank String teamId) {
         return ResponseEntity.status(OK).body(channelUserService.getChannelByUser(authService.getMyInfoSecret().getId(), teamId));
     }
 
@@ -112,7 +113,7 @@ public class MeetUpController {
 
     }
 
-    @GetMapping("/channel/userList/{teamId}")
+    @GetMapping("/userList/{teamId}")
     @ApiOperation(value = "채널 생성 후 참여할 유저 선택을 위해 해당 팀에 참여중인 인원 가져오기")
     public ResponseEntity<?> getUserByTeam(@PathVariable("teamId") String teamId) {
         String userId = authService.getMyInfoSecret().getId();
@@ -156,7 +157,6 @@ public class MeetUpController {
     @GetMapping("/team/activate")
     @ApiOperation(value = "사용자가 참여한 모든 팀 가져오기 (비활성화 된 팀 포함)")
     public ResponseEntity<?> getAllTeamByUserId() {
-
         return ResponseEntity.status(OK).body(teamUserService.getActivateTeamByUser(authService.getMyInfoSecret().getId()));
     }
 

@@ -192,8 +192,15 @@ public class UserServiceImpl implements UserService {
             MattermostClient client = Client.getClient();
             client.setAccessToken(mmSessionToken);
             Response response = client.getUser(userId).getRawResponse();
-            JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
-            return userObj.getString("nickname");
+            try {
+                JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+                return userObj.getString("nickname");
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("response.getEntity() = {}", response.getEntity());
+                e.printStackTrace();
+                return "";
+            }
         }
     }
 //
