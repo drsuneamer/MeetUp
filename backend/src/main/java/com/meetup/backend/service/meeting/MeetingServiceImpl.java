@@ -124,7 +124,7 @@ public class MeetingServiceImpl implements MeetingService {
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
-        String message = "### " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+        String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
         if (meetingRequestDto.isOpen()) {
             int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
             if (status == 201 || status == 200) {
@@ -193,8 +193,8 @@ public class MeetingServiceImpl implements MeetingService {
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" +
-                "### " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n"
-                + "#### 수정 후 \n" + "### " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+                "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n"
+                + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
 
         if (meetingUpdateRequestDto.isOpen()) {
@@ -239,6 +239,47 @@ public class MeetingServiceImpl implements MeetingService {
         // 로그인 유저가 미팅 관리자가 아니거나 신청자가 아니라면 삭제 불가
         if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
+        }
+
+
+        MattermostClient client = Client.getClient();
+
+        client.setAccessToken(authService.getMMSessionToken(userId));
+        String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
+//        String endTime = meeting.getEnd().toString().substring(11, 16);
+
+        String message = "### :boom: 미팅 취소 알림 :boom: \n" +
+                "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
+
+        if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
+            if (meeting.isOpen()) {
+                int status = client.createPost(new Post(meeting.getMeetup().getChannel().getId(), message)).getRawResponse().getStatus();
+                if (status == 201 || status == 200) {
+                    log.info("mattermost 미팅 취소 알림 보내기 성공 status = {}", status);
+                    meetingRepository.delete(meeting);
+                }
+                MattermostEx.apiException(status);
+            } else {
+                Response directChannelResponse = client.createDirectChannel(userId, meeting.getMeetup().getManager().getId()).getRawResponse();
+                int status = directChannelResponse.getStatus();
+                MattermostEx.apiException(status);
+                JSONObject resObject = new JSONObject();
+                try {
+                    resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                    log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                    e.printStackTrace();
+                }
+                String id = resObject.getString("id");
+
+                Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
+                if (dmResponse.getStatus() == 201) {
+                    meetingRepository.delete(meeting);
+                    log.info("mattermost 미팅 취소 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
+                }
+                MattermostEx.apiException(dmResponse.getStatus());
+            }
         }
         meetingRepository.delete(meeting);
     }
