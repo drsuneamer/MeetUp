@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * created by seongmin on 2022/11/10
+ * updated by seongmin on 2022/11/11
  */
 @Service
 @Slf4j
@@ -50,6 +51,7 @@ public class AsyncService {
             UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
 
             if (user.getNickname() != null) {
+                result.add(userListInTeamResponseDto);
                 continue;
             }
 
