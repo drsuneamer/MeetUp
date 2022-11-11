@@ -20,28 +20,24 @@ const DetailModal = () => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  // 일정 수정하기 버튼을 누르면 실행
-  const editSchedule = () => {
-    dispatch(setEditModalOpen('schedule'));
-    handleToggleModal();
-  };
-
-  // 밋업(미팅) 수정하기 버튼을 누르면 실행
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
     dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     handleToggleModal();
   };
 
-  // 스케줄 삭제하기 버튼을 누르면 실행
-  const deleteSchedule = () => {
-    dispatch(setDeleteModalOpen(['delete', 'schedule']));
+  const editSchedule = () => {
+    dispatch(setEditModalOpen('schedule'));
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    handleToggleModal();
+  };
+  const deleteMeeting = () => {
+    dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
   };
 
-  // 밋업(미팅) 삭제하기 버튼을 누르면 실행
-  const deleteMeeting = () => {
-    dispatch(setDeleteModalOpen(['delete', 'meeting']));
+  const deleteSchedule = () => {
+    dispatch(setDeleteModalOpen(['delete', 'schedule']));
     handleToggleModal();
   };
 
@@ -49,7 +45,7 @@ const DetailModal = () => {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
-          className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+          className="w-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
           }}
@@ -126,7 +122,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.userName}</p>
+                        <p className="font-bold">{localStorage.getItem('nickname')}</p>
                       </a>
                     </div>
                   </div>
