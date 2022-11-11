@@ -171,20 +171,12 @@ const EventModal = () => {
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
       alert('미팅명은 필수 입력사항입니다');
-    } else if (parsedMeetingData) {
-      const action = await dispatch(addMeeting(parsedMeetingData));
-      if (isFulfilled(action)) {
-        // handleToggleModal();
-        dispatch(fetchSchedule([userId, getSundayOfWeek()]));
-        console.log('왔다!');
-      }
-    }
-    if (!parsedMeetingData.meetupId) {
+    } else if (!parsedMeetingData.meetupId) {
       alert('참여중인 밋업은 필수 입력사항입니다');
     } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
-        // handleToggleModal();
+        handleToggleModal();
         dispatch(fetchSchedule([userId, getSundayOfWeek()]));
         console.log('왔다!');
       }
