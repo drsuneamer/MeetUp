@@ -14,6 +14,7 @@ import scheduleModal from './modules/schedules';
 import channelInfo from './modules/channelInfo';
 import alarmChannels from './modules/channelAlarm';
 import scheduleId from './modules/schedules';
+import groups from './modules/groups';
 
 const store = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ const store = configureStore({
     scheduleModal,
     alarmChannels,
     scheduleId,
+    groups,
   },
 });
 

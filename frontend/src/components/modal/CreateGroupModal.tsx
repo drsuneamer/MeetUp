@@ -6,8 +6,10 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useDidMountEffect } from '../../hooks/useDidMountEffect';
 import Chip from '@mui/material/Chip';
-import RemoveIcon from '@mui/icons-material/Remove';
+import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 
 interface Team {
   id: string;
@@ -26,36 +28,26 @@ interface Member {
 }
 
 function CreateGroupModal() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
   const [teamList, setTeamList] = useState([]);
-  const [teamNow, setTeamNow] = useState('');
-  const [name, setName] = useState('');
+  const [teamId, setTeamId] = useState('');
+  const [name, setName] = useState(''); // 그룹 이름
+  const [load, setLoad] = useState(false);
+  const [check, setChecked] = useState(false);
+  const [ph, setPh] = useState('데이터를 불러오는 중입니다.'); // 멤버 목록 placeholder
+  const [member, setMember] = useState<{ id: string; nickname: string }[]>([]);
+  const [val, setVal] = useState<Member[]>([]); // 현재 선택된 멤버들
+  const [memberId, setMemberId] = useState<string[]>([]);
   const [submit, setSubmit] = useState<Submit>({ name: '', members: [] });
 
-  const [load, setLoad] = useState(false);
-  const [ph, setPh] = useState('데이터를 불러오는 중입니다.');
-
-  const [member, setMember] = useState<{ id: string; nickname: string }[]>([]);
-  const getMembers = () => {
-    axiosInstance
-      .get(`meetup/userList/${teamNow}`)
-      .then((res) => {
-        setPh('멤버 목록');
-        setLoad(true);
-        setMember(res.data);
-      })
-      .catch((err) => {
-        setLoad(false);
-      });
-  };
-
-  console.log(teamNow);
-  useDidMountEffect(() => {
-    setPh('데이터를 불러오는 중입니다.');
-    setLoad(false);
-    getMembers();
-  }, [teamNow]);
+  // [1] 멤버를 선택할 팀 설정
+  // 렌더링과 동시에 활성화된 팀 목록만 가져옴
+  useEffect(() => {
+    axiosInstance.get('meetup/team').then((res) => {
+      setTeamList(res.data);
+    });
+  }, []);
 
   // 팀 드롭다운에 props로 넘기기 위해 사용
   const teamProps = {
@@ -63,35 +55,62 @@ function CreateGroupModal() {
     getOptionLabel: (option: Team) => option.displayName,
   };
 
-  useEffect(() => {
-    // 활성화된 팀만 가져옴
-    axiosInstance.get('meetup/team').then((res) => {
-      setTeamList(res.data);
-    });
-  }, []);
-
-  // 드롭다운에서 팀을 선택하면 id값 teamNow에 저장
+  // 팀 선택 시 id값 teamNow에 저장
   const selectTeam = (e: any, value: any): void => {
     if (value !== null) {
-      setTeamNow(value.id);
+      setTeamId(value.id);
     }
   };
 
+  // 드롭다운에서 팀을 선택하면 (teamNow값이 생기면) placeholder를 바꾸고 로딩 스피너를 띄움
+  useDidMountEffect(() => {
+    setPh('데이터를 불러오는 중입니다.');
+    setLoad(false);
+    getMembers();
+  }, [teamId]);
+
+  // 팀 선택 시 해당 멤버 요청
+  const getMembers = () => {
+    axiosInstance
+      .get(`meetup/userList/${teamId}`)
+      .then((res) => {
+        setPh('멤버 목록');
+        setLoad(true);
+        setChecked(true);
+        setMember(res.data);
+      })
+      .catch((err) => {
+        setLoad(false);
+      });
+  };
+
+  // 로딩 완료 후 체크 - 3초 뒤 사라짐
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setChecked(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [check]);
+
+  // [2] 그룹 이름 설정
   const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
-  const [val, setVal] = useState<Member[]>([]);
-  console.log(val);
-
+  // [3] 멤버 선택
   const valHtml = val.map((option: Member, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).
     const label: string = option.nickname;
     return (
+      // 각 멤버 닉네임 Chip
       <Chip
+        className="mr-1 mb-1 font-pre"
         key={index}
         label={label}
-        deleteIcon={<RemoveIcon />}
+        deleteIcon={<CloseIcon />}
         onDelete={() => {
           setVal(val.filter((entry) => entry !== option));
         }}
@@ -99,14 +118,48 @@ function CreateGroupModal() {
     );
   });
 
-  // 모달 닫힘 관리
+  useDidMountEffect(() => {
+    const m: string[] = [];
+    for (let i = 0; i < val.length; i++) {
+      if (val[i].id !== window.localStorage.getItem('id')) {
+        m.push(val[i].id);
+      }
+    }
+    if (m.length > 0) {
+      setMemberId(m);
+    }
+  }, [val]);
+
+  useDidMountEffect(() => {
+    setSubmit({ name: name, members: memberId });
+  }, [name, memberId]);
+
+  // [4] POST 요청
+  const onSubmit = () => {
+    axiosInstance
+      .post('/group', submit)
+      .then((res) => {
+        if (res.status === 201) {
+          handleToggleModal();
+          dispatch(fetchGroupList());
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.data.errorCode === '40907') {
+          alert('같은 이름의 그룹이 존재합니다');
+        }
+      });
+  };
+
+  // [*] 모달 닫힘 관리
   const { createGroupModalIsOpen } = useAppSelector((state) => state.modal);
   const handleToggleModal = useCallback(() => {
     dispatch(setCreateGroupModalOpen());
   }, [dispatch]);
 
   return (
-    <div className={`${createGroupModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+    <div className={`${createGroupModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center `}>
       <div className="w-[50vw] h-[70vh] bg-background z-10 rounded drop-shadow-shadow">
         <svg
           onClick={handleToggleModal}
@@ -127,6 +180,7 @@ function CreateGroupModal() {
           <div className="flex justify-center">
             {/*팀 선택 드롭다운 */}
             <Autocomplete
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={selectTeam}
               className="w-[40vw] border-b-title"
               ListboxProps={{ style: { maxHeight: '150px', fontSize: '13px', textAlign: 'center', fontFamily: 'pretendard' } }}
@@ -146,37 +200,44 @@ function CreateGroupModal() {
           <div className="text-s text-title font-bold">
             멤버 선택<span className="ml-1 text-cancel">&#42;</span>
           </div>
-          {teamNow ? (
-            <div className="flex items-center justify-center">
-              <div style={{ width: 500 }}>
-                <Autocomplete
-                  multiple
-                  id="tags-standard"
-                  freeSolo
-                  filterSelectedOptions
-                  options={member}
-                  onChange={(e, newValue: any) => setVal(newValue)}
-                  getOptionLabel={(option) => option.nickname}
-                  renderTags={(): any => {}}
-                  value={val}
-                  renderInput={(params) => <TextField {...params} variant="standard" placeholder={ph} margin="normal" fullWidth />}
-                />
+
+          {/* 팀이 선택되었을 때에만 멤버 드롭다운 레이아웃 보임 */}
+          {teamId ? (
+            <div className="items-center justify-center overflow-hidden">
+              <div className="flex">
+                <div style={{ width: 500, fontFamily: 'pretendard' }}>
+                  <Autocomplete
+                    multiple
+                    id="tags-standard"
+                    freeSolo
+                    filterSelectedOptions
+                    options={member}
+                    onChange={(e, newValue: any) => setVal(newValue)}
+                    getOptionLabel={(option) => option.nickname}
+                    renderTags={(): any => {}}
+                    value={val}
+                    ListboxProps={{ style: { maxHeight: '150px', fontSize: '13px', textAlign: 'center', fontFamily: 'pretendard' } }}
+                    renderInput={(params) => <TextField {...params} variant="standard" placeholder={ph} margin="normal" fullWidth />}
+                  />
+                </div>
+                {!load ? <CircularProgress sx={{ color: '#0552AC', position: 'absolute', right: '8%' }} size="1.5rem" /> : ''}
+                {check ? (
+                  <svg
+                    xmlns="https://www.w3.org/2000/svg"
+                    fill="none"
+                    strokeWidth="2"
+                    stroke="#0552AC"
+                    className="w-6 h-6 animate-bounce absolute right-10"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                ) : (
+                  ''
+                )}
+              </div>
+              <div className="relative h-[12vh] overflow-y-scroll">
                 <div className="selectedTags">{valHtml}</div>
               </div>
-              {!load ? (
-                <CircularProgress sx={{ color: 'blue' }} size="1.5rem" />
-              ) : (
-                <svg
-                  xmlns="https://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="blue"
-                  className="w-6 h-6 animate-bounce"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                </svg>
-              )}
             </div>
           ) : (
             <div className="mt-2">팀을 선택해주세요</div>
@@ -184,7 +245,7 @@ function CreateGroupModal() {
         </div>
         <div className="flex justify-center">
           <button
-            // onClick={handleSubmitToYou}
+            onClick={onSubmit}
             className="absolute bottom-4 font-bold bg-title hover:bg-hover text-background rounded w-[43vw] h-s drop-shadow-button"
           >
             그룹 생성하기

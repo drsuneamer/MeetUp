@@ -4,7 +4,9 @@ import { axiosInstance } from '../components/auth/axiosConfig';
 import Alert from '@mui/material/Alert';
 import Switch from '@mui/material/Switch';
 import { setCreateGroupModalOpen } from '../stores/modules/modal';
-import { useAppDispatch } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
+import { fetchGroupList, groupSelector } from '../stores/modules/groups';
+import crown from '../assets/crown.png';
 
 interface Team {
   displayName: string;
@@ -12,8 +14,16 @@ interface Team {
   isActivate: boolean;
 }
 
+interface Group {
+  id: number;
+  leader: boolean;
+  name: string;
+}
+
 function Settings() {
   const dispatch = useAppDispatch();
+  const groups: Group[] = useAppSelector(groupSelector).groups;
+  console.log(groups);
 
   const [url, setUrl] = useState<string>('Webex Link');
   const [input, setInput] = useState<object>({ webexUrl: '' });
@@ -78,6 +88,11 @@ function Settings() {
     forUse[i].isActivate = !forUse[i].isActivate;
     setForUse([...forUse]);
   };
+
+  // [3] 그룹 관리
+  useEffect(() => {
+    dispatch(fetchGroupList());
+  }, []);
 
   const handleCreateGroupModal = () => {
     dispatch(setCreateGroupModalOpen());
@@ -149,10 +164,11 @@ function Settings() {
           </div>
         )}
 
-        {/* 그룹 관리 */}
+        {/* 그룹 관리
         <div>
           <div className="flex mt-[8vh]">
             <div className="font-bold text-title cursor-default">나의 그룹 관리</div>
+
             <svg
               onClick={handleCreateGroupModal}
               xmlns="https://www.w3.org/2000/svg"
@@ -167,7 +183,18 @@ function Settings() {
               />
             </svg>
           </div>
-        </div>
+          <div className="flex flex-wrap mt-2">
+            {groups.map((group: Group) => (
+              <div key={group.id} className="w-[18vw] my-[1vh] mr-[1vw] rounded shadow-button">
+                <div className="flex items-center bg-point rounded-t text-s font-semibold px-2 pt-1 pb-3">
+                  <div className="cursor-default">{group.name}</div>
+                  {group.leader === true ? <img className="h-[22px] w-[20px] ml-1" src={crown} alt="team-leader" /> : ''}
+                </div>
+                <div className="text-[14px] px-1 py-1 text-end cursor-pointer">멤버 확인하기</div>
+              </div>
+            ))}
+          </div>
+        </div> */}
       </div>
     </Layout>
   );
