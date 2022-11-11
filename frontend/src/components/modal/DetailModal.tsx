@@ -43,15 +43,15 @@ const DetailModal = () => {
 
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId))
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     handleToggleModal();
-  }
+  };
 
   const editSchedule = () => {
     dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId))
-    handleToggleModal(); 
-  }
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    handleToggleModal();
+  };
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
@@ -62,11 +62,11 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
-  if ( scheduleDetail ) {
+  if (scheduleDetail) {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
-          className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+          className="w-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
           }}
@@ -90,14 +90,14 @@ const DetailModal = () => {
                 <p className="font-bold">{scheduleDetail.title}</p>
               )}
             </div>
-              {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
-                <>
-                  <div className="mt-[20px] flex ">
-                    <div className="text-s text-title font-bold mr-[15px]">신청자</div>
-                    <p>{scheduleDetail.userName}</p>
-                  </div>
-                </>
-              ) : null}
+            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
+              <>
+                <div className="mt-[20px] flex ">
+                  <div className="text-s text-title font-bold mr-[15px]">신청자</div>
+                  <p>{scheduleDetail.userName}</p>
+                </div>
+              </>
+            ) : null}
             <div className="mt-[20px] flex">
               <div className="text-s text-title font-bold mr-[15px]">날짜</div>
               {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
@@ -126,7 +126,7 @@ const DetailModal = () => {
                 <p className="w-[450px]">{scheduleDetail.content}</p>
               )}
             </div>
-  
+
             {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
               <div className="mt-[20px] flex flex-col">
                 <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
@@ -135,7 +135,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.managerName}</p> 
+                        <p className="font-bold">{scheduleDetail.managerName}</p>
                       </a>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{localStorage.getItem('nickname')}</p> 
+                        <p className="font-bold">{localStorage.getItem('nickname')}</p>
                       </a>
                     </div>
                   </div>
@@ -169,7 +169,7 @@ const DetailModal = () => {
                 일정 수정하기
               </button>
               <button
-                onClick={deleteSchedule} 
+                onClick={deleteSchedule}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
               >
                 일정 삭제하기
@@ -186,7 +186,7 @@ const DetailModal = () => {
       </div>
     );
   }
-  return null
+  return null;
 };
 
 export default DetailModal;
