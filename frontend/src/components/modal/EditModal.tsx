@@ -13,12 +13,12 @@ import { setMyCalendar } from '../../stores/modules/mycalendar';
 import { isValidDateValue } from '@testing-library/user-event/dist/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, editScheduleDetail, fetchScheduleDetail} from '../../stores/modules/schedules';
+import { addMeeting, editMeetingDetail, editScheduleDetail, fetchScheduleDetail } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
 import { tSchedule } from '../../types/events';
 import { tAlarm } from '../../types/channels';
-import { detailSelector } from '../../stores/modules/schedules'; 
+import { detailSelector } from '../../stores/modules/schedules';
 import { find } from 'lodash';
 import Switch from '@mui/material/Switch';
 
@@ -55,79 +55,76 @@ const EditModal = () => {
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
   // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
   // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
-  
+
   const newDate = () => {
-    const dateTime = scheduleDetail.start.slice(0,10) 
-    return dateTime
-  }
+    const dateTime = scheduleDetail.start.slice(0, 10);
+    return dateTime;
+  };
   const changeToStartTime = () => {
-    const newStartTime = {value:'', label:''}
-    const newTime = scheduleDetail.start.slice(11,16)
-    const numberTime = Number(newTime.slice(0,2));
-    
+    const newStartTime = { value: '', label: '' };
+    const newTime = scheduleDetail.start.slice(11, 16);
+    const numberTime = Number(newTime.slice(0, 2));
+
     const newValue = newTime.replace(':', '');
-    if (newValue[0] ==='0') {
-      const valueTime = newValue.slice(1,4);
-      newStartTime.value = valueTime
+    if (newValue[0] === '0') {
+      const valueTime = newValue.slice(1, 4);
+      newStartTime.value = valueTime;
     } else {
-      const valueTime = newValue
-      newStartTime.value = valueTime
+      const valueTime = newValue;
+      newStartTime.value = valueTime;
     }
 
-
     if (numberTime < 12) {
-      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newStartTime.label = labelTime
-    } else if (numberTime === 12) {  
-      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newStartTime.label = labelTime
+      const labelTime = '오전' + ' ' + newTime.slice(0, 2) + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newStartTime.label = labelTime;
+    } else if (numberTime === 12) {
+      const labelTime = '오후' + ' ' + newTime.slice(0, 2) + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newStartTime.label = labelTime;
     } else if (12 < numberTime) {
       const hour = (numberTime - 12).toString();
-      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
-      newStartTime.label = labelTime
+      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newStartTime.label = labelTime;
     }
     return newStartTime;
-  }
+  };
 
   const changeToEndTime = () => {
-    const newEndTime = {value:'', label:''}
+    const newEndTime = { value: '', label: '' };
 
-    const newTime = scheduleDetail.end.slice(11,16)
-    const numberTime = Number(newTime.slice(0,2));
-    
+    const newTime = scheduleDetail.end.slice(11, 16);
+    const numberTime = Number(newTime.slice(0, 2));
+
     const newValue = newTime.replace(':', '');
-    if (newValue[0] ==='0') {
-      const valueTime = newValue.slice(1,4);
-      newEndTime.value = valueTime
+    if (newValue[0] === '0') {
+      const valueTime = newValue.slice(1, 4);
+      newEndTime.value = valueTime;
     } else {
-      const valueTime = newValue
-      newEndTime.value = valueTime
+      const valueTime = newValue;
+      newEndTime.value = valueTime;
     }
-
 
     if (numberTime < 12) {
-      const labelTime = '오전' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newEndTime.label = labelTime
-    } else if (numberTime === 12) {  
-      const labelTime = '오후' + ' ' + newTime.slice(0,2) + '시' + ' ' + newTime.slice(3,5) + '분'
-      newEndTime.label = labelTime
+      const labelTime = '오전' + ' ' + newTime.slice(0, 2) + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newEndTime.label = labelTime;
+    } else if (numberTime === 12) {
+      const labelTime = '오후' + ' ' + newTime.slice(0, 2) + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newEndTime.label = labelTime;
     } else if (12 < numberTime) {
       const hour = (numberTime - 12).toString();
-      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3,5) + '분';
-      newEndTime.label = labelTime
+      const labelTime = '오후' + ' ' + hour + '시' + ' ' + newTime.slice(3, 5) + '분';
+      newEndTime.label = labelTime;
     }
     return newEndTime;
-  }
+  };
   const start = changeToStartTime();
-  const [startTime, setStartTime] = useState<Option>({value:'', label:''})
+  const [startTime, setStartTime] = useState<Option>({ value: '', label: '' });
   const end = changeToEndTime();
-  const [endTime, setEndTime] = useState<Option>({value:'', label:''})
+  const [endTime, setEndTime] = useState<Option>({ value: '', label: '' });
 
   // const [startTime, setStartTime] = useState<Option>(changeToTime(meetingDetail.start));
 
   // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
-  
 
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
@@ -145,8 +142,6 @@ const EditModal = () => {
 
     return start;
   };
-
-
 
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
@@ -171,17 +166,17 @@ const EditModal = () => {
   };
 
   // const newDate = () => {
-  //   const dateTime = scheduleDetail.start.slice(0,10) 
+  //   const dateTime = scheduleDetail.start.slice(0,10)
   //   return dateTime
   // }
 
-  useEffect(()=>{
-    newStartTime()
-  }, [date, start])
+  useEffect(() => {
+    newStartTime();
+  }, [date, start]);
 
   useEffect(() => {
-    newEndTime()
-  },[date, end])
+    newEndTime();
+  }, [date, end]);
 
   const [checked, setChecked] = useState(false);
 
@@ -229,11 +224,11 @@ const EditModal = () => {
     setDate(newDate());
     setStartTime(start);
     setEndTime(end);
-  },[scheduleDetail])
- 
+  }, [scheduleDetail]);
+
   useEffect(() => {
     setAlarmChannelId(scheduleDetail.meetupId);
-  },[scheduleDetail])
+  }, [scheduleDetail]);
 
   // useEffect(() => {
   //   setStartTime(startSelectOptions[startTimeIndex]);
@@ -285,7 +280,6 @@ const EditModal = () => {
     setEndTime(selected);
   }, []);
 
-
   const defaultProps = {
     options: channels.alarmChannels,
     getOptionLabel: (option: tAlarm) => option.displayName,
@@ -295,11 +289,10 @@ const EditModal = () => {
   };
 
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
-  
+
   // const params = useParams();
   // const userId = params.userId;
 
-  
   // const myScheduleId = useSelector(myScheduleSelector).map((schedule: tSchedule) => schedule.id);
   // const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
   // const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
@@ -365,13 +358,15 @@ const EditModal = () => {
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
-        console.log()
+        console.log();
         handleToggleModal();
         // dispatch(setDetailModalOpen('myMeeting'));
       }
     }
   };
-
+  // const handleEditMeeting = () => {
+  //   console.log(channels);
+  // };
   // const handleEditMeeting = () => {
   //   console.log(newDate())
   //   console.log(newStartTime())
@@ -393,16 +388,16 @@ const EditModal = () => {
   // }
 
   const handleEditSchedule = () => {
-    console.log(parsedData)
-    console.log(newStartTime())
-  }
+    console.log(parsedData);
+    console.log(newStartTime());
+  };
 
   // const handleEditEvent = () => {
   //   // console.log(channels.alarmChannels)
   //   // console.log(scheduleDetailId)
   //   // if ( parsedMeetingData.title !== '') {
   //   //   console.log('parsedMeetingData:',parsedMeetingData)
-  //   // } 
+  //   // }
   //   if (parsedMeetingData.title === '') {
   //     parsedMeetingData.title = scheduleDetail.title
   //     console.log('--is in title?--')
@@ -424,7 +419,7 @@ const EditModal = () => {
   //   // console.log(parsedMeetingData)
   //   // console.log('====================')
   //   // console.log('scheduleDetail:', scheduleDetail)
-  // } 
+  // }
   // const temp = {value: '030'}
   // const changeToStartTime = () => {
   //   const startTime = scheduleDetail.start.slice(11,15);
@@ -442,7 +437,6 @@ const EditModal = () => {
   //   console.log(scheduleDetail.start)
   // }
 
-  
   if (scheduleDetail) {
     return (
       <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -463,7 +457,7 @@ const EditModal = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
           <div>
-            <div className={`${editModalType === 'schedule'? 'mt-[30px]' : 'mt-[15px]'}`}>
+            <div className={`${editModalType === 'schedule' ? 'mt-[30px]' : 'mt-[15px]'}`}>
               {editModalType === 'schedule' ? (
                 <div className="text-s text-title font-bold">
                   제목<span className="text-cancel">&#42;</span>
@@ -471,7 +465,7 @@ const EditModal = () => {
               ) : (
                 <div className="text-s text-title font-bold">
                   미팅명<span className="text-cancel">&#42;</span>
-              </div>
+                </div>
               )}
               <input
                 type="text"
@@ -480,7 +474,7 @@ const EditModal = () => {
                 // value={title}
                 onChange={onTitleChange}
                 className={`${
-                  editModalType === 'schedule'? 'mb-[40px]' : 'mb-[0px]'
+                  editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
                 } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
               />
             </div>
@@ -531,9 +525,9 @@ const EditModal = () => {
                 )}
               </div>
               <div className="mt-[15px]">
-                {editModalType === 'schedule' ? null :(
+                {editModalType === 'schedule' ? null : (
                   <div>
-                    <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                    <div className="text-s text-title font-bold">참여중인 밋업</div>
                     <Autocomplete
                       onChange={onAlarmChannel}
                       className="w-[450px]"
@@ -542,32 +536,34 @@ const EditModal = () => {
                       id="select-channel"
                       renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
                     />
-                  </div> 
+                  </div>
                 )}
               </div>
-              <div className={`${
-                  editModalType === 'schedule' ? 'mt-[40px] mb-[30px]' : 'mt-[20px] mb-[20px]'
-                }`}>
+              <div className={`${editModalType === 'schedule' ? 'mt-[40px] mb-[30px]' : 'mt-[20px] mb-[20px]'}`}>
                 <div className="text-s text-title font-bold">공개 설정</div>
                 <Switch checked={checked} onChange={switchHandler} />
-                {checked ? <span className="text-title text-xs">공개: 알림받을 채널에 알림이 갑니다.</span> : <span className="text-title text-xs">비공개: 캘린더 주인에게 DM으로 알림이 갑니다.</span>}
+                {checked ? (
+                  <span className="text-title text-xs">공개: 알림받을 채널에 알림이 갑니다.</span>
+                ) : (
+                  <span className="text-title text-xs">비공개: 캘린더 주인에게 DM으로 알림이 갑니다.</span>
+                )}
               </div>
             </div>
-            {editModalType === 'schedule'? (
+            {editModalType === 'schedule' ? (
               <button
                 onClick={handleEditSchedule}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
               >
                 일정 등록하기
               </button>
-              ) : (
+            ) : (
               <button
                 onClick={handleEditMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
                 밋업 등록하기
               </button>
-              )}
+            )}
           </div>
         </div>
         <div
