@@ -20,7 +20,6 @@ import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 
 const EventModal = () => {
-  const managerId = useSelector(detailSelector).scheduleModal.scheduleDetail.managerId;
   const channels = useAppSelector(alarmChannelSelector);
   const dispatch = useAppDispatch();
 
