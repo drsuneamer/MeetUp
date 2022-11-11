@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
+import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -8,10 +9,12 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
+
+import { addSchedule, editScheduleDetail, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
+import { detailSelector } from '../../stores/modules/schedules';
 import Switch from '@mui/material/Switch';
 // import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 import { getThisWeek } from '../../utils/GetThisWeek';
@@ -30,6 +33,7 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [meetupId, setMeetupId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
@@ -79,6 +83,14 @@ const EventModal = () => {
 
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
+  };
+
+  const newAlarmChannel = () => {
+    if (checked === false) {
+      setMeetupId(null);
+    } else {
+      setMeetupId(alarmChannelId);
+    }
   };
 
   const onTitleChange = (e: any) => {
@@ -157,7 +169,9 @@ const EventModal = () => {
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
       alert('미팅명은 필수 입력사항입니다');
-    } else if (parsedData) {
+    } else if (!parsedMeetingData.meetupId) {
+      alert('참여중인 밋업은 필수 입력사항입니다');
+    } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
@@ -325,7 +339,10 @@ const EventModal = () => {
             <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                  <div className="text-s text-title font-bold">
+                    참여중인 밋업
+                    <span className="text-cancel">&#42;</span>
+                  </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
                     className="w-[450px]"
