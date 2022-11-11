@@ -230,12 +230,14 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[12px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(scheduleId, 'myCalendar');
                       }}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-label`}>
                         {element.title}
                       </span>
                     </div>
@@ -245,9 +247,11 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[12px] border-solid border-background border-2 scrollbar-hide`}
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      }`}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-label font-medium pt-2`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-label`}>
                         {element.title ? element.title : '비공개'}
                       </span>
                     </div>
@@ -273,12 +277,14 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[12px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
+                      className={`flex flex-wrap absolute w-full text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
                       }}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-body`}>
                         {element.title}
                       </span>
                     </div>
@@ -288,9 +294,11 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto rounded p-1 text-[12px] border-solid border-background border-2 bg-line scrollbar-hide`}
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      }`}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-body font-medium pt-2`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-body`}>
                         비공개
                       </span>
                     </div>
@@ -315,12 +323,14 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full overflow-y-auto bg-title rounded p-1 text-[12px] border-solid border-background border-2 cursor-pointer scrollbar-hide`}
+                      className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
                       }}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-background font-medium pt-2`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-background`}>
                         {element.title}
                       </span>
                     </div>
@@ -391,7 +401,9 @@ const WeeklyCalendarBody = () => {
                   <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
-                    className={`flex flex-wrap items-center absolute w-full text-background overflow-y-auto bg-title rounded p-1 text-[13px] cursor-pointer border-2 border-solid border-background scrollbar-hide`}
+                    className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                      height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                    }`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >
                     <div className="mr-1">{title}</div>

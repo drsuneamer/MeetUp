@@ -1,60 +1,77 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
 import { useSelector } from 'react-redux';
-import { ModalSelector, setDetailModalOpen, setEditModalOpen } from '../../stores/modules/modal';
+import { ModalSelector, setEditModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
-import { addEvent } from '../../stores/modules/events';
-import { NewEvent } from '../../types/events';
 import SingleSelect from '../common/SingleSelect';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { setMyCalendar } from '../../stores/modules/mycalendar';
-import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import { useNavigate, useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addMeeting, editMeetingDetail, editScheduleDetail, fetchScheduleDetail } from '../../stores/modules/schedules';
-import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
-import { myScheduleSelector, meetingToMeSelector, meetingFromMeSelector } from '../../stores/modules/schedules';
-import { tSchedule } from '../../types/events';
+import { editMeetingDetail, editScheduleDetail } from '../../stores/modules/schedules';
+import { alarmChannelSelector } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import { detailSelector } from '../../stores/modules/schedules';
-import { find } from 'lodash';
 import Switch from '@mui/material/Switch';
-
-// interface ChannelOptionType {
-//   title: string;
-// }
-
-// const channels = [
-//   { title: '서울_1반_팀장채널'},
-//   { title: 'A101' },
-//   { title: 'A102' },
-//   { title: 'A103' },
-//   { title: 'A104' },
-//   { title: 'A105' },
-//   { title: 'A106' },
-//   { title: 'A107' },
-//   { title: 'A102_scrum' },
-//   { title: 'A102_jira_bot' },
-// ];
+import { getThisWeek } from '../../utils/GetThisWeek';
+import { useParams } from 'react-router-dom';
+import { fetchSchedule } from '../../stores/modules/schedules';
 
 const EditModal = () => {
+  // 그 주의 일요일 구하기
+  const { currentDate } = useAppSelector((state) => state.dates);
+
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
+
+  const sunday = useMemo(() => {
+    const date = new Date(currentDate);
+    const firstDayOfTheMonth = date.getDay();
+
+    if (date.getDate() <= firstDayOfTheMonth) {
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`;
+      } else {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`;
+      }
+    } else {
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-0${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth() + 1}-0${weekly[0].date}`;
+      } else {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${weekly[0].date}`;
+      }
+    }
+  }, [currentDate]);
+
+  // userId
+  const params = useParams();
+  const userId = params.userId;
+
   const channels = useSelector(alarmChannelSelector);
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const detailModalSelector = useSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
   const { editModalType } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-  // const meetingDetail = useSelector(detailSelector).scheduleModal.meetingDetail;
-  // const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
 
   const newDate = () => {
     const dateTime = scheduleDetail.start.slice(0, 10);
@@ -121,9 +138,6 @@ const EditModal = () => {
   const end = changeToEndTime();
   const [endTime, setEndTime] = useState<Option>({ value: '', label: '' });
 
-  // const [startTime, setStartTime] = useState<Option>(changeToTime(meetingDetail.start));
-
-  // const startTimeValue = startTime.value;
   const startTimeValue = startTime.value;
 
   const newStartTime = () => {
@@ -146,7 +160,6 @@ const EditModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
 
-  // const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
 
   const newEndTime = () => {
@@ -164,11 +177,6 @@ const EditModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-
-  // const newDate = () => {
-  //   const dateTime = scheduleDetail.start.slice(0,10)
-  //   return dateTime
-  // }
 
   useEffect(() => {
     newStartTime();
@@ -209,15 +217,6 @@ const EditModal = () => {
 
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
-  // const parsedMeetingData: any = {
-  //   id: scheduleDetailId,
-  //   title: title,
-  //   content: content,
-  //   start: newStartTime(),
-  //   end: newEndTime(),
-  //   meetupId: alarmChannelId,
-  // };
-
   useEffect(() => {
     setTitle(scheduleDetail.title);
     setContent(scheduleDetail.content);
@@ -230,35 +229,9 @@ const EditModal = () => {
     setAlarmChannelId(scheduleDetail.meetupId);
   }, [scheduleDetail]);
 
-  // useEffect(() => {
-  //   setStartTime(startSelectOptions[startTimeIndex]);
-
-  //   if (startTimeIndex > endTimeIndex) {
-  //     setEndTimeIndex(startTimeIndex);
-  //     setEndTime(startSelectOptions[startTimeIndex]);
-  //   }
-  // }, [startTimeIndex]);
-
   const handleToggleModal = useCallback(() => {
     dispatch(setEditModalOpen('close'));
-    window.location.reload();
   }, []);
-
-  // const handleSubmitToMe = async () => {
-  //   const action = await dispatch(addSchedule(parsedData));
-  //   if (isFulfilled(action)) {
-  //     const userId = localStorage.getItem('id');
-  //     handleToggleModal();
-  //   }
-  // };
-
-  // const handleSubmitToYou = async () => {
-  //   const action = await dispatch(addMeeting(parsedMeetingData));
-  //   if (isFulfilled(action)) {
-  //     // const userId = localStorage.getItem('id')
-  //     handleToggleModal();
-  //   }
-  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -290,47 +263,6 @@ const EditModal = () => {
 
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
-  // const params = useParams();
-  // const userId = params.userId;
-
-  // const myScheduleId = useSelector(myScheduleSelector).map((schedule: tSchedule) => schedule.id);
-  // const meetingToMeId = useSelector(meetingToMeSelector).map((schedule: tSchedule) => schedule.id);
-  // const meetingFromMeId = useSelector(meetingFromMeSelector).map((schedule: tSchedule) => schedule.id);
-  // const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  // const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
-  // const handleSubmitToMe = () => {
-  //   console.log('되야만해..')
-  //   console.log(myScheduleId);
-  //   console.log(meetingToMeId);
-  //   console.log(meetingFromMeId);
-  //   console.log('===========');
-  //   console.log(scheduleDetail);
-  //   console.log(startTime);
-  //   console.log('========================')
-  //   console.log(scheduleDetailId);
-  // }
-
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     console.log('hello')
-  //     const action = await dispatch(fetchMeetingDetail(scheduleDetailId))
-  //     console.log('2')
-  //     if (isFulfilled(action)) {
-  //       console.log('1')
-  //       console.log(action)
-  //       return action.payload;
-  //     }
-  //   };
-  //   loadData().then(() => {
-  //     setTitle(title)
-  //     setContent(content)
-  //     setDate(date)
-  //     setStartTime(startTime)
-  //     setEndTime(endTime)
-  //     setAlarmChannelId(alarmChannelId)
-  //   })
-  // }, []);
-
   const parsedData: any = {
     id: scheduleDetailId,
     title: title,
@@ -358,21 +290,11 @@ const EditModal = () => {
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
-        console.log();
+        dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        // dispatch(setDetailModalOpen('myMeeting'));
       }
     }
   };
-  // const handleEditMeeting = () => {
-  //   console.log(channels);
-  // };
-  // const handleEditMeeting = () => {
-  //   console.log(newDate())
-  //   console.log(newStartTime())
-  //   console.log('------데이터 들어오는거 확인-----')
-  //   console.log(parsedMeetingData)
-  // }
 
   const handleEditSchedule = async () => {
     if (!parsedData.title) {
@@ -386,56 +308,6 @@ const EditModal = () => {
       }
     }
   };
-
-  // const handleEditSchedule = () => {
-  //   console.log(parsedData);
-  //   console.log(newStartTime());
-  // };
-
-  // const handleEditEvent = () => {
-  //   // console.log(channels.alarmChannels)
-  //   // console.log(scheduleDetailId)
-  //   // if ( parsedMeetingData.title !== '') {
-  //   //   console.log('parsedMeetingData:',parsedMeetingData)
-  //   // }
-  //   if (parsedMeetingData.title === '') {
-  //     parsedMeetingData.title = scheduleDetail.title
-  //     console.log('--is in title?--')
-  //     console.log(parsedMeetingData.title)
-  //   } else {
-  //     parsedMeetingData.title = title
-  //     console.log('---else?---')
-  //     console.log(parsedMeetingData.title)
-  //   }
-  //   if (parsedMeetingData.content === '') {
-  //     parsedMeetingData.content = scheduleDetail.content
-  //     console.log('--is in content?--')
-  //     console.log(parsedMeetingData.content)
-  //   } else {
-  //     parsedMeetingData.content = content
-  //     console.log('---else?---')
-  //     console.log(parsedMeetingData.content)
-  //   }
-  //   // console.log(parsedMeetingData)
-  //   // console.log('====================')
-  //   // console.log('scheduleDetail:', scheduleDetail)
-  // }
-  // const temp = {value: '030'}
-  // const changeToStartTime = () => {
-  //   const startTime = scheduleDetail.start.slice(11,15);
-  //   const newTime = startTime.replace(':', '');
-  //   if (newTime[0] === '0') {
-  //     const valueTime = startTime.slice(1,4);
-  //     // startTime.value = valueTime
-  //     return valueTime
-  //   } else {
-  //     const valueTime = newTime;
-  //     // startTime.value = valueTime
-  //     return valueTime
-  //   }
-
-  //   console.log(scheduleDetail.start)
-  // }
 
   if (scheduleDetail) {
     return (

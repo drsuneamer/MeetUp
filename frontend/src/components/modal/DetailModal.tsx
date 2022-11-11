@@ -126,7 +126,7 @@ const DetailModal = () => {
                     <div className="flex flex-col justify-center items-center">
                       <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
                         <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{localStorage.getItem('nickname')}</p>
+                        <p className="font-bold">{scheduleDetail.userName}</p>
                       </a>
                     </div>
                   </div>

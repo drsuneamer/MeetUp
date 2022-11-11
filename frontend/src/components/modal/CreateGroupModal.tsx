@@ -50,7 +50,7 @@ function CreateGroupModal() {
       });
   };
 
-  console.log(teamNow);
+  // console.log(teamNow);
   useDidMountEffect(() => {
     setPh('데이터를 불러오는 중입니다.');
     setLoad(false);
@@ -82,7 +82,7 @@ function CreateGroupModal() {
   };
 
   const [val, setVal] = useState<Member[]>([]);
-  console.log(val);
+  // console.log(val);
 
   const valHtml = val.map((option: Member, index) => {
     // This is to handle new options added by the user (allowed by freeSolo prop).

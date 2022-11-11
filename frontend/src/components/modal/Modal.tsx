@@ -14,6 +14,7 @@ import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/module
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
+import { getNow } from '../../utils/GetNow';
 
 const EventModal = () => {
   const dispatch = useAppDispatch();
@@ -33,11 +34,16 @@ const EventModal = () => {
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
 
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
+
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
 
   const startTimeValue = startTime.value;
+
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
@@ -202,10 +208,7 @@ const EventModal = () => {
     dispatch(fetchAlarmChannelList(userId));
   }, []);
 
-  const weekly = useMemo(() => {
-    return getThisWeek(currentDate);
-  }, [currentDate]);
-
+  // 그 주의 일요일 구하기
   const sunday = useMemo(() => {
     const date = new Date(currentDate);
     const firstDayOfTheMonth = date.getDay();
@@ -236,6 +239,31 @@ const EventModal = () => {
       }
     }
   }, [currentDate]);
+
+  // 날짜 & 시간 비교하기
+
+  const nows = useMemo(() => {
+    return getNow();
+  }, []);
+
+  const isPast = () => {
+    const today = new Date();
+    const selectedDate = new Date(date);
+
+    if (nows) {
+      const now = nows.hours.toString() + nows.minutes.toString();
+
+      // 오늘을 포함한 날짜가 선택한 날짜보다 크다면 - 즉 과거
+      if (today > selectedDate) {
+        // 오늘 내에서 현재시간 이전과 이후
+        if (today.toString().slice(0, 10) === selectedDate.toString().slice(0, 10) && Number(startTime.value) > Number(now)) {
+          return false;
+        }
+        return true;
+      }
+      return false;
+    }
+  };
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -362,9 +390,17 @@ const EventModal = () => {
               </div>
             )}
           </div>
-          {myCalendar ? (
+          {myCalendar && isPast() ? (
+            <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
+              현재 시간 이전에는 등록할 수 없습니다
+            </button>
+          ) : myCalendar && !isPast() ? (
             <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
               밋업 불가시간 설정하기
+            </button>
+          ) : !myCalendar && isPast() ? (
+            <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
+              현재 시간 이전에는 등록할 수 없습니다
             </button>
           ) : (
             <button
