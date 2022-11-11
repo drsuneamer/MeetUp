@@ -39,6 +39,12 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
+  // 밋업(미팅) 삭제하기 버튼을 누르면 실행
+  const deleteMeeting = () => {
+    dispatch(setDeleteModalOpen(['delete', 'meeting']));
+    handleToggleModal();
+  };
+
   if (scheduleDetail) {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
