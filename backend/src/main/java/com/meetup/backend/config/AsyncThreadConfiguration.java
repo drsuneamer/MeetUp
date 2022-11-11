@@ -16,8 +16,9 @@ public class AsyncThreadConfiguration {
     @Bean
     public Executor asyncThreadTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(8);
-        threadPoolTaskExecutor.setMaxPoolSize(20);
+        threadPoolTaskExecutor.setCorePoolSize(7);
+        threadPoolTaskExecutor.setMaxPoolSize(3000);
+        threadPoolTaskExecutor.setQueueCapacity(3000);
         threadPoolTaskExecutor.setThreadNamePrefix("meet-up-pool");
         return threadPoolTaskExecutor;
     }

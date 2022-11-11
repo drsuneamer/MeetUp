@@ -23,6 +23,6 @@ public interface TeamUserService {
 
     void activateTeamUser(String teamId, List<TeamActivateRequestDto> teamActivateRequestDtoList);
 
-    List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId);
+    List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId) throws InterruptedException;
 
 }
