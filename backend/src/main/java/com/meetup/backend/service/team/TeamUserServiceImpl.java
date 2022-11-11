@@ -24,16 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 /**
@@ -147,12 +147,10 @@ public class TeamUserServiceImpl implements TeamUserService {
             TeamUser teamUser = teamUserRepository.findByTeamAndUser(team, user).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_USER_NOT_FOUND));
             teamUser.changeActivate();
         }
-
-
     }
 
     @Override
-    public List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId) {
+    public List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId) throws InterruptedException {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamUser> teamUserList = teamUserRepository.findByTeam(team);
 
@@ -160,8 +158,20 @@ public class TeamUserServiceImpl implements TeamUserService {
 
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
+        CountDownLatch latch = new CountDownLatch(teamUserList.size());
+        for (TeamUser teamUser : teamUserList) {
+            ListenableFuture<UserInfoDto> userResponse = asyncService.getNickname(client, UserInfoDto.of(teamUser.getUser()), latch);
+            userResponse.addCallback(u -> {
+                if (u != null && u.getNickname() != null && !u.getNickname().equals(""))
+                    result.add(u);
+                latch.countDown();
+            }, ex -> {
+                log.error("ex message : " + ex.getMessage());
+                latch.countDown();
+            });
 
-        asyncService.getResult(client, teamUserList).thenAccept(result::addAll).join();
+        }
+        latch.await();
         return result;
     }
 }
