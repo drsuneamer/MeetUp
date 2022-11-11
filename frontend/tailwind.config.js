@@ -17,6 +17,7 @@ module.exports = {
       footer: '#AEC2FA',
       cancel: '#B70038', // error
       cancelhover: '#B70038',
+      disabled: '#AEC2FA', // disabled
       text: {
         DEFAULT: '#191F28',
         label: '#737475',
