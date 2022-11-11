@@ -3,6 +3,7 @@ package com.meetup.backend.service.team;
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.dto.user.UserListInTeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 
@@ -22,6 +23,6 @@ public interface TeamUserService {
 
     void activateTeamUser(String teamId, List<TeamActivateRequestDto> teamActivateRequestDtoList);
 
-    List<UserListInTeamResponseDto> getUserByTeam(String mmSessionToken, String teamId);
+    List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId);
 
 }

@@ -1,5 +1,6 @@
 package com.meetup.backend.service;
 
+import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.dto.user.UserListInTeamResponseDto;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.User;
@@ -37,18 +38,16 @@ public class AsyncService {
             e.printStackTrace();
         }
         user.setNickname(userObj.getString("nickname"));
-        log.info("nickname = {}", user.getNickname());
-
         return CompletableFuture.completedFuture(user);
     }
 
     @Async
-    public CompletableFuture<List<UserListInTeamResponseDto>> getResult(MattermostClient client, List<TeamUser> teamUserList) {
+    public CompletableFuture<List<UserInfoDto>> getResult(MattermostClient client, List<TeamUser> teamUserList) {
 
-        List<UserListInTeamResponseDto> result = new ArrayList<>();
+        List<UserInfoDto> result = new ArrayList<>();
         for (TeamUser teamUser : teamUserList) {
             User user = teamUser.getUser();
-            UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
+            UserInfoDto userListInTeamResponseDto = UserInfoDto.of(user);
 
             if (user.getNickname() != null) {
                 result.add(userListInTeamResponseDto);
@@ -59,22 +58,19 @@ public class AsyncService {
             JSONObject userObj = new JSONObject();
             try {
                 userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
-
-            } catch (ClassCastException e) {
-                log.error(e.getMessage());
+            } catch (ClassCastException castException) {
+                log.error(castException.getMessage());
                 log.info("response.getEntity() = {}", response.getEntity());
 //                e.printStackTrace();
             }
             try {
                 userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
-            } catch (JSONException e) {
-                log.error(e.getMessage());
-//                e.printStackTrace();
+                if (userListInTeamResponseDto.getNickname() == null || userListInTeamResponseDto.getNickname().equals("")) continue;
+                result.add(userListInTeamResponseDto);
+            } catch (JSONException jsonException) {
+                log.error(jsonException.getMessage());
             }
-
-            result.add(userListInTeamResponseDto);
         }
         return CompletableFuture.completedFuture(result);
-
     }
 }
