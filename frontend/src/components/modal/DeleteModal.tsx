@@ -23,6 +23,7 @@ function DeleteModal() {
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
+        dispatch(setDeleteModalOpen('close'));
         window.localStorage.clear();
         navigate('/');
       }
@@ -63,6 +64,10 @@ function DeleteModal() {
               {deleteModalType[1] === 'meetup' ? (
                 <div>
                   선택한 <span className="text-cancel">밋업</span>을
+                </div>
+              ) : deleteModalType[1] === 'group' ? (
+                <div>
+                  선택한 <span className="text-cancel">그룹</span>을
                 </div>
               ) : (
                 <div>

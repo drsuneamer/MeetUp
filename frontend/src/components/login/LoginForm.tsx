@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Alert from '@mui/material/Alert';
+import { useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { KeyboardEvent } from 'react';
+import Alert from '@mui/material/Alert';
+import cryptoJs from 'crypto-js'; // 패스워드 암호화
 import LoginSpinner from '../common/LoginSpinner';
-
-import cryptoJs from 'crypto-js';
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -99,14 +97,14 @@ function LoginForm() {
 
   // 로그인 API 연결
   const onSubmit = async () => {
-    // 로딩 화면으로 전환
+    // 요청을 보냄과 동시에 로딩 화면으로 전환
     setLoad(true);
     await axios
       .post(`${baseURL}/user/login`, login)
       .then((res) => {
         if (res.status === 200) {
           // console.log(res);
-          // 로그인 완료 시 localstorage에 accesstoken, nickname, id 저장 후 메인('/') 이동
+          // 로그인 완료 시 localstorage에 accesstoken, nickname, id 저장 후 각자의 캘린더 페이지로 이동
           window.localStorage.setItem('id', res.data.id);
           window.localStorage.setItem('accessToken', res.data.tokenDto.accessToken);
           window.localStorage.setItem('tokenExpiresIn', res.data.tokenDto.tokenExpiresIn);
