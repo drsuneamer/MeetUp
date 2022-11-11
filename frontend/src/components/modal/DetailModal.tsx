@@ -1,65 +1,47 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { ModalSelector } from '../../stores/modules/modal';
 import { setDetailModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
-import webex from '../../assets/webex_icon.png';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { deleteMeetingDetail, deleteScheduleDetail, detailSelector, scheduleSelector } from '../../stores/modules/schedules';
+import { ModalSelector } from '../../stores/modules/modal';
+import { detailSelector } from '../../stores/modules/schedules';
 import { setEditModalOpen } from '../../stores/modules/modal';
-import DeleteModal from '../modal/DeleteModal';
-import { axiosInstance } from '../auth/axiosConfig';
-import { tSchedule } from '../../types/events';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
-
-import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import webex from '../../assets/webex_icon.png';
 
 const DetailModal = () => {
   const dispatch = useAppDispatch();
   const detailModalSelector = useSelector(ModalSelector);
-  const { editModalType } = useAppSelector((state) => state.modal);
-
-  const { detailModalIsOpen } = useAppSelector((state) => state.modal);
-  const { eventModalData } = useAppSelector((state) => state.events);
-
-  const [title, setTitle] = useState<string>('');
-  const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
-
-  const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
-  const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
-  const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
-  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex), [startTimeIndex]);
-  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
-  const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
+  // 일정 수정하기 버튼을 누르면 실행
+  const editSchedule = () => {
+    dispatch(setEditModalOpen('schedule'));
+    handleToggleModal();
+  };
+
+  // 밋업(미팅) 수정하기 버튼을 누르면 실행
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
     dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     handleToggleModal();
   };
 
-  const editSchedule = () => {
-    dispatch(setEditModalOpen('schedule'));
-    console.log(scheduleDetail.managerId);
-    console.log(scheduleDetail.userId);
-    handleToggleModal();
-  };
-  const deleteMeeting = () => {
-    dispatch(setDeleteModalOpen(['delete', 'meeting']));
+  // 스케줄 삭제하기 버튼을 누르면 실행
+  const deleteSchedule = () => {
+    dispatch(setDeleteModalOpen(['delete', 'schedule']));
     handleToggleModal();
   };
 
-  const deleteSchedule = () => {
-    dispatch(setDeleteModalOpen(['delete', 'schedule']));
+  // 밋업(미팅) 삭제하기 버튼을 누르면 실행
+  const deleteMeeting = () => {
+    dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
   };
 
