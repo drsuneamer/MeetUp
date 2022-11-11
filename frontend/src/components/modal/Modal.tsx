@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
+import { useSelector } from 'react-redux';
 import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -8,15 +9,18 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+
 import { addSchedule, editScheduleDetail, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
+import { detailSelector } from '../../stores/modules/schedules';
 import Switch from '@mui/material/Switch';
 // import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 import { getThisWeek } from '../../utils/GetThisWeek';
 
 const EventModal = () => {
+  const managerId = useSelector(detailSelector).scheduleModal.scheduleDetail.managerId;
   const channels = useAppSelector(alarmChannelSelector);
   const dispatch = useAppDispatch();
 
@@ -30,14 +34,14 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
-  const [meetupId, setMeetupId] = useState<number|null>(0);
+  const [meetupId, setMeetupId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-  
+
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
   const startTimeValue = startTime.value;
-  
+
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
@@ -53,13 +57,13 @@ const EventModal = () => {
     const start = date + ' ' + startTimeResult;
     return start;
   };
-  
+
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
-  
+
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
-  
+
   const newEndTime = () => {
     if (endTimeValue.length === 3) {
       const endTimeNewValue = '0' + endTimeValue;
@@ -75,30 +79,30 @@ const EventModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-  
+
   const [checked, setChecked] = useState(false);
-  
+
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
-  
+
   const newAlarmChannel = () => {
     if (checked === false) {
-      setMeetupId(null)
+      setMeetupId(null);
     } else {
-      setMeetupId(alarmChannelId)
+      setMeetupId(alarmChannelId);
     }
-  }
-  
+  };
+
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
   };
-  
+
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
     // console.log(date);
   };
-  
+
   const onContentChange = (e: any) => {
     setContent(e.currentTarget.value);
   };
@@ -106,7 +110,7 @@ const EventModal = () => {
     const alarmChannelValue = value.meetupId || undefined;
     setAlarmChannelId(alarmChannelValue);
   };
-  
+
   const parsedData: any = {
     title: title,
     content: null,
@@ -128,14 +132,14 @@ const EventModal = () => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
       setDate(date);
-      
+
       const foundTimeIndex = startSelectOptions.findIndex((option) => option.value === startTime);
       foundTimeIndex !== undefined ? setStartTimeIndex(foundTimeIndex) : setStartTimeIndex(0);
     } else {
       handleResetInput();
     }
   }, [eventModalData]);
-  
+
   useEffect(() => {
     setStartTime(startSelectOptions[startTimeIndex]);
 
@@ -148,7 +152,6 @@ const EventModal = () => {
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
   }, []);
-
 
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
@@ -163,7 +166,7 @@ const EventModal = () => {
       }
     }
   };
-  
+
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
       alert('미팅명은 필수 입력사항입니다');
