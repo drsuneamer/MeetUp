@@ -89,8 +89,6 @@ const EventModal = () => {
       setMeetupId(alarmChannelId)
     }
   }
-
-  const { myCalendar } = useAppSelector((state) => state.mycalendar);
   
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
@@ -176,7 +174,6 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        dispatch(fetchSchedule([userId, getSundayOfWeek()]));
       }
     }
   };
