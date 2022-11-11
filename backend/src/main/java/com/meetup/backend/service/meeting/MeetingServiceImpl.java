@@ -6,6 +6,9 @@ import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.party.Party;
+import com.meetup.backend.entity.party.PartyMeeting;
+import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
@@ -13,6 +16,9 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.party.PartyMeetingRepository;
+import com.meetup.backend.repository.party.PartyRepository;
+import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
@@ -63,6 +69,10 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final UserRepository userRepository;
 
+    private final PartyRepository partyRepository;
+
+    private final PartyMeetingRepository partyMeetingRepository;
+
     private final AuthService authService;
 
     // 미팅 상세정보 반환
@@ -93,12 +103,12 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+        if (duration.getSeconds() < 1800) throw new ApiException(TOO_SHORT_DURATION);
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
+
 
         // 로그인 유저가 해당 밋업에 소속 되어있는지 확인
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser)) {
@@ -107,7 +117,6 @@ public class MeetingServiceImpl implements MeetingService {
 
         }
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
-
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
         // 일정 중복 확인
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end) || !managerAllScheduleResponseDto.isPossibleRegister(start, end)) {
@@ -153,9 +162,16 @@ public class MeetingServiceImpl implements MeetingService {
             }
             MattermostEx.apiException(dmResponse.getStatus());
         }
+        Long meetingId = meetingRepository.save(meeting).getId();
+        Meeting savedMeeting = meetingRepository.findById(meetingId).get();
+        // 그룹에 해당 되는 미팅 등록일 시 파티(그룹)-미팅 테이블에도 추가
+        if (meetingRequestDto.getGroupId() != null) {
+            Party party = partyRepository.findById(meetingRequestDto.getGroupId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+            PartyMeeting partyMeeting = new PartyMeeting(savedMeeting, party, start);
+            partyMeetingRepository.save(partyMeeting);
+        }
 
-
-        return meetingRepository.save(meeting).getId();
+        return meetingId;
     }
 
     // 미팅 정보 수정
@@ -173,8 +189,7 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+        if (duration.getSeconds() < 1800) throw new ApiException(TOO_SHORT_DURATION);
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);
@@ -195,7 +210,6 @@ public class MeetingServiceImpl implements MeetingService {
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" +
                 "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n"
                 + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-
 
         if (meetingUpdateRequestDto.isOpen()) {
             int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
@@ -320,6 +334,9 @@ public class MeetingServiceImpl implements MeetingService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
+
+        List<Meeting> groupMeetingByMe = new ArrayList<>();
+
         return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * created by seongmin on 2022/11/08
@@ -30,9 +31,13 @@ public class PartyMeeting extends BaseEntity {
     @JoinColumn(name = "party_id")
     private Party party;
 
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime start;
+
     @Builder
-    public PartyMeeting(Meeting meeting, Party party) {
+    public PartyMeeting(Meeting meeting, Party party, LocalDateTime start) {
         this.meeting = meeting;
         this.party = party;
+        this.start = start;
     }
 }

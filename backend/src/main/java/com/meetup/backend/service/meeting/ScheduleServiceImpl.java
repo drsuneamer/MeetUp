@@ -5,6 +5,9 @@ import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.party.Party;
+import com.meetup.backend.entity.party.PartyMeeting;
+import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.schedule.ScheduleType;
@@ -13,6 +16,9 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
+import com.meetup.backend.repository.party.PartyMeetingRepository;
+import com.meetup.backend.repository.party.PartyRepository;
+import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
@@ -32,7 +38,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/07
+ * updated by myeongseok on 2022/11/11
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -45,6 +51,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ChannelUserRepository channelUserRepository;
     private final MeetupRepository meetupRepository;
     private final MeetingRepository meetingRepository;
+
+    private final PartyRepository partyRepository;
+
+    private final PartyUserRepository partyUserRepository;
+
+    private final PartyMeetingRepository partyMeetingRepository;
 
 
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
@@ -193,6 +205,24 @@ public class ScheduleServiceImpl implements ScheduleService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
-        return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
+
+        // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
+        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
+        List<Party> partyList = new ArrayList<>();
+        if (partyUserList.size() > 0) {
+            for (PartyUser partyUser : partyUserList) {
+                partyList.add(partyRepository.findById(partyUser.getParty().getId()).get());
+            }
+        }
+        List<PartyMeeting> partyMeetingList = new ArrayList<>();
+        for (Party party : partyList) {
+            partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
+        }
+        List<Meeting> groupMeetingList = new ArrayList<>();
+        for (PartyMeeting partyMeeting : partyMeetingList) {
+            groupMeetingList.add(meetingRepository.findById(partyMeeting.getMeeting().getId()).get());
+        }
+
+        return AllScheduleResponseDto.of(schedules, meetingToMe, groupMeetingList, loginUserId);
     }
 }

@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * created by myeongseok on 2022/10/23
- * created by seongmin on 2022/11/06
+ * created by meyeongseok on 2022/11/11
  */
 @Data
 @Builder
@@ -30,6 +30,8 @@ public class MeetingRequestDto {
 
     @NotNull(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
+
+    private Long GroupId;
 
     private boolean open;
 

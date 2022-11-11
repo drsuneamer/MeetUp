@@ -1,5 +1,6 @@
 package com.meetup.backend.dto.schedule;
 
+import com.meetup.backend.entity.party.PartyMeeting;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import lombok.*;
@@ -17,21 +18,42 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class AllScheduleResponseDto {
-
-
     private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
 
+    private List<PartyMeetingResponse> groupMeetingResponseList;
+
     // oner가 me한테 신청한게 안보임
-    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, String me) {
+    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, List<PartyMeeting> partyMeetings, String me) {
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
         List<MeetingResponse> meetingToMe = new ArrayList<>();
         List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
+        List<PartyMeetingResponse> partyMeetingResponseList = new ArrayList<>();
+
+        for (PartyMeeting partyMeeting : partyMeetings) {
+            partyMeetingResponseList.add(new PartyMeetingResponse(partyMeeting.getMeeting().getId(),
+                    partyMeeting.getMeeting().isOpen(),
+                    partyMeeting.getMeeting().getStart(),
+                    partyMeeting.getMeeting().getEnd(),
+                    partyMeeting.getMeeting().getTitle(),
+                    partyMeeting.getMeeting().getContent(),
+                    partyMeeting.getMeeting().getUser().getId(),
+                    partyMeeting.getMeeting().getUser().getNickname(),
+                    partyMeeting.getMeeting().getMeetup().getTitle(),
+                    partyMeeting.getMeeting().getMeetup().getColor(),
+                    partyMeeting.getParty().getId(),
+                    partyMeeting.getParty().getName()));t
+
+        }
+
+
         for (Schedule schedule : scheduleList) {
             if (schedule instanceof Meeting) {
                 // 스케줄 주인이 신청한 미팅 리스트
                 Meeting meeting = (Meeting) schedule;
+
+                //meeting id가 partyMeetingResponseList id에 있으면 continue;
                 if (!schedule.isOpen() && !me.equals(schedule.getUser().getId()) && !me.equals(meeting.getMeetup().getManager().getId())) {
                     meetingFromMe.add(new MeetingResponse(
                             schedule.getId(),
@@ -98,7 +120,22 @@ public class AllScheduleResponseDto {
                 ));
             }
         }
-        return new AllScheduleResponseDto(meetingFromMe, meetingToMe, scheduleResponseList);
+
+        // 스케쥴 주인이 속한 그룹의 미팅
+
+        return new AllScheduleResponseDto(meetingFromMe, meetingToMe, scheduleResponseList, partyMeetingResponseList);
+    }
+
+    @Getter
+    private static class PartyMeetingResponse extends MeetingResponse {
+        private Long partyId;
+        private String partyName;
+
+        public PartyMeetingResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName, String meetupName, String meetupColor, Long partyId, String partyName) {
+            super(id, open, start, end, title, content, userId, userName, meetupName, meetupColor);
+            this.partyId = partyId;
+            this.partyName = partyName;
+        }
     }
 
     @Getter
