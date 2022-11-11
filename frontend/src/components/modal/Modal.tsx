@@ -13,14 +13,19 @@ import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
-import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
+// import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
+import { getThisWeek } from '../../utils/GetThisWeek';
 
 const EventModal = () => {
   const channels = useAppSelector(alarmChannelSelector);
+  const dispatch = useAppDispatch();
+
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
+  const { myCalendar } = useAppSelector((state) => state.mycalendar);
+  const { currentDate } = useAppSelector((state) => state.dates);
+  const { schedules } = useAppSelector((state) => state.schedules);
 
-  const dispatch = useAppDispatch();
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
@@ -75,8 +80,6 @@ const EventModal = () => {
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
-
-  const { myCalendar } = useAppSelector((state) => state.mycalendar);
 
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
@@ -135,7 +138,6 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    window.location.reload();
   }, []);
 
   const handleSubmitToMe = async () => {
@@ -144,6 +146,7 @@ const EventModal = () => {
     } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
+        dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
       } else if (isRejected(action)) {
         // console.log(action);
@@ -157,8 +160,8 @@ const EventModal = () => {
     } else if (parsedData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
+        dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        dispatch(fetchSchedule([userId, getSundayOfWeek()]));
       }
     }
   };
@@ -198,6 +201,41 @@ const EventModal = () => {
   useEffect(() => {
     dispatch(fetchAlarmChannelList(userId));
   }, []);
+
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
+
+  const sunday = useMemo(() => {
+    const date = new Date(currentDate);
+    const firstDayOfTheMonth = date.getDay();
+
+    if (date.getDate() <= firstDayOfTheMonth) {
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`;
+      } else {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`;
+      }
+    } else {
+      if (weekly[0].date < 10) {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-0${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth() + 1}-0${weekly[0].date}`;
+      } else {
+        if (date.getMonth() + 1 < 10) {
+          return `${date.getFullYear()}-0${date.getMonth() + 1}-${weekly[0].date}`;
+        }
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${weekly[0].date}`;
+      }
+    }
+  }, [currentDate]);
 
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
@@ -299,23 +337,27 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            { myCalendar ? 
-            (
-            <div className='mt-[40px] mb-[30px]'>
-              <div className="text-s text-title font-bold">공개 설정</div>
-              <Switch checked={checked} onChange={switchHandler} />
-              {checked ? <span className="text-title text-xs">공개: 일정 제목이 다른 사람에게 노출됩니다.</span> : <span className="text-xs text-label">비공개: 일정 제목이 비공개로 숨겨집니다.</span>}
-            </div>
-            ) :
-            (
-            <div className='mt-[20px] mb-[20px]'>
-              <div className="text-s text-title font-bold">공개 설정</div>
-              <Switch checked={checked} onChange={switchHandler} />
-              {checked ? <span className="text-title text-xs">공개: 알림받을 채널에 알림이 갑니다.</span> : <span className="text-xs text-label">비공개: 캘린더 주인에게 DM으로 알림이 갑니다.</span>}
-            </div>
-            )
-            }
-
+            {myCalendar ? (
+              <div className="mt-[40px] mb-[30px]">
+                <div className="text-s text-title font-bold">공개 설정</div>
+                <Switch checked={checked} onChange={switchHandler} />
+                {checked ? (
+                  <span className="text-title text-xs">공개: 일정 제목이 다른 사람에게 노출됩니다.</span>
+                ) : (
+                  <span className="text-xs text-label">비공개: 일정 제목이 비공개로 숨겨집니다.</span>
+                )}
+              </div>
+            ) : (
+              <div className="mt-[20px] mb-[20px]">
+                <div className="text-s text-title font-bold">공개 설정</div>
+                <Switch checked={checked} onChange={switchHandler} />
+                {checked ? (
+                  <span className="text-title text-xs">공개: 알림받을 채널에 알림이 갑니다.</span>
+                ) : (
+                  <span className="text-xs text-label">비공개: 캘린더 주인에게 DM으로 알림이 갑니다.</span>
+                )}
+              </div>
+            )}
           </div>
           {myCalendar ? (
             <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
