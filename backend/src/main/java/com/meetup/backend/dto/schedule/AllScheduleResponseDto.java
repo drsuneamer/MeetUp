@@ -22,7 +22,7 @@ public class AllScheduleResponseDto {
     private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
     private List<ScheduleResponse> scheduleResponseList;
 
-    private List<PartyMeetingResponse> groupMeetingResponseList;
+    private List<PartyMeetingResponse> partyMeetingResponseList;
 
     // oner가 me한테 신청한게 안보임
     public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, List<PartyMeeting> partyMeetings, String me) {
@@ -43,8 +43,7 @@ public class AllScheduleResponseDto {
                     partyMeeting.getMeeting().getMeetup().getTitle(),
                     partyMeeting.getMeeting().getMeetup().getColor(),
                     partyMeeting.getParty().getId(),
-                    partyMeeting.getParty().getName()));t
-
+                    partyMeeting.getParty().getName()));
         }
 
 
@@ -52,6 +51,12 @@ public class AllScheduleResponseDto {
             if (schedule instanceof Meeting) {
                 // 스케줄 주인이 신청한 미팅 리스트
                 Meeting meeting = (Meeting) schedule;
+
+                // 만약 그룹에 속한 미팅에서 "내가 그룹장인 미팅"이 있다면 미팅 목록에서 제거"
+                for (PartyMeetingResponse partyMeetingResponse : partyMeetingResponseList) {
+                    if (partyMeetingResponse.getId().equals(meeting.getId()))
+                        continue;
+                }
 
                 //meeting id가 partyMeetingResponseList id에 있으면 continue;
                 if (!schedule.isOpen() && !me.equals(schedule.getUser().getId()) && !me.equals(meeting.getMeetup().getManager().getId())) {
@@ -275,4 +280,5 @@ public class AllScheduleResponseDto {
             return false;
 
     }
+
 }

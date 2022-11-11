@@ -51,11 +51,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ChannelUserRepository channelUserRepository;
     private final MeetupRepository meetupRepository;
     private final MeetingRepository meetingRepository;
-
     private final PartyRepository partyRepository;
-
     private final PartyUserRepository partyUserRepository;
-
     private final PartyMeetingRepository partyMeetingRepository;
 
 
@@ -218,11 +215,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         for (Party party : partyList) {
             partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
         }
-        List<Meeting> groupMeetingList = new ArrayList<>();
-        for (PartyMeeting partyMeeting : partyMeetingList) {
-            groupMeetingList.add(meetingRepository.findById(partyMeeting.getMeeting().getId()).get());
-        }
 
-        return AllScheduleResponseDto.of(schedules, meetingToMe, groupMeetingList, loginUserId);
+        return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
     }
 }

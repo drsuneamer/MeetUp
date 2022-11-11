@@ -49,7 +49,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by seongmin on 2022/11/10
+ * updated by myeongseok on 2022/11/11
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -70,6 +70,8 @@ public class MeetingServiceImpl implements MeetingService {
     private final UserRepository userRepository;
 
     private final PartyRepository partyRepository;
+
+    private final PartyUserRepository partyUserRepository;
 
     private final PartyMeetingRepository partyMeetingRepository;
 
@@ -335,8 +337,19 @@ public class MeetingServiceImpl implements MeetingService {
             }
         }
 
-        List<Meeting> groupMeetingByMe = new ArrayList<>();
+        // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
+        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
+        List<Party> partyList = new ArrayList<>();
+        if (partyUserList.size() > 0) {
+            for (PartyUser partyUser : partyUserList) {
+                partyList.add(partyRepository.findById(partyUser.getParty().getId()).get());
+            }
+        }
+        List<PartyMeeting> partyMeetingList = new ArrayList<>();
+        for (Party party : partyList) {
+            partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
+        }
 
-        return AllScheduleResponseDto.of(schedules, meetingToMe, loginUserId);
+        return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
     }
 }
