@@ -43,13 +43,14 @@ const DetailModal = () => {
 
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.userId));
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     handleToggleModal();
   };
 
   const editSchedule = () => {
     dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.userId));
+    console.log(scheduleDetail.managerId);
+    console.log(scheduleDetail.userId);
     handleToggleModal();
   };
   const deleteMeeting = () => {
