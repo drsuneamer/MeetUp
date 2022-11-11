@@ -15,7 +15,7 @@ function Footer() {
           <a href="https://github.com/drsuneamer">신선영</a>
           <a href="https://github.com/silversalmon216">연승용</a>
           <a href="https://github.com/qminlee723">이규민</a>
-          <p>채민진</p>
+          <a href="https://github.com/MinjinChae">채민진</a>
         </div>
 
         <div className="cursor-default pt-3">
