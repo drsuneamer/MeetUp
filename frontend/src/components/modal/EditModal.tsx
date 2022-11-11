@@ -374,23 +374,23 @@ const EditModal = () => {
   //   console.log(parsedMeetingData)
   // }
 
-  // const handleEditSchedule = async () => {
-  //   if(!parsedData.title) {
-  //     alert('제목은 필수 입력사항입니다')
-  //   } else if (parsedData) {
-  //     const action = await dispatch(editScheduleDetail(parsedData));
-  //     if (isFulfilled(action)) {
-  //       // handleToggleModal()
-  //     } else if (isRejected(action)) {
-  //       console.log(action);
-  //     }
-  //   }
-  // }
-
-  const handleEditSchedule = () => {
-    console.log(parsedData);
-    console.log(newStartTime());
+  const handleEditSchedule = async () => {
+    if (!parsedData.title) {
+      alert('제목은 필수 입력사항입니다');
+    } else if (parsedData) {
+      const action = await dispatch(editScheduleDetail(parsedData));
+      if (isFulfilled(action)) {
+        handleToggleModal();
+      } else if (isRejected(action)) {
+        console.log(action);
+      }
+    }
   };
+
+  // const handleEditSchedule = () => {
+  //   console.log(parsedData);
+  //   console.log(newStartTime());
+  // };
 
   // const handleEditEvent = () => {
   //   // console.log(channels.alarmChannels)
