@@ -13,34 +13,36 @@ import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
-// import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { getNow } from '../../utils/GetNow';
 
 const EventModal = () => {
-  const channels = useAppSelector(alarmChannelSelector);
   const dispatch = useAppDispatch();
-
+  const channels = useAppSelector(alarmChannelSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
   const { currentDate } = useAppSelector((state) => state.dates);
-  const { schedules } = useAppSelector((state) => state.schedules);
 
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [checked, setChecked] = useState(false);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
   const [startTime, setStartTime] = useState<Option>(startSelectOptions[0]);
-  const startTimeValue = startTime.value;
 
   const weekly = useMemo(() => {
     return getThisWeek(currentDate);
   }, [currentDate]);
+
+  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
+  const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
+  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
+
+  const startTimeValue = startTime.value;
 
   const newStartTime = () => {
     if (startTimeValue.length === 3) {
@@ -58,12 +60,7 @@ const EventModal = () => {
     return start;
   };
 
-  const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
-  const endSelectOptions: Option[] = useMemo(() => createTimeOptions().slice(startTimeIndex + 1), [startTimeIndex + 1]);
-
-  const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
   const endTimeValue = endTime.value;
-
   const newEndTime = () => {
     if (endTimeValue.length === 3) {
       const endTimeNewValue = '0' + endTimeValue;
@@ -80,19 +77,12 @@ const EventModal = () => {
     return end;
   };
 
-  const [checked, setChecked] = useState(false);
-
-  const switchHandler = (e: any) => {
-    setChecked(e.target.checked);
-  };
-
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
   };
 
   const onDateChange = (e: any) => {
     setDate(e.currentTarget.value);
-    // console.log(date);
   };
 
   const onContentChange = (e: any) => {
@@ -103,21 +93,8 @@ const EventModal = () => {
     setAlarmChannelId(alarmChannelValue);
   };
 
-  const parsedData: any = {
-    title: title,
-    content: null,
-    start: newStartTime(),
-    end: newEndTime(),
-    open: checked,
-  };
-
-  const parsedMeetingData: any = {
-    title: title,
-    content: content,
-    start: newStartTime(),
-    end: newEndTime(),
-    meetupId: alarmChannelId,
-    open: checked,
+  const switchHandler = (e: any) => {
+    setChecked(e.target.checked);
   };
 
   useEffect(() => {
@@ -145,6 +122,26 @@ const EventModal = () => {
     dispatch(setEventModalOpen());
   }, []);
 
+  // 스케줄 등록할 때 보내는 data
+  const parsedData: any = {
+    title: title,
+    content: null,
+    start: newStartTime(),
+    end: newEndTime(),
+    open: checked,
+  };
+
+  // 미팅 등록할 때 보내는 data
+  const parsedMeetingData: any = {
+    title: title,
+    content: content,
+    start: newStartTime(),
+    end: newEndTime(),
+    meetupId: alarmChannelId,
+    open: checked,
+  };
+
+  // 나의 스케줄 등록
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
       alert('제목은 필수 입력사항입니다');
@@ -159,10 +156,13 @@ const EventModal = () => {
     }
   };
 
+  // 미팅 등록
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
       alert('미팅명은 필수 입력사항입니다');
-    } else if (parsedData) {
+    } else if (!parsedMeetingData.meetupId) {
+      alert('참여중인 밋업은 필수 입력사항입니다');
+    } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
@@ -191,6 +191,7 @@ const EventModal = () => {
     setEndTime(selected);
   }, []);
 
+  // 참여중인 밋업 띄우기 - Autocomplete 이용
   const defaultProps = {
     options: channels.alarmChannels,
     getOptionLabel: (option: tAlarm) => option.displayName,
@@ -352,7 +353,10 @@ const EventModal = () => {
             <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">알림 보낼 채널</div>
+                  <div className="text-s text-title font-bold">
+                    참여중인 밋업
+                    <span className="text-cancel">&#42;</span>
+                  </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
                     className="w-[450px]"

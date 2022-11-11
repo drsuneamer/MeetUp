@@ -29,7 +29,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
-        open: false,
+        open: false, 
       },
     ],
     meetingToMe: [
@@ -74,6 +74,8 @@ const initialState: scheduleInitialState = {
       managerName: '',
       diffWebex: '',
       myWebex: '',
+      meetupId: 0,
+      open: false,
     },
   },
 };
@@ -136,6 +138,31 @@ export const editMeetingDetail = createAsyncThunk('schedule/editMeetingDetail', 
     console.log(err);
   }
 });
+
+export const editScheduleDetail = createAsyncThunk('schedule/editScheduleDetail', async (thunkAPI: any) => {
+  try {
+    const res = await axiosInstance.patch('/schedule', thunkAPI).then((res) => {
+      // console.log('my meeting detail edited: ', res.data);
+      return res.data;
+    });
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// export const editScheduleDetail = createAsyncThunk('schedule/editScheduleDetail', async (thunkAPI: any) => {
+//   const res = await axiosInstance
+//     .post('/schedule', thunkAPI)
+//     .then((res) => {
+//       return res.data
+//     })
+//     .catch((err) => {
+//       if (err.response.status === 409) {
+//         alert('')
+//       }
+//     })
+// });
 
 export const deleteMeetingDetail = createAsyncThunk('schedule/deleteMeetingDetail', async (thunkAPI: number) => {
   const meetingId = thunkAPI;

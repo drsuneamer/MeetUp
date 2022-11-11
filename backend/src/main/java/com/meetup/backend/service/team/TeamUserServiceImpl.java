@@ -3,6 +3,7 @@ package com.meetup.backend.service.team;
 import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
+import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.dto.user.UserListInTeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
@@ -13,6 +14,7 @@ import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
+import com.meetup.backend.service.AsyncService;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.util.converter.JsonConverter;
 import com.meetup.backend.util.exception.MattermostEx;
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/10
+ * updated by seongmin on 2022/11/11
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -52,6 +54,9 @@ public class TeamUserServiceImpl implements TeamUserService {
 
     @Autowired
     private final TeamRepository teamRepository;
+
+    @Autowired
+    private final AsyncService asyncService;
 
     @Override
     public List<TeamResponseDto> getTeamByUser(String userId) {
@@ -105,38 +110,16 @@ public class TeamUserServiceImpl implements TeamUserService {
                             .firstLogin(false)
                             .role(RoleType.ROLE_Student)
                             .build()));
-
-//                    User user = userRepository.findById(userId).orElseGet(
-//                            () -> userRepository.save(
-//                                    User.builder()
-//                                            .id(userId)
-//                                            .firstLogin(false)
-//                                            .role(RoleType.Student)
-//                                            .build()
-//                            )
-//                    );
-//                    if (teamUserRepository.findByTeamAndUser(team, user).isEmpty()) {
-//                        TeamUser teamUser = TeamUser.builder().team(team).user(user).build();
-//                        teamUserRepository.save(teamUser);
-//                    }
                 }
             }
 
             Set<User> userSet = new HashSet<>(userRepository.findAll());
             userRepository.saveAll(userList.stream().filter(user -> !userSet.contains(user)).collect(Collectors.toList()));
-//            List<TeamUser> teamUserList = userList.stream().map(user -> TeamUser.builder().team(team).user(user).build())
-//                    .filter(teamUser -> teamUserRepository.existsByUserAndTeam(teamUser.getUser(), teamUser.getTeam()))
-//                    .collect(Collectors.toList());
-
-//            teamUserRepository.saveAll(userList.stream().filter(user -> !teamUserRepository.existsByUserAndTeam(user, team))
-//                    .map(user -> TeamUser.builder().team(team).user(user).build())
-//                    .collect(Collectors.toList()));
             Set<TeamUser> teamUserSet = new HashSet<>(teamUserRepository.findByTeam(team));
             teamUserRepository.saveAll(userList.stream()
                     .map(user -> TeamUser.builder().team(team).user(user).build())
                     .filter(teamUser -> !teamUserSet.contains(teamUser))
                     .collect(Collectors.toList()));
-
         }
     }
 
@@ -169,31 +152,16 @@ public class TeamUserServiceImpl implements TeamUserService {
     }
 
     @Override
-    public List<UserListInTeamResponseDto> getUserByTeam(String mmSessionToken, String teamId) {
+    public List<UserInfoDto> getUserByTeam(String mmSessionToken, String teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new ApiException(ExceptionEnum.TEAM_NOT_FOUND));
         List<TeamUser> teamUserList = teamUserRepository.findByTeam(team);
 
-        List<UserListInTeamResponseDto> userListInTeamResponseDtoList = new ArrayList<>();
-        for (TeamUser teamUser : teamUserList) {
-            User user = teamUser.getUser();
-            UserListInTeamResponseDto userListInTeamResponseDto = UserListInTeamResponseDto.of(user);
-            if (user.getNickname() == null) {
-                MattermostClient client = Client.getClient();
-                client.setAccessToken(mmSessionToken);
-                Response response = client.getUser(user.getId()).getRawResponse();
-                JSONObject userObj = new JSONObject();
-                try {
-                    userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+        List<UserInfoDto> result = new ArrayList<>();
 
-                } catch (ClassCastException e) {
-                    log.error(e.getMessage());
-                    log.info("response.getEntity() = {}", response.getEntity());
-                    e.printStackTrace();
-                }
-                userListInTeamResponseDto.setNickname(userObj.getString("nickname"));
-            }
-            userListInTeamResponseDtoList.add(userListInTeamResponseDto);
-        }
-        return userListInTeamResponseDtoList;
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(mmSessionToken);
+
+        asyncService.getResult(client, teamUserList).thenAccept(result::addAll).join();
+        return result;
     }
 }

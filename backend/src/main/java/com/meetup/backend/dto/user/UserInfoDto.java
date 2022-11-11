@@ -3,13 +3,15 @@ package com.meetup.backend.dto.user;
 import com.meetup.backend.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * created by seongmin on 2022/10/25
- * updated by seongmin on 2022/11/01
+ * updated by seongmin on 2022/11/11
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class UserInfoDto {
     private String id;
     private String nickname;

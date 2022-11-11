@@ -47,6 +47,8 @@ export type tScheduleDetail = {
   userName: string;
   myWebex: string;
   diffWebex: string;
-  managerId: string,
+  managerId: string;
   managerName: string,
+  meetupId: number;
+  open: boolean,
 };
