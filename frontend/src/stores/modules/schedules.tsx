@@ -29,7 +29,7 @@ const initialState: scheduleInitialState = {
         userName: '',
         meetupName: '',
         meetupColor: '',
-        open: false, 
+        open: false,
       },
     ],
     meetingToMe: [
@@ -118,7 +118,6 @@ export const addMeeting = createAsyncThunk('schedule/fetchAddMeeting', async (th
 export const fetchScheduleDetail = createAsyncThunk('schedule/fetchSechedule', async (thunkAPI: any) => {
   try {
     const res = await axiosInstance.get(`/schedule/${thunkAPI}`).then((res) => {
-      console.log('my schedule detail fetched: ', res.data);
       return res.data;
     });
     return res;

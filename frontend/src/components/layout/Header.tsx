@@ -4,20 +4,14 @@ import { setDeleteModalOpen } from '../../stores/modules/modal';
 import LogoImage from '../../assets/logo_title.png';
 import DeleteModal from '../modal/DeleteModal';
 import CreateGroupModal from '../modal/CreateGroupModal';
+import MemberListModal from '../../components/modal/MemberListModal';
 
 function Header() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const userId = window.localStorage.getItem('id');
   const nickname = window.localStorage.getItem('nickname');
   const role = window.localStorage.getItem('roleType');
-  const url = `/calendar/${userId}`; // 현재 로그인된 사용자의 캘린더
-
-  const navTo = () => {
-    navigate(`${url}`);
-    window.location.reload();
-  };
 
   // DeleteModal에 logout 타입으로 사용됨을 전달 + 모달 온오프
   const handleLogoutModal = () => {
@@ -26,12 +20,15 @@ function Header() {
 
   return (
     <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
+      <MemberListModal />
       <CreateGroupModal />
       <DeleteModal />
       <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
-        <div className="flex items-center cursor-pointer" onClick={navTo}>
+        <div className="flex items-center cursor-pointer">
           {/* 로고 클릭 시 본인 달력으로 이동 */}
-          <img className="h-s ml-2" src={LogoImage} alt="logo" />
+          <a href={`/calendar/${userId}`}>
+            <img className="h-s ml-2" src={LogoImage} alt="logo" />
+          </a>
           {/* 현재 버전 명시 - 클릭시 깃북으로 이동*/}
           <button
             onClick={() => window.open('https://meetup.gitbook.io/meetup-docs/release-notes', '_blank')}

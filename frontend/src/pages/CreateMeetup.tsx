@@ -22,8 +22,6 @@ function CreateMeetup() {
   const [lv1Categories, setLv1] = useState<any>([]);
   const [lv2Categories, setLv2] = useState<any>([]);
 
-  console.log(lv2Categories);
-
   // 전체 팀 목록 가져오기
   useEffect(() => {
     axiosInstance.get('meetup/team').then((res) => {

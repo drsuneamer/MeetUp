@@ -1,4 +1,3 @@
-import React from 'react';
 import MonthlyCalenderHeader from './MonthlyCalendarHeader';
 import WeeklyCalenderHeader from './WeeklyCalendarHeader';
 import WeeklyCalendarBody from './WeeklyCalendarBody';

@@ -9,7 +9,7 @@ import Chip from '@mui/material/Chip';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import { fetchGroupList, groupsSelector } from '../../stores/modules/groups';
 
 interface Team {
   id: string;
