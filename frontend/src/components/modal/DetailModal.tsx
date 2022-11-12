@@ -45,7 +45,7 @@ const DetailModal = () => {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
-          className="w-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+          className="w-[600px] h-[450px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
           }}
