@@ -18,7 +18,7 @@ export const ChannelListItem: React.FC<ChannelListItemProps> = ({ channel }) => 
   const handleMemberListModal = () => {
     dispatch(update({ id: channel.id, title: channel.title }));
     dispatch(fetchMemberList(Number(channel.id)));
-    dispatch(setMemberListModalOpen());
+    dispatch(setMemberListModalOpen('meetup'));
   };
 
   // 톱니바퀴 버튼 누르면 -> 밋업 수정 페이지로 이동
