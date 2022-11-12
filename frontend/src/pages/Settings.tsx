@@ -6,7 +6,6 @@ import Switch from '@mui/material/Switch';
 import { setCreateGroupModalOpen } from '../stores/modules/modal';
 import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { fetchGroupList, groupsSelector } from '../stores/modules/groups';
-
 import GroupListItem from '../components/GroupListItem';
 
 interface Team {
@@ -24,6 +23,7 @@ interface Group {
 function Settings() {
   const dispatch = useAppDispatch();
   const groups: Group[] = useAppSelector(groupsSelector).groups;
+  const role = window.localStorage.getItem('roleType');
 
   const [url, setUrl] = useState<string>('Webex Link');
   const [input, setInput] = useState<object>({ webexUrl: '' });
@@ -31,12 +31,7 @@ function Settings() {
   const [teamArray, setTeamArray] = useState<Team[]>([]);
   const [forUse, setForUse] = useState<Team[]>([]);
 
-  const role = window.localStorage.getItem('roleType');
-
-  useEffect(() => {
-    setForUse([...teamArray]);
-  }, [teamArray]);
-
+  // 렌더링과 동시에 webex 주소와 전체 팀 목록 호출
   useEffect(() => {
     axiosInstance.get('/user/webex').then((res) => {
       if (res.status === 200) {
@@ -53,6 +48,7 @@ function Settings() {
     });
   }, []);
 
+  // [1] 웹엑스 주소 변경
   const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
   };
@@ -69,16 +65,10 @@ function Settings() {
     });
   };
 
+  // [2] 내가 사용할 팀 관리
   useEffect(() => {
-    // 기타 오류 안내는 10초 뒤에 사라짐
-    const timer = setTimeout(() => {
-      setDone(false);
-    }, 5000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [done]);
+    setForUse([...teamArray]);
+  }, [teamArray]);
 
   const handleChange = (id: string) => {
     axiosInstance.put('/meetup/team/activate', [{ teamId: id }]).then((res) => {});
@@ -90,6 +80,7 @@ function Settings() {
   };
 
   // [3] 그룹 관리
+  // 그룹 목록 가져옴
   useEffect(() => {
     dispatch(fetchGroupList());
   }, []);
@@ -97,6 +88,17 @@ function Settings() {
   const handleCreateGroupModal = () => {
     dispatch(setCreateGroupModalOpen());
   };
+
+  // 그룹 이름 중복 안내: 5초 뒤에 사라짐
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDone(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [done]);
 
   return (
     <Layout>
@@ -177,7 +179,6 @@ function Settings() {
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z"
-                clipRule="evenodd"
               />
             </svg>
           </div>
