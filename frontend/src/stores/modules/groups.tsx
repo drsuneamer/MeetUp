@@ -5,12 +5,12 @@ import { axiosInstance } from '../../components/auth/axiosConfig';
 const initialState = {
   loading: false,
   groups: [{ id: 0, name: '', leader: false }],
+  group: { id: 0 },
 };
 
 export const fetchGroupList = createAsyncThunk('groups', async () => {
   try {
     const res = await axiosInstance.get('/group').then((res) => {
-      console.log(res);
       return res.data;
     });
     return res;
@@ -19,10 +19,14 @@ export const fetchGroupList = createAsyncThunk('groups', async () => {
   }
 });
 
-const GroupSlice = createSlice({
+const groupSlice = createSlice({
   name: 'groups',
   initialState,
-  reducers: {},
+  reducers: {
+    update: (state, action) => {
+      state.group = action.payload;
+    },
+  },
   extraReducers: {
     [fetchGroupList.pending.toString()]: (state) => {
       state.loading = false;
@@ -37,6 +41,8 @@ const GroupSlice = createSlice({
   },
 });
 
-const { reducer } = GroupSlice;
-export const groupSelector = (state: RootState) => state.groups;
+const { reducer } = groupSlice;
+export const { update } = groupSlice.actions;
+export const groupSelector = (state: RootState) => state.group;
+export const groupsSelector = (state: RootState) => state.groups;
 export default reducer;

@@ -4,6 +4,7 @@ import { setDeleteModalOpen } from '../../stores/modules/modal';
 import { axiosInstance } from '../auth/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { deleteMeetingDetail, deleteScheduleDetail, detailSelector } from '../../stores/modules/schedules';
+import { fetchGroupList } from '../../stores/modules/groups';
 
 function DeleteModal() {
   const navigate = useNavigate();
@@ -12,9 +13,9 @@ function DeleteModal() {
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
 
-  // const meetingDetail = useAppSelector(detailSelector).scheduleModal.meetingDetail;
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
   const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
+  const groupId = useAppSelector((state: any) => state.group.group.id);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDeleteModalOpen('close'));
@@ -30,8 +31,8 @@ function DeleteModal() {
     });
   };
 
-  // ['delete', 'schedule] || ['delete', 'meeting']
-  // 스케줄/미팅 여부에 따라 다른 함수 dispatch
+  // ['delete', 'schedule] || ['delete', 'meeting'] || ...
+  // 스케줄/미팅/밋업/그룹 중 어떤 것을 삭제하는지 여부에 따라 다른 함수 dispatch
   const handleDelete = () => {
     if (deleteModalType[1] === 'schedule') {
       dispatch(deleteScheduleDetail(scheduleDetail.id));
@@ -40,6 +41,11 @@ function DeleteModal() {
     } else if (deleteModalType[1] === 'meetup') {
       axiosInstance.delete(`/meetup/${channelId}`).then((res) => {
         navigate(`/calendar/${localStorage.getItem('id')}`);
+        handleToggleModal();
+      });
+    } else if (deleteModalType[1] === 'group') {
+      axiosInstance.delete(`/group/${groupId}`).then((res) => {
+        dispatch(fetchGroupList());
         handleToggleModal();
       });
     }
