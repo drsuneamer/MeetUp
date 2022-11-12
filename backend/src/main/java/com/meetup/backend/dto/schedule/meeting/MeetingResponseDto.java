@@ -1,6 +1,7 @@
 package com.meetup.backend.dto.schedule.meeting;
 
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.party.Party;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import lombok.AllArgsConstructor;
@@ -47,22 +48,48 @@ public class MeetingResponseDto {
 
     private String meetupAdminUserWebex;
 
-    public static MeetingResponseDto of(Schedule schedule, Meetup meetup, User user, User meetingUser) {
-        return MeetingResponseDto.builder()
-                .id(schedule.getId())
-                .start(schedule.getStart())
-                .end(schedule.getEnd())
-                .title(schedule.getTitle())
-                .content(schedule.getContent())
-                .userId(user.getId())
-                .userName(user.getNickname())
-                .userWebex(user.getWebex())
-                .meetupId(meetup.getId())
-                .meetupName(meetup.getTitle())
-                .meetupColor(meetup.getColor())
-                .meetupAdminUserId(meetingUser.getId())
-                .meetupAdminUserName(meetingUser.getNickname())
-                .meetupAdminUserWebex(meetingUser.getWebex())
-                .build();
+    private Long partyId;
+
+    private String partyName;
+
+    public static MeetingResponseDto of(Schedule schedule, Meetup meetup, User user, User meetingUser, Party party) {
+        if (party != null)
+            return MeetingResponseDto.builder()
+                    .id(schedule.getId())
+                    .start(schedule.getStart())
+                    .end(schedule.getEnd())
+                    .title(schedule.getTitle())
+                    .content(schedule.getContent())
+                    .userId(user.getId())
+                    .userName(user.getNickname())
+                    .userWebex(user.getWebex())
+                    .meetupId(meetup.getId())
+                    .meetupName(meetup.getTitle())
+                    .meetupColor(meetup.getColor())
+                    .meetupAdminUserId(meetingUser.getId())
+                    .meetupAdminUserName(meetingUser.getNickname())
+                    .meetupAdminUserWebex(meetingUser.getWebex())
+                    .partyId(party.getId())
+                    .partyName(party.getName())
+                    .build();
+        else
+            return MeetingResponseDto.builder()
+                    .id(schedule.getId())
+                    .start(schedule.getStart())
+                    .end(schedule.getEnd())
+                    .title(schedule.getTitle())
+                    .content(schedule.getContent())
+                    .userId(user.getId())
+                    .userName(user.getNickname())
+                    .userWebex(user.getWebex())
+                    .meetupId(meetup.getId())
+                    .meetupName(meetup.getTitle())
+                    .meetupColor(meetup.getColor())
+                    .meetupAdminUserId(meetingUser.getId())
+                    .meetupAdminUserName(meetingUser.getNickname())
+                    .meetupAdminUserWebex(meetingUser.getWebex())
+                    .partyId(null)
+                    .partyName(null)
+                    .build();
     }
 }
