@@ -23,7 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 /**
  * created by myeongseok on 2022/10/23
- * updated by seongmin on 2022/11/08
+ * updated by myeongseok on 2022/11/11
  */
 @RestController
 @Slf4j
@@ -31,6 +31,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/meeting")
 public class MeetingController {
     private final MeetingService meetingService;
+
     private final AuthService authService;
 
     private final ChannelUserService channelUserService;
@@ -64,7 +65,7 @@ public class MeetingController {
         return ResponseEntity.status(CREATED).body(scheduleId);
     }
 
-    // 미팅 id 해당되는 스케쥴 수정
+    // 미팅 id 해당되는 스케쥴 삭제
     @DeleteMapping("/{meetingId}")
     @ApiOperation(value = "스케쥴 ID에 해당되는 스케쥴 삭제")
     public ResponseEntity<?> deleteSchedule(@PathVariable("meetingId") Long meetingId) {

@@ -31,7 +31,7 @@ public class MeetingRequestDto {
     @NotNull(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
 
-    private Long GroupId;
+    private Long partyId;
 
     private boolean open;
 

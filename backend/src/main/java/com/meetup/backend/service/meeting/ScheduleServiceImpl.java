@@ -208,7 +208,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Party> partyList = new ArrayList<>();
         if (partyUserList.size() > 0) {
             for (PartyUser partyUser : partyUserList) {
-                partyList.add(partyRepository.findById(partyUser.getParty().getId()).get());
+                partyList.add(partyUser.getParty());
             }
         }
         List<PartyMeeting> partyMeetingList = new ArrayList<>();

@@ -18,128 +18,84 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class AllScheduleResponseDto {
-    private List<MeetingResponse> meetingFromMe; // 내가 신청한 미팅
-    private List<MeetingResponse> meetingToMe; // 내가 신청받은 미팅
+    // 1.  나 -> 타인 신청 미팅 목록
+    private List<MeetingResponse> meetingFromMe;
+    // 2. 타인 -> 나 신청 미팅 목록
+    private List<MeetingResponse> meetingToMe;
+    // 3. 나의 개인 스케쥴
     private List<ScheduleResponse> scheduleResponseList;
-
+    // 4. 내가 속한 그룹의 일정
     private List<PartyMeetingResponse> partyMeetingResponseList;
 
-    // oner가 me한테 신청한게 안보임
+    // owner가 me한테 신청한게 안보임
     public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, List<PartyMeeting> partyMeetings, String me) {
+        // 1.  나 -> 타인 신청 미팅 목록
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
+        // 2. 타인 -> 나 신청 미팅 목록
         List<MeetingResponse> meetingToMe = new ArrayList<>();
+        // 3. 나의 개인 스케쥴
         List<ScheduleResponse> scheduleResponseList = new ArrayList<>();
+        // 4. 내가 속한 그룹의 일정
+        // 내가 그룹장 신청 미팅 = 나 -> 타인 신청 미팅  / 해당 경우 미팅을 목록에서 제거
         List<PartyMeetingResponse> partyMeetingResponseList = new ArrayList<>();
 
+        // 4. 내가 속한 그룹의 일정
         for (PartyMeeting partyMeeting : partyMeetings) {
-            partyMeetingResponseList.add(new PartyMeetingResponse(partyMeeting.getMeeting().getId(),
-                    partyMeeting.getMeeting().isOpen(),
-                    partyMeeting.getMeeting().getStart(),
-                    partyMeeting.getMeeting().getEnd(),
-                    partyMeeting.getMeeting().getTitle(),
-                    partyMeeting.getMeeting().getContent(),
-                    partyMeeting.getMeeting().getUser().getId(),
-                    partyMeeting.getMeeting().getUser().getNickname(),
-                    partyMeeting.getMeeting().getMeetup().getTitle(),
-                    partyMeeting.getMeeting().getMeetup().getColor(),
-                    partyMeeting.getParty().getId(),
-                    partyMeeting.getParty().getName()));
+            partyMeetingResponseList.add(new PartyMeetingResponse(partyMeeting.getMeeting().getId(), partyMeeting.getMeeting().isOpen(), partyMeeting.getMeeting().getStart(), partyMeeting.getMeeting().getEnd(), partyMeeting.getMeeting().getTitle(), partyMeeting.getMeeting().getContent(), partyMeeting.getMeeting().getUser().getId(), partyMeeting.getMeeting().getUser().getNickname(), partyMeeting.getMeeting().getMeetup().getTitle(), partyMeeting.getMeeting().getMeetup().getColor(), partyMeeting.getParty().getId(), partyMeeting.getParty().getName()));
         }
-
-
+        // 3 + 1
         for (Schedule schedule : scheduleList) {
+            // 1.  나 -> 타인 신청 미팅 목록
             if (schedule instanceof Meeting) {
                 // 스케줄 주인이 신청한 미팅 리스트
                 Meeting meeting = (Meeting) schedule;
-
-                // 만약 그룹에 속한 미팅에서 "내가 그룹장인 미팅"이 있다면 미팅 목록에서 제거"
+                // 만약 그룹에 속한 미팅에서 "내가 그룹장인 미팅"이 있다면 미팅 목록에서 제거
                 for (PartyMeetingResponse partyMeetingResponse : partyMeetingResponseList) {
                     if (partyMeetingResponse.getId().equals(meeting.getId()))
                         continue;
                 }
-
-                //meeting id가 partyMeetingResponseList id에 있으면 continue;
+                // meeting id가 partyMeetingResponseList id에 있으면 continue;
                 if (!schedule.isOpen() && !me.equals(schedule.getUser().getId()) && !me.equals(meeting.getMeetup().getManager().getId())) {
-                    meetingFromMe.add(new MeetingResponse(
-                            schedule.getId(),
-                            false,
-                            schedule.getStart(),
-                            schedule.getEnd()
-                    ));
+                    meetingFromMe.add(new MeetingResponse(schedule.getId(), false, schedule.getStart(), schedule.getEnd()));
                 } else {
-                    meetingFromMe.add(new MeetingResponse(
-                            schedule.getId(),
-                            true,
-                            schedule.getStart(),
-                            schedule.getEnd(),
-                            schedule.getTitle(),
-                            schedule.getContent(),
-                            schedule.getUser().getId(),
-                            schedule.getUser().getNickname(),
-                            ((Meeting) schedule).getMeetup().getTitle(),
-                            ((Meeting) schedule).getMeetup().getColor()
-                    ));
+                    meetingFromMe.add(new MeetingResponse(schedule.getId(), true, schedule.getStart(), schedule.getEnd(), schedule.getTitle(), schedule.getContent(), schedule.getUser().getId(), schedule.getUser().getNickname(), ((Meeting) schedule).getMeetup().getTitle(), ((Meeting) schedule).getMeetup().getColor()));
                 }
-            } else { // 스케줄 주인의 개인 스케줄 리스트
+            }
+            // 3. 나의 개인 스케쥴
+            else {
                 if (!schedule.isOpen() && !me.equals(schedule.getUser().getId())) {
-                    scheduleResponseList.add(new ScheduleResponse(
-                            schedule.getId(),
-                            false,
-                            schedule.getStart(),
-                            schedule.getEnd()
-                    ));
+                    scheduleResponseList.add(new ScheduleResponse(schedule.getId(), false, schedule.getStart(), schedule.getEnd()));
                 } else {
-                    scheduleResponseList.add(new ScheduleResponse(
-                            schedule.getId(),
-                            true,
-                            schedule.getStart(),
-                            schedule.getEnd(),
-                            schedule.getTitle(),
-                            schedule.getContent(),
-                            schedule.getUser().getId(),
-                            schedule.getUser().getNickname()
-                    ));
+                    scheduleResponseList.add(new ScheduleResponse(schedule.getId(), true, schedule.getStart(), schedule.getEnd(), schedule.getTitle(), schedule.getContent(), schedule.getUser().getId(), schedule.getUser().getNickname()));
                 }
             }
         }
-        for (Meeting meeting : meetings) { // 스케줄 주인이 신청 받은 미팅 리스트
+        // 2. 타인 -> 나 신청 미팅 목록
+        for (Meeting meeting : meetings) {
             if (!meeting.isOpen() && !me.equals(meeting.getMeetup().getManager().getId()) && !me.equals(meeting.getUser().getId())) {
-                meetingToMe.add(new MeetingResponse(
-                        meeting.getId(),
-                        false,
-                        meeting.getStart(),
-                        meeting.getEnd()
-                ));
+                meetingToMe.add(new MeetingResponse(meeting.getId(), false, meeting.getStart(), meeting.getEnd()));
             } else {
-                meetingToMe.add(new MeetingResponse(
-                        meeting.getId(),
-                        true,
-                        meeting.getStart(),
-                        meeting.getEnd(),
-                        meeting.getTitle(),
-                        meeting.getContent(),
-                        meeting.getUser().getId(),
-                        meeting.getUser().getNickname(),
-                        meeting.getMeetup().getTitle(),
-                        meeting.getMeetup().getColor()
-                ));
+                meetingToMe.add(new MeetingResponse(meeting.getId(), true, meeting.getStart(), meeting.getEnd(), meeting.getTitle(), meeting.getContent(), meeting.getUser().getId(), meeting.getUser().getNickname(), meeting.getMeetup().getTitle(), meeting.getMeetup().getColor()));
             }
         }
-
-        // 스케쥴 주인이 속한 그룹의 미팅
-
         return new AllScheduleResponseDto(meetingFromMe, meetingToMe, scheduleResponseList, partyMeetingResponseList);
     }
 
     @Getter
     private static class PartyMeetingResponse extends MeetingResponse {
         private Long partyId;
+
         private String partyName;
 
         public PartyMeetingResponse(Long id, boolean open, LocalDateTime start, LocalDateTime end, String title, String content, String userId, String userName, String meetupName, String meetupColor, Long partyId, String partyName) {
             super(id, open, start, end, title, content, userId, userName, meetupName, meetupColor);
             this.partyId = partyId;
             this.partyName = partyName;
+        }
+
+        @Override
+        public String toString() {
+            return "PartyMeetingResponse{" + "partyId=" + partyId + ", partyName='" + partyName + '\'' + super.toString();
         }
     }
 
@@ -161,10 +117,7 @@ public class AllScheduleResponseDto {
 
         @Override
         public String toString() {
-            return "MeetingResponse{" +
-                    "meetupName='" + meetupName + '\'' +
-                    ", meetupColor='" + meetupColor + '\'' +
-                    super.toString();
+            return "MeetingResponse{" + "meetupName='" + meetupName + '\'' + ", meetupColor='" + meetupColor + '\'' + super.toString();
         }
     }
 
@@ -206,19 +159,11 @@ public class AllScheduleResponseDto {
 
         @Override
         public String toString() {
-            return "ScheduleResponse{" +
-                    "id=" + id +
-                    ", open=" + open +
-                    ", start=" + start +
-                    ", end=" + end +
-                    ", title='" + title + '\'' +
-                    ", content='" + content + '\'' +
-                    ", userId='" + userId + '\'' +
-                    ", userName='" + userName + '\'' +
-                    '}';
+            return "ScheduleResponse{" + "id=" + id + ", open=" + open + ", start=" + start + ", end=" + end + ", title='" + title + '\'' + ", content='" + content + '\'' + ", userId='" + userId + '\'' + ", userName='" + userName + '\'' + '}';
         }
     }
 
+    // 등록 가능 체크
     public boolean isPossibleRegister(LocalDateTime from, LocalDateTime to) {
         for (MeetingResponse meetingResponse : meetingFromMe) {
             if (isDuplicated(meetingResponse.getStart(), meetingResponse.getEnd(), from, to)) {
@@ -238,6 +183,7 @@ public class AllScheduleResponseDto {
         return true;
     }
 
+    // 수정 가능 체크
     public boolean isPossibleRegister(LocalDateTime from, LocalDateTime to, Long updateId) {
         for (MeetingResponse meetingResponse : meetingFromMe) {
             if (meetingResponse.getId().equals(updateId)) {
@@ -267,6 +213,7 @@ public class AllScheduleResponseDto {
         return true;
     }
 
+    // 중복 체크
     public boolean isDuplicated(LocalDateTime start, LocalDateTime end, LocalDateTime from, LocalDateTime to) {
         if (from.isBefore(end) && to.isAfter(end))
             return true;
@@ -276,9 +223,7 @@ public class AllScheduleResponseDto {
             return true;
         else if ((from.isAfter(start) || from.isEqual(start)) && (to.isBefore(end) || to.isEqual(end)))
             return true;
-        else
-            return false;
-
+        else return false;
     }
 
 }

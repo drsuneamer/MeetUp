@@ -40,4 +40,8 @@ public class PartyMeeting extends BaseEntity {
         this.party = party;
         this.start = start;
     }
+
+    public void update(LocalDateTime start) {
+        this.start = start;
+    }
 }

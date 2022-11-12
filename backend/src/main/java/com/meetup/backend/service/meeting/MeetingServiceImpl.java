@@ -89,7 +89,13 @@ public class MeetingServiceImpl implements MeetingService {
         if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
-        return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager());
+        // 만약 해당 미팅이 그룹 소속이라면
+        if (partyMeetingRepository.existsByMeeting(meeting)) {
+            Party party = partyMeetingRepository.findByMeeting(meeting).get(0).getParty();
+            return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), party);
+        } else {
+            return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), null);
+        }
     }
 
     //미팅 정보 등록
@@ -105,7 +111,8 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800) throw new ApiException(TOO_SHORT_DURATION);
+        if (duration.getSeconds() < 1800)
+            throw new ApiException(TOO_SHORT_DURATION);
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
@@ -164,11 +171,14 @@ public class MeetingServiceImpl implements MeetingService {
             }
             MattermostEx.apiException(dmResponse.getStatus());
         }
+        // 미팅 저장
         Long meetingId = meetingRepository.save(meeting).getId();
         Meeting savedMeeting = meetingRepository.findById(meetingId).get();
+
+
         // 그룹에 해당 되는 미팅 등록일 시 파티(그룹)-미팅 테이블에도 추가
-        if (meetingRequestDto.getGroupId() != null) {
-            Party party = partyRepository.findById(meetingRequestDto.getGroupId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+        if (meetingRequestDto.getPartyId() != null) {
+            Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
             PartyMeeting partyMeeting = new PartyMeeting(savedMeeting, party, start);
             partyMeetingRepository.save(partyMeeting);
         }
@@ -191,7 +201,8 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800) throw new ApiException(TOO_SHORT_DURATION);
+        if (duration.getSeconds() < 1800)
+            throw new ApiException(TOO_SHORT_DURATION);
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
         AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);
@@ -209,9 +220,7 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
-        String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" +
-                "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n"
-                + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+        String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
         if (meetingUpdateRequestDto.isOpen()) {
             int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
@@ -243,6 +252,10 @@ public class MeetingServiceImpl implements MeetingService {
             }
             MattermostEx.apiException(dmResponse.getStatus());
         }
+        if (partyMeetingRepository.existsByMeeting(meeting)) {
+            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
+            partyMeeting.update(meeting.getStart());
+        }
         return meeting.getId();
     }
 
@@ -257,15 +270,13 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
         }
 
-
         MattermostClient client = Client.getClient();
 
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
 //        String endTime = meeting.getEnd().toString().substring(11, 16);
 
-        String message = "### :boom: 미팅 취소 알림 :boom: \n" +
-                "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
+        String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
             if (meeting.isOpen()) {
@@ -296,6 +307,10 @@ public class MeetingServiceImpl implements MeetingService {
                 }
                 MattermostEx.apiException(dmResponse.getStatus());
             }
+        }
+        if (partyMeetingRepository.existsByMeeting(meeting)) {
+            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
+            partyMeetingRepository.delete(partyMeeting);
         }
         meetingRepository.delete(meeting);
     }
@@ -342,7 +357,7 @@ public class MeetingServiceImpl implements MeetingService {
         List<Party> partyList = new ArrayList<>();
         if (partyUserList.size() > 0) {
             for (PartyUser partyUser : partyUserList) {
-                partyList.add(partyRepository.findById(partyUser.getParty().getId()).get());
+                partyList.add(partyUser.getParty());
             }
         }
         List<PartyMeeting> partyMeetingList = new ArrayList<>();
