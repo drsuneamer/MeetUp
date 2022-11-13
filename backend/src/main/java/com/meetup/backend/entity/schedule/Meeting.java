@@ -3,6 +3,7 @@ package com.meetup.backend.entity.schedule;
 import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.party.Party;
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,17 +27,20 @@ public class Meeting extends Schedule {
     @JoinColumn(name = "meetup_id")
     private Meetup meetup;
 
+    @ManyToOne
+    @JoinColumn(name = "party_id")
+    private Party party;
+
     @Builder
-    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean open, User user, Meetup meetup) {
+    public Meeting(LocalDateTime start, LocalDateTime end, String title, String content, boolean open, User user, Meetup meetup, Party party) {
         super(start, end, title, content, open, user);
         this.meetup = meetup;
+        this.party = party;
     }
 
-//    @Builder
-//    public Meeting(LocalDateTime start, LocalDateTime end, String title, User user, Meetup meetup) {
-//        super(start, end, title, user);
-//        this.meetup = meetup;
-//    }
+    public void setParty(Party party) {
+        this.party = party;
+    }
 
     public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
         super.update(meetingUpdateRequestDto);
