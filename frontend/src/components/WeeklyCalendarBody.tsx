@@ -50,34 +50,7 @@ const WeeklyCalendarBody = () => {
   const userId = param.userId;
 
   const sunday = useMemo(() => {
-    const date = new Date(currentDate);
-    const firstDayOfTheMonth = date.getDay();
-
-    if (date.getDate() <= firstDayOfTheMonth) {
-      if (weekly[0].date < 10) {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`;
-      } else {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`;
-      }
-    } else {
-      if (weekly[0].date < 10) {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth() + 1}-0${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth() + 1}-0${weekly[0].date}`;
-      } else {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth() + 1}-${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${weekly[0].date}`;
-      }
-    }
+    return getSundayOfWeek(currentDate, weekly);
   }, [currentDate]);
 
   const thunkAPI = [userId, sunday];

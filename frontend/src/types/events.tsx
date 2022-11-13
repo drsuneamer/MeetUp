@@ -48,7 +48,14 @@ export type tScheduleDetail = {
   myWebex: string;
   diffWebex: string;
   managerId: string;
-  managerName: string,
+  managerName: string;
   meetupId: number;
-  open: boolean,
+  open: boolean;
+};
+
+export type Day = {
+  isToday: boolean;
+  day: number;
+  date: number;
+  stringDate: string;
 };
