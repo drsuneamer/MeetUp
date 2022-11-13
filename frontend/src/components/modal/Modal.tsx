@@ -11,6 +11,8 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
@@ -19,6 +21,7 @@ import { getNow } from '../../utils/GetNow';
 const EventModal = () => {
   const dispatch = useAppDispatch();
   const channels = useAppSelector(alarmChannelSelector);
+  const groups = useAppSelector(groupSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
@@ -156,20 +159,25 @@ const EventModal = () => {
     }
   };
 
+  const handleSubmitToYou = () => {
+    console.log(groups)
+    console.log(groups.group)
+  }
+
   // 미팅 등록
-  const handleSubmitToYou = async () => {
-    if (!parsedMeetingData.title) {
-      alert('미팅명은 필수 입력사항입니다');
-    } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
-    } else if (parsedMeetingData) {
-      const action = await dispatch(addMeeting(parsedMeetingData));
-      if (isFulfilled(action)) {
-        dispatch(fetchSchedule([userId, sunday]));
-        handleToggleModal();
-      }
-    }
-  };
+  // const handleSubmitToYou = async () => {
+  //   if (!parsedMeetingData.title) {
+  //     alert('미팅명은 필수 입력사항입니다');
+  //   } else if (!parsedMeetingData.meetupId) {
+  //     alert('참여중인 밋업은 필수 입력사항입니다');
+  //   } else if (parsedMeetingData) {
+  //     const action = await dispatch(addMeeting(parsedMeetingData));
+  //     if (isFulfilled(action)) {
+  //       dispatch(fetchSchedule([userId, sunday]));
+  //       handleToggleModal();
+  //     }
+  //   }
+  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -201,11 +209,24 @@ const EventModal = () => {
   };
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
+
+  // 그룹 선택하기 - Autocomplete 이용
+  const defaultGroupProps = {
+    options: groups.groups,
+    getOptionLabel: (option: any) => option.name,
+  };
+  const flatGroupProps = {
+    options: groups && groups.groups.map((option: any) => option.name),
+  };
+  // const [gruoupValue, setGroupValue] = React.useState<tAlarm['meetupId'] | null>(null);
+
+
   const params = useParams();
   const userId = params.userId;
 
   useEffect(() => {
     dispatch(fetchAlarmChannelList(userId));
+    dispatch(fetchGroupList());
   }, []);
 
   // 그 주의 일요일 구하기
@@ -389,6 +410,24 @@ const EventModal = () => {
                 )}
               </div>
             )}
+             <div className="mt-[15px]">
+              {myCalendar ? null : (
+                <div>
+                  <div className="text-s text-title font-bold">
+                    그룹 선택
+                    <span className="text-cancel">&#42;</span>
+                  </div>
+                  <Autocomplete
+                    onChange={onAlarmChannel}
+                    className="w-[450px]"
+                    ListboxProps={{ style: { maxHeight: '150px' } }}
+                    {...defaultGroupProps}
+                    id="select-channel"
+                    renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           {myCalendar && isPast() ? (
             <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
