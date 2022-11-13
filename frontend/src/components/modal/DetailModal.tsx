@@ -10,6 +10,7 @@ import { setEditModalOpen } from '../../stores/modules/modal';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
 import { fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import webex from '../../assets/webex_icon.png';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 
 const DetailModal = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const DetailModal = () => {
   const editMeeting = () => {
     dispatch(setEditModalOpen('meeting'));
     dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    dispatch(fetchGroupList());
     handleToggleModal();
   };
 
