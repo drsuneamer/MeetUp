@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
@@ -113,7 +113,7 @@ function CreateMeetup() {
           <div className="mb-10">
             <div className="flex justify-between">
               <div className="font-bold text-title cursor-default">알림을 받을 채널 선택하기</div>
-              {/* <Link to="/create-channel">
+              <Link to="/create-channel">
                 <div className="flex items-center mr-1 mt-1 drop-shadow-shadow cursor-pointer">
                   <svg
                     xmlns="https://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@ function CreateMeetup() {
                   </svg>
                   <div className="text-xs">새로운 채널 생성하기</div>
                 </div>
-              </Link> */}
+              </Link>
             </div>
             <div className="relative">
               <MultipleLevelSelection
