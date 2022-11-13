@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { tSchedule, tScheduleDetail } from '../../types/events';
+import { tSchedule, tScheduleDetail, tPartyDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
 
@@ -9,6 +9,7 @@ type scheduleInitialState = {
     meetingFromMe: Array<tSchedule>;
     meetingToMe: Array<tSchedule>;
     scheduleResponseList: Array<tSchedule>;
+    partyMeetingResponseList: Array<tPartyDetail>;
   };
   scheduleModal: {
     scheduleDetail: tScheduleDetail; // 일정 등록 디테일
@@ -58,6 +59,22 @@ const initialState: scheduleInitialState = {
         meetupName: '',
         meetupColor: '',
         open: false,
+      },
+    ],
+    partyMeetingResponseList: [
+      {
+        id: '',
+        start: '',
+        end: '',
+        title: '',
+        content: '',
+        userId: '',
+        userName: '',
+        meetupName: '',
+        meetupColor: '',
+        open: false,
+        partyId: '',
+        partyName: '',
       },
     ],
   },

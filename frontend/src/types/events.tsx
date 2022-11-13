@@ -59,3 +59,18 @@ export type Day = {
   date: number;
   stringDate: string;
 };
+
+export type tPartyDetail = {
+  id: string;
+  start: string;
+  end: string;
+  title: string;
+  content: string;
+  userId: string;
+  userName: string;
+  meetupName: string;
+  meetupColor: string;
+  open: boolean;
+  partyId: string;
+  partyName: string;
+};
