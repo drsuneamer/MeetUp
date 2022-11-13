@@ -100,6 +100,10 @@ const EventModal = () => {
     setChecked(e.target.checked);
   };
 
+  const onGroupChange = (e: any, value: any) => {
+
+  }
+  
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -418,7 +422,7 @@ const EventModal = () => {
                     <span className="text-cancel">&#42;</span>
                   </div>
                   <Autocomplete
-                    onChange={onAlarmChannel}
+                    onChange={onGroupChange}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultGroupProps}
