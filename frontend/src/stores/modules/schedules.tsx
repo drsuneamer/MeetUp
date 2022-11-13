@@ -77,6 +77,7 @@ const initialState: scheduleInitialState = {
       meetupId: 0,
       open: false,
       partyId: 0,
+      partyName: '',
     },
   },
 };
