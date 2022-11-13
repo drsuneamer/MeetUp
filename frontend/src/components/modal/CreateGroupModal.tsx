@@ -8,8 +8,7 @@ import { useDidMountEffect } from '../../hooks/useDidMountEffect';
 import Chip from '@mui/material/Chip';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
-import { fetchGroupList, groupsSelector } from '../../stores/modules/groups';
+import { fetchGroupList } from '../../stores/modules/groups';
 
 interface Team {
   id: string;
@@ -28,7 +27,6 @@ interface Member {
 }
 
 function CreateGroupModal() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [teamList, setTeamList] = useState([]);
   const [teamId, setTeamId] = useState('');
@@ -55,7 +53,7 @@ function CreateGroupModal() {
     getOptionLabel: (option: Team) => option.displayName,
   };
 
-  // 팀 선택 시 id값 teamNow에 저장
+  // 팀 선택 시 id값 teamId에 저장
   const selectTeam = (e: any, value: any): void => {
     if (value !== null) {
       setTeamId(value.id);
@@ -118,6 +116,7 @@ function CreateGroupModal() {
     );
   });
 
+  // 사용자가 선택한 멤버의 id만 따로 저장
   useDidMountEffect(() => {
     const m: string[] = [];
     for (let i = 0; i < val.length; i++) {
@@ -130,6 +129,7 @@ function CreateGroupModal() {
     }
   }, [val]);
 
+  // 그룹 이름과 멤버 구성 변경되면 제출 object에 반영
   useDidMountEffect(() => {
     setSubmit({ name: name, members: memberId });
   }, [name, memberId]);
@@ -174,7 +174,7 @@ function CreateGroupModal() {
         {/* 전체 내용 */}
         <div className="mx-[5vw] mt-3">
           {/* 팀 선택*/}
-          <div className="text-s text-title font-bold">
+          <div className="text-s text-title font-bold cursor-default">
             멤버를 선택할 팀<span className="ml-1 text-cancel">&#42;</span>
           </div>
           <div className="flex justify-center">
@@ -188,7 +188,7 @@ function CreateGroupModal() {
               renderInput={(params) => <TextField {...params} variant="standard" />}
             />
           </div>
-          <div className="text-s text-title font-bold mt-8">
+          <div className="text-s text-title font-bold mt-8 cursor-default">
             그룹 이름<span className="ml-1 text-cancel">&#42;</span>
           </div>
           <input
@@ -197,7 +197,7 @@ function CreateGroupModal() {
             placeholder="ex. 서울 1반 2팀"
             className="w-full text-center placeholder-placeholder border-b-2 border-b-placeholder py-1 px-2 mb-10 placeholder:text-s focus:outline-none focus:border-b-footer"
           />
-          <div className="text-s text-title font-bold">
+          <div className="text-s text-title font-bold cursor-default">
             멤버 선택<span className="ml-1 text-cancel">&#42;</span>
           </div>
 
@@ -240,7 +240,7 @@ function CreateGroupModal() {
               </div>
             </div>
           ) : (
-            <div className="mt-2">팀을 선택해주세요</div>
+            <div className="mt-2 cursor-default">팀을 선택해주세요</div>
           )}
         </div>
         <div className="flex justify-center">
