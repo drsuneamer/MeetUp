@@ -10,11 +10,18 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
+import com.meetup.backend.service.Client;
+import com.meetup.backend.service.auth.AuthService;
+import com.meetup.backend.util.converter.JsonConverter;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bis5.mattermost.client4.MattermostClient;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedInputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +29,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/11/08
- * updated by seongmin on 2022/11/10
+ * updated by seongmin on 2022/11/13
  */
 @Service
 @RequiredArgsConstructor
@@ -33,6 +40,7 @@ public class PartyServiceImpl implements PartyService {
     private final PartyRepository partyRepository;
     private final PartyUserRepository partyUserRepository;
     private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Override
     @Transactional
@@ -71,10 +79,25 @@ public class PartyServiceImpl implements PartyService {
             throw new ApiException(PARTY_ACCESS_DENIED);
         }
 
-        return party.getPartyUsers().stream()
+        List<UserInfoDto> result = party.getPartyUsers().stream()
                 .filter(partyUser -> !partyUser.getUser().equals(user))
                 .map(partyUser -> UserInfoDto.of(partyUser.getUser()))
                 .collect(Collectors.toList());
+
+        MattermostClient client = Client.getClient();
+        client.setAccessToken(authService.getMMSessionToken(userId));
+        for (UserInfoDto userInfoDto : result) {
+            if (userInfoDto.getNickname() == null) {
+                Response response = client.getUser(userInfoDto.getId()).getRawResponse();
+                try {
+                    JSONObject userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
+                    userInfoDto.setNickname(userObj.getString("nickname"));
+                } catch (ClassCastException e) {
+                    log.error(e.getMessage());
+                }
+            }
+        }
+        return result;
     }
 
     @Override
