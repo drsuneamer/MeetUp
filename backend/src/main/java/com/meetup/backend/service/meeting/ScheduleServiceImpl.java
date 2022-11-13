@@ -198,7 +198,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
         // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
-        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
+        List<PartyUser> partyUserList = partyUserRepository.findByUser(targetUser);
         List<Party> partyList = new ArrayList<>();
         if (partyUserList.size() > 0) {
             for (PartyUser partyUser : partyUserList) {

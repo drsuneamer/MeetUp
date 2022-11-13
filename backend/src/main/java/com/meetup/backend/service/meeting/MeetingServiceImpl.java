@@ -47,7 +47,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by myeongseok on 2022/11/11
+ * updated by myeongseok on 2022/11/1
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -128,7 +128,7 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(DUPLICATE_INSERT_DATETIME);
 
         }
-        // 그룹 소속 미팅
+        // 미팅의 그룹 설정
         Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).open(meetingRequestDto.isOpen()).build();
         if (meetingRequestDto.getPartyId() != null) {
             Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
