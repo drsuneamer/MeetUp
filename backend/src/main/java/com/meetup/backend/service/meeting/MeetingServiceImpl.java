@@ -7,7 +7,6 @@ import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.party.Party;
-import com.meetup.backend.entity.party.PartyMeeting;
 import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
@@ -16,7 +15,6 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
-import com.meetup.backend.repository.party.PartyMeetingRepository;
 import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
@@ -73,8 +71,6 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final PartyUserRepository partyUserRepository;
 
-    private final PartyMeetingRepository partyMeetingRepository;
-
     private final AuthService authService;
 
     // 미팅 상세정보 반환
@@ -89,9 +85,9 @@ public class MeetingServiceImpl implements MeetingService {
         if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
-        // 만약 해당 미팅이 그룹 소속이라면
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            Party party = partyMeetingRepository.findByMeeting(meeting).get(0).getParty();
+        // 만약 해당 미팅이 그룹 소속 되어 있는 미팅이라면
+        if (meeting.getParty() != null) {
+            Party party = meeting.getParty();
             return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), party);
         } else {
             return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), null);
@@ -118,7 +114,6 @@ public class MeetingServiceImpl implements MeetingService {
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
-
         // 로그인 유저가 해당 밋업에 소속 되어있는지 확인
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser)) {
             log.error("채널에 속해있지 않음");
@@ -133,8 +128,12 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(DUPLICATE_INSERT_DATETIME);
 
         }
-
+        // 그룹 소속 미팅
         Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).open(meetingRequestDto.isOpen()).build();
+        if (meetingRequestDto.getPartyId() != null) {
+            Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+            meeting.setParty(party);
+        }
         MattermostClient client = Client.getClient();
 
         String mmToken = authService.getMMSessionToken(userId);
@@ -173,15 +172,6 @@ public class MeetingServiceImpl implements MeetingService {
         }
         // 미팅 저장
         Long meetingId = meetingRepository.save(meeting).getId();
-        Meeting savedMeeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
-
-
-        // 그룹에 해당 되는 미팅 등록일 시 파티(그룹)-미팅 테이블에도 추가
-        if (meetingRequestDto.getPartyId() != null) {
-            Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
-            PartyMeeting partyMeeting = PartyMeeting.builder().meeting(savedMeeting).party(party).start(start).build();
-            partyMeetingRepository.save(partyMeeting);
-        }
 
         return meetingId;
     }
@@ -252,10 +242,6 @@ public class MeetingServiceImpl implements MeetingService {
             }
             MattermostEx.apiException(dmResponse.getStatus());
         }
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
-            partyMeeting.update(meeting.getStart());
-        }
         return meeting.getId();
     }
 
@@ -308,10 +294,6 @@ public class MeetingServiceImpl implements MeetingService {
                 MattermostEx.apiException(dmResponse.getStatus());
             }
         }
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
-            partyMeetingRepository.delete(partyMeeting);
-        }
         meetingRepository.delete(meeting);
     }
 
@@ -353,17 +335,19 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
-        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
+        List<PartyUser> partyUserList = partyUserRepository.findByUser(targetUser);
         List<Party> partyList = new ArrayList<>();
         if (partyUserList.size() > 0) {
             for (PartyUser partyUser : partyUserList) {
                 partyList.add(partyUser.getParty());
             }
         }
-        List<PartyMeeting> partyMeetingList = new ArrayList<>();
+        List<Meeting> partyMeetingList = new ArrayList<>();
         for (Party party : partyList) {
-            partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
+            List<Meeting> partyMeetings = meetingRepository.findByParty(party);
+            partyMeetings.addAll(partyMeetings);
         }
+
 
         return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
     }
