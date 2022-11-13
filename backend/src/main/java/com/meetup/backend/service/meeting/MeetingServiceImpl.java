@@ -173,13 +173,13 @@ public class MeetingServiceImpl implements MeetingService {
         }
         // 미팅 저장
         Long meetingId = meetingRepository.save(meeting).getId();
-        Meeting savedMeeting = meetingRepository.findById(meetingId).get();
+        Meeting savedMeeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
 
 
         // 그룹에 해당 되는 미팅 등록일 시 파티(그룹)-미팅 테이블에도 추가
         if (meetingRequestDto.getPartyId() != null) {
             Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
-            PartyMeeting partyMeeting = new PartyMeeting(savedMeeting, party, start);
+            PartyMeeting partyMeeting = PartyMeeting.builder().meeting(savedMeeting).party(party).start(start).build();
             partyMeetingRepository.save(partyMeeting);
         }
 
