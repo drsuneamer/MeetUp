@@ -51,4 +51,5 @@ export type tScheduleDetail = {
   managerName: string,
   meetupId: number;
   open: boolean,
+  partyId: number,
 };
