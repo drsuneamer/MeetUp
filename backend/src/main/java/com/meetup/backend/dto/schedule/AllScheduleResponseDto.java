@@ -1,6 +1,5 @@
 package com.meetup.backend.dto.schedule;
 
-import com.meetup.backend.entity.party.PartyMeeting;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
 import lombok.*;
@@ -28,7 +27,7 @@ public class AllScheduleResponseDto {
     private List<PartyMeetingResponse> partyMeetingResponseList;
 
     // owner가 me한테 신청한게 안보임
-    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, List<PartyMeeting> partyMeetings, String me) {
+    public static AllScheduleResponseDto of(List<Schedule> scheduleList, List<Meeting> meetings, List<Meeting> partyMeetings, String me) {
         // 1.  나 -> 타인 신청 미팅 목록
         List<MeetingResponse> meetingFromMe = new ArrayList<>();
         // 2. 타인 -> 나 신청 미팅 목록
@@ -40,9 +39,10 @@ public class AllScheduleResponseDto {
         List<PartyMeetingResponse> partyMeetingResponseList = new ArrayList<>();
 
         // 4. 내가 속한 그룹의 일정
-        for (PartyMeeting partyMeeting : partyMeetings) {
-            partyMeetingResponseList.add(new PartyMeetingResponse(partyMeeting.getMeeting().getId(), partyMeeting.getMeeting().isOpen(), partyMeeting.getMeeting().getStart(), partyMeeting.getMeeting().getEnd(), partyMeeting.getMeeting().getTitle(), partyMeeting.getMeeting().getContent(), partyMeeting.getMeeting().getUser().getId(), partyMeeting.getMeeting().getUser().getNickname(), partyMeeting.getMeeting().getMeetup().getTitle(), partyMeeting.getMeeting().getMeetup().getColor(), partyMeeting.getParty().getId(), partyMeeting.getParty().getName()));
+        for (Meeting meeting : partyMeetings) {
+            partyMeetingResponseList.add(new PartyMeetingResponse(meeting.getId(), true, meeting.getStart(), meeting.getEnd(), meeting.getTitle(), meeting.getContent(), meeting.getUser().getId(), meeting.getUser().getNickname(), meeting.getMeetup().getTitle(), meeting.getMeetup().getColor(), meeting.getParty().getId(), meeting.getParty().getName()));
         }
+
         // 3 + 1
         for (Schedule schedule : scheduleList) {
             // 1.  나 -> 타인 신청 미팅 목록
