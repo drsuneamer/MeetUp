@@ -6,7 +6,6 @@ import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.party.Party;
-import com.meetup.backend.entity.party.PartyMeeting;
 import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
@@ -16,8 +15,6 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
-import com.meetup.backend.repository.party.PartyMeetingRepository;
-import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
@@ -51,9 +48,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final ChannelUserRepository channelUserRepository;
     private final MeetupRepository meetupRepository;
     private final MeetingRepository meetingRepository;
-    private final PartyRepository partyRepository;
     private final PartyUserRepository partyUserRepository;
-    private final PartyMeetingRepository partyMeetingRepository;
 
 
     // 스케쥴의 ID로 일정 갖고 오기 (디테일)
@@ -202,18 +197,18 @@ public class ScheduleServiceImpl implements ScheduleService {
                 meetingToMe.addAll(meetingRepository.findByMeetup(mu));
             }
         }
-
         // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
-        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
+        List<PartyUser> partyUserList = partyUserRepository.findByUser(targetUser);
         List<Party> partyList = new ArrayList<>();
         if (partyUserList.size() > 0) {
             for (PartyUser partyUser : partyUserList) {
                 partyList.add(partyUser.getParty());
             }
         }
-        List<PartyMeeting> partyMeetingList = new ArrayList<>();
+        List<Meeting> partyMeetingList = new ArrayList<>();
         for (Party party : partyList) {
-            partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
+            List<Meeting> partyMeetings = meetingRepository.findByParty(party);
+            partyMeetingList.addAll(partyMeetings);
         }
 
         return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);

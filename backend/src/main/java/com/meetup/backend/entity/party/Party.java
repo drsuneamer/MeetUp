@@ -26,9 +26,6 @@ public class Party extends BaseEntity {
     @OneToMany(mappedBy = "party", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PartyUser> partyUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PartyMeeting> partyMeetings = new ArrayList<>();
-
     public Party(String name) {
         this.name = name;
     }
