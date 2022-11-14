@@ -182,10 +182,11 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
         }
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime to = from.plusDays(p);
         if (p == 1) {
             from = from.minusDays(p);
         }
-        LocalDateTime to = from.plusDays(p);
+
         List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 
         // 해당 스케줄 주인의 밋업 리스트
