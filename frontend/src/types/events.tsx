@@ -51,6 +51,26 @@ export type tScheduleDetail = {
   managerName: string;
   meetupId: number;
   open: boolean;
-  partyId: number;
+};
+
+export type Day = {
+  isToday: boolean;
+  day: number;
+  date: number;
+  stringDate: string;
+};
+
+export type tPartyDetail = {
+  id: string;
+  start: string;
+  end: string;
+  title: string;
+  content: string;
+  userId: string;
+  userName: string;
+  meetupName: string;
+  meetupColor: string;
+  open: boolean;
+  partyId: string;
   partyName: string;
 };
