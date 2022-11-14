@@ -93,6 +93,8 @@ const initialState: scheduleInitialState = {
       myWebex: '',
       meetupId: 0,
       open: false,
+      partyId: 0,
+      partyName: '',
     },
   },
 };
