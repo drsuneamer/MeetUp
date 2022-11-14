@@ -485,7 +485,7 @@ const EditModal = () => {
                 onClick={handleEditMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
-                밋업 등록하기
+                미팅 등록하기
               </button>
             )}
           </div>

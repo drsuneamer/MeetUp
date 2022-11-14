@@ -465,7 +465,7 @@ const EventModal = () => {
             </button>
           ) : myCalendar && !isPast() ? (
             <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
-              밋업 불가시간 설정하기
+              미팅 불가시간 설정하기
             </button>
           ) : !myCalendar && isPast() ? (
             <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
@@ -476,7 +476,7 @@ const EventModal = () => {
               onClick={handleSubmitToYou}
               className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
             >
-              밋업 등록하기
+              미팅 등록하기
             </button>
           )}
         </div>
