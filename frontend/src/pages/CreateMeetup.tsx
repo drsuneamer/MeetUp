@@ -4,7 +4,6 @@ import ColorPicker from 'react-pick-color';
 import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
-import { useAppSelector } from '../stores/ConfigHooks';
 import Alert from '@mui/material/Alert';
 
 import { axiosInstance } from '../components/auth/axiosConfig';
@@ -16,16 +15,19 @@ interface Category {
 }
 
 function CreateMeetup() {
-  const teamId = useAppSelector((state: any) => state.teamId.value).id;
   const navigate = useNavigate();
 
   const [lv1Categories, setLv1] = useState<any>([]);
   const [lv2Categories, setLv2] = useState<any>([]);
 
-  // 전체 팀 목록 가져오기
+  // 전체 팀, 채널 목록 가져오기
   useEffect(() => {
     axiosInstance.get('meetup/team').then((res) => {
       setLv1(res.data);
+    });
+
+    axiosInstance.get(`/meetup/channel`).then((res) => {
+      setLv2(res.data);
     });
   }, []);
 
@@ -36,13 +38,6 @@ function CreateMeetup() {
       }
     }
   }
-
-  // 팀을 선택하면 채널 목록 가져오기
-  useEffect(() => {
-    axiosInstance.get(`/meetup/channel/${teamId}`).then((res) => {
-      setLv2(res.data);
-    });
-  }, [teamId]);
 
   // 알림을 받을 채널 선택하기
   const [category, setCategory] = useState<Category>();
@@ -125,7 +120,7 @@ function CreateMeetup() {
                   >
                     <path d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
                   </svg>
-                  <div className="text-xs">새로운 채널 생성하기</div>
+                  <div className="text-xs">새로운 Mattermost 채널 생성하기</div>
                 </div>
               </Link>
             </div>
