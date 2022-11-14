@@ -48,14 +48,17 @@ function EditChannel() {
     });
   }, [channelId]);
 
+  // 이름이나 색 변경 시 제출 레코드에 반영
   useEffect(() => {
     setRecord({ title: title, color: color });
   }, [title, color]);
 
+  // 삭제 버튼 클릭 시 삭제 모달 출력
   const onDelete = () => {
     dispatch(setDeleteModalOpen(['delete', 'meetup']));
   };
 
+  // 삭제 완료 시 메인(캘린더) 화면으로 이동
   const onSubmit = () => {
     axiosInstance.put(`/meetup/${channelId}`, record).then((res) => {
       if (res.status === 201) {
@@ -115,7 +118,6 @@ function EditChannel() {
             </div>
           </div>
           <div className="flex justify-between">
-            {' '}
             {/* 저장/삭제 버튼 */}
             <button
               onClick={onSubmit}

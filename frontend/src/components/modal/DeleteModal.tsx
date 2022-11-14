@@ -13,14 +13,17 @@ function DeleteModal() {
   const { deleteModalIsOpen } = useAppSelector((state) => state.modal);
   const { deleteModalType } = useAppSelector((state) => state.modal);
 
+  // 삭제할 스케줄, 밋업, 그룹의 id를 가져오기 위한 selector
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
   const channelId: number = useAppSelector((state: any) => state.channelInfo.value.id);
   const groupId = useAppSelector((state: any) => state.group.group.id);
 
+  // 삭제 완료 시 모달 닫기
   const handleToggleModal = useCallback(() => {
     dispatch(setDeleteModalOpen('close'));
   }, [dispatch]);
 
+  // 로그아웃 버튼 클릭 시 바로 실행
   const logout = async () => {
     await axiosInstance.get('/user/logout').then((res) => {
       if (res.status === 200) {
@@ -64,9 +67,11 @@ function DeleteModal() {
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
+        {/* 삭제 모달을 띄워야 하는 경우 */}
         {deleteModalType[0] === 'delete' ? (
           <div>
             <div className="flex flex-col justify-center items-center text-l font-bold mt-[30px]">
+              {/* 삭제 타입에 따라 다른 문구 출력 */}
               {deleteModalType[1] === 'meetup' ? (
                 <div>
                   선택한 <span className="text-cancel">밋업</span>을
@@ -93,6 +98,7 @@ function DeleteModal() {
             </button>
           </div>
         ) : (
+          // 로그아웃 모달을 띄워야 하는 경우
           <div className="flex flex-col justify-center items-center">
             <div className="text-l font-bold mt-[60px]">
               <span className="text-cancel">로그아웃 </span>하시겠습니까?
