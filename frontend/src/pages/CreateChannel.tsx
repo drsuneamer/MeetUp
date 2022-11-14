@@ -73,7 +73,6 @@ function CreateChannel() {
   // 채널 이름에 한글 있는지 검사
   // 이름 안에 한글 있는지 검사
   const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
-  console.log(korean.test(name));
 
   // [3] 공개/비공개 설정
   const changeType = (e: string) => {
