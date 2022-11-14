@@ -30,12 +30,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by myeongseok on 2022/11/11
+ * updated by seongmin on 2022/11/14
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -57,18 +58,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ApiException(SCHEDULE_NOT_FOUND));
         if (schedule.getType().equals(ScheduleType.Schedule)) {
-//            if (!user.getId().equals(schedule.getUser().getId())) {
-//                throw new ApiException(ACCESS_DENIED);
-//            }
             if (!schedule.isOpen() && schedule.getUser() != user) {
                 throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
             }
         }
         if (schedule.getType().equals(ScheduleType.Meeting)) {
             // 내가 미팅을 신청한 사람이 아니고, 내가 미팅을 신청받은 사람도 아니다
-//            if (!user.getId().equals(schedule.getUser().getId()) && !((Meeting) schedule).getMeetup().getManager().getId().equals(user.getId())) {
-//                throw new ApiException(ACCESS_DENIED);
-//            }
             Meeting meeting = (Meeting) schedule;
             if (!meeting.isOpen() && meeting.getUser() != user && meeting.getMeetup().getManager() != user) {
                 throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
@@ -98,10 +93,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
-        // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
-        Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+
+        diffDurationCheck(start, end);
+
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
@@ -110,11 +104,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         String title = scheduleRequestDto.getTitle();
         String content = scheduleRequestDto.getContent();
-        log.info("isOpen = {}", scheduleRequestDto.isOpen());
         Schedule schedule = new Schedule(start, end, title, content, scheduleRequestDto.isOpen(), user);
 
         return scheduleRepository.save(schedule).getId();
     }
+
 
     // 스케쥴 정보 수정
     @Override
@@ -128,9 +122,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
-        Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+        diffDurationCheck(start, end);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
         AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
@@ -151,36 +143,15 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new ApiException(ACCESS_DENIED);
         }
         scheduleRepository.delete(schedule);
-
     }
 
+    @Override
     public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
-        List<Meetup> meetups = meetupRepository.findByManager(targetUser);
+        accessCheck(loginUserId, targetUserId, loginUser, targetUser);
 
-        boolean flag = false;
-        if (loginUserId.equals(targetUserId)) {
-            flag = true;
-        }
-        for (Meetup meetup : meetups) {
-            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
-                flag = true;
-                break;
-            }
-        }
-        List<Meetup> meetupsByLoginUser = meetupRepository.findByManager(loginUser);
-        for (Meetup meetup : meetupsByLoginUser) {
-            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), targetUser)) {
-                flag = true;
-                break;
-            }
-        }
-
-        if (!flag) {
-            throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
-        }
         LocalDateTime from = StringToLocalDateTime.strToLDT(date);
         LocalDateTime to = from.plusDays(p);
         if (p == 1) {
@@ -195,23 +166,54 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (meetupList.size() > 0) {
             for (Meetup mu : meetupList) {
                 // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
-                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+                meetingToMe.addAll(mu.getMeetings());
             }
         }
         // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
         List<PartyUser> partyUserList = partyUserRepository.findByUser(targetUser);
-        List<Party> partyList = new ArrayList<>();
-        if (partyUserList.size() > 0) {
-            for (PartyUser partyUser : partyUserList) {
-                partyList.add(partyUser.getParty());
-            }
-        }
+        List<Party> partyList = partyUserList.stream().map(PartyUser::getParty).collect(Collectors.toList());
         List<Meeting> partyMeetingList = new ArrayList<>();
+
         for (Party party : partyList) {
-            List<Meeting> partyMeetings = meetingRepository.findByParty(party);
-            partyMeetingList.addAll(partyMeetings);
+            partyMeetingList.addAll(meetingRepository.findAllByStartBetweenAndParty(from, to, party));
         }
 
         return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
+    }
+
+    @Override
+    public void diffDurationCheck(LocalDateTime start, LocalDateTime end) {
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() < 1800)
+            throw new ApiException(TOO_SHORT_DURATION);
+    }
+
+    private void accessCheck(String loginUserId, String targetUserId, User loginUser, User targetUser) {
+        List<Meetup> meetups = meetupRepository.findByManager(targetUser);
+
+        boolean flag = false;
+        if (loginUserId.equals(targetUserId)) {
+            flag = true;
+        }
+
+        // 로그인 유저와, 스케줄 주인이 같은 밋업에 있는 경우 볼 수 있음
+        for (Meetup meetup : meetups) {
+            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
+                flag = true;
+                break;
+            }
+        }
+
+        List<Meetup> meetupsByLoginUser = meetupRepository.findByManager(loginUser);
+        for (Meetup meetup : meetupsByLoginUser) {
+            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), targetUser)) {
+                flag = true;
+                break;
+            }
+        }
+
+        if (!flag) {
+            throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
+        }
     }
 }

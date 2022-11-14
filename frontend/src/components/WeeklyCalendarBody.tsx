@@ -239,8 +239,8 @@ const WeeklyCalendarBody = () => {
                 }
                 return null;
               })}
-              {/* 그룹 스케쥴 - 나중에 API 생기면 올리기 */}
-              {/* {groupSchedule.map((element: tPartyDetail, index: number) => {
+              {/* 그룹 스케쥴  */}
+              {groupSchedule.map((element: tPartyDetail, index: number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
                 const startHour = parseInt(element.start.slice(-8, -5));
                 const endMinute = parseInt(element.end.slice(-5, -3));
@@ -250,7 +250,7 @@ const WeeklyCalendarBody = () => {
                 let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                 const scheduleDate = element.start.slice(0, 10);
-                const scheduleId = element.id;
+                const meetingId = element.id;
                 const ownerId = element.userId;
                 const myId = localStorage.getItem('id');
 
@@ -259,14 +259,14 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-[red] text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
                         height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        handleViewEvent(scheduleId, 'myCalendar');
+                        handleViewEvent(meetingId, 'myMeeting');
                       }}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-label`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-background z-10`}>
                         {element.title}
                       </span>
                     </div>
@@ -276,18 +276,21 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-[red] text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
                         height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        handleViewEvent(meetingId, 'myMeeting');
+                      }}
                     >
-                      <span key={`${element.id}`} className={`w-full text-center text-label`}>
+                      <span key={`${element.id}`} className={`w-full text-center text-background z-10 `}>
                         {element.title ? element.title : '비공개'}
                       </span>
                     </div>
                   );
                 }
                 return null;
-              })} */}
+              })}
               {/* 나에게 신청한 미팅(컨설턴트 입장) */}
               {meetingToMe.map((element: tSchedule, index: number) => {
                 const startMinute = parseInt(element.start.slice(-5, -3));
