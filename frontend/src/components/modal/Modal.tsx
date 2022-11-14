@@ -407,10 +407,7 @@ const EventModal = () => {
             <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">
-                    그룹 선택
-                    <span className="text-cancel">&#42;</span>
-                  </div>
+                  <div className="text-s text-title font-bold">그룹 선택</div>
                   <Autocomplete
                     onChange={onGroupChange}
                     className="w-[450px]"
