@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 function Login() {
   const navigate = useNavigate();
 
+  // 배경 이미지 랜덤 출력
   // Image[] not working
   const imgArray: any = useMemo(() => [Image1, Image2, Image3, Image4], []);
   const [showImg, setShowImg] = useState();
@@ -24,9 +25,12 @@ function Login() {
   const parsedToday = today.getTime();
   const isExpired = tokenExpiresIn - parsedToday < 0;
 
-  if (!isExpired) {
-    navigate(`/calendar/${localStorage.getItem('id')}`);
-  }
+  // 로그인 토큰이 만료되지 않았을 때에만 메인 화면으로 이동
+  useEffect(() => {
+    if (!isExpired) {
+      navigate(`/calendar/${localStorage.getItem('id')}`);
+    }
+  }, [navigate, isExpired]);
 
   return (
     <div className="h-screen bg-cover" style={{ backgroundImage: `url(${showImg})` }}>
