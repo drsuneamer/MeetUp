@@ -2,6 +2,7 @@ package com.meetup.backend.entity.meetup;
 
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.channel.Channel;
+import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * created by seongmin on 2022/10/20
@@ -38,6 +40,9 @@ public class Meetup extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "channel_id")
     private Channel channel;
+
+    @OneToMany(mappedBy = "meetup", fetch = FetchType.LAZY)
+    private List<Meeting> meetings;
 
     public void changeMeetup(String title, String color) {
         this.title = title;

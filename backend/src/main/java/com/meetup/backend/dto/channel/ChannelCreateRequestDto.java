@@ -18,18 +18,18 @@ import java.util.List;
 @NoArgsConstructor
 public class ChannelCreateRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "팀 아이디는 필수 입력 값입니다.")
     private String teamId;
 
-    @NotBlank
+    @NotBlank(message = "displayName은 필수 입력 값입니다.")
     private String displayName;
 
-    @NotBlank
+    @NotBlank(message = "팀 name은 필수 입력 값입니다.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "채널 타입은 필수 입력 값입니다.")
     private ChannelType type;
 
-    List<String> inviteList;
+    private List<String> inviteList;
 
 }

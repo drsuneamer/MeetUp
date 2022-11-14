@@ -9,8 +9,8 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 public class AdminLoginDto {
-    @NotEmpty(message = "아이디는 비어있을 수 없습니다.")
+    @NotEmpty(message = "id는 필수 입력 값입니다.")
     private String id;
-    @NotEmpty(message = "비밀번호는 비어있을 수 없습니다.")
+    @NotEmpty(message = "비밀번호는 필수 입력 값입니다.")
     private String password;
 }

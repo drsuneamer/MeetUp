@@ -4,7 +4,6 @@ import com.meetup.backend.dto.team.TeamActivateRequestDto;
 import com.meetup.backend.dto.team.TeamActivateResponseDto;
 import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.dto.user.UserInfoDto;
-import com.meetup.backend.dto.user.UserListInTeamResponseDto;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;

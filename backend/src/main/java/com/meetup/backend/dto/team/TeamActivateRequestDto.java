@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class TeamActivateRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "팀 id는 필수 입력 값입니다.")
     private String teamId;
 
 }
