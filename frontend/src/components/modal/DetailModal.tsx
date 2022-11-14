@@ -36,7 +36,7 @@ const DetailModal = () => {
 
   const editSchedule = () => {
     dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId));
     handleToggleModal();
   };
   // const editSchedule = () => {

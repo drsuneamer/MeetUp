@@ -78,6 +78,7 @@ const WeeklyCalendarBody = () => {
       dispatch(toCurrentTime(false));
     }
   }, [myCalendar.mycalendar.currentTime]);
+
   useEffect(() => {
     async function fetchAndSetHolidays() {
       await dispatch(fetchHolidays());
@@ -90,7 +91,7 @@ const WeeklyCalendarBody = () => {
     if (userId && sunday) {
       dispatch(fetchSchedule(thunkAPI));
     }
-  }, [holidays, currentDate]);
+  }, [holidays, currentDate, mySchedule]);
 
   function renderHoliday() {
     const holidayResult: Week[] = [];
@@ -210,7 +211,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
