@@ -1,7 +1,5 @@
 package com.meetup.backend.service.meeting;
 
-import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
-import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingResponseDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
@@ -9,7 +7,6 @@ import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelType;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
-import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamType;
 import com.meetup.backend.entity.team.TeamUser;
@@ -20,7 +17,6 @@ import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
-import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
@@ -35,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
@@ -175,14 +170,14 @@ class MeetingServiceImplTest {
                 .content("내용2")
                 .meetupId(consultantMeetup.getId())
                 .build());
-        MeetingResponseDto meetingResponseDto1 = meetingService.getMeetingResponseDtoById(user1.getId(), meetingId1);
+        MeetingResponseDto meetingResponseDto1 = meetingService.getMeetingDetail(user1.getId(), meetingId1);
         assertThat(meetingResponseDto1.getContent()).isEqualTo("내용1");
 
-        MeetingResponseDto meetingResponseDto2 = meetingService.getMeetingResponseDtoById(consultantMeetup.getManager().getId(), meetingId1);
+        MeetingResponseDto meetingResponseDto2 = meetingService.getMeetingDetail(consultantMeetup.getManager().getId(), meetingId1);
         assertThat(meetingResponseDto2.getContent()).isEqualTo("내용1");
 
         assertThatThrownBy(() -> {
-            meetingService.getMeetingResponseDtoById(user2.getId(), meetingId1);
+            meetingService.getMeetingDetail(user2.getId(), meetingId1);
         }).isInstanceOf(ApiException.class).hasMessageContaining("권한");
 
     }
@@ -209,13 +204,13 @@ class MeetingServiceImplTest {
                 .content("내용2")
                 .meetupId(consultantMeetup.getId())
                 .build());
-        MeetingResponseDto meetingResponseDto1 = meetingService.getMeetingResponseDtoById(user1.getId(), meetingId1);
+        MeetingResponseDto meetingResponseDto1 = meetingService.getMeetingDetail(user1.getId(), meetingId1);
         assertThat(meetingResponseDto1.getContent()).isEqualTo("내용1");
 
-        MeetingResponseDto meetingResponseDto2 = meetingService.getMeetingResponseDtoById(consultantMeetup.getManager().getId(), meetingId1);
+        MeetingResponseDto meetingResponseDto2 = meetingService.getMeetingDetail(consultantMeetup.getManager().getId(), meetingId1);
         assertThat(meetingResponseDto2.getContent()).isEqualTo("내용1");
 
-        MeetingResponseDto meetingResponseDto3 = meetingService.getMeetingResponseDtoById(user2.getId(), meetingId2);
+        MeetingResponseDto meetingResponseDto3 = meetingService.getMeetingDetail(user2.getId(), meetingId2);
         assertThat(meetingResponseDto3.getContent()).isEqualTo("내용2");
 
     }
@@ -275,7 +270,7 @@ class MeetingServiceImplTest {
                 .title("제목2")
                 .content("내용 22").
                 build());
-        MeetingResponseDto meetingResponseDto = meetingService.getMeetingResponseDtoById(user1.getId(), meetingId2);
+        MeetingResponseDto meetingResponseDto = meetingService.getMeetingDetail(user1.getId(), meetingId2);
         assertThat(meetingResponseDto.getContent()).isEqualTo("내용 22");
     }
 
@@ -336,7 +331,7 @@ class MeetingServiceImplTest {
         meetingService.deleteMeeting(user1.getId(), meetingId2);
 
         assertThatThrownBy(() -> {
-            meetingService.getMeetingResponseDtoById(user1.getId(), meetingId2);
+            meetingService.getMeetingDetail(user1.getId(), meetingId2);
         }).isInstanceOf(ApiException.class).hasMessageContaining("미팅");
     }
 }
