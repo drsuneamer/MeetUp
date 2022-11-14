@@ -38,6 +38,7 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
   const [partyId, setPartyId] = useState<number | null>(0);
@@ -102,8 +103,11 @@ const EventModal = () => {
   };
 
   const onAlarmChannel = (e: any, value: any) => {
-    const alarmChannelValue = value.meetupId || undefined;
-    setAlarmChannelId(alarmChannelValue);
+    if (value !== null) {
+      const alarmChannelValue = value.meetupId || undefined;
+      setAlarmChannelId(alarmChannelValue);
+      setAlarmChannel(value);
+    }
   };
 
   const switchHandler = (e: any) => {
@@ -191,6 +195,8 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        setAlarmChannelId(0);
+        setAlarmChannel({ meetupId: 0, displayName: '' });
         handleResetInput();
       }
     }
@@ -374,6 +380,8 @@ const EventModal = () => {
                   </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
+                    inputValue={alarmChannel.displayName}
+                    isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultProps}
@@ -407,7 +415,10 @@ const EventModal = () => {
             <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">그룹 선택</div>
+                  <div className="text-s text-title font-bold">
+                    그룹 선택
+                    <span className="text-cancel">&#42;</span>
+                  </div>
                   <Autocomplete
                     onChange={onGroupChange}
                     className="w-[450px]"
