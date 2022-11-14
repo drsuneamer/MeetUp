@@ -212,20 +212,6 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
-//
-//    @Override
-//    public User registerUser(String userId) {
-//
-//        if (userRepository.findById(userId).isEmpty()) {
-//            User user = User.builder().id(userId).build();
-//            userRepository.save(user);
-//            return user;
-//        }
-//
-//        return userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-//
-//    }
-
     @Override
     public void registerTeamAndChannel(String mmToken, User user) {
         List<Team> teams = teamService.registerTeamFromMattermost(user.getId(), mmToken); // 팀 등록
