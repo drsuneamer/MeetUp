@@ -12,6 +12,7 @@ import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modul
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
@@ -167,7 +168,7 @@ const EventModal = () => {
   // 나의 스케줄 등록
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
@@ -183,9 +184,9 @@ const EventModal = () => {
   // 미팅 등록
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
-      alert('미팅명은 필수 입력사항입니다');
+      Swal.fire({ text: '미팅명은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
+      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
