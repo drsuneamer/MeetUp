@@ -168,4 +168,10 @@ public class MeetUpController {
 
         return ResponseEntity.status(OK).build();
     }
+
+    @GetMapping("/channel")
+    @ApiOperation(value = "활성화된 모든 팀의 채널목록 반환")
+    public ResponseEntity<?> getActivatedChannel() {
+        return ResponseEntity.status(OK).body(channelUserService.getActivatedChannelByUser(authService.getMyInfoSecret().getId()));
+    }
 }
