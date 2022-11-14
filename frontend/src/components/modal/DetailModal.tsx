@@ -57,7 +57,7 @@ const DetailModal = () => {
 
   if (scheduleDetail) {
     return (
-      <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+      <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
         <div
           className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -162,7 +162,7 @@ const DetailModal = () => {
               </div>
             ) : null}
           </div>
-          {scheduleDetail && detailModalSelector.modalType === 'mySchedule' ? (
+          {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
               <button onClick={editSchedule} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 일정 수정하기

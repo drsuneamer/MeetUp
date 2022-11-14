@@ -17,6 +17,7 @@ import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 interface Group {
   id: number;
@@ -309,9 +310,9 @@ const EditModal = () => {
 
   const handleEditMeeting = async () => {
     if (!parsedMeetingData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
+      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
@@ -335,7 +336,7 @@ const EditModal = () => {
   // };
   const handleEditSchedule = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(editScheduleDetail(parsedData));
       if (isFulfilled(action)) {
@@ -348,7 +349,7 @@ const EditModal = () => {
 
   if (scheduleDetail) {
     return (
-      <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+      <div className={`${editModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
         <div
           className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {

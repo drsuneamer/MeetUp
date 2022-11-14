@@ -9,6 +9,7 @@ import Chip from '@mui/material/Chip';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import { fetchGroupList } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 interface Team {
   id: string;
@@ -153,7 +154,7 @@ function CreateGroupModal() {
       .catch((err) => {
         console.log(err);
         if (err.response.data.errorCode === '40907') {
-          alert('같은 이름의 그룹이 존재합니다');
+          Swal.fire({ text: '같은 이름의 그룹이 이미 존재합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
         }
       });
   };
