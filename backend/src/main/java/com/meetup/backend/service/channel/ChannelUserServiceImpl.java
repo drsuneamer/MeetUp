@@ -6,12 +6,16 @@ import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
+import com.meetup.backend.entity.team.Team;
+import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
+import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
+import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
@@ -47,6 +51,10 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 public class ChannelUserServiceImpl implements ChannelUserService {
 
     private final ChannelUserRepository channelUserRepository;
+
+    private final ChannelRepository channelRepository;
+
+    private final TeamUserRepository teamUserRepository;
 
     private final UserRepository userRepository;
 
@@ -188,6 +196,28 @@ public class ChannelUserServiceImpl implements ChannelUserService {
         }
 
         return channelList;
+    }
+
+    @Override
+    public List<ChannelResponseDto> getActivatedChannelByUser(String userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
+        List<Team> teamList = new ArrayList<>();
+
+        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+            if (!teamUser.isActivate())
+                continue;
+            teamList.add(teamUser.getTeam());
+        }
+
+        for (Team team : teamList) {
+            for (Channel channel : channelRepository.findByTeam(team)) {
+                channelResponseDtoList.add(ChannelResponseDto.of(channel));
+            }
+        }
+
+        return channelResponseDtoList;
     }
 
 }

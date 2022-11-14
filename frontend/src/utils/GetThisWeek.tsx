@@ -1,11 +1,5 @@
+import { Day } from '../types/events';
 import { getStringDateFormat } from './GetStringDateFormat';
-
-type Day = {
-  isToday: boolean;
-  day: number;
-  date: number;
-  stringDate: string;
-};
 
 export const getThisWeek = (selectedDate: string): Day[] => {
   const date = new Date(selectedDate);
@@ -21,9 +15,7 @@ export const getThisWeek = (selectedDate: string): Day[] => {
     const date = new Date(year, month, diff++);
 
     return {
-      isToday:
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth(),
+      isToday: date.getDate() === today.getDate() && date.getMonth() === today.getMonth(),
       day: date.getDay(),
       date: date.getDate(),
       stringDate: getStringDateFormat(date),

@@ -46,6 +46,10 @@ public class ScheduleResponseDto {
 
     private Long meetupId;
 
+    private Long partyId;
+
+    private String partyName;
+
     public static ScheduleResponseDto of(Schedule schedule, User user) {
         ScheduleResponseDto result = ScheduleResponseDto.builder()
                 .id(schedule.getId())
@@ -66,6 +70,8 @@ public class ScheduleResponseDto {
             result.setManagerName(meeting.getMeetup().getManager().getNickname());
             result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
             result.setMeetupId(meeting.getMeetup().getId());
+            result.setPartyId(meeting.getParty().getId());
+            result.setPartyName(meeting.getParty().getName());
         }
         return result;
 
