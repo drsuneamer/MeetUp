@@ -29,6 +29,8 @@ import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.util.converter.JsonConverter;
 import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
@@ -52,7 +54,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by seongmin on 2022/10/23
- * updated by seongmin on 2022/11/09
+ * updated by seongmin on 2022/11/14
  */
 @Service
 @RequiredArgsConstructor
@@ -61,11 +63,8 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final ChannelRepository channelRepository;
-    private final ChannelUserRepository channelUserRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    //    private final RedisUtil redisUtil;
     private final PasswordEncoder passwordEncoder;
     private final TeamService teamService;
     private final ChannelService channelService;
@@ -82,20 +81,44 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto requestDto) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE,
-                    new SecretKeySpec(secretKey.getBytes(), "AES"),
-                    new IvParameterSpec(iv.getBytes()));
+        decodePassword(requestDto);
+        MmLoginInfo mmLoginInfo = mmLogin(requestDto);
 
-            String originPwd = new String(cipher.doFinal(Base64.getDecoder().decode(requestDto.getPassword().getBytes("UTF-8"))));
-            requestDto.setPassword(originPwd);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            throw new ApiException(PASSWORD_DECRYPTION_ERROR);
+        User user;
+        if (userRepository.findById(mmLoginInfo.getId()).isEmpty()) {
+            user = userRepository.save(
+                    User.builder()
+                            .id(mmLoginInfo.getId())
+                            .role(ROLE_Student)
+                            .nickname(mmLoginInfo.getNickname())
+                            .password(passwordEncoder.encode(requestDto.getPassword()))
+                            .firstLogin(false)
+                            .build());
+        } else {
+            user = userRepository.findById(mmLoginInfo.getId()).get();
+            if (!mmLoginInfo.getNickname().equals(user.getNickname())) {
+                user.setNickname(mmLoginInfo.getNickname());
+            }
+            String encodedPwd = passwordEncoder.encode(requestDto.getPassword());
+            if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+                log.info("패스워드 변경");
+                user.changePwd(encodedPwd);
+            }
         }
 
+        firstLoginNotice(mmLoginInfo.getMmToken(), mmLoginInfo.getNickname(), user);
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(mmLoginInfo.getId(), requestDto.getPassword());
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication, mmLoginInfo.getMmToken());
+
+//        redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
+        return LoginResponseDto.of(user, tokenDto);
+    }
+
+    private MmLoginInfo mmLogin(LoginRequestDto requestDto) {
         String url = "https://meeting.ssafy.com/api/v4/users/login";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -110,63 +133,52 @@ public class UserServiceImpl implements UserService {
         ResponseEntity<Map> res = restTemplate.postForEntity(url, entity, Map.class);
 
         Map body = res.getBody();
-
         switch (res.getStatusCodeValue()) {
             case 200:
-
+                if(body == null) {
+                    throw new ApiException(MATTERMOST_EXCEPTION);
+                }
                 String id = (String) body.get("id");
-                String mmToken = res.getHeaders().get("Token").get(0);
+                String mmToken = Objects.requireNonNull(res.getHeaders().get("Token")).get(0);
                 String nickname = (String) body.get("nickname");
-
-                User user;
-                if (userRepository.findById(id).isEmpty()) {
-                    user = userRepository.save(
-                            User.builder()
-                                    .id(id)
-                                    .role(ROLE_Student)
-                                    .nickname(nickname)
-                                    .password(passwordEncoder.encode(requestDto.getPassword()))
-                                    .firstLogin(false)
-                                    .build());
-                } else {
-                    user = userRepository.findById(id).get();
-                    if (!nickname.equals(user.getNickname())) {
-                        user.setNickname(nickname);
-                    }
-                    String encodedPwd = passwordEncoder.encode(requestDto.getPassword());
-                    if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-                        log.info("패스워드 변경");
-                        user.changePwd(encodedPwd);
-                    }
-                }
-
-                if (!user.isFirstLogin()) {
-                    if (nickname.contains("컨설턴트") || nickname.contains("consultant")) {
-                        user.changeRole(ROLE_Consultant);
-                    } else if (nickname.contains("교수")) {
-                        user.changeRole(ROLE_Professor);
-                    } else if (nickname.contains("코치")) {
-                        user.changeRole(ROLE_Coach);
-                    } else if (nickname.contains("프로")) {
-                        user.changeRole(ROLE_Pro);
-                    }
-                    webhookNoticeService.firstLoginNotice(nickname);
-                    user.setFirstLogin();
-                    registerTeamAndChannel(mmToken, user);
-                }
-
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, requestDto.getPassword());
-
-                Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-                TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication, mmToken);
-
-//                redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
-                return LoginResponseDto.of(user, tokenDto);
+                return new MmLoginInfo(id, mmToken, nickname);
             case 401:
                 throw new ApiException(EMPTY_CREDENTIAL);
             default:
                 throw new ApiException(MATTERMOST_EXCEPTION);
+        }
+    }
+
+    private void decodePassword(LoginRequestDto requestDto) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE,
+                    new SecretKeySpec(secretKey.getBytes(), "AES"),
+                    new IvParameterSpec(iv.getBytes()));
+
+            String originPwd = new String(cipher.doFinal(Base64.getDecoder().decode(requestDto.getPassword().getBytes("UTF-8"))));
+            requestDto.setPassword(originPwd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new ApiException(PASSWORD_DECRYPTION_ERROR);
+        }
+    }
+
+    private void firstLoginNotice(String mmToken, String nickname, User user) {
+        if (!user.isFirstLogin()) {
+            if (nickname.contains("컨설턴트") || nickname.contains("consultant")) {
+                user.changeRole(ROLE_Consultant);
+            } else if (nickname.contains("교수")) {
+                user.changeRole(ROLE_Professor);
+            } else if (nickname.contains("코치")) {
+                user.changeRole(ROLE_Coach);
+            } else if (nickname.contains("프로")) {
+                user.changeRole(ROLE_Pro);
+            }
+            webhookNoticeService.firstLoginNotice(nickname);
+            user.setFirstLogin();
+            registerTeamAndChannel(mmToken, user);
         }
     }
 
@@ -238,4 +250,9 @@ public class UserServiceImpl implements UserService {
         return UserWebexInfoDto.of(userRepository.findById(user.getId()).get().getWebex());
     }
 
+    @AllArgsConstructor
+    @Getter
+    private static class MmLoginInfo {
+        private String id, mmToken, nickname;
+    }
 }
