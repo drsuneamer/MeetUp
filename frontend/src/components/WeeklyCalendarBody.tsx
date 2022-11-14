@@ -250,7 +250,7 @@ const WeeklyCalendarBody = () => {
                 let height = (endHour - startHour) * 50 + (endMinute - startMinute);
 
                 const scheduleDate = element.start.slice(0, 10);
-                const scheduleId = element.id;
+                const meetingId = element.id;
                 const ownerId = element.userId;
                 const myId = localStorage.getItem('id');
 
@@ -263,7 +263,7 @@ const WeeklyCalendarBody = () => {
                         height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        handleViewEvent(scheduleId, 'myCalendar');
+                        handleViewEvent(meetingId, 'myMeeting');
                       }}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-background z-10`}>
@@ -280,7 +280,7 @@ const WeeklyCalendarBody = () => {
                         height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        handleViewEvent(scheduleId, 'myCalendar');
+                        handleViewEvent(meetingId, 'myMeeting');
                       }}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-background z-10 `}>
