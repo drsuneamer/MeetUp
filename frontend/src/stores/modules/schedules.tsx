@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tSchedule, tScheduleDetail, tPartyDetail } from '../../types/events';
 import { axiosInstance } from '../../components/auth/axiosConfig';
 import { RootState } from '../ConfigStore';
+import Swal from 'sweetalert2';
 
 type scheduleInitialState = {
   loading: boolean;
@@ -93,6 +94,8 @@ const initialState: scheduleInitialState = {
       myWebex: '',
       meetupId: 0,
       open: false,
+      partyId: 0,
+      partyName: '',
     },
   },
 };
@@ -117,7 +120,7 @@ export const addSchedule = createAsyncThunk('schedule/fetchAddSchedule', async (
     })
     .catch((err) => {
       if (err.response.status === 409) {
-        alert('일정이 중복되었습니다.');
+        Swal.fire({ text: '일정이 중복되었습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
       }
     });
 });

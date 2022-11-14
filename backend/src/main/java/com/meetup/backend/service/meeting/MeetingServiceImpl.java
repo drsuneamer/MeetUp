@@ -7,7 +7,6 @@ import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.party.Party;
-import com.meetup.backend.entity.party.PartyMeeting;
 import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.schedule.Schedule;
@@ -16,7 +15,6 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
-import com.meetup.backend.repository.party.PartyMeetingRepository;
 import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
@@ -49,15 +47,13 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/30
- * updated by myeongseok on 2022/11/11
+ * updated by seongmin on 2022/11/14
  */
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class MeetingServiceImpl implements MeetingService {
-
-    private final ScheduleRepository scheduleRepository;
 
     private final ChannelRepository channelRepository;
 
@@ -71,27 +67,23 @@ public class MeetingServiceImpl implements MeetingService {
 
     private final PartyRepository partyRepository;
 
-    private final PartyUserRepository partyUserRepository;
-
-    private final PartyMeetingRepository partyMeetingRepository;
-
     private final AuthService authService;
+
+    private final ScheduleService scheduleService;
 
     // 미팅 상세정보 반환
     @Override
-    public MeetingResponseDto getMeetingResponseDtoById(String userId, Long meetingId) {
-        // 로그인 유저
+    public MeetingResponseDto getMeetingDetail(String userId, Long meetingId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
         Meetup meetup = meeting.getMeetup(); // 해당 미팅의 밋업
-        Channel channel = meetup.getChannel(); // 해당 밋업의 채널
         // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아닌경우 접근 불가
         if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
-        // 만약 해당 미팅이 그룹 소속이라면
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            Party party = partyMeetingRepository.findByMeeting(meeting).get(0).getParty();
+        // 만약 해당 미팅이 그룹 소속 되어 있는 미팅이라면
+        if (meeting.getParty() != null) {
+            Party party = meeting.getParty();
             return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), party);
         } else {
             return MeetingResponseDto.of(meeting, meetup, user, meetup.getManager(), null);
@@ -110,14 +102,12 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
-        Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+        scheduleService.diffDurationCheck(start, end);
+
         String title = meetingRequestDto.getTitle();
         String content = meetingRequestDto.getContent();
         Meetup meetup = meetupRepository.findById(meetingRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
-
 
         // 로그인 유저가 해당 밋업에 소속 되어있는지 확인
         if (!channelUserRepository.existsByChannelAndUser(channel, loginUser)) {
@@ -125,66 +115,30 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
 
         }
-        AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
-        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
+        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
+        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
         // 일정 중복 확인
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end) || !managerAllScheduleResponseDto.isPossibleRegister(start, end)) {
             log.error("스케줄 중복");
             throw new ApiException(DUPLICATE_INSERT_DATETIME);
 
         }
-
+        // 미팅의 그룹 설정
         Meeting meeting = Meeting.builder().title(title).content(content).start(start).end(end).meetup(meetup).user(loginUser).open(meetingRequestDto.isOpen()).build();
-        MattermostClient client = Client.getClient();
+        if (meetingRequestDto.getPartyId() != null) {
+            Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
+            meeting.setParty(party);
+        }
 
-        String mmToken = authService.getMMSessionToken(userId);
-        log.info("mmToken = {}", mmToken);
-        client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
-        if (meetingRequestDto.isOpen()) {
-            int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
-            if (status == 201 || status == 200) {
-                log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
-                return meetingRepository.save(meeting).getId();
-            }
-            MattermostEx.apiException(status);
-        } else {
-            Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
-            int status = directChannelResponse.getStatus();
-            MattermostEx.apiException(status);
-            JSONObject resObj = new JSONObject();
-            try {
-                resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
-            } catch (ClassCastException e) {
-                log.error(e.getMessage());
-                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
-                e.printStackTrace();
-            }
-            String id = resObj.getString("id");
 
-            Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
-            if (dmResponse.getStatus() == 201) {
-                log.info("mattermost 미팅 신청 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
-                return meetingRepository.save(meeting).getId();
-            }
-            MattermostEx.apiException(dmResponse.getStatus());
-        }
-        // 미팅 저장
-        Long meetingId = meetingRepository.save(meeting).getId();
-        Meeting savedMeeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
+        mmNotice(meetingRequestDto.isOpen(), loginUser, meetup, channel, message);
 
-
-        // 그룹에 해당 되는 미팅 등록일 시 파티(그룹)-미팅 테이블에도 추가
-        if (meetingRequestDto.getPartyId() != null) {
-            Party party = partyRepository.findById(meetingRequestDto.getPartyId()).orElseThrow(() -> new ApiException(PARTY_NOT_FOUND));
-            PartyMeeting partyMeeting = PartyMeeting.builder().meeting(savedMeeting).party(party).start(start).build();
-            partyMeetingRepository.save(partyMeeting);
-        }
-
-        return meetingId;
+        return meetingRepository.save(meeting).getId();
     }
+
 
     // 미팅 정보 수정
     @Override
@@ -200,12 +154,11 @@ public class MeetingServiceImpl implements MeetingService {
         LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
         LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
-        Duration duration = Duration.between(start, end);
-        if (duration.getSeconds() < 1800)
-            throw new ApiException(TOO_SHORT_DURATION);
+        scheduleService.diffDurationCheck(start, end);
+
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
-        AllScheduleResponseDto userAllScheduleResponseDto = getSchedule(userId, userId, date, 1);
-        AllScheduleResponseDto managerAllScheduleResponseDto = getSchedule(userId, managerUser.getId(), date, 1);
+        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, date, 1);
+        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(userId, managerUser.getId(), date, 1);
 
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()) || !managerAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
@@ -213,49 +166,14 @@ public class MeetingServiceImpl implements MeetingService {
         Meetup meetup = meetupRepository.findById(meetingUpdateRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
-        //mm 알림
-        MattermostClient client = Client.getClient();
-
-        client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
-        if (meetingUpdateRequestDto.isOpen()) {
-            int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
-            if (status == 201 || status == 200) {
-                meeting.update(meetingUpdateRequestDto);
-                log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
-                return meeting.getId();
-            }
-            MattermostEx.apiException(status);
-        } else {
-            Response directChannelResponse = client.createDirectChannel(userId, meetup.getManager().getId()).getRawResponse();
-            int status = directChannelResponse.getStatus();
-            MattermostEx.apiException(status);
-            JSONObject resObject = new JSONObject();
-            try {
-                resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
-            } catch (ClassCastException e) {
-                log.error(e.getMessage());
-                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
-                e.printStackTrace();
-            }
-            String id = resObject.getString("id");
+        mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup, channel, message);
 
-            Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
-            if (dmResponse.getStatus() == 201) {
-                meeting.update(meetingUpdateRequestDto);
-                log.info("mattermost 미팅 신청 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
-                return meeting.getId();
-            }
-            MattermostEx.apiException(dmResponse.getStatus());
-        }
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
-            partyMeeting.update(meeting.getStart());
-        }
+        meeting.update(meetingUpdateRequestDto);
         return meeting.getId();
     }
 
@@ -270,101 +188,54 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
         }
 
+        Channel channel = channelRepository.findById(meeting.getMeetup().getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
+
+
         MattermostClient client = Client.getClient();
 
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
-//        String endTime = meeting.getEnd().toString().substring(11, 16);
 
         String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
-            if (meeting.isOpen()) {
-                int status = client.createPost(new Post(meeting.getMeetup().getChannel().getId(), message)).getRawResponse().getStatus();
-                if (status == 201 || status == 200) {
-                    log.info("mattermost 미팅 취소 알림 보내기 성공 status = {}", status);
-                    meetingRepository.delete(meeting);
-                }
-                MattermostEx.apiException(status);
-            } else {
-                Response directChannelResponse = client.createDirectChannel(userId, meeting.getMeetup().getManager().getId()).getRawResponse();
-                int status = directChannelResponse.getStatus();
-                MattermostEx.apiException(status);
-                JSONObject resObject = new JSONObject();
-                try {
-                    resObject = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
-                } catch (ClassCastException e) {
-                    log.error(e.getMessage());
-                    log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
-                    e.printStackTrace();
-                }
-                String id = resObject.getString("id");
-
-                Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
-                if (dmResponse.getStatus() == 201) {
-                    meetingRepository.delete(meeting);
-                    log.info("mattermost 미팅 취소 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
-                }
-                MattermostEx.apiException(dmResponse.getStatus());
-            }
-        }
-        if (partyMeetingRepository.existsByMeeting(meeting)) {
-            PartyMeeting partyMeeting = partyMeetingRepository.findByMeeting(meeting).get(0);
-            partyMeetingRepository.delete(partyMeeting);
+            mmNotice(meeting.isOpen(), user, meeting.getMeetup(), channel, message);
         }
         meetingRepository.delete(meeting);
     }
 
-    public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p) {
-        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+    private void mmNotice(boolean isOpen, User loginUser, Meetup meetup, Channel channel, String message) {
+        MattermostClient client = Client.getClient();
 
-        List<Meetup> meetups = meetupRepository.findByManager(targetUser);
+        client.setAccessToken(authService.getMMSessionToken(loginUser.getId()));
 
-        boolean flag = false;
-        if (loginUserId.equals(targetUserId)) {
-            flag = true;
-        }
-        for (Meetup meetup : meetups) {
-            if (channelUserRepository.existsByChannelAndUser(meetup.getChannel(), loginUser)) {
-                flag = true;
-                break;
+        if (isOpen) {
+            int status = client.createPost(new Post(channel.getId(), message)).getRawResponse().getStatus();
+            if (status == 201 || status == 200) {
+                log.info("mattermost 미팅 신청 알림 보내기 성공 status = {}", status);
+                return;
             }
-        }
-        if (!flag) {
-            throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
-        }
-        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
-        if (p == 1) {
-            from = from.minusDays(p);
-        }
-        LocalDateTime to = from.plusDays(p);
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
-
-
-        // 해당 스케줄 주인의 밋업 리스트
-        List<Meetup> meetupList = meetupRepository.findByManager(targetUser);
-        List<Meeting> meetingToMe = new ArrayList<>();
-        if (meetupList.size() > 0) {
-            for (Meetup mu : meetupList) {
-                // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
-                meetingToMe.addAll(meetingRepository.findByMeetup(mu));
+            MattermostEx.apiException(status);
+        } else {
+            Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
+            int status = directChannelResponse.getStatus();
+            MattermostEx.apiException(status);
+            JSONObject resObj;
+            try {
+                resObj = JsonConverter.toJson((BufferedInputStream) directChannelResponse.getEntity());
+            } catch (ClassCastException e) {
+                log.error(e.getMessage());
+                log.info("directChannelResponse.getEntity() = {}", directChannelResponse.getEntity());
+                throw new ApiException(MATTERMOST_EXCEPTION);
             }
-        }
+            String id = resObj.getString("id");
 
-        // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
-        List<PartyUser> partyUserList = partyUserRepository.findByUser(loginUser);
-        List<Party> partyList = new ArrayList<>();
-        if (partyUserList.size() > 0) {
-            for (PartyUser partyUser : partyUserList) {
-                partyList.add(partyUser.getParty());
+            Response dmResponse = client.createPost(new Post(id, message)).getRawResponse();
+            if (dmResponse.getStatus() == 201) {
+                log.info("mattermost 미팅 신청 알림(DM) 보내기 성공 status = {}", dmResponse.getStatus());
+                return;
             }
+            MattermostEx.apiException(dmResponse.getStatus());
         }
-        List<PartyMeeting> partyMeetingList = new ArrayList<>();
-        for (Party party : partyList) {
-            partyMeetingList.addAll(partyMeetingRepository.findByParty(party));
-        }
-
-        return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
     }
 }

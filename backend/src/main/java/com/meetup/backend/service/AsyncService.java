@@ -1,14 +1,10 @@
 package com.meetup.backend.service;
 
 import com.meetup.backend.dto.user.UserInfoDto;
-import com.meetup.backend.dto.user.UserListInTeamResponseDto;
-import com.meetup.backend.entity.team.TeamUser;
-import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.JsonConverter;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -16,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import java.io.BufferedInputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 /**

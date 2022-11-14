@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAppDispatch } from '../../stores/ConfigHooks';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
 import LogoImage from '../../assets/logo_title.png';
@@ -40,9 +40,11 @@ function Header() {
 
         <div className="flex mr-2 items-center">
           <div className="font-script font-bold text-title mr-2 text-m mt-1 cursor-default">{role?.slice(5)}</div>
+          {/* 닉네임 클릭 시 설정(웹엑스 주소, 팀 비활성화, 그룹) 페이지로 이동 */}
           <Link to="/settings">
             <div className="font-bold pr-1 underline underline-offset-2">{nickname}</div>
           </Link>
+          {/* 로그아웃 버튼 */}
           <svg
             xmlns="https://www.w3.org/2000/svg"
             fill="none"

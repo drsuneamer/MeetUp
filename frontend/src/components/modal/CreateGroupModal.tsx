@@ -9,6 +9,7 @@ import Chip from '@mui/material/Chip';
 import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import { fetchGroupList } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 interface Team {
   id: string;
@@ -29,6 +30,7 @@ interface Member {
 function CreateGroupModal() {
   const dispatch = useAppDispatch();
   const [teamList, setTeamList] = useState([]);
+  const [team, setTeam] = useState<Team>({ id: '', displayName: '', type: '' });
   const [teamId, setTeamId] = useState('');
   const [name, setName] = useState(''); // 그룹 이름
   const [load, setLoad] = useState(false);
@@ -56,6 +58,7 @@ function CreateGroupModal() {
   // 팀 선택 시 id값 teamId에 저장
   const selectTeam = (e: any, value: any): void => {
     if (value !== null) {
+      setTeam(value);
       setTeamId(value.id);
     }
   };
@@ -142,12 +145,16 @@ function CreateGroupModal() {
         if (res.status === 201) {
           handleToggleModal();
           dispatch(fetchGroupList());
+          // 제출 이후에는 값 리셋
+          setVal([]);
+          setName('');
+          setTeam({ id: '', displayName: '', type: '' });
         }
       })
       .catch((err) => {
         console.log(err);
         if (err.response.data.errorCode === '40907') {
-          alert('같은 이름의 그룹이 존재합니다');
+          Swal.fire({ text: '같은 이름의 그룹이 이미 존재합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
         }
       });
   };
@@ -180,6 +187,7 @@ function CreateGroupModal() {
           <div className="flex justify-center">
             {/*팀 선택 드롭다운 */}
             <Autocomplete
+              inputValue={team.displayName}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={selectTeam}
               className="w-[40vw] border-b-title"
@@ -193,6 +201,7 @@ function CreateGroupModal() {
           </div>
           <input
             onChange={nameChange}
+            value={name}
             type="text"
             placeholder="ex. 서울 1반 2팀"
             className="w-full text-center placeholder-placeholder border-b-2 border-b-placeholder py-1 px-2 mb-10 placeholder:text-s focus:outline-none focus:border-b-footer"

@@ -8,18 +8,28 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
+import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
+
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { getNow } from '../../utils/GetNow';
 import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
+interface Group {
+  id: number;
+  leader: boolean;
+  name: string;
+}
+
 const EventModal = () => {
   const dispatch = useAppDispatch();
   const channels = useAppSelector(alarmChannelSelector);
+  const groups = useAppSelector(groupSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
@@ -29,7 +39,13 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
+  const [alarmVal, setAlarmVal] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
+  const [groupId, setGroupId] = useState<number>(0);
+  const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
+  // const [groupVal, setGroupVal] = useState<Group>({ id: 0, leader: false, name: '' });
+  const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
@@ -89,13 +105,25 @@ const EventModal = () => {
   const onContentChange = (e: any) => {
     setContent(e.currentTarget.value);
   };
+
   const onAlarmChannel = (e: any, value: any) => {
-    const alarmChannelValue = value.meetupId || undefined;
-    setAlarmChannelId(alarmChannelValue);
+    if (value !== null) {
+      const alarmChannelValue = value.meetupId || undefined;
+      setAlarmChannelId(alarmChannelValue);
+      setAlarmChannel(value);
+    }
   };
 
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
+  };
+
+  const onGroupChange = (e: any, value: any) => {
+    if (value !== null) {
+      const partyValue = value.id || undefined;
+      setGroupId(partyValue);
+      setNewGroupValue(value);
+    }
   };
 
   useEffect(() => {
@@ -121,6 +149,15 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
+    handleResetInput();
+    handleResetInput();
+    setAlarmChannelId(0);
+    setAlarmChannel({ meetupId: 0, displayName: '' });
+    // setAlarmVal({ meetupId: 0, displayName: '' });
+    setGroupId(0);
+    setNewGroupValue({ id: 0, leader: false, name: '' });
+    // setGroupVal({ id: 0, leader: false, name: '' });
+    handleResetInput();
   }, []);
 
   // 스케줄 등록할 때 보내는 data
@@ -132,6 +169,10 @@ const EventModal = () => {
     open: checked,
   };
 
+  useEffect(() => {
+    setPartyId(groupId || null);
+  }, [groupId]);
+
   // 미팅 등록할 때 보내는 data
   const parsedMeetingData: any = {
     title: title,
@@ -140,17 +181,19 @@ const EventModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
     open: checked,
+    partyId: partyId,
   };
 
   // 나의 스케줄 등록
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        // handleResetInput();
       } else if (isRejected(action)) {
         // console.log(action);
       }
@@ -160,17 +203,29 @@ const EventModal = () => {
   // 미팅 등록
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
-      alert('미팅명은 필수 입력사항입니다');
+      Swal.fire({ text: '미팅명은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
+      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        handleResetInput();
+        setAlarmChannelId(0);
+        setAlarmChannel({ meetupId: 0, displayName: '' });
+        // setAlarmVal({ meetupId: 0, displayName: '' });
+        setGroupId(0);
+        setNewGroupValue({ id: 0, leader: false, name: '' });
+        // setGroupVal({ id: 0, leader: false, name: '' });
+        handleResetInput();
       }
     }
   };
+
+  // const handleSubmitToYou = () => {
+  //   console.log(parsedMeetingData);
+  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -179,6 +234,12 @@ const EventModal = () => {
     setStartTimeIndex(0);
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
+    setContent('');
+    // setAlarmChannelId(0);
+    // setAlarmChannel({ meetupId: 0, displayName: '' });
+    // setGroupId(0);
+    // setNewGroupValue({ id: 0, leader: false, name: '' });
+    // handleResetInput();
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -200,13 +261,24 @@ const EventModal = () => {
   const flatProps = {
     options: channels && channels.alarmChannels.map((option: any) => option.displayname),
   };
-  const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
+  // const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
+
+  // 그룹 선택하기 - Autocomplete 이용
+  const defaultGroupProps = {
+    options: groups.groups,
+    getOptionLabel: (option: any) => option.name,
+  };
+  const flatGroupProps = {
+    options: groups && groups.groups.map((option: any) => option.name),
+  };
+  const [gruoupValue, setGroupValue] = React.useState<Group['id'] | null>(null);
 
   const params = useParams();
   const userId = params.userId;
 
   useEffect(() => {
     dispatch(fetchAlarmChannelList(userId));
+    dispatch(fetchGroupList());
   }, []);
 
   // 그 주의 일요일 구하기
@@ -240,7 +312,7 @@ const EventModal = () => {
   };
 
   return (
-    <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+    <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
       <div
         className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -253,12 +325,12 @@ const EventModal = () => {
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="2.5"
-          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+          className="w-6 h-6 stroke-title mt-[10px] ml-[550px] cursor-pointer"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[10px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[5px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -278,7 +350,7 @@ const EventModal = () => {
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
-          <div className="mt-[15px]">
+          <div className="mt-[5px]">
             <div className="text-s text-title font-bold">
               날짜<span className="text-cancel">&#42;</span>
             </div>
@@ -290,7 +362,7 @@ const EventModal = () => {
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
-            <div className="mt-[15px]">
+            <div className="mt-[10px]">
               <div className="text-s text-title font-bold">
                 시간<span className="text-cancel">&#42;</span>
               </div>
@@ -310,7 +382,7 @@ const EventModal = () => {
                 </svg>
               </div>
             </div>
-            <div className="mt-[15px]">
+            <div className="mt-[10x]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
@@ -324,7 +396,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[15px]">
+            <div className="mt-[5px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">
@@ -333,6 +405,9 @@ const EventModal = () => {
                   </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
+                    value={alarmChannel}
+                    // inputValue={alarmChannel.displayName}
+                    isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultProps}
@@ -353,7 +428,7 @@ const EventModal = () => {
                 )}
               </div>
             ) : (
-              <div className="mt-[20px] mb-[20px]">
+              <div className="mt-[10px] mb-[10px]">
                 <div className="text-s text-title font-bold">공개 설정</div>
                 <Switch checked={checked} onChange={switchHandler} />
                 {checked ? (
@@ -363,27 +438,50 @@ const EventModal = () => {
                 )}
               </div>
             )}
+            <div className="mt-[5px]">
+              {myCalendar ? null : (
+                <div>
+                  <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
+                  <Autocomplete
+                    onChange={onGroupChange}
+                    value={newGroupValue}
+                    // inputValue={newGroupValue.name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    className="w-[450px]"
+                    ListboxProps={{ style: { maxHeight: '150px' } }}
+                    {...defaultGroupProps}
+                    id="select-channel"
+                    renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-          {myCalendar && isPast() ? (
-            <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
-              현재 시간 이전에는 등록할 수 없습니다
-            </button>
-          ) : myCalendar && !isPast() ? (
-            <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
-              밋업 불가시간 설정하기
-            </button>
-          ) : !myCalendar && isPast() ? (
-            <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
-              현재 시간 이전에는 등록할 수 없습니다
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmitToYou}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
-            >
-              밋업 등록하기
-            </button>
-          )}
+          <div className="mt-[5px]">
+            {myCalendar && isPast() ? (
+              <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
+                현재 시간 이전에는 등록할 수 없습니다
+              </button>
+            ) : myCalendar && !isPast() ? (
+              <button
+                onClick={handleSubmitToMe}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
+              >
+                미팅 불가시간 설정하기
+              </button>
+            ) : !myCalendar && isPast() ? (
+              <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
+                현재 시간 이전에는 등록할 수 없습니다
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmitToYou}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
+              >
+                미팅 등록하기
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <div

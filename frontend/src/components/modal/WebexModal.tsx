@@ -40,7 +40,7 @@ function WebexModal() {
   };
 
   return (
-    <div className={`${webexModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+    <div className={`${webexModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
       <div className="w-[100%] h-[100%] fixed flex justify-center items-center">
         <div className="w-[450px] h-[300px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow">
           <svg

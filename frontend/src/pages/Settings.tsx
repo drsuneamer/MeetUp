@@ -83,7 +83,7 @@ function Settings() {
   // 그룹 목록 가져옴
   useEffect(() => {
     dispatch(fetchGroupList());
-  }, []);
+  }, [dispatch]);
 
   const handleCreateGroupModal = () => {
     dispatch(setCreateGroupModalOpen());
