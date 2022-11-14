@@ -39,7 +39,7 @@ const EventModal = () => {
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
-  const [partyId, setPartyId] = useState<number|null>(0);
+  const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
@@ -112,7 +112,7 @@ const EventModal = () => {
   const onGroupChange = (e: any, value: any) => {
     const partyValue = value.id || undefined;
     setGroupId(partyValue);
-  }
+  };
 
   useEffect(() => {
     if (eventModalData !== null) {
@@ -150,8 +150,8 @@ const EventModal = () => {
 
   useEffect(() => {
     setPartyId(groupId || null);
-   }, [groupId]);
-   
+  }, [groupId]);
+
   // 미팅 등록할 때 보내는 data
   const parsedMeetingData: any = {
     title: title,
@@ -160,7 +160,7 @@ const EventModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
     open: checked,
-    partyId: groupId,
+    partyId: partyId,
   };
 
   // 나의 스케줄 등록
@@ -195,6 +195,10 @@ const EventModal = () => {
     }
   };
 
+  // const handleSubmitToYou = () => {
+  //   console.log(parsedMeetingData);
+  // };
+
   const handleResetInput = useCallback(() => {
     setTitle('');
     setDate(getStringDateFormat(new Date()));
@@ -227,7 +231,6 @@ const EventModal = () => {
   };
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
-
   // 그룹 선택하기 - Autocomplete 이용
   const defaultGroupProps = {
     options: groups.groups,
@@ -237,7 +240,6 @@ const EventModal = () => {
     options: groups && groups.groups.map((option: any) => option.name),
   };
   const [gruoupValue, setGroupValue] = React.useState<Group['id'] | null>(null);
-
 
   const params = useParams();
   const userId = params.userId;
@@ -428,7 +430,7 @@ const EventModal = () => {
                 )}
               </div>
             )}
-             <div className="mt-[15px]">
+            <div className="mt-[15px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">
