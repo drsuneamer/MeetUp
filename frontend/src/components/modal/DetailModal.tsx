@@ -36,7 +36,7 @@ const DetailModal = () => {
 
   const editSchedule = () => {
     dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    dispatch(fetchAlarmChannelList(scheduleDetail.userId));
     handleToggleModal();
   };
   // const editSchedule = () => {
@@ -177,13 +177,13 @@ const DetailModal = () => {
           ) : scheduleDetail.userId === myId ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
               <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
-                밋업 수정하기
+                미팅 수정하기
               </button>
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
               >
-                밋업 삭제하기
+                미팅 삭제하기
               </button>
             </div>
           ) : null}
