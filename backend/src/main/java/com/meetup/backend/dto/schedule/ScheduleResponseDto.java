@@ -70,8 +70,13 @@ public class ScheduleResponseDto {
             result.setManagerName(meeting.getMeetup().getManager().getNickname());
             result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
             result.setMeetupId(meeting.getMeetup().getId());
-            result.setPartyId(meeting.getParty().getId());
-            result.setPartyName(meeting.getParty().getName());
+            if (meeting.getParty() != null) {
+                result.setPartyId(meeting.getParty().getId());
+                result.setPartyName(meeting.getParty().getName());
+            } else {
+                result.setPartyId(null);
+                result.setPartyName(null);
+            }
         }
         return result;
 

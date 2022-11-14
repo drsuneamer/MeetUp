@@ -16,6 +16,13 @@ import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+
+interface Group {
+  id: number;
+  leader: boolean;
+  name: string;
+}
 
 const EditModal = () => {
   // 그 주의 일요일 구하기
@@ -61,6 +68,8 @@ const EditModal = () => {
   const userId = params.userId;
 
   const channels = useSelector(alarmChannelSelector);
+  const groups = useAppSelector(groupSelector);
+  const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const detailModalSelector = useSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
@@ -70,6 +79,8 @@ const EditModal = () => {
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [groupId, setGroupId] = useState<number | null>(0);
+  const [partyId, setPartyId] = useState<number | null>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
@@ -215,6 +226,11 @@ const EditModal = () => {
     setAlarmChannelId(alarmChannelValue);
   };
 
+  const onGroupChange = (e: any, value: any) => {
+    const partyValue = value.id || undefined;
+    setGroupId(partyValue);
+  };
+
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
   useEffect(() => {
@@ -227,6 +243,10 @@ const EditModal = () => {
 
   useEffect(() => {
     setAlarmChannelId(scheduleDetail.meetupId);
+  }, [scheduleDetail]);
+
+  useEffect(() => {
+    setGroupId(scheduleDetail.partyId);
   }, [scheduleDetail]);
 
   const handleToggleModal = useCallback(() => {
@@ -296,6 +316,11 @@ const EditModal = () => {
     }
   };
 
+  // const handleEditMeeting = () => {
+  //   console.log('====수정====');
+  //   // setPartyId(groupId || null);
+  //   console.log(parsedMeetingData);
+  // };
   const handleEditSchedule = async () => {
     if (!parsedData.title) {
       alert('제목은 필수 입력사항입니다');

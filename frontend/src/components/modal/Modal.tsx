@@ -8,18 +8,27 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useParams } from 'react-router-dom';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
-import { addSchedule, fetchSchedule } from '../../stores/modules/schedules';
+import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { getNow } from '../../utils/GetNow';
 import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
+interface Group {
+  id: number;
+  leader: boolean;
+  name: string;
+}
+
 const EventModal = () => {
   const dispatch = useAppDispatch();
   const channels = useAppSelector(alarmChannelSelector);
+  const groups = useAppSelector(groupSelector);
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
@@ -30,6 +39,8 @@ const EventModal = () => {
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [checked, setChecked] = useState(false);
+  const [groupId, setGroupId] = useState<number>(0);
+  const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
@@ -89,6 +100,7 @@ const EventModal = () => {
   const onContentChange = (e: any) => {
     setContent(e.currentTarget.value);
   };
+
   const onAlarmChannel = (e: any, value: any) => {
     const alarmChannelValue = value.meetupId || undefined;
     setAlarmChannelId(alarmChannelValue);
@@ -96,6 +108,11 @@ const EventModal = () => {
 
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
+  };
+
+  const onGroupChange = (e: any, value: any) => {
+    const partyValue = value.id || undefined;
+    setGroupId(partyValue);
   };
 
   useEffect(() => {
@@ -132,6 +149,10 @@ const EventModal = () => {
     open: checked,
   };
 
+  useEffect(() => {
+    setPartyId(groupId || null);
+  }, [groupId]);
+
   // 미팅 등록할 때 보내는 data
   const parsedMeetingData: any = {
     title: title,
@@ -140,6 +161,7 @@ const EventModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
     open: checked,
+    partyId: partyId,
   };
 
   // 나의 스케줄 등록
@@ -151,6 +173,7 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        handleResetInput();
       } else if (isRejected(action)) {
         // console.log(action);
       }
@@ -168,9 +191,14 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        handleResetInput();
       }
     }
   };
+
+  // const handleSubmitToYou = () => {
+  //   console.log(parsedMeetingData);
+  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -179,6 +207,8 @@ const EventModal = () => {
     setStartTimeIndex(0);
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
+    setContent('');
+    setAlarmChannelId(0);
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -202,11 +232,22 @@ const EventModal = () => {
   };
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
+  // 그룹 선택하기 - Autocomplete 이용
+  const defaultGroupProps = {
+    options: groups.groups,
+    getOptionLabel: (option: any) => option.name,
+  };
+  const flatGroupProps = {
+    options: groups && groups.groups.map((option: any) => option.name),
+  };
+  const [gruoupValue, setGroupValue] = React.useState<Group['id'] | null>(null);
+
   const params = useParams();
   const userId = params.userId;
 
   useEffect(() => {
     dispatch(fetchAlarmChannelList(userId));
+    dispatch(fetchGroupList());
   }, []);
 
   // 그 주의 일요일 구하기
@@ -363,6 +404,21 @@ const EventModal = () => {
                 )}
               </div>
             )}
+            <div className="mt-[15px]">
+              {myCalendar ? null : (
+                <div>
+                  <div className="text-s text-title font-bold">그룹 선택</div>
+                  <Autocomplete
+                    onChange={onGroupChange}
+                    className="w-[450px]"
+                    ListboxProps={{ style: { maxHeight: '150px' } }}
+                    {...defaultGroupProps}
+                    id="select-channel"
+                    renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           {myCalendar && isPast() ? (
             <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
