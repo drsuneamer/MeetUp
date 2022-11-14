@@ -24,4 +24,6 @@ public interface ChannelUserService {
 
     List<MeetingChannelDto> getMeetingChannelByUsers(String userId, String managerId);
 
+    List<ChannelResponseDto> getActivatedChannelByUser(String userId);
+
 }
