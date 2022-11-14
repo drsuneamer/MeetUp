@@ -28,6 +28,7 @@ import com.meetup.backend.service.notice.WebhookNoticeService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
 import com.meetup.backend.util.converter.JsonConverter;
+import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -187,11 +188,7 @@ public class UserServiceImpl implements UserService {
         MattermostClient client = Client.getClient();
         client.setAccessToken(mmSessionToken);
         int status = client.logout().getRawResponse().getStatus();
-        if (status == 400) {
-            throw new ApiException(BAD_REQUEST_LOGOUT);
-        } else if (status == 403) {
-            throw new ApiException(ACCESS_DENIED);
-        }
+        MattermostEx.apiException(status);
 //        redisUtil.deleteData(id);
     }
 
