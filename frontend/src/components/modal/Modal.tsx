@@ -41,6 +41,7 @@ const EventModal = () => {
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
+  const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -115,8 +116,11 @@ const EventModal = () => {
   };
 
   const onGroupChange = (e: any, value: any) => {
-    const partyValue = value.id || undefined;
-    setGroupId(partyValue);
+    if (value !== null) {
+      const partyValue = value.id || undefined;
+      setGroupId(partyValue);
+      setNewGroupValue(value);
+    }
   };
 
   useEffect(() => {
@@ -197,6 +201,8 @@ const EventModal = () => {
         handleToggleModal();
         setAlarmChannelId(0);
         setAlarmChannel({ meetupId: 0, displayName: '' });
+        setGroupId(0);
+        setNewGroupValue({ id: 0, leader: false, name: '' });
         handleResetInput();
       }
     }
@@ -421,6 +427,8 @@ const EventModal = () => {
                   </div>
                   <Autocomplete
                     onChange={onGroupChange}
+                    inputValue={newGroupValue.name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultGroupProps}
