@@ -79,8 +79,8 @@ const EditModal = () => {
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
-  const [groupId, setGroupId] = useState<number>(0);
-  const [partyId, setPartyId] = useState<number|null>(0);
+  const [groupId, setGroupId] = useState<number | null>(0);
+  const [partyId, setPartyId] = useState<number | null>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
 
@@ -229,7 +229,7 @@ const EditModal = () => {
   const onGroupChange = (e: any, value: any) => {
     const partyValue = value.id || undefined;
     setGroupId(partyValue);
-  }
+  };
 
   const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
@@ -283,16 +283,6 @@ const EditModal = () => {
 
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
-  // 그룹 선택하기 - Autocomplete 이용
-  const defaultGroupProps = {
-    options: groups.groups,
-    getOptionLabel: (option: any) => option.name,
-  };
-  const flatGroupProps = {
-    options: groups && groups.groups.map((option: any) => option.name),
-  };
-  const [gruoupValue, setGroupValue] = React.useState<Group['id'] | null>(null);
-
   const parsedData: any = {
     id: scheduleDetailId,
     title: title,
@@ -310,7 +300,6 @@ const EditModal = () => {
     end: newEndTime(),
     meetupId: alarmChannelId,
     open: checked,
-    partyId: groupId,
   };
 
   const handleEditMeeting = async () => {
@@ -327,6 +316,11 @@ const EditModal = () => {
     }
   };
 
+  // const handleEditMeeting = () => {
+  //   console.log('====수정====');
+  //   // setPartyId(groupId || null);
+  //   console.log(parsedMeetingData);
+  // };
   const handleEditSchedule = async () => {
     if (!parsedData.title) {
       alert('제목은 필수 입력사항입니다');
@@ -463,24 +457,6 @@ const EditModal = () => {
                   )}
                 </div>
               )}
-              <div className="mt-[15px]">
-              {editModalType === 'schedule' ? null : (
-                <div>
-                  <div className="text-s text-title font-bold">
-                    그룹 선택
-                    <span className="text-cancel">&#42;</span>
-                  </div>
-                  <Autocomplete
-                    onChange={onGroupChange}
-                    className="w-[450px]"
-                    ListboxProps={{ style: { maxHeight: '150px' } }}
-                    {...defaultGroupProps}
-                    id="select-channel"
-                    renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
-                  />
-                </div>
-              )}
-            </div>
             </div>
             {editModalType === 'schedule' ? (
               <button
