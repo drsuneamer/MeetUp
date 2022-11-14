@@ -281,7 +281,7 @@ const EventModal = () => {
   };
 
   return (
-    <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
+    <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
       <div
         className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -294,12 +294,12 @@ const EventModal = () => {
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="2.5"
-          className="w-6 h-6 stroke-title mt-[15px] ml-[550px] cursor-pointer"
+          className="w-6 h-6 stroke-title mt-[10px] ml-[550px] cursor-pointer"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[10px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[5px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -319,7 +319,7 @@ const EventModal = () => {
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
-          <div className="mt-[15px]">
+          <div className="mt-[5px]">
             <div className="text-s text-title font-bold">
               날짜<span className="text-cancel">&#42;</span>
             </div>
@@ -331,7 +331,7 @@ const EventModal = () => {
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
-            <div className="mt-[15px]">
+            <div className="mt-[10px]">
               <div className="text-s text-title font-bold">
                 시간<span className="text-cancel">&#42;</span>
               </div>
@@ -351,7 +351,7 @@ const EventModal = () => {
                 </svg>
               </div>
             </div>
-            <div className="mt-[15px]">
+            <div className="mt-[10x]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
@@ -365,7 +365,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[15px]">
+            <div className="mt-[5px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">
@@ -394,7 +394,7 @@ const EventModal = () => {
                 )}
               </div>
             ) : (
-              <div className="mt-[20px] mb-[20px]">
+              <div className="mt-[10px] mb-[10px]">
                 <div className="text-s text-title font-bold">공개 설정</div>
                 <Switch checked={checked} onChange={switchHandler} />
                 {checked ? (
@@ -404,10 +404,10 @@ const EventModal = () => {
                 )}
               </div>
             )}
-            <div className="mt-[15px]">
+            <div className="mt-[5px]">
               {myCalendar ? null : (
                 <div>
-                  <div className="text-s text-title font-bold">그룹 선택</div>
+                  <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
                   <Autocomplete
                     onChange={onGroupChange}
                     className="w-[450px]"
@@ -420,26 +420,31 @@ const EventModal = () => {
               )}
             </div>
           </div>
-          {myCalendar && isPast() ? (
-            <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
-              현재 시간 이전에는 등록할 수 없습니다
-            </button>
-          ) : myCalendar && !isPast() ? (
-            <button onClick={handleSubmitToMe} className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button">
-              밋업 불가시간 설정하기
-            </button>
-          ) : !myCalendar && isPast() ? (
-            <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
-              현재 시간 이전에는 등록할 수 없습니다
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmitToYou}
-              className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
-            >
-              밋업 등록하기
-            </button>
-          )}
+          <div className="mt-[5px]">
+            {myCalendar && isPast() ? (
+              <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
+                현재 시간 이전에는 등록할 수 없습니다
+              </button>
+            ) : myCalendar && !isPast() ? (
+              <button
+                onClick={handleSubmitToMe}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
+              >
+                밋업 불가시간 설정하기
+              </button>
+            ) : !myCalendar && isPast() ? (
+              <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
+                현재 시간 이전에는 등록할 수 없습니다
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmitToYou}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
+              >
+                밋업 등록하기
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <div
