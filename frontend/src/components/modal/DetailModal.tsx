@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
 import { setDetailModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
@@ -16,7 +16,13 @@ const DetailModal = () => {
   const dispatch = useAppDispatch();
   const detailModalSelector = useSelector(ModalSelector);
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
+  const myId = localStorage.getItem('id');
 
+  // useEffect(() => {
+  //   console.log('스케줄 신청자:', scheduleDetail.userId);
+  //   console.log('현재 로그인한 유저:', myId);
+  //   console.log(scheduleDetail);
+  // });
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
   }, []);
@@ -29,10 +35,16 @@ const DetailModal = () => {
   };
 
   const editSchedule = () => {
-    dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
-    handleToggleModal();
+    console.log('스케줄 신청자:', scheduleDetail.userId);
+    console.log('현재 로그인한 유저:', myId);
+    console.log(scheduleDetail);
   };
+  // const editSchedule = () => {
+  //   dispatch(setEditModalOpen('schedule'));
+  //   dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+  //   handleToggleModal();
+  // };
+
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
     handleToggleModal();
@@ -47,7 +59,7 @@ const DetailModal = () => {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center`}>
         <div
-          className="w-[600px] h-[450px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+          className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
           }}
@@ -132,19 +144,7 @@ const DetailModal = () => {
               </div>
             ) : null}
           </div>
-          {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
-            <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
-                밋업 수정하기
-              </button>
-              <button
-                onClick={deleteMeeting}
-                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
-              >
-                밋업 삭제하기
-              </button>
-            </div>
-          ) : (
+          {scheduleDetail && detailModalSelector.modalType === 'mySchedule' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
               <button onClick={editSchedule} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
                 일정 수정하기
@@ -156,7 +156,19 @@ const DetailModal = () => {
                 일정 삭제하기
               </button>
             </div>
-          )}
+          ) : scheduleDetail.userId === myId ? (
+            <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+              <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+                밋업 수정하기
+              </button>
+              <button
+                onClick={deleteMeeting}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                밋업 삭제하기
+              </button>
+            </div>
+          ) : null}
         </div>
         <div
           className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
