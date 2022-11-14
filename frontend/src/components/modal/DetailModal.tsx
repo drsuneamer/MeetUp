@@ -35,9 +35,9 @@ const DetailModal = () => {
   };
 
   const editSchedule = () => {
-    console.log('스케줄 신청자:', scheduleDetail.userId);
-    console.log('현재 로그인한 유저:', myId);
-    console.log(scheduleDetail);
+    dispatch(setEditModalOpen('schedule'));
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    handleToggleModal();
   };
   // const editSchedule = () => {
   //   dispatch(setEditModalOpen('schedule'));
@@ -76,11 +76,16 @@ const DetailModal = () => {
           </svg>
           <div className="flex flex-col p-[20px] ">
             <div className="mt-[20px] flex ">
-              <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
               {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
-                <p className="font-bold">{scheduleDetail.title}</p>
+                <>
+                  <div className="text-s text-title font-bold mr-[15px]">미팅명</div>
+                  <p className="font-bold">{scheduleDetail.title}</p>
+                </>
               ) : (
-                <p className="font-bold">{scheduleDetail.title}</p>
+                <>
+                  <div className="text-s text-title font-bold mr-[15px]">제목</div>
+                  <p className="font-bold">{scheduleDetail.title}</p>
+                </>
               )}
             </div>
             {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
@@ -88,6 +93,14 @@ const DetailModal = () => {
                 <div className="mt-[20px] flex ">
                   <div className="text-s text-title font-bold mr-[15px]">신청자</div>
                   <p>{scheduleDetail.userName}</p>
+                </div>
+              </>
+            ) : null}
+            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.partyId ? (
+              <>
+                <div className="mt-[20px] flex ">
+                  <div className="text-s text-title font-bold mr-[15px]">신청그룹</div>
+                  <p>{scheduleDetail.partyName}</p>
                 </div>
               </>
             ) : null}
@@ -112,11 +125,16 @@ const DetailModal = () => {
               )}
             </div>
             <div className="mt-[20px] flex">
-              <div className="text-s text-title font-bold mr-[15px]">내용</div>
               {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
-                <p className="w-[450px]">{scheduleDetail.content}</p>
+                <>
+                  <div className="text-s text-title font-bold mr-[15px]">내용</div>
+                  <p className="w-[450px]">{scheduleDetail.content}</p>
+                </>
               ) : (
-                <p className="w-[450px]">{scheduleDetail.content}</p>
+                <>
+                  <div className="text-s text-title font-bold mr-[15px]"></div>
+                  <p className="w-[450px]">{scheduleDetail.content}</p>
+                </>
               )}
             </div>
 
