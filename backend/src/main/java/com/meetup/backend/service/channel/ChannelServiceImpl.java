@@ -23,8 +23,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class ChannelServiceImpl implements ChannelService {
 
@@ -52,6 +53,7 @@ public class ChannelServiceImpl implements ChannelService {
      * @return Channel DB에 저장되어 있지 않은 Channel 리스트
      */
     @Override
+    @Transactional
     public List<Channel> registerChannelFromMattermost(String userId, String mmSessionToken, List<Team> teamList) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
