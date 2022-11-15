@@ -23,13 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -37,11 +35,11 @@ import java.util.stream.Collectors;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/11
+ * updated by seongmin on 2022/11/15
  */
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class TeamUserServiceImpl implements TeamUserService {
 
@@ -74,6 +72,7 @@ public class TeamUserServiceImpl implements TeamUserService {
     // db에 저장되어 있지 않은 팀만 TeamUser db 저장
     // Teamuser에 이미 저장되어 있는지 확인 할 필요 없음
     @Override
+    @Transactional
     public void registerTeamUserFromMattermost(String mmSessionToken, List<Team> teamList) {
 
         MattermostClient client = Client.getClient();
@@ -111,7 +110,6 @@ public class TeamUserServiceImpl implements TeamUserService {
                             .build()));
                 }
             }
-
             Set<User> userSet = new HashSet<>(userRepository.findAll());
             userRepository.saveAll(userList.stream().filter(user -> !userSet.contains(user)).collect(Collectors.toList()));
             Set<TeamUser> teamUserSet = new HashSet<>(teamUserRepository.findByTeam(team));

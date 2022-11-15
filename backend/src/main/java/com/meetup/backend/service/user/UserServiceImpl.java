@@ -5,6 +5,7 @@ import java.util.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.persistence.LockModeType;
 
 import com.meetup.backend.dto.channel.ChannelCreateRequestDto;
 import com.meetup.backend.dto.token.TokenDto;
@@ -37,12 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.bis5.mattermost.client4.MattermostClient;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -80,8 +84,9 @@ public class UserServiceImpl implements UserService {
     private String iv;
 
     @Override
-    @Transactional
-    public LoginResponseDto login(LoginRequestDto requestDto) {
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+//    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
+    public synchronized LoginResponseDto login(LoginRequestDto requestDto) {
         decodePassword(requestDto);
         MmLoginInfo mmLoginInfo = mmLogin(requestDto);
 
@@ -179,7 +184,7 @@ public class UserServiceImpl implements UserService {
             }
             webhookNoticeService.firstLoginNotice(nickname);
             user.setFirstLogin();
-            registerTeamAndChannel(mmToken, user);
+            registerTeamAndChannel(mmToken, user.getId());
         }
     }
 
@@ -213,10 +218,11 @@ public class UserServiceImpl implements UserService {
         }
     }
     @Override
-    public void registerTeamAndChannel(String mmToken, User user) {
-        List<Team> teams = teamService.registerTeamFromMattermost(user.getId(), mmToken); // 팀 등록
+    @Transactional
+    public synchronized void registerTeamAndChannel(String mmToken, String userId) {
+        List<Team> teams = teamService.registerTeamFromMattermost(userId, mmToken); // 팀 등록
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
-        List<Channel> channels = channelService.registerChannelFromMattermost(user.getId(), mmToken, teams);
+        List<Channel> channels = channelService.registerChannelFromMattermost(userId, mmToken, teams);
         channelUserService.registerChannelUserFromMattermost(mmToken, channels);
     }
 

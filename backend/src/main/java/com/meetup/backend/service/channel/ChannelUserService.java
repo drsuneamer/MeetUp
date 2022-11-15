@@ -13,9 +13,6 @@ import java.util.List;
  * updated by seongmin on 2022/11/01
  */
 public interface ChannelUserService {
-
-    List<ChannelResponseDto> getChannelByUser(String userId, String teamId);
-
     List<ChannelUser> getChannelUserByUser(String userId);
 
     List<UserInfoDto> getMeetupUserByChannel(Channel channel, String userId);

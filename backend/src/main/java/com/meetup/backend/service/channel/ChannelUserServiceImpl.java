@@ -6,13 +6,11 @@ import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
-import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
@@ -29,8 +27,9 @@ import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,17 +41,15 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/15
  */
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class ChannelUserServiceImpl implements ChannelUserService {
 
     private final ChannelUserRepository channelUserRepository;
-
-    private final ChannelRepository channelRepository;
 
     private final TeamUserRepository teamUserRepository;
 
@@ -61,21 +58,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final MeetupRepository meetupRepository;
 
     private final AuthService authService;
-
-    @Override
-    public List<ChannelResponseDto> getChannelByUser(String userId, String teamId) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-
-        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
-            if (!channelUser.getChannel().getTeam().getId().equals(teamId))
-                continue;
-            channelResponseDtoList.add(ChannelResponseDto.of(channelUser.getChannel()));
-        }
-
-        return channelResponseDtoList;
-    }
 
     @Override
     public List<ChannelUser> getChannelUserByUser(String userId) {
@@ -117,6 +99,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     // db에 저장되어 있지 않은 채널만 ChannelUser db 저장
     // ChannelUser 이미 저장되어 있는지 확인 할 필요 없음
     @Override
+    @Transactional
     public void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList) {
 
         MattermostClient client = Client.getClient();
@@ -203,20 +186,18 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-        List<Team> teamList = new ArrayList<>();
 
-        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+        List<Channel> channelList = new ArrayList<>();
+        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
+            channelList.add(channelUser.getChannel());
+        }
+
+        for (Channel channel : channelList) {
+            TeamUser teamUser = teamUserRepository.findByTeamAndUser(channel.getTeam(), user).orElseThrow(() -> new ApiException(TEAM_USER_NOT_FOUND));
             if (!teamUser.isActivate())
                 continue;
-            teamList.add(teamUser.getTeam());
+            channelResponseDtoList.add(ChannelResponseDto.of(channel));
         }
-
-        for (Team team : teamList) {
-            for (Channel channel : channelRepository.findByTeam(team)) {
-                channelResponseDtoList.add(ChannelResponseDto.of(channel));
-            }
-        }
-
         return channelResponseDtoList;
     }
 
