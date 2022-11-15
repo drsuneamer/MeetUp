@@ -22,7 +22,7 @@ function CreateMeetup() {
 
   // 전체 팀, 채널 목록 가져오기
   useEffect(() => {
-    axiosInstance.get('meetup/team').then((res) => {
+    axiosInstance.get('/meetup/team').then((res) => {
       setLv1(res.data);
     });
 

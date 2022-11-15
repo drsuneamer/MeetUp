@@ -44,7 +44,7 @@ const SingleSelect = ({
   };
 
   return (
-    <div className={`relative min-w-32 w-[7rem] ${className}`}>
+    <div className={`relative min-w-32 w-[20rem] ${className}`}>
       <button
         className={'relative p-1 flex items-center w-full h-full'}
         onClick={(e) => {

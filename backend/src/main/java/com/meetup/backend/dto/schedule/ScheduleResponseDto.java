@@ -32,6 +32,8 @@ public class ScheduleResponseDto {
 
     private String content;
 
+    private boolean open;
+
     private String managerId;
 
     private String managerName;
@@ -58,6 +60,7 @@ public class ScheduleResponseDto {
                 .end(schedule.getEnd())
                 .title(schedule.getTitle())
                 .content(schedule.getContent())
+                .open(schedule.isOpen())
                 .userId(schedule.getUser().getId())
                 .userName(schedule.getUser().getNickname())
                 .myWebex(user.getWebex())
