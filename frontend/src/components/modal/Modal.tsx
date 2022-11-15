@@ -247,7 +247,7 @@ const EventModal = () => {
     getOptionLabel: (option: tAlarm) => option.displayName,
   };
   const flatProps = {
-    options: channels && channels.alarmChannels.map((option: any) => option.displayname),
+    options: channels.alarmChannels.map((option: any) => option.displayname),
   };
   // const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
@@ -365,7 +365,7 @@ const EventModal = () => {
                   viewBox="0 0 24 24"
                   strokeWidth="2"
                   stroke="currentColor"
-                  className="w-10 h-10 ml-[140px]"
+                  className="w-7 h-7 ml-[140px]"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

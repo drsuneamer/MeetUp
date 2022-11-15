@@ -42,10 +42,6 @@ const WeeklyCalendarBody = () => {
 
   const param = useParams();
 
-  const weekly = useMemo(() => {
-    return getThisWeek(currentDate);
-  }, [currentDate]);
-
   const hours = useMemo(() => {
     return getHours();
   }, []);
@@ -55,6 +51,10 @@ const WeeklyCalendarBody = () => {
   }, []);
 
   const userId = param.userId;
+
+  const weekly = useMemo(() => {
+    return getThisWeek(currentDate);
+  }, [currentDate]);
 
   const sunday = useMemo(() => {
     return getSundayOfWeek(currentDate, weekly);
@@ -84,14 +84,15 @@ const WeeklyCalendarBody = () => {
       await dispatch(fetchHolidays());
     }
 
-    // console.log('sunday of this week', getSundayOfWeek())
-
     fetchAndSetHolidays();
     renderHoliday();
+  }, [holidays, currentDate]);
+
+  useEffect(() => {
     if (userId && sunday) {
       dispatch(fetchSchedule(thunkAPI));
     }
-  }, [holidays, currentDate, mySchedule]);
+  }, []);
 
   function renderHoliday() {
     const holidayResult: Week[] = [];
@@ -144,18 +145,6 @@ const WeeklyCalendarBody = () => {
     }
   };
 
-  // const handleDeleteEvent = () => {
-  //   if (selectedEvent !== null) {
-  //     dispatch(deleteEvent(selectedEvent));
-  //   }
-  //   setSelectedEvent(null);
-  //   setSelectedEventPosition(null);
-
-  //   if (deletePopupContainerRef.current !== null) {
-  //     deletePopupContainerRef.current.style.overflow = 'scroll';
-  //   }
-  // };
-
   return (
     <div ref={deletePopupContainerRef} className="calendar-body flex flex-1 max-h-[calc(100vh-9.3rem)] overflow-y-scroll scrollbar-hide pb-10">
       <div className="flex flex-col h-fit">
@@ -198,8 +187,9 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(element.end.slice(-5, -3));
                 const endHour = parseInt(element.end.slice(-8, -5));
 
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + (startMinute * 25) / 30;
+                let result = endHour * 60 - startHour * 60 + (endMinute - startMinute);
+                let height = (result / 30) * 25;
 
                 const scheduleDate = element.start.slice(0, 10);
                 const scheduleId = element.id;
@@ -212,7 +202,7 @@ const WeeklyCalendarBody = () => {
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
                       className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                        height < 31 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(scheduleId, 'myCalendar');
@@ -229,7 +219,7 @@ const WeeklyCalendarBody = () => {
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
                       className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                        height < 26 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-label`}>
@@ -247,8 +237,9 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(element.end.slice(-5, -3));
                 const endHour = parseInt(element.end.slice(-8, -5));
 
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + (startMinute * 25) / 30;
+                let result = endHour * 60 - startHour * 60 + (endMinute - startMinute);
+                let height = (result / 30) * 25;
 
                 const scheduleDate = element.start.slice(0, 10);
                 const meetingId = element.id;
@@ -260,8 +251,8 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                        height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
@@ -277,8 +268,8 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                        height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
@@ -299,8 +290,9 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(element.end.slice(-5, -3));
                 const endHour = parseInt(element.end.slice(-8, -5));
 
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + (startMinute * 25) / 30;
+                let result = endHour * 60 - startHour * 60 + (endMinute - startMinute);
+                let height = (result / 30) * 25;
 
                 const scheduleDate = element.start.slice(0, 10);
                 const meetingId = element.id;
@@ -311,8 +303,8 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                      className={`flex flex-wrap absolute w-full text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      className={`flex flex-wrap absolute w-full text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                        height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
@@ -329,8 +321,8 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                        height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                     >
                       <span key={`${element.id}`} className={`w-full text-center text-body`}>
@@ -347,8 +339,9 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(element.end.slice(-5, -3));
                 const endHour = parseInt(element.end.slice(-8, -5));
 
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + (startMinute * 25) / 30;
+                let result = endHour * 60 - startHour * 60 + (endMinute - startMinute);
+                let height = (result / 30) * 25;
 
                 const scheduleDate = element.start.slice(0, 10);
                 const meetingId = element.id;
@@ -358,8 +351,8 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                        height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                        height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                         handleViewEvent(meetingId, 'myMeeting');
@@ -425,8 +418,9 @@ const WeeklyCalendarBody = () => {
                 const endMinute = parseInt(end.slice(-2));
                 const endHour = parseInt(end.slice(0, end.length - 2));
 
-                const top = startHour * 50 + startMinute;
-                let height = (endHour - startHour) * 50 + (endMinute - startMinute);
+                const top = startHour * 50 + (startMinute * 25) / 30;
+                let result = endHour * 60 - startHour * 60 + (endMinute - startMinute);
+                let height = (result / 30) * 25;
 
                 if (height < 24) {
                   height = 24;
@@ -437,7 +431,7 @@ const WeeklyCalendarBody = () => {
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
                     className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
-                      height < 30 ? null : 'p-1 overflow-y-auto scrollbar-hide'
+                      height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                     }`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
                   >

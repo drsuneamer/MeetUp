@@ -134,7 +134,7 @@ public class MeetingServiceImpl implements MeetingService {
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
-        mmNotice(meetingRequestDto.isOpen(), loginUser, meetup, channel, message);
+        mmNotice(meetingRequestDto.isOpen(), loginUser, meetup.getManager().getId(), channel, message);
 
         return meetingRepository.save(meeting).getId();
     }
@@ -171,9 +171,9 @@ public class MeetingServiceImpl implements MeetingService {
 
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
-        mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup, channel, message);
+        mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup.getManager().getId(), channel, message);
 
-        meeting.update(meetingUpdateRequestDto);
+        meeting.update(meetingUpdateRequestDto, meetup);
         return meeting.getId();
     }
 
@@ -199,12 +199,17 @@ public class MeetingServiceImpl implements MeetingService {
         String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
-            mmNotice(meeting.isOpen(), user, meeting.getMeetup(), channel, message);
+            if (user == meeting.getMeetup().getManager()) {
+                mmNotice(meeting.isOpen(), user, meeting.getUser().getId(), channel, message);
+            } else {
+                mmNotice(meeting.isOpen(), user, meeting.getMeetup().getManager().getId(), channel, message);
+
+            }
         }
         meetingRepository.delete(meeting);
     }
 
-    private void mmNotice(boolean isOpen, User loginUser, Meetup meetup, Channel channel, String message) {
+    private void mmNotice(boolean isOpen, User loginUser, String managerId, Channel channel, String message) {
         MattermostClient client = Client.getClient();
 
         client.setAccessToken(authService.getMMSessionToken(loginUser.getId()));
@@ -217,7 +222,7 @@ public class MeetingServiceImpl implements MeetingService {
             }
             MattermostEx.apiException(status);
         } else {
-            Response directChannelResponse = client.createDirectChannel(loginUser.getId(), meetup.getManager().getId()).getRawResponse();
+            Response directChannelResponse = client.createDirectChannel(loginUser.getId(), managerId).getRawResponse();
             int status = directChannelResponse.getStatus();
             MattermostEx.apiException(status);
             JSONObject resObj;
