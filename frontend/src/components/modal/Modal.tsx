@@ -40,11 +40,9 @@ const EventModal = () => {
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
-  const [alarmVal, setAlarmVal] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
   const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
-  // const [groupVal, setGroupVal] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -156,10 +154,8 @@ const EventModal = () => {
     handleResetInput();
     setAlarmChannelId(0);
     setAlarmChannel({ meetupId: 0, displayName: '' });
-    // setAlarmVal({ meetupId: 0, displayName: '' });
     setGroupId(0);
     setNewGroupValue({ id: 0, leader: false, name: '' });
-    // setGroupVal({ id: 0, leader: false, name: '' });
     handleResetInput();
   }, []);
 
@@ -172,6 +168,7 @@ const EventModal = () => {
     open: checked,
   };
 
+  // 그룹이 없으면 groupId null로
   useEffect(() => {
     setPartyId(groupId || null);
   }, [groupId]);
@@ -196,7 +193,6 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        // handleResetInput();
       } else if (isRejected(action)) {
         // console.log(action);
       }
@@ -217,18 +213,12 @@ const EventModal = () => {
         handleResetInput();
         setAlarmChannelId(0);
         setAlarmChannel({ meetupId: 0, displayName: '' });
-        // setAlarmVal({ meetupId: 0, displayName: '' });
         setGroupId(0);
         setNewGroupValue({ id: 0, leader: false, name: '' });
-        // setGroupVal({ id: 0, leader: false, name: '' });
         handleResetInput();
       }
     }
   };
-
-  // const handleSubmitToYou = () => {
-  //   console.log(parsedMeetingData);
-  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -238,11 +228,6 @@ const EventModal = () => {
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
     setContent('');
-    // setAlarmChannelId(0);
-    // setAlarmChannel({ meetupId: 0, displayName: '' });
-    // setGroupId(0);
-    // setNewGroupValue({ id: 0, leader: false, name: '' });
-    // handleResetInput();
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -290,7 +275,6 @@ const EventModal = () => {
   }, [currentDate]);
 
   // 날짜 & 시간 비교하기
-
   const nows = useMemo(() => {
     return getNow();
   }, []);
@@ -379,9 +363,9 @@ const EventModal = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   stroke="currentColor"
-                  className="w-7 h-7 ml-[181px]"
+                  className="w-10 h-10 ml-[140px]"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
