@@ -30,6 +30,7 @@ const EventModal = () => {
   const dispatch = useAppDispatch();
   const channels = useAppSelector(alarmChannelSelector);
   const groups = useAppSelector(groupSelector);
+  // const haveGroup = useAppSelector(groupSelector).;
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
@@ -125,7 +126,10 @@ const EventModal = () => {
       setNewGroupValue(value);
     }
   };
-
+  // useEffect(() => {
+  //   console.log('---have group?---');
+  //   console.log(groups.groups.length);
+  // });
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -439,7 +443,7 @@ const EventModal = () => {
               </div>
             )}
             <div className="mt-[5px]">
-              {myCalendar ? null : (
+              {!myCalendar && groups.groups.length >= 1 ? (
                 <div>
                   <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
                   <Autocomplete
@@ -454,7 +458,7 @@ const EventModal = () => {
                     renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
           <div className="mt-[5px]">
