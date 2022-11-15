@@ -30,7 +30,6 @@ const EventModal = () => {
   const dispatch = useAppDispatch();
   const channels = useAppSelector(alarmChannelSelector);
   const groups = useAppSelector(groupSelector);
-  // const haveGroup = useAppSelector(groupSelector).;
   const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const { eventModalData } = useAppSelector((state) => state.events);
   const { myCalendar } = useAppSelector((state) => state.mycalendar);
@@ -318,7 +317,9 @@ const EventModal = () => {
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
       <div
-        className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+        className={`${
+          !myCalendar && groups.groups.length >= 1 ? 'w-[600px] h-[640px]' : 'w-[600px] h-[600px]'
+        } flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow`}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
           e.stopPropagation();
         }}
@@ -334,7 +335,7 @@ const EventModal = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[5px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[10px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -354,7 +355,7 @@ const EventModal = () => {
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
-          <div className="mt-[5px]">
+          <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
             <div className="text-s text-title font-bold">
               날짜<span className="text-cancel">&#42;</span>
             </div>
@@ -366,7 +367,7 @@ const EventModal = () => {
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
-            <div className="mt-[10px]">
+            <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
               <div className="text-s text-title font-bold">
                 시간<span className="text-cancel">&#42;</span>
               </div>
@@ -386,7 +387,7 @@ const EventModal = () => {
                 </svg>
               </div>
             </div>
-            <div className="mt-[10x]">
+            <div className="mt-[10px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
@@ -400,7 +401,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[5px]">
+            <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">
@@ -442,7 +443,7 @@ const EventModal = () => {
                 )}
               </div>
             )}
-            <div className="mt-[5px]">
+            <div className="mt-[10px]">
               {!myCalendar && groups.groups.length >= 1 ? (
                 <div>
                   <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
@@ -461,7 +462,7 @@ const EventModal = () => {
               ) : null}
             </div>
           </div>
-          <div className="mt-[5px]">
+          <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[20px]' : 'mt-[30px]'}`}>
             {myCalendar && isPast() ? (
               <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
                 현재 시간 이전에는 등록할 수 없습니다
