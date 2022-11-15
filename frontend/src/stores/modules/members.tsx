@@ -16,6 +16,7 @@ const initialState: memberInitialState = {
 export const fetchMemberList = createAsyncThunk('members/fetchMemberList', async (channelId: number) => {
   try {
     const res = await axiosInstance.get(`/meetup/users/${channelId}`).then((res) => {
+      // console.log(res.data);
       return res;
     });
     return res.data;
@@ -34,7 +35,7 @@ const memberSlice = createSlice({
     },
     [fetchMemberList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      state.members = action.payload.userInfoDtoList;
+      state.members = action.payload;
     },
     [fetchMemberList.rejected.toString()]: (state) => {
       state.loading = false;
