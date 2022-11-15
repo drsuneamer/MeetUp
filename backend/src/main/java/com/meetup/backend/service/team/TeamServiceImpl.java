@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/10
+ * updated by seongmin on 2022/11/15
  */
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,7 @@ public class TeamServiceImpl implements TeamService {
      * @return Team DB에 저장되어 있지 않은 Team 리스트
      */
     @Override
+    @Transactional
     public List<Team> registerTeamFromMattermost(String userId, String mmSessionToken) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));

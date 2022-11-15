@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 
 /**
  * created by seungyong on 2022/10/22
- * updated by seungyong on 2022/11/15
+ * updated by seongmin on 2022/11/15
  */
 @RestController
 @Slf4j
@@ -57,13 +57,7 @@ public class MeetUpController {
 
         String userId = authService.getMyInfoSecret().getId();
         String mmSessionToken = authService.getMMSessionToken(userId);
-
-        List<Team> teamList = teamService.registerTeamFromMattermost(userId, mmSessionToken);
-        teamUserService.registerTeamUserFromMattermost(mmSessionToken, teamList);
-
-        List<Channel> channelList = channelService.registerChannelFromMattermost(userId, mmSessionToken, teamList);
-        channelUserService.registerChannelUserFromMattermost(mmSessionToken, channelList);
-
+        userService.registerTeamAndChannel(mmSessionToken, userId);
         return ResponseEntity.status(CREATED).build();
     }
 
