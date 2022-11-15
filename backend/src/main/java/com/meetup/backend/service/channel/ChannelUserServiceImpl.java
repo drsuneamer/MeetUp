@@ -6,13 +6,11 @@ import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
-import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
@@ -53,8 +51,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
     private final ChannelUserRepository channelUserRepository;
 
-    private final ChannelRepository channelRepository;
-
     private final TeamUserRepository teamUserRepository;
 
     private final UserRepository userRepository;
@@ -62,21 +58,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final MeetupRepository meetupRepository;
 
     private final AuthService authService;
-
-    @Override
-    public List<ChannelResponseDto> getChannelByUser(String userId, String teamId) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-
-        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
-            if (!channelUser.getChannel().getTeam().getId().equals(teamId))
-                continue;
-            channelResponseDtoList.add(ChannelResponseDto.of(channelUser.getChannel()));
-        }
-
-        return channelResponseDtoList;
-    }
 
     @Override
     public List<ChannelUser> getChannelUserByUser(String userId) {
@@ -205,20 +186,18 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-        List<Team> teamList = new ArrayList<>();
 
-        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+        List<Channel> channelList = new ArrayList<>();
+        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
+            channelList.add(channelUser.getChannel());
+        }
+
+        for (Channel channel : channelList) {
+            TeamUser teamUser = teamUserRepository.findByTeamAndUser(channel.getTeam(), user).orElseThrow(() -> new ApiException(TEAM_USER_NOT_FOUND));
             if (!teamUser.isActivate())
                 continue;
-            teamList.add(teamUser.getTeam());
+            channelResponseDtoList.add(ChannelResponseDto.of(channel));
         }
-
-        for (Team team : teamList) {
-            for (Channel channel : channelRepository.findByTeam(team)) {
-                channelResponseDtoList.add(ChannelResponseDto.of(channel));
-            }
-        }
-
         return channelResponseDtoList;
     }
 
