@@ -9,14 +9,12 @@ import com.meetup.backend.dto.team.TeamResponseDto;
 import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.team.Team;
-import com.meetup.backend.entity.user.User;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.channel.ChannelService;
 import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
-import com.meetup.backend.service.user.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 import java.util.List;
 
