@@ -5,7 +5,6 @@ import Layout from '../components/layout/Layout';
 import Spinner from '../components/common/Spinner';
 import MultipleLevelSelection from '../components/MultipleLevelSelection';
 import Alert from '@mui/material/Alert';
-
 import { axiosInstance } from '../components/auth/axiosConfig';
 
 interface Category {
@@ -27,6 +26,7 @@ function CreateMeetup() {
     });
 
     axiosInstance.get(`/meetup/channel`).then((res) => {
+      console.log(res.data);
       setLv2(res.data);
     });
   }, []);
