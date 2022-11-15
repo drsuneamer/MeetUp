@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 /**
  * created by myeongseok on 2022/10/25
- * updated by seongmin on 2022/11/08
+ * updated by seongmin on 2022/11/15
  */
 @Data
 @Builder
@@ -63,8 +63,7 @@ public class ScheduleResponseDto {
                 .open(schedule.isOpen())
                 .userId(schedule.getUser().getId())
                 .userName(schedule.getUser().getNickname())
-                .myWebex(user.getWebex())
-                .diffWebex(schedule.getUser().getWebex())
+                .myWebex(schedule.getUser().getWebex())
                 .build();
 
         if (schedule.getType().equals(ScheduleType.Meeting)) {

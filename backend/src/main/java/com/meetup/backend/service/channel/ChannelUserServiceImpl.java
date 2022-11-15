@@ -27,8 +27,9 @@ import net.bis5.mattermost.client4.Pager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,11 +41,11 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 
 /**
  * created by myeongseok on 2022/10/21
- * updated by seongmin on 2022/11/04
+ * updated by seongmin on 2022/11/15
  */
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class ChannelUserServiceImpl implements ChannelUserService {
 
@@ -98,6 +99,7 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     // db에 저장되어 있지 않은 채널만 ChannelUser db 저장
     // ChannelUser 이미 저장되어 있는지 확인 할 필요 없음
     @Override
+    @Transactional
     public void registerChannelUserFromMattermost(String mmSessionToken, List<Channel> channelList) {
 
         MattermostClient client = Client.getClient();
