@@ -173,7 +173,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup, channel, message);
 
-        meeting.update(meetingUpdateRequestDto);
+        meeting.update(meetingUpdateRequestDto, meetup);
         return meeting.getId();
     }
 

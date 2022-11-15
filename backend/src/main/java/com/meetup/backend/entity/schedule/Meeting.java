@@ -42,7 +42,8 @@ public class Meeting extends Schedule {
         this.party = party;
     }
 
-    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
+    public void update(MeetingUpdateRequestDto meetingUpdateRequestDto, Meetup meetup) {
+        this.meetup = meetup;
         super.update(meetingUpdateRequestDto);
     }
 }
