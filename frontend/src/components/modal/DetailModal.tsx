@@ -173,12 +173,7 @@ const DetailModal = () => {
                   )}
                 </div>
               </div>
-            ) : (
-              <div className="flex">
-                <div className="text-s text-title font-bold mr-[15px] mb-[20px]">웹엑스 미팅 참여하기</div>
-                웹엑스 링크를 설정해주세요
-              </div>
-            )}
+            ) : null}
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
@@ -204,6 +199,19 @@ const DetailModal = () => {
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
+              >
+                미팅 삭제하기
+              </button>
+            </div>
+          ) : scheduleDetail.managerId === myId ? (
+            <div
+              className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} ${
+                !scheduleDetail.diffWebex ? 'mt-[150px]' : 'mt-[40px]'
+              } flex justify-center items-center`}
+            >
+              <button
+                onClick={deleteMeeting}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"
               >
                 미팅 삭제하기
               </button>
