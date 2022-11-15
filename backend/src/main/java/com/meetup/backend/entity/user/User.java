@@ -3,6 +3,7 @@ package com.meetup.backend.entity.user;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.*;
+import org.hibernate.annotations.SQLInsert;
 
 import javax.persistence.*;
 
@@ -14,6 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "USERS")
+//@SQLInsert(sql = "INSERT IGNORE INTO USERS(id, password, nickname, webex, role, first_login, created, updated) " +
+//        "VALUES (?, ?, ?, ?, ?, ?, ?, ? )" )
 @ToString
 public class User extends BaseEntity {
 
