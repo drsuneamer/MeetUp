@@ -247,7 +247,7 @@ const EventModal = () => {
     getOptionLabel: (option: tAlarm) => option.displayName,
   };
   const flatProps = {
-    options: channels && channels.alarmChannels.map((option: any) => option.displayname),
+    options: channels.alarmChannels.map((option: any) => option.displayname),
   };
   // const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 

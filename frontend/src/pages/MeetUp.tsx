@@ -15,10 +15,10 @@ const MeetUp = () => {
             <Sidebar />
           </div>
           <Calendar />
-          <Modal />
+          {/* <Modal />
           <DetailModal />
           <EditModal />
-          <WebexModal />
+          <WebexModal /> */}
         </main>
 
         <button
