@@ -188,20 +188,18 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-        List<Team> teamList = new ArrayList<>();
 
-        for (TeamUser teamUser : teamUserRepository.findByUser(user)) {
+        List<Channel> channelList = new ArrayList<>();
+        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
+            channelList.add(channelUser.getChannel());
+        }
+
+        for (Channel channel : channelList) {
+            TeamUser teamUser = teamUserRepository.findByTeamAndUser(channel.getTeam(), user).orElseThrow(() -> new ApiException(TEAM_USER_NOT_FOUND));
             if (!teamUser.isActivate())
                 continue;
-            teamList.add(teamUser.getTeam());
+            channelResponseDtoList.add(ChannelResponseDto.of(channel));
         }
-
-        for (Team team : teamList) {
-            for (Channel channel : channelRepository.findByTeam(team)) {
-                channelResponseDtoList.add(ChannelResponseDto.of(channel));
-            }
-        }
-
         return channelResponseDtoList;
     }
 
