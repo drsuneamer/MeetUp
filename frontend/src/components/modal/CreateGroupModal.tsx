@@ -102,28 +102,30 @@ function CreateGroupModal() {
   };
 
   // [3] 멤버 선택
-  const valHtml = val.map((option: Member, index) => {
-    // This is to handle new options added by the user (allowed by freeSolo prop).
-    const label: string = option.nickname;
-    return (
-      // 각 멤버 닉네임 Chip
-      <Chip
-        className="mr-1 mb-1 font-pre"
-        key={index}
-        label={label}
-        deleteIcon={<CloseIcon />}
-        onDelete={() => {
-          setVal(val.filter((entry) => entry !== option));
-        }}
-      />
-    );
-  });
+  const valHtml = val
+    .filter((x) => x.id) // id가 있는 값만 chip으로 출력 (null 방지)
+    .map((option: Member, index) => {
+      // This is to handle new options added by the user (allowed by freeSolo prop)
+      const label: string = option.nickname;
+      return (
+        // 각 멤버 닉네임 Chip
+        <Chip
+          className="mr-1 mb-1 font-pre"
+          key={index}
+          label={label}
+          deleteIcon={<CloseIcon />}
+          onDelete={() => {
+            setVal(val.filter((entry) => entry !== option));
+          }}
+        />
+      );
+    });
 
-  // 사용자가 선택한 멤버의 id만 따로 저장
+  // 사용자가 선택한 멤버의 id만 따로 저장 (undefined 제외)
   useDidMountEffect(() => {
     const m: string[] = [];
     for (let i = 0; i < val.length; i++) {
-      if (val[i].id !== window.localStorage.getItem('id')) {
+      if (val[i].id !== window.localStorage.getItem('id') && val[i].id !== undefined) {
         m.push(val[i].id);
       }
     }
@@ -139,24 +141,30 @@ function CreateGroupModal() {
 
   // [4] POST 요청
   const onSubmit = () => {
-    axiosInstance
-      .post('/group', submit)
-      .then((res) => {
-        if (res.status === 201) {
-          handleToggleModal();
-          dispatch(fetchGroupList());
-          // 제출 이후에는 값 리셋
-          setVal([]);
-          setName('');
-          setTeam({ id: '', displayName: '', type: '' });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.data.errorCode === '40907') {
-          Swal.fire({ text: '같은 이름의 그룹이 이미 존재합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
-        }
-      });
+    if (!submit.name) {
+      Swal.fire({ text: '그룹 이름은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (submit.members.length === 0) {
+      Swal.fire({ text: '한 명 이상의 그룹 멤버를 지정해야합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else {
+      axiosInstance
+        .post('/group', submit)
+        .then((res) => {
+          if (res.status === 201) {
+            handleToggleModal();
+            dispatch(fetchGroupList());
+            // 제출 이후에는 값 리셋
+            setVal([]);
+            setName('');
+            setTeam({ id: '', displayName: '', type: '' });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.data.errorCode === '40907') {
+            Swal.fire({ text: '같은 이름의 그룹이 이미 존재합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+          }
+        });
+    }
   };
 
   // [*] 모달 닫힘 관리
@@ -214,7 +222,7 @@ function CreateGroupModal() {
           {teamId ? (
             <div className="items-center justify-center overflow-hidden">
               <div className="flex">
-                <div style={{ width: 500, fontFamily: 'pretendard' }}>
+                <div style={{ width: '50vw', fontFamily: 'pretendard' }}>
                   <Autocomplete
                     multiple
                     id="tags-standard"
