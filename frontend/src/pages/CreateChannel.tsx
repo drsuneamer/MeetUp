@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 interface Member {
   id: string;
@@ -30,7 +31,7 @@ interface TeamOptionType {
 
 function CreateChannel() {
   const navigate = useNavigate();
-  const [submit, setSubmit] = useState<Submit>();
+  const [submit, setSubmit] = useState<Submit>({ teamId: '', displayName: '', name: '', type: '', inviteList: [] });
   const [teamList, setTeamList] = useState([]);
   const [teamId, setTeamId] = useState('');
   const [name, setName] = useState('');
@@ -69,6 +70,10 @@ function CreateChannel() {
     setName(e.target.value);
   };
 
+  // 채널 이름에 한글 있는지 검사
+  // 이름 안에 한글 있는지 검사
+  const korean = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+
   // [3] 공개/비공개 설정
   const changeType = (e: string) => {
     setType(e);
@@ -96,6 +101,7 @@ function CreateChannel() {
         setLoad(false);
       });
   };
+
   // 로딩 완료 후 체크 - 3초 뒤 사라짐
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -138,19 +144,23 @@ function CreateChannel() {
   }, [val]);
 
   const onSubmit = () => {
-    axiosInstance
-      .post('/meetup/channel', submit)
-      .then((res) => {
-        if (res.status === 201) {
-          navigate(`/calendar/${localStorage.getItem('id')}`);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.data.errorCode === '40905') {
-          alert('같은 이름의 채널이 이미 존재합니다');
-        }
-      });
+    if (korean.test(submit?.name)) {
+      Swal.fire({ text: '채널 이름은 반드시 2글자 이상의 영문(소문자) 또는 숫자여야 합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else {
+      axiosInstance
+        .post('/meetup/channel', submit)
+        .then((res) => {
+          if (res.status === 201) {
+            navigate(`/calendar/${localStorage.getItem('id')}`);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.data.errorCode === '40905') {
+            Swal.fire({ text: '같은 이름의 채널이 이미 존재합니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+          }
+        });
+    }
   };
 
   return (
@@ -174,8 +184,9 @@ function CreateChannel() {
         </div>
 
         <div className="mt-10">
-          <div className="w-[50vw] font-bold text-title cursor-default">
+          <div className="flex w-[50vw] font-bold text-title cursor-default">
             채널 이름<span className="text-cancel">&#42;</span>
+            <span className="text-[8px] pt-2 pl-1">이름은 반드시 2글자 이상의 영문 소문자 또는 숫자여야 합니다.</span>
           </div>
           <input
             onChange={nameChange}

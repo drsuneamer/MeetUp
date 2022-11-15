@@ -12,6 +12,7 @@ import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modul
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
@@ -38,8 +39,12 @@ const EventModal = () => {
   const [date, setDate] = useState<string>(getStringDateFormat(new Date()));
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
+  const [alarmVal, setAlarmVal] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
+  const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
+  // const [groupVal, setGroupVal] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -102,8 +107,11 @@ const EventModal = () => {
   };
 
   const onAlarmChannel = (e: any, value: any) => {
-    const alarmChannelValue = value.meetupId || undefined;
-    setAlarmChannelId(alarmChannelValue);
+    if (value !== null) {
+      const alarmChannelValue = value.meetupId || undefined;
+      setAlarmChannelId(alarmChannelValue);
+      setAlarmChannel(value);
+    }
   };
 
   const switchHandler = (e: any) => {
@@ -111,8 +119,11 @@ const EventModal = () => {
   };
 
   const onGroupChange = (e: any, value: any) => {
-    const partyValue = value.id || undefined;
-    setGroupId(partyValue);
+    if (value !== null) {
+      const partyValue = value.id || undefined;
+      setGroupId(partyValue);
+      setNewGroupValue(value);
+    }
   };
 
   useEffect(() => {
@@ -138,6 +149,15 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
+    handleResetInput();
+    handleResetInput();
+    setAlarmChannelId(0);
+    setAlarmChannel({ meetupId: 0, displayName: '' });
+    // setAlarmVal({ meetupId: 0, displayName: '' });
+    setGroupId(0);
+    setNewGroupValue({ id: 0, leader: false, name: '' });
+    // setGroupVal({ id: 0, leader: false, name: '' });
+    handleResetInput();
   }, []);
 
   // 스케줄 등록할 때 보내는 data
@@ -167,13 +187,13 @@ const EventModal = () => {
   // 나의 스케줄 등록
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        handleResetInput();
+        // handleResetInput();
       } else if (isRejected(action)) {
         // console.log(action);
       }
@@ -183,14 +203,21 @@ const EventModal = () => {
   // 미팅 등록
   const handleSubmitToYou = async () => {
     if (!parsedMeetingData.title) {
-      alert('미팅명은 필수 입력사항입니다');
+      Swal.fire({ text: '미팅명은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
+      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        handleResetInput();
+        setAlarmChannelId(0);
+        setAlarmChannel({ meetupId: 0, displayName: '' });
+        // setAlarmVal({ meetupId: 0, displayName: '' });
+        setGroupId(0);
+        setNewGroupValue({ id: 0, leader: false, name: '' });
+        // setGroupVal({ id: 0, leader: false, name: '' });
         handleResetInput();
       }
     }
@@ -208,7 +235,11 @@ const EventModal = () => {
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
     setContent('');
-    setAlarmChannelId(0);
+    // setAlarmChannelId(0);
+    // setAlarmChannel({ meetupId: 0, displayName: '' });
+    // setGroupId(0);
+    // setNewGroupValue({ id: 0, leader: false, name: '' });
+    // handleResetInput();
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -230,7 +261,7 @@ const EventModal = () => {
   const flatProps = {
     options: channels && channels.alarmChannels.map((option: any) => option.displayname),
   };
-  const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
+  // const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
   // 그룹 선택하기 - Autocomplete 이용
   const defaultGroupProps = {
@@ -374,6 +405,9 @@ const EventModal = () => {
                   </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
+                    value={alarmChannel}
+                    // inputValue={alarmChannel.displayName}
+                    isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultProps}
@@ -410,6 +444,9 @@ const EventModal = () => {
                   <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
                   <Autocomplete
                     onChange={onGroupChange}
+                    value={newGroupValue}
+                    // inputValue={newGroupValue.name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultGroupProps}
@@ -430,7 +467,7 @@ const EventModal = () => {
                 onClick={handleSubmitToMe}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
               >
-                밋업 불가시간 설정하기
+                미팅 불가시간 설정하기
               </button>
             ) : !myCalendar && isPast() ? (
               <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
@@ -441,7 +478,7 @@ const EventModal = () => {
                 onClick={handleSubmitToYou}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
-                밋업 등록하기
+                미팅 등록하기
               </button>
             )}
           </div>

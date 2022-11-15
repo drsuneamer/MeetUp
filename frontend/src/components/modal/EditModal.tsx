@@ -17,6 +17,7 @@ import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import Swal from 'sweetalert2';
 
 interface Group {
   id: number;
@@ -79,6 +80,7 @@ const EditModal = () => {
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [groupId, setGroupId] = useState<number | null>(0);
   const [partyId, setPartyId] = useState<number | null>(0);
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -222,8 +224,11 @@ const EditModal = () => {
   };
 
   const onAlarmChannel = (e: any, value: any) => {
-    const alarmChannelValue = value.meetupId || undefined;
-    setAlarmChannelId(alarmChannelValue);
+    if (value !== null) {
+      const alarmChannelValue = value.meetupId || undefined;
+      setAlarmChannelId(alarmChannelValue);
+      setAlarmChannel(value);
+    }
   };
 
   const onGroupChange = (e: any, value: any) => {
@@ -260,6 +265,7 @@ const EditModal = () => {
     setStartTimeIndex(0);
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
+    setContent('');
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -304,14 +310,21 @@ const EditModal = () => {
 
   const handleEditMeeting = async () => {
     if (!parsedMeetingData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
-      alert('참여중인 밋업은 필수 입력사항입니다');
+      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
+        handleResetInput();
+        setAlarmChannelId(0);
+        setAlarmChannel({ meetupId: 0, displayName: '' });
+        // setAlarmVal({ meetupId: 0, displayName: '' });
+        setGroupId(0);
+        // setNewGroupValue({ id: 0, leader: false, name: '' });
+        // setGroupVal({ id: 0, leader: false, name: '' });
       }
     }
   };
@@ -323,7 +336,7 @@ const EditModal = () => {
   // };
   const handleEditSchedule = async () => {
     if (!parsedData.title) {
-      alert('제목은 필수 입력사항입니다');
+      Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(editScheduleDetail(parsedData));
       if (isFulfilled(action)) {
@@ -368,7 +381,7 @@ const EditModal = () => {
                 type="text"
                 name="title"
                 defaultValue={scheduleDetail.title}
-                // value={title}
+                value={title}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
@@ -415,6 +428,7 @@ const EditModal = () => {
                       type="text"
                       name="title"
                       defaultValue={scheduleDetail.content}
+                      value={content}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />
@@ -427,6 +441,8 @@ const EditModal = () => {
                     <div className="text-s text-title font-bold">참여중인 밋업</div>
                     <Autocomplete
                       onChange={onAlarmChannel}
+                      value={alarmChannel}
+                      isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                       className="w-[450px]"
                       ListboxProps={{ style: { maxHeight: '150px' } }}
                       {...defaultProps}
@@ -470,7 +486,7 @@ const EditModal = () => {
                 onClick={handleEditMeeting}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button"
               >
-                밋업 등록하기
+                미팅 등록하기
               </button>
             )}
           </div>
