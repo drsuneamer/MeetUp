@@ -63,21 +63,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     private final AuthService authService;
 
     @Override
-    public List<ChannelResponseDto> getChannelByUser(String userId, String teamId) {
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        List<ChannelResponseDto> channelResponseDtoList = new ArrayList<>();
-
-        for (ChannelUser channelUser : channelUserRepository.findByUser(user)) {
-            if (!channelUser.getChannel().getTeam().getId().equals(teamId))
-                continue;
-            channelResponseDtoList.add(ChannelResponseDto.of(channelUser.getChannel()));
-        }
-
-        return channelResponseDtoList;
-    }
-
-    @Override
     public List<ChannelUser> getChannelUserByUser(String userId) {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
