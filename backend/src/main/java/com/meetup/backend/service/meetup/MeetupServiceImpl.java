@@ -51,16 +51,17 @@ public class MeetupServiceImpl implements MeetupService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
-        if (meetupRepository.existsByManagerAndChannel(user, Channel.builder().id(meetupRequestDto.getChannelId()).build())) {
-            Meetup meetup = meetupRepository.findByManagerAndChannel(user, Channel.builder().id(meetupRequestDto.getChannelId()).build()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
-            if (!meetup.isDelete()) {
-                throw new ApiException(ExceptionEnum.DUPLICATE_MEETUP);
-            } else {
+
+        Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
+        if (meetupRepository.existsByManagerAndChannel(user, channel)) {
+            Meetup meetup = meetupRepository.findByManagerAndChannel(user, channel).orElseThrow(() -> new ApiException(ExceptionEnum.CHANNEL_NOT_FOUND));
+            if (meetup.isDelete()) {
                 meetup.reviveMeetup(meetupRequestDto.getTitle(), meetupRequestDto.getColor());
                 return;
+            } else {
+                throw new ApiException(ExceptionEnum.DUPLICATE_MEETUP);
             }
         }
-        Channel channel = channelRepository.findById(meetupRequestDto.getChannelId()).orElseThrow(() -> new BadRequestException("유효하지 않은 채널입니다."));
 
         Meetup meetup = Meetup.builder()
                 .title(meetupRequestDto.getTitle())
@@ -68,50 +69,48 @@ public class MeetupServiceImpl implements MeetupService {
                 .channel(channel)
                 .manager(user)
                 .build();
-
         meetupRepository.save(meetup);
-
     }
 
     @Override
     @Transactional
     public void updateMeetup(MeetupUpdateRequestDto meetupUpdateRequestDto, String userId, Long meetupId) {
-
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
+
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        if (meetup.getManager().getId().equals(user.getId()))
-            meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
-        else
+        if (!meetup.getManager().getId().equals(user.getId()))
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
 
+        meetup.changeMeetup(meetupUpdateRequestDto.getTitle(), meetupUpdateRequestDto.getColor());
     }
 
     @Override
     @Transactional
     public void deleteMeetup(Long meetupId, String userId) {
-
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         if (user.getRole().getCode().equals("S") || user.getRole().getCode().equals("A"))
             throw new ApiException(ExceptionEnum.MEETUP_ACCESS_DENIED);
+
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-        if (meetup.getManager().getId().equals(user.getId()))
-            meetup.deleteMeetup();
-        else
+        if (!meetup.getManager().getId().equals(user.getId()))
             throw new ApiException(ExceptionEnum.ACCESS_DENIED);
+
+        meetup.deleteMeetup();
     }
 
     @Override
-    public List<MeetupResponseDto> getResponseDtos(String userId) {
-        User mangerUser = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("유효하지 않은 사용자입니다."));
+    public List<MeetupResponseDto> getResponseDtoList(String userId) {
+        User mangerUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         List<Meetup> meetups = meetupRepository.findByManager(mangerUser);
-        List<MeetupResponseDto> meetupResponseDtos = new ArrayList<>();
+        List<MeetupResponseDto> meetupResponseDtoList = new ArrayList<>();
         for (Meetup meetup : meetups) {
-            if (!meetup.isDelete())
-                meetupResponseDtos.add(MeetupResponseDto.of(meetup));
+            if (meetup.isDelete())
+                continue;
+            meetupResponseDtoList.add(MeetupResponseDto.of(meetup));
         }
-        return meetupResponseDtos;
+        return meetupResponseDtoList;
     }
 
     @Override
@@ -131,8 +130,8 @@ public class MeetupServiceImpl implements MeetupService {
         client.setAccessToken(authService.getMMSessionToken(userId));
 
         List<Meetup> meetupList = meetupRepository.findByChannelIn(channelList);
-        List<CalendarResponseDto> calendarResponseDtoList = new ArrayList<>();
         List<User> calendarUserList = new ArrayList<>();
+
         for (Meetup meetup : meetupList) {
             if (meetup.getManager().getId().equals(userId))
                 continue;
@@ -140,26 +139,13 @@ public class MeetupServiceImpl implements MeetupService {
             if (meetup.isDelete())
                 continue;
 
-            if (!calendarUserList.contains(meetup.getManager())) {
-                User manager = meetup.getManager();
-                if (manager.getNickname() == null) {
-                    Response userResponse = client.getUser(manager.getId()).getRawResponse();
+            if (calendarUserList.contains(meetup.getManager()))
+                continue;
 
-                    MattermostEx.apiException(userResponse.getStatus());
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject = JsonConverter.toJson((BufferedInputStream) userResponse.getEntity());
-                    } catch (ClassCastException e) {
-                        log.error(e.getMessage());
-                        log.info("userResponse.getEntity() = {}", userResponse.getEntity());
-                        e.printStackTrace();
-                    }
-                    String nickname = (String) jsonObject.get("nickname");
-                    manager.setNickname(nickname);
-                }
-                calendarUserList.add(meetup.getManager());
-            }
+            calendarUserList.add(meetup.getManager());
         }
+
+        List<CalendarResponseDto> calendarResponseDtoList = new ArrayList<>();
 
         for (User user : calendarUserList) {
             calendarResponseDtoList.add(CalendarResponseDto.of(user));
@@ -170,9 +156,7 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public Channel getMeetupChannelById(Long meetupId) {
-
         Meetup meetup = meetupRepository.findById(meetupId).orElseThrow(() -> new ApiException(ExceptionEnum.MEETUP_NOT_FOUND));
-
         return meetup.getChannel();
     }
 }

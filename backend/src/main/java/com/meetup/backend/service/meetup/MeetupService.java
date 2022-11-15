@@ -18,7 +18,7 @@ public interface MeetupService {
 
     void deleteMeetup(Long meetupId, String userId);
 
-    List<MeetupResponseDto> getResponseDtos(String userId);
+    List<MeetupResponseDto> getResponseDtoList(String userId);
 
     MeetupUpdateResponseDto getMeetupInfo(Long meetupId);
 

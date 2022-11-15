@@ -124,7 +124,7 @@ public class MeetUpController {
     @ApiOperation(value = "해당 로그인 유저의 meetup 목록 가져오기")
     public ResponseEntity<List<MeetupResponseDto>> getMeetupByUserId() {
         String userId = authService.getMyInfoSecret().getId();
-        List<MeetupResponseDto> meetupResponseDtoList = meetupService.getResponseDtos(userId);
+        List<MeetupResponseDto> meetupResponseDtoList = meetupService.getResponseDtoList(userId);
         return ResponseEntity.status(OK).body(meetupResponseDtoList);
     }
 
@@ -133,7 +133,6 @@ public class MeetUpController {
     public ResponseEntity<List<UserInfoDto>> getUserListByMeetup(@PathVariable("meetupId") Long meetupId) {
         Channel channel = meetupService.getMeetupChannelById(meetupId);
         List<UserInfoDto> userInfoDtoList = channelUserService.getMeetupUserByChannel(channel, authService.getMyInfoSecret().getId());
-
         return ResponseEntity.status(OK).body(userInfoDtoList);
     }
 
