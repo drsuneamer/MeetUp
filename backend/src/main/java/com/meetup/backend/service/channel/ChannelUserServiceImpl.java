@@ -6,13 +6,11 @@ import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.channel.ChannelUser;
 import com.meetup.backend.entity.meetup.Meetup;
-import com.meetup.backend.entity.team.Team;
 import com.meetup.backend.entity.team.TeamUser;
 import com.meetup.backend.entity.user.RoleType;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
-import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
 import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
@@ -51,8 +49,6 @@ import static com.meetup.backend.exception.ExceptionEnum.*;
 public class ChannelUserServiceImpl implements ChannelUserService {
 
     private final ChannelUserRepository channelUserRepository;
-
-    private final ChannelRepository channelRepository;
 
     private final TeamUserRepository teamUserRepository;
 
