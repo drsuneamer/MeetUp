@@ -40,11 +40,9 @@ const EventModal = () => {
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
-  const [alarmVal, setAlarmVal] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
   const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
-  // const [groupVal, setGroupVal] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
 
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
@@ -125,7 +123,10 @@ const EventModal = () => {
       setNewGroupValue(value);
     }
   };
-
+  // useEffect(() => {
+  //   console.log('---have group?---');
+  //   console.log(groups.groups.length);
+  // });
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -153,10 +154,8 @@ const EventModal = () => {
     handleResetInput();
     setAlarmChannelId(0);
     setAlarmChannel({ meetupId: 0, displayName: '' });
-    // setAlarmVal({ meetupId: 0, displayName: '' });
     setGroupId(0);
     setNewGroupValue({ id: 0, leader: false, name: '' });
-    // setGroupVal({ id: 0, leader: false, name: '' });
     handleResetInput();
   }, []);
 
@@ -169,6 +168,7 @@ const EventModal = () => {
     open: checked,
   };
 
+  // 그룹이 없으면 groupId null로
   useEffect(() => {
     setPartyId(groupId || null);
   }, [groupId]);
@@ -193,7 +193,6 @@ const EventModal = () => {
       if (isFulfilled(action)) {
         dispatch(fetchSchedule([userId, sunday]));
         handleToggleModal();
-        // handleResetInput();
       } else if (isRejected(action)) {
         // console.log(action);
       }
@@ -214,18 +213,12 @@ const EventModal = () => {
         handleResetInput();
         setAlarmChannelId(0);
         setAlarmChannel({ meetupId: 0, displayName: '' });
-        // setAlarmVal({ meetupId: 0, displayName: '' });
         setGroupId(0);
         setNewGroupValue({ id: 0, leader: false, name: '' });
-        // setGroupVal({ id: 0, leader: false, name: '' });
         handleResetInput();
       }
     }
   };
-
-  // const handleSubmitToYou = () => {
-  //   console.log(parsedMeetingData);
-  // };
 
   const handleResetInput = useCallback(() => {
     setTitle('');
@@ -235,11 +228,6 @@ const EventModal = () => {
     setEndTime(endSelectOptions[0]);
     setEndTimeIndex(0);
     setContent('');
-    // setAlarmChannelId(0);
-    // setAlarmChannel({ meetupId: 0, displayName: '' });
-    // setGroupId(0);
-    // setNewGroupValue({ id: 0, leader: false, name: '' });
-    // handleResetInput();
   }, []);
 
   const handleStartSelectClick = useCallback((selected: Option, index?: number) => {
@@ -287,7 +275,6 @@ const EventModal = () => {
   }, [currentDate]);
 
   // 날짜 & 시간 비교하기
-
   const nows = useMemo(() => {
     return getNow();
   }, []);
@@ -314,7 +301,9 @@ const EventModal = () => {
   return (
     <div className={`${eventModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
       <div
-        className="w-[600px] h-[600px] flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow"
+        className={`${
+          !myCalendar && groups.groups.length >= 1 ? 'w-[600px] h-[640px]' : 'w-[600px] h-[600px]'
+        } flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow`}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => {
           e.stopPropagation();
         }}
@@ -330,7 +319,7 @@ const EventModal = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div>
-          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[5px]'}`}>
+          <div className={`${myCalendar ? 'mt-[30px]' : 'mt-[10px]'}`}>
             {myCalendar ? (
               <div className="text-s text-title font-bold">
                 제목<span className="text-cancel">&#42;</span>
@@ -350,7 +339,7 @@ const EventModal = () => {
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
           </div>
-          <div className="mt-[5px]">
+          <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
             <div className="text-s text-title font-bold">
               날짜<span className="text-cancel">&#42;</span>
             </div>
@@ -362,7 +351,7 @@ const EventModal = () => {
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
               } w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point`}
             />
-            <div className="mt-[10px]">
+            <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
               <div className="text-s text-title font-bold">
                 시간<span className="text-cancel">&#42;</span>
               </div>
@@ -374,15 +363,15 @@ const EventModal = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   stroke="currentColor"
-                  className="w-7 h-7 ml-[181px]"
+                  className="w-10 h-10 ml-[140px]"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
-            <div className="mt-[10x]">
+            <div className="mt-[10px]">
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">내용</div>
@@ -396,7 +385,7 @@ const EventModal = () => {
                 </div>
               )}
             </div>
-            <div className="mt-[5px]">
+            <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[10px]' : 'mt-[15px]'}`}>
               {myCalendar ? null : (
                 <div>
                   <div className="text-s text-title font-bold">
@@ -438,8 +427,8 @@ const EventModal = () => {
                 )}
               </div>
             )}
-            <div className="mt-[5px]">
-              {myCalendar ? null : (
+            <div className="mt-[10px]">
+              {!myCalendar && groups.groups.length >= 1 ? (
                 <div>
                   <div className="text-s text-title font-bold mt-[1px]">그룹 선택</div>
                   <Autocomplete
@@ -454,10 +443,10 @@ const EventModal = () => {
                     renderInput={(params) => <TextField {...params} label="그룹 선택하기" variant="standard" />}
                   />
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
-          <div className="mt-[5px]">
+          <div className={`${!myCalendar && groups.groups.length >= 1 ? 'mt-[20px]' : 'mt-[30px]'}`}>
             {myCalendar && isPast() ? (
               <button disabled className="font-bold bg-disabled text-background rounded w-[450px] h-s drop-shadow-button">
                 현재 시간 이전에는 등록할 수 없습니다
