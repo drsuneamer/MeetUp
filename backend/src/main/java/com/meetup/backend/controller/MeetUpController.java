@@ -15,6 +15,7 @@ import com.meetup.backend.service.channel.ChannelUserService;
 import com.meetup.backend.service.meetup.MeetupService;
 import com.meetup.backend.service.team.TeamService;
 import com.meetup.backend.service.team.TeamUserService;
+import com.meetup.backend.service.user.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/meetup")
 public class MeetUpController {
 
-    private final TeamService teamService;
+    private final UserService userService;
 
     private final TeamUserService teamUserService;
 
@@ -53,7 +54,7 @@ public class MeetUpController {
     // 동기화
     @GetMapping("/sync")
     @ApiOperation(value = "동기화")
-    public ResponseEntity registerFromMattermost() {
+    public ResponseEntity<?> registerFromMattermost() {
 
         String userId = authService.getMyInfoSecret().getId();
         String mmSessionToken = authService.getMMSessionToken(userId);
@@ -79,7 +80,7 @@ public class MeetUpController {
     // 밋업 CRUD
     @PostMapping
     @ApiOperation(value = "meetup 등록")
-    public ResponseEntity registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
+    public ResponseEntity<?> registerMeetup(@RequestBody @Valid MeetupRequestDto meetupRequestDto) {
         meetupService.registerMeetUp(meetupRequestDto, authService.getMyInfoSecret().getId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -93,14 +94,14 @@ public class MeetUpController {
 
     @PutMapping("/{meetupId}")
     @ApiOperation(value = "meetup 수정")
-    public ResponseEntity updateMeetup(@RequestBody @Valid MeetupUpdateRequestDto meetupUpdateRequestDto, @PathVariable("meetupId") Long meetupId) {
+    public ResponseEntity<?> updateMeetup(@RequestBody @Valid MeetupUpdateRequestDto meetupUpdateRequestDto, @PathVariable("meetupId") Long meetupId) {
         meetupService.updateMeetup(meetupUpdateRequestDto, authService.getMyInfoSecret().getId(), meetupId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{meetupId}")
     @ApiOperation(value = "meetup 삭제")
-    public ResponseEntity deleteMeetup(@PathVariable("meetupId") Long meetupId) {
+    public ResponseEntity<?> deleteMeetup(@PathVariable("meetupId") Long meetupId) {
         meetupService.deleteMeetup(meetupId, authService.getMyInfoSecret().getId());
         return ResponseEntity.status(OK).build();
     }
@@ -143,7 +144,7 @@ public class MeetUpController {
 
     @PostMapping("/channel")
     @ApiOperation(value = "새로운 채널 생성")
-    public ResponseEntity createNewChannel(@RequestBody ChannelCreateRequestDto channelCreateRequestDto) {
+    public ResponseEntity<?> createNewChannel(@RequestBody ChannelCreateRequestDto channelCreateRequestDto) {
         String userId = authService.getMyInfoSecret().getId();
         String mmSessionToken = authService.getMMSessionToken(userId);
         channelService.createNewChannel(userId, mmSessionToken, channelCreateRequestDto);
@@ -160,7 +161,7 @@ public class MeetUpController {
 
     @PutMapping("/team/activate")
     @ApiOperation(value = "팀을 비활성화(밋업 생성시에 표시 안됨)")
-    public ResponseEntity activateTeamById(@RequestBody List<TeamActivateRequestDto> teamActivateRequestDtoList) {
+    public ResponseEntity<?> activateTeamById(@RequestBody List<TeamActivateRequestDto> teamActivateRequestDtoList) {
         teamUserService.activateTeamUser(authService.getMyInfoSecret().getId(), teamActivateRequestDtoList);
         return ResponseEntity.status(OK).build();
     }
