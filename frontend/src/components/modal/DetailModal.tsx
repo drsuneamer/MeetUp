@@ -5,12 +5,14 @@ import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import { useSelector } from 'react-redux';
 import { ModalSelector } from '../../stores/modules/modal';
-import { detailSelector } from '../../stores/modules/schedules';
+import { detailSelector, fetchScheduleDetail } from '../../stores/modules/schedules';
 import { setEditModalOpen } from '../../stores/modules/modal';
 import { setDeleteModalOpen } from '../../stores/modules/modal';
 import { fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import webex from '../../assets/webex_icon.png';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import { tScheduleDetail } from '../../types/events';
+import { useParams } from 'react-router-dom';
 
 const DetailModal = () => {
   const dispatch = useAppDispatch();
@@ -18,32 +20,22 @@ const DetailModal = () => {
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const myId = localStorage.getItem('id');
 
-  // useEffect(() => {
-  //   console.log('스케줄 신청자:', scheduleDetail.userId);
-  //   console.log('현재 로그인한 유저:', myId);
-  //   console.log(scheduleDetail);
-  // });
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  const editMeeting = () => {
-    dispatch(setEditModalOpen('meeting'));
+  const editMeeting = (scheduleDetail: tScheduleDetail) => {
+    dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
     dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     dispatch(fetchGroupList());
     handleToggleModal();
   };
 
-  const editSchedule = () => {
-    dispatch(setEditModalOpen('schedule'));
-    dispatch(fetchAlarmChannelList(scheduleDetail.userId));
+  const editSchedule = (scheduleDetail: tScheduleDetail) => {
+    dispatch(setEditModalOpen([scheduleDetail.id, 'schedule']));
+    // dispatch(fetchAlarmChannelList(scheduleDetail.userId));
     handleToggleModal();
   };
-  // const editSchedule = () => {
-  //   dispatch(setEditModalOpen('schedule'));
-  //   dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
-  //   handleToggleModal();
-  // };
 
   const deleteMeeting = () => {
     dispatch(setDeleteModalOpen(['delete', 'meeting']));
@@ -164,7 +156,10 @@ const DetailModal = () => {
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={editSchedule} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button
+                onClick={() => editSchedule(scheduleDetail)}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
                 일정 수정하기
               </button>
               <button
@@ -176,7 +171,10 @@ const DetailModal = () => {
             </div>
           ) : scheduleDetail.userId === myId ? (
             <div className="flex justify-center items-center gap-[20px] mt-[40px]">
-              <button onClick={editMeeting} className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button">
+              <button
+                onClick={() => editMeeting(scheduleDetail)}
+                className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
+              >
                 미팅 수정하기
               </button>
               <button
