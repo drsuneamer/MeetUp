@@ -66,18 +66,14 @@ function MemberListModal() {
             <p className="text-placeholder text-[14px] ml-[12px]">{groupName} 그룹 내 멤버</p>
             <div className="mt-[10px] mx-3 h-[320px] overflow-auto scrollbar-hide">
               {groupMemberSort.map((value, index) => (
-                <a key={index} href={`/calendar/${value.id}`}>
-                  <div className="MemberListItem p-[5px] hover:bg-line cursor-pointer">
-                    <div className="text-[18px] font-bold pb-2">{value.nickname}</div>
-                    <hr className="text-placeholder" />
-                  </div>
-                </a>
+                <div key={index} className="MemberListItem p-[5px] cursor-default">
+                  <div className="text-[18px] font-bold pb-2">{value.nickname}</div>
+                  <hr className="text-placeholder" />
+                </div>
               ))}
             </div>
           </div>
         )}
-        {/*
-         */}
       </div>
       <div
         className="w-[100%] h-[100%] fixed top:0 z-9 bg-[rgba(0,0,0,0.45)]"
