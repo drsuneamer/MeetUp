@@ -50,6 +50,24 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
+  // 컨설턴트 웹엑스 이동
+  const moveToManager = () => {
+    if (scheduleDetail.diffWebex.includes('https://') || scheduleDetail.diffWebex.includes('http://')) {
+      window.open(scheduleDetail.diffWebex, '_blank');
+    } else {
+      window.open('https://' + scheduleDetail.diffWebex);
+    }
+  };
+
+  // 학생(신청자) 웹엑스 이동
+  const moveToStudent = () => {
+    if (scheduleDetail.myWebex.includes('https://') || scheduleDetail.myWebex.includes('http://')) {
+      window.open(scheduleDetail.myWebex, '_blank');
+    } else {
+      window.open('https://' + scheduleDetail.myWebex);
+    }
+  };
+
   useEffect(() => {
     console.log(scheduleDetail);
   }, []);
@@ -159,7 +177,7 @@ const DetailModal = () => {
                   {scheduleDetail.diffWebex ? (
                     <div className="flex justify-center items-center gap-x-[50px]">
                       <div className="flex flex-col justify-center items-center">
-                        <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
+                        <a href="#" onClick={() => moveToManager()} className="flex flex-col justify-center items-center">
                           <img className="w-[50px]" src={webex} alt="webex" />
                           <p className="font-bold">{scheduleDetail.managerName}</p>
                         </a>
@@ -173,7 +191,7 @@ const DetailModal = () => {
                   {scheduleDetail.myWebex ? (
                     <div className="flex justify-center items-center gap-x-[50px]">
                       <div className="flex flex-col justify-center items-center">
-                        <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
+                        <a href="#" onClick={() => moveToStudent()} className="flex flex-col justify-center items-center">
                           <img className="w-[50px]" src={webex} alt="webex" />
                           <p className="font-bold">{scheduleDetail.userName}</p>
                         </a>
