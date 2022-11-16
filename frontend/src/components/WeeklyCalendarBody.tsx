@@ -170,7 +170,7 @@ const WeeklyCalendarBody = () => {
                         <div
                           key={`${element.date}${index}`}
                           style={{ top, height }}
-                          className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded p-1 text-[16px] border-solid border-background border-2`}
+                          className={`flex flex-wrap absolute w-full overflow-y-auto bg-line rounded-md p-1 text-[16px] border-solid border-background border-2`}
                         >
                           <span key={`${element.name}`} className={`w-full text-center text-cancel font-medium pt-2`}>
                             {element.name}
@@ -201,7 +201,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 31 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -218,7 +218,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer ${
                         height < 26 ? null : 'p-1 overflow-y-auto scrollbar-hide'
                       }`}
                     >
@@ -251,7 +251,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -268,7 +268,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap z-10 absolute w-full bg-point text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -303,7 +303,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top: top, height: height, background: `${element.meetupColor}` }}
-                      className={`flex flex-wrap absolute w-full text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap absolute w-full text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -321,7 +321,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap absolute w-full bg-line text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                     >
@@ -351,7 +351,7 @@ const WeeklyCalendarBody = () => {
                     <div
                       key={`${scheduleDate}${index}`}
                       style={{ top, height }}
-                      className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer truncate ${
+                      className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer truncate ${
                         height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                       }`}
                       onClick={(e: React.MouseEvent<HTMLDivElement>) => {
@@ -403,7 +403,7 @@ const WeeklyCalendarBody = () => {
               })}
               {selectedEventPosition !== null && (
                 <div
-                  className="fixed text-sm shadow rounded-lg bg-background px-4 py-2"
+                  className="fixed text-sm shadow rounded-md bg-background px-4 py-2"
                   style={selectedEventPosition}
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     // handleViewEvent('');
@@ -430,7 +430,7 @@ const WeeklyCalendarBody = () => {
                   <div
                     key={`${stringDate}${index}`}
                     style={{ top, height }}
-                    className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded  border-solid border-background border-[1px] cursor-pointer ${
+                    className={`flex flex-wrap absolute w-full bg-title text-[13px] rounded-md  border-solid border-background border-[1px] cursor-pointer ${
                       height < 26 ? null : 'overflow-y-auto scrollbar-hide'
                     }`}
                     onClick={(e: React.MouseEvent<HTMLDivElement>) => handleSelectedEvent(e, stringDate, index)}
@@ -457,7 +457,7 @@ const WeeklyCalendarBody = () => {
 
       {/* {selectedEventPosition !== null && (
         <div
-          className="fixed text-sm shadow rounded bg-background cursor-pointer px-2 py-2"
+          className="fixed text-sm shadow rounded-md bg-background cursor-pointer px-2 py-2"
           style={selectedEventPosition}
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             handleViewEvent();
