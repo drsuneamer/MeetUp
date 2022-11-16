@@ -131,6 +131,7 @@ public class TeamUserServiceImpl implements TeamUserService {
     }
 
     @Override
+    @Transactional
     public void activateTeamUser(String userId, List<TeamActivateRequestDto> teamActivateRequestDtoList) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ExceptionEnum.USER_NOT_FOUND));
         for (TeamActivateRequestDto teamActivateRequestDto : teamActivateRequestDtoList) {
