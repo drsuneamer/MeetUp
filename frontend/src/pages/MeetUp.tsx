@@ -49,7 +49,7 @@ const MeetUp = () => {
     <Layout>
       <div className={'h-screen flex flex-col overflow-y-scroll scrollbar-hide '}>
         <main className={'flex flex-1'}>
-          <div className={'flex basis-3/12'}>
+          <div className={'flex basis-3/12 mr-7'}>
             <Sidebar />
           </div>
           <Calendar />
