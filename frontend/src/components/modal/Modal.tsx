@@ -40,6 +40,7 @@ const EventModal = () => {
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
+  const [alarmChannels, setAlarmChannels] = useState([]);
   const [checked, setChecked] = useState(false);
   const [groupId, setGroupId] = useState<number>(0);
   const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
@@ -106,7 +107,7 @@ const EventModal = () => {
 
   const onAlarmChannel = (e: any, value: any) => {
     if (value !== null) {
-      const alarmChannelValue = value.meetupId || undefined;
+      const alarmChannelValue = value.meetupId || '';
       setAlarmChannelId(alarmChannelValue);
       setAlarmChannel(value);
     }
@@ -240,8 +241,9 @@ const EventModal = () => {
 
   // 참여중인 밋업 띄우기 - Autocomplete 이용
   const defaultProps = {
-    options: channels.alarmChannels,
+    options: alarmChannels,
     getOptionLabel: (option: tAlarm) => option.displayName,
+    isOptionEqualToValue: (option: tAlarm, value: tAlarm) => option === value,
   };
 
   const flatProps = {
@@ -253,7 +255,9 @@ const EventModal = () => {
   const defaultGroupProps = {
     options: groups.groups,
     getOptionLabel: (option: any) => option.name,
+    isOptionEqualToValue: (option: any, value: any) => option.id === value.id,
   };
+
   const flatGroupProps = {
     options: groups && groups.groups.map((option: any) => option.name),
   };
@@ -264,10 +268,10 @@ const EventModal = () => {
 
   useEffect(() => {
     if (eventModalIsOpen) {
-      dispatch(fetchAlarmChannelList(userId));
-      dispatch(fetchGroupList());
+      dispatch(fetchAlarmChannelList(userId)).then((action) => setAlarmChannels(action.payload));
+      dispatch(fetchGroupList()).then((action) => setGroupValue(action.payload[0]));
     }
-  }, []);
+  }, [eventModalIsOpen]);
 
   // 그 주의 일요일 구하기
   const sunday = useMemo(() => {
@@ -394,11 +398,11 @@ const EventModal = () => {
                   </div>
                   <Autocomplete
                     onChange={onAlarmChannel}
-                    value={alarmChannel}
-                    // inputValue={alarmChannel.displayName}
-                    isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
+                    value={alarmChannel}
+                    // isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
+                    inputValue={alarmChannel.displayName}
                     {...defaultProps}
                     id="select-channel"
                     renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
@@ -435,7 +439,7 @@ const EventModal = () => {
                     onChange={onGroupChange}
                     value={newGroupValue}
                     // inputValue={newGroupValue.name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    // isOptionEqualToValue={(option, value) => option.id === value.id}
                     className="w-[450px]"
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     {...defaultGroupProps}

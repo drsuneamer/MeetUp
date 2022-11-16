@@ -30,15 +30,13 @@ const EditModal = () => {
   // userId
   const params = useParams();
   const userId = params.userId;
+  const dispatch = useAppDispatch();
 
   const channels = useAppSelector(alarmChannelSelector);
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
-  const groups = useAppSelector(groupSelector);
-  const { eventModalIsOpen } = useAppSelector((state) => state.modal);
   const modalSelector = useAppSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
   const { editModalType } = useAppSelector((state) => state.modal);
-  const dispatch = useAppDispatch();
 
   const [meetupId, setMeetupId] = useState<number | null>(null);
   const [title, setTitle] = useState<string>('');
@@ -61,7 +59,7 @@ const EditModal = () => {
   }, [currentDate]);
 
   useEffect(() => {
-    if (modalSelector.editModalIsOpen) {
+    if (editModalIsOpen) {
       const loadData = async () => {
         if (modalSelector.scheduleId !== 0) {
           const action = await dispatch(fetchScheduleDetail(modalSelector.scheduleId));
