@@ -54,7 +54,7 @@
 
 #### 0. 로그인
 
-![login](README.assets\login.gif)
+![login](README.assets/login.gif)
 
 - Mattermost API를 이용하여 로그인
 - SSAFY mm에 등록된 매터모스트 id와 비밀번호 이용하여 로그인 가능
@@ -63,7 +63,7 @@
 
 #### 1. 밋업(알림을 보낼 채널) 설정
 
-![createmeetup](README.assets\createmeetup.gif)
+![createmeetup](README.assets/createmeetup.gif)
 
 - 컨설턴트 권한의 사용자는 `밋업 관리하기`를 이용해 자신이 미팅 신청을 받을 채널인 밋업을 설정할 수 있음
 - 채널 이름과 별개로 자신이 사용할 이름과, 캘린더에 일정을 표시할 색상 설정 가능
