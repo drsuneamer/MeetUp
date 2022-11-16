@@ -77,7 +77,7 @@ const DetailModal = () => {
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
         <div
           className={`${
-            scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'w-[600px] h-[600px]' : 'w-[500px] h-[400px]'
+            scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'w-[600px] h-[600px]' : 'w-[500px] h-[350px]'
           } flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow`}
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
@@ -104,7 +104,7 @@ const DetailModal = () => {
                 </>
               ) : (
                 <>
-                  <div className="text-s text-title font-bold ml-[20px] mr-[15px]">제목</div>
+                  <div className="text-s text-title font-bold ml-[25px] mr-[15px] mb-[15px]">제목</div>
                   <p className="font-bold">{scheduleDetail.title}</p>
                 </>
               )}
@@ -128,7 +128,7 @@ const DetailModal = () => {
             <div className="mt-[20px] flex">
               <div
                 className={`${
-                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[20px]'
+                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[25px] mb-[15px]'
                 } text-s text-title font-bold mr-[15px]`}
               >
                 날짜
@@ -142,7 +142,7 @@ const DetailModal = () => {
             <div className="mt-[20px] flex">
               <div
                 className={`${
-                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[20px]'
+                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[25px]'
                 } text-s text-title font-bold mr-[15px]`}
               >
                 시간
@@ -207,7 +207,7 @@ const DetailModal = () => {
             ) : null}
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
-            <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+            <div className="flex justify-center items-center gap-[20px] mt-[15px]">
               <button
                 onClick={() => editSchedule(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
@@ -241,7 +241,7 @@ const DetailModal = () => {
             <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center`}>
               <button
                 onClick={deleteMeeting}
-                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[0px] h-s drop-shadow-button"
               >
                 미팅 삭제하기
               </button>
