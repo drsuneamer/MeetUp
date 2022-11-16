@@ -156,8 +156,8 @@ class MeetupServiceImplTest {
 
         registerMeetUp();
 
-        log.info(meetupService.getResponseDtos(mmId) + "");
-        assertThat(meetupService.getResponseDtos(mmId)).isNotEmpty();
+        log.info(meetupService.getResponseDtoList(mmId) + "");
+        assertThat(meetupService.getResponseDtoList(mmId)).isNotEmpty();
     }
 
     @Test

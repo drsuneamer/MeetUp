@@ -61,7 +61,6 @@ public class ChannelUserServiceImpl implements ChannelUserService {
 
     @Override
     public List<ChannelUser> getChannelUserByUser(String userId) {
-
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         return channelUserRepository.findByUser(user);
     }
@@ -69,13 +68,14 @@ public class ChannelUserServiceImpl implements ChannelUserService {
     @Override
     public List<UserInfoDto> getMeetupUserByChannel(Channel channel, String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        if (!channelUserRepository.existsByChannelAndUser(channel, user)) {
+        if (!channelUserRepository.existsByChannelAndUser(channel, user))
             throw new ApiException(CHANNEL_ACCESS_DENIED);
-        }
+
         List<ChannelUser> channelUserList = channelUserRepository.findByChannel(channel);
         List<UserInfoDto> userInfoDtoList = new ArrayList<>();
         MattermostClient client = Client.getClient();
         client.setAccessToken(authService.getMMSessionToken(userId));
+
         for (ChannelUser channelUser : channelUserList) {
             String nickname = channelUser.getUser().getNickname();
             if (nickname == null) {

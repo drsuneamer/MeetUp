@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class MeetingUpdateRequestDto {
     @NotNull
-    private Long Id;
+    private Long id;
 
     @NotBlank(message = "미팅의 시작 시간은 필수입니다.")
     private String start;
