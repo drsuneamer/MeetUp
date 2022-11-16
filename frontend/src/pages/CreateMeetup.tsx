@@ -26,7 +26,7 @@ function CreateMeetup() {
     });
 
     axiosInstance.get(`/meetup/channel`).then((res) => {
-      console.log(res.data);
+      // console.log(res.data);
       setLv2(res.data);
     });
   }, []);

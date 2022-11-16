@@ -13,7 +13,6 @@ const initialState: channelAlarmInitialState = {
   alarmChannels: [{ meetupId: 0, displayName: '' }],
 };
 export const fetchAlarmChannelList = createAsyncThunk('meeting', async (managerId: any) => {
-  console.log(managerId);
   try {
     const res = await axiosInstance.get(`/meeting/channel/${managerId}`).then((res) => {
       console.log('alarm channel data fetched: ', res.data);

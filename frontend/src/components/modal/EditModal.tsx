@@ -64,7 +64,6 @@ const EditModal = () => {
     if (modalSelector.editModalIsOpen) {
       const loadData = async () => {
         if (modalSelector.scheduleId !== 0) {
-          console.log(modalSelector.scheduleId);
           const action = await dispatch(fetchScheduleDetail(modalSelector.scheduleId));
           if (isFulfilled(action)) {
             // console.log(action.payload);
@@ -74,7 +73,6 @@ const EditModal = () => {
       };
       loadData().then((detail: any) => {
         if (detail) {
-          console.log(detail);
           setTitle(detail.title);
           setContent(detail.content);
           setDate(detail.start.slice(0, 10));
@@ -84,7 +82,6 @@ const EditModal = () => {
           setChecked(detail.open);
 
           const loadAlarmData = async () => {
-            console.log('edit modal');
             const action = await dispatch(fetchAlarmChannelList(detail.managerId));
             if (isFulfilled(action)) {
               // console.log(action.payload);
@@ -250,7 +247,6 @@ const EditModal = () => {
 
   const onAlarmChannel = (e: any, value: any) => {
     if (value !== null) {
-      console.log('chose different channel:', value);
       const alarmChannelValue = value.meetupId || '';
       setMeetupId(alarmChannelValue);
       setAlarmChannel(value);
@@ -304,8 +300,6 @@ const EditModal = () => {
       meetupId: alarmChannel.meetupId,
       open: checked,
     };
-
-    console.log('meetupId:', meetupId);
 
     if (!parsedMeetingData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });

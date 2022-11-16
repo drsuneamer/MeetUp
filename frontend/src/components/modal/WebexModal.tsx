@@ -23,9 +23,7 @@ function WebexModal() {
     const userId = params.userId;
     if (modalSelector.webexModalIsOpen) {
       axiosInstance.get(`/user/webex/${userId}`).then((res) => {
-        console.log(res.data);
         if (res.data.webexUrl !== null) {
-          console.log(res.data);
           setWebex(res.data.webexUrl);
         }
       });
