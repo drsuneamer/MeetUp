@@ -68,10 +68,6 @@ const DetailModal = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(scheduleDetail);
-  }, []);
-
   if (scheduleDetail) {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
