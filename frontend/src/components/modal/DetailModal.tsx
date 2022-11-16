@@ -26,6 +26,7 @@ const DetailModal = () => {
 
   const editMeeting = (scheduleDetail: tScheduleDetail) => {
     dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
+    console.log('detail modal');
     dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
     dispatch(fetchGroupList());
     handleToggleModal();

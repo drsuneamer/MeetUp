@@ -61,49 +61,51 @@ const EditModal = () => {
   }, [currentDate]);
 
   useEffect(() => {
-    console.log('호출 많이하나요?');
-    const loadData = async () => {
-      if (modalSelector.scheduleId !== 0) {
-        console.log(modalSelector.scheduleId);
-        const action = await dispatch(fetchScheduleDetail(modalSelector.scheduleId));
-        if (isFulfilled(action)) {
-          // console.log(action.payload);
-          return action.payload;
-        }
-      }
-    };
-    loadData().then((detail: any) => {
-      if (detail) {
-        console.log(detail);
-        setTitle(detail.title);
-        setContent(detail.content);
-        setDate(detail.start.slice(0, 10));
-        setStartTime(changeToStartTime());
-        setEndTime(changeToEndTime());
-        setMeetupId(detail.meetupId);
-        setChecked(detail.open);
-
-        const loadAlarmData = async () => {
-          const action = await dispatch(fetchAlarmChannelList(detail.managerId));
+    if (modalSelector.editModalIsOpen) {
+      const loadData = async () => {
+        if (modalSelector.scheduleId !== 0) {
+          console.log(modalSelector.scheduleId);
+          const action = await dispatch(fetchScheduleDetail(modalSelector.scheduleId));
           if (isFulfilled(action)) {
             // console.log(action.payload);
             return action.payload;
           }
-          return null;
-        };
-        if (modalSelector.editModalType === 'meeting') {
-          loadAlarmData().then((channelList: any) => {
-            if (channelList) {
-              // console.log('channel list', channelList);
-              setAlarmChannels(channelList);
-              // console.log(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
-              setAlarmChannel(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
-            }
-          });
         }
-        return null;
-      }
-    });
+      };
+      loadData().then((detail: any) => {
+        if (detail) {
+          console.log(detail);
+          setTitle(detail.title);
+          setContent(detail.content);
+          setDate(detail.start.slice(0, 10));
+          setStartTime(changeToStartTime());
+          setEndTime(changeToEndTime());
+          setMeetupId(detail.meetupId);
+          setChecked(detail.open);
+
+          const loadAlarmData = async () => {
+            console.log('edit modal');
+            const action = await dispatch(fetchAlarmChannelList(detail.managerId));
+            if (isFulfilled(action)) {
+              // console.log(action.payload);
+              return action.payload;
+            }
+            return null;
+          };
+          if (modalSelector.editModalType === 'meeting') {
+            loadAlarmData().then((channelList: any) => {
+              if (channelList) {
+                // console.log('channel list', channelList);
+                setAlarmChannels(channelList);
+                // console.log(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
+                setAlarmChannel(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
+              }
+            });
+          }
+          return null;
+        }
+      });
+    }
   }, [modalSelector]);
 
   // 날짜, 시간
@@ -287,7 +289,7 @@ const EditModal = () => {
   }, []);
 
   const flatProps = {
-    options: channels && channels.alarmChannels.map((option: any) => option.displayname),
+    options: channels.alarmChannels && channels.alarmChannels.map((option: any) => option.displayname),
   };
 
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
