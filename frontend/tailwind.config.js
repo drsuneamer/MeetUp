@@ -70,8 +70,15 @@ module.exports = {
         DEFAULT: '8px',
         login: '15px',
       },
+      animation: {
+        'bounce-late': 'bounce 2s linear infinite',
+      },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide')],
+  plugins: [require('tailwind-scrollbar-hide'),
+require('tailwind-scrollbar')({ nocompatible: true }),],
+  variants: {
+    scrollbar: ['rounded']
+},
   important: true,
 };
