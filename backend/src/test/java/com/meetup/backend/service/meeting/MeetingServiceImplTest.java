@@ -264,7 +264,7 @@ class MeetingServiceImplTest {
                 .build());
         Long meetingId2 = meetingService.updateMeeting(user1.getId(), MeetingUpdateRequestDto
                 .builder()
-                .Id(meetingId1)
+                .id(meetingId1)
                 .start("2022-11-04 14:00:00")
                 .end("2022-11-04 14:30:00")
                 .title("제목2")
@@ -299,7 +299,7 @@ class MeetingServiceImplTest {
         assertThatThrownBy(() -> {
             Long meetingId3 = meetingService.updateMeeting(user1.getId(), MeetingUpdateRequestDto
                     .builder()
-                    .Id(meetingId2)
+                    .id(meetingId2)
                     .start("2022-11-04 09:00:00")
                     .end("2022-11-04 11:00:00")
                     .title("제목2")
