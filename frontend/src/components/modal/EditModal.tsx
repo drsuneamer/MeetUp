@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { useSelector } from 'react-redux';
 import { ModalSelector, setEditModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
@@ -9,15 +8,17 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { editMeetingDetail, editScheduleDetail } from '../../stores/modules/schedules';
-import { alarmChannelSelector } from '../../stores/modules/channelAlarm';
+import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
-import { detailSelector } from '../../stores/modules/schedules';
+import { detailSelector, fetchScheduleDetail } from '../../stores/modules/schedules';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
+import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 import Swal from 'sweetalert2';
+import { tScheduleDetail } from '../../types/events';
 
 interface Group {
   id: number;
@@ -26,7 +27,29 @@ interface Group {
 }
 
 const EditModal = () => {
-  // 그 주의 일요일 구하기
+  // userId
+  const params = useParams();
+  const userId = params.userId;
+
+  const channels = useAppSelector(alarmChannelSelector);
+  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
+  const groups = useAppSelector(groupSelector);
+  const { eventModalIsOpen } = useAppSelector((state) => state.modal);
+  const modalSelector = useAppSelector(ModalSelector);
+  const { editModalIsOpen } = useAppSelector((state) => state.modal);
+  const { editModalType } = useAppSelector((state) => state.modal);
+  const dispatch = useAppDispatch();
+
+  const [meetupId, setMeetupId] = useState<number | null>(null);
+  const [title, setTitle] = useState<string>('');
+  const [date, setDate] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+  const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
+  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
+  const [alarmChannels, setAlarmChannels] = useState([]);
+  const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
+  const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
+
   const { currentDate } = useAppSelector((state) => state.dates);
 
   const weekly = useMemo(() => {
@@ -34,62 +57,61 @@ const EditModal = () => {
   }, [currentDate]);
 
   const sunday = useMemo(() => {
-    const date = new Date(currentDate);
-    const firstDayOfTheMonth = date.getDay();
-
-    if (date.getDate() <= firstDayOfTheMonth) {
-      if (weekly[0].date < 10) {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-0${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth()}-0${weekly[0].date}`;
-      } else {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth()}-${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth()}-${weekly[0].date}`;
-      }
-    } else {
-      if (weekly[0].date < 10) {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth() + 1}-0${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth() + 1}-0${weekly[0].date}`;
-      } else {
-        if (date.getMonth() + 1 < 10) {
-          return `${date.getFullYear()}-0${date.getMonth() + 1}-${weekly[0].date}`;
-        }
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${weekly[0].date}`;
-      }
-    }
+    return getSundayOfWeek(currentDate, weekly);
   }, [currentDate]);
 
-  // userId
-  const params = useParams();
-  const userId = params.userId;
+  useEffect(() => {
+    console.log('호출 많이하나요?');
+    const loadData = async () => {
+      if (modalSelector.scheduleId !== 0) {
+        console.log(modalSelector.scheduleId);
+        const action = await dispatch(fetchScheduleDetail(modalSelector.scheduleId));
+        if (isFulfilled(action)) {
+          // console.log(action.payload);
+          return action.payload;
+        }
+      }
+    };
+    loadData().then((detail: any) => {
+      if (detail) {
+        console.log(detail);
+        setTitle(detail.title);
+        setContent(detail.content);
+        setDate(detail.start.slice(0, 10));
+        setStartTime(changeToStartTime());
+        setEndTime(changeToEndTime());
+        setMeetupId(detail.meetupId);
+        setChecked(detail.open);
 
-  const channels = useSelector(alarmChannelSelector);
-  const groups = useAppSelector(groupSelector);
-  const { eventModalIsOpen } = useAppSelector((state) => state.modal);
-  const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
-  const detailModalSelector = useSelector(ModalSelector);
-  const { editModalIsOpen } = useAppSelector((state) => state.modal);
-  const { editModalType } = useAppSelector((state) => state.modal);
-  const dispatch = useAppDispatch();
-  const [title, setTitle] = useState<string>('');
-  const [date, setDate] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
-  const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
-  const [groupId, setGroupId] = useState<number | null>(0);
-  const [partyId, setPartyId] = useState<number | null>(0);
-  const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
-  const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
+        const loadAlarmData = async () => {
+          const action = await dispatch(fetchAlarmChannelList(detail.managerId));
+          if (isFulfilled(action)) {
+            // console.log(action.payload);
+            return action.payload;
+          }
+          return null;
+        };
+        if (modalSelector.editModalType === 'meeting') {
+          loadAlarmData().then((channelList: any) => {
+            if (channelList) {
+              // console.log('channel list', channelList);
+              setAlarmChannels(channelList);
+              // console.log(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
+              setAlarmChannel(channelList.find((ch: any) => ch.meetupId === detail.meetupId));
+            }
+          });
+        }
+        return null;
+      }
+    });
+  }, [modalSelector]);
 
+  // 날짜, 시간
   const newDate = () => {
     const dateTime = scheduleDetail.start.slice(0, 10);
     return dateTime;
   };
+
   const changeToStartTime = () => {
     const newStartTime = { value: '', label: '' };
     const newTime = scheduleDetail.start.slice(11, 16);
@@ -146,6 +168,7 @@ const EditModal = () => {
     }
     return newEndTime;
   };
+
   const start = changeToStartTime();
   const [startTime, setStartTime] = useState<Option>({ value: '', label: '' });
   const end = changeToEndTime();
@@ -199,14 +222,14 @@ const EditModal = () => {
     newEndTime();
   }, [date, end]);
 
-  const [checked, setChecked] = useState(false);
+  // 공개, 비공개 여부(토글)
+  const [checked, setChecked] = useState<boolean>(scheduleDetail.open);
 
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
 
-  const { myCalendar } = useAppSelector((state) => state.mycalendar);
-
+  // onChange
   const onTitleChange = (e: any) => {
     setTitle(e.currentTarget.value);
   };
@@ -225,37 +248,21 @@ const EditModal = () => {
 
   const onAlarmChannel = (e: any, value: any) => {
     if (value !== null) {
-      const alarmChannelValue = value.meetupId || undefined;
-      setAlarmChannelId(alarmChannelValue);
+      console.log('chose different channel:', value);
+      const alarmChannelValue = value.meetupId || '';
+      setMeetupId(alarmChannelValue);
       setAlarmChannel(value);
     }
   };
 
-  const onGroupChange = (e: any, value: any) => {
-    const partyValue = value.id || undefined;
-    setGroupId(partyValue);
-  };
-
-  const scheduleDetailId = useSelector(detailSelector).scheduleModal.scheduleDetail.id;
-
-  useEffect(() => {
-    setTitle(scheduleDetail.title);
-    setContent(scheduleDetail.content);
-    setDate(newDate());
-    setStartTime(start);
-    setEndTime(end);
-  }, [scheduleDetail]);
+  const scheduleDetailId = useAppSelector(detailSelector).scheduleModal.scheduleDetail.id;
 
   useEffect(() => {
     setAlarmChannelId(scheduleDetail.meetupId);
   }, [scheduleDetail]);
 
-  useEffect(() => {
-    setGroupId(scheduleDetail.partyId);
-  }, [scheduleDetail]);
-
   const handleToggleModal = useCallback(() => {
-    dispatch(setEditModalOpen('close'));
+    dispatch(setEditModalOpen([scheduleDetail.id, 'close']));
   }, []);
 
   const handleResetInput = useCallback(() => {
@@ -279,36 +286,25 @@ const EditModal = () => {
     setEndTime(selected);
   }, []);
 
-  const defaultProps = {
-    options: channels.alarmChannels,
-    getOptionLabel: (option: tAlarm) => option.displayName,
-  };
   const flatProps = {
     options: channels && channels.alarmChannels.map((option: any) => option.displayname),
   };
 
   const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
-  const parsedData: any = {
-    id: scheduleDetailId,
-    title: title,
-    content: null,
-    start: newStartTime(),
-    end: newEndTime(),
-    open: checked,
-  };
-
-  const parsedMeetingData: any = {
-    id: scheduleDetailId,
-    title: title,
-    content: content,
-    start: newStartTime(),
-    end: newEndTime(),
-    meetupId: alarmChannelId,
-    open: checked,
-  };
-
   const handleEditMeeting = async () => {
+    const parsedMeetingData: any = {
+      id: scheduleDetailId,
+      title: title,
+      content: content,
+      start: newStartTime(),
+      end: newEndTime(),
+      meetupId: alarmChannel.meetupId,
+      open: checked,
+    };
+
+    console.log('meetupId:', meetupId);
+
     if (!parsedMeetingData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
@@ -320,21 +316,20 @@ const EditModal = () => {
         handleToggleModal();
         handleResetInput();
         setAlarmChannelId(0);
-        setAlarmChannel({ meetupId: 0, displayName: '' });
-        // setAlarmVal({ meetupId: 0, displayName: '' });
-        setGroupId(0);
-        // setNewGroupValue({ id: 0, leader: false, name: '' });
-        // setGroupVal({ id: 0, leader: false, name: '' });
       }
     }
   };
 
-  // const handleEditMeeting = () => {
-  //   console.log('====수정====');
-  //   // setPartyId(groupId || null);
-  //   console.log(parsedMeetingData);
-  // };
   const handleEditSchedule = async () => {
+    const parsedData: any = {
+      id: scheduleDetailId,
+      title: title,
+      content: null,
+      start: newStartTime(),
+      end: newEndTime(),
+      open: checked,
+    };
+
     if (!parsedData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
@@ -380,8 +375,8 @@ const EditModal = () => {
               <input
                 type="text"
                 name="title"
-                defaultValue={scheduleDetail.title}
-                value={title}
+                // defaultValue={scheduleDetail.title || undefined}
+                value={title || ''}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
@@ -394,7 +389,7 @@ const EditModal = () => {
               </div>
               <input
                 type="date"
-                defaultValue={scheduleDetail.start.slice(0, 10)}
+                value={date || ''}
                 onChange={onDateChange}
                 className={`${
                   editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
@@ -421,14 +416,14 @@ const EditModal = () => {
                 </div>
               </div>
               <div className="mt-[15px]">
-                {editModalType === 'schedule' ? null : (
+                {modalSelector.editModalType === 'schedule' ? null : (
                   <div>
                     <div className="text-s text-title font-bold">내용</div>
                     <input
                       type="text"
                       name="title"
-                      defaultValue={scheduleDetail.content}
-                      value={content}
+                      // defaultValue={scheduleDetail.content || undefined}
+                      value={content || ''}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />
@@ -436,23 +431,24 @@ const EditModal = () => {
                 )}
               </div>
               <div className="mt-[15px]">
-                {editModalType === 'schedule' ? null : (
+                {modalSelector.editModalType && modalSelector.editModalType === 'schedule' ? null : (
                   <div>
                     <div className="text-s text-title font-bold">참여중인 밋업</div>
                     <Autocomplete
                       onChange={onAlarmChannel}
-                      value={alarmChannel}
-                      isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
                       className="w-[450px]"
+                      disabled
                       ListboxProps={{ style: { maxHeight: '150px' } }}
-                      {...defaultProps}
+                      isOptionEqualToValue={(option: tAlarm, value: tAlarm) => option.meetupId === value.meetupId}
+                      options={alarmChannels}
+                      getOptionLabel={(option: tAlarm) => option.displayName}
                       id="select-channel"
-                      renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
+                      renderInput={(params) => <TextField {...params} label={alarmChannel.displayName} variant="standard" />}
                     />
                   </div>
                 )}
               </div>
-              {editModalType === 'schedule' ? (
+              {modalSelector.editModalType === 'schedule' ? (
                 <div className="mt-[40px] mb-[30px]">
                   <div className="text-s text-title font-bold">공개 설정</div>
                   <Switch checked={checked} onChange={switchHandler} />
@@ -474,7 +470,7 @@ const EditModal = () => {
                 </div>
               )}
             </div>
-            {editModalType === 'schedule' ? (
+            {modalSelector.editModalType === 'schedule' ? (
               <button
                 onClick={handleEditSchedule}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
