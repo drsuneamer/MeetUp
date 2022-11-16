@@ -25,15 +25,15 @@ const DetailModal = () => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  // const editMeeting = (scheduleDetail: tScheduleDetail) => {
-  //   dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
-  //   dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
-  //   dispatch(fetchGroupList());
-  //   handleToggleModal();
-  // };
-  const editMeeting = () => {
-    console.log(scheduleDetail);
+  const editMeeting = (scheduleDetail: tScheduleDetail) => {
+    dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
+    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+    dispatch(fetchGroupList());
+    handleToggleModal();
   };
+  // const editMeeting = () => {
+  //   console.log(scheduleDetail);
+  // };
   const editSchedule = (scheduleDetail: tScheduleDetail) => {
     dispatch(setEditModalOpen([scheduleDetail.id, 'schedule']));
     // dispatch(fetchAlarmChannelList(scheduleDetail.userId));
@@ -224,8 +224,7 @@ const DetailModal = () => {
           ) : scheduleDetail.userId === myId ? (
             <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
               <button
-                onClick={editMeeting}
-                // onClick={() => editMeeting(scheduleDetail)}
+                onClick={() => editMeeting(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
               >
                 미팅 수정하기
