@@ -64,7 +64,9 @@ const SingleSelect = ({
           </svg>
         )}
       </button>
-      <ul className={`${isOpen ? 'block' : 'hidden'} absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border rounded-lg h-40 overflow-y-scroll w-full`}>
+      <ul
+        className={`${isOpen ? 'block' : 'hidden'} absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border rounded-lg h-40 overflow-y-scroll w-[130px]`}
+      >
         {options.map((list, index) => {
           return (
             <li
