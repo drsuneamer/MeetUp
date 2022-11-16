@@ -19,18 +19,21 @@ const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const myId = localStorage.getItem('id');
+  const params = useParams();
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
   }, []);
 
-  const editMeeting = (scheduleDetail: tScheduleDetail) => {
-    dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
-    dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
-    dispatch(fetchGroupList());
-    handleToggleModal();
+  // const editMeeting = (scheduleDetail: tScheduleDetail) => {
+  //   dispatch(setEditModalOpen([scheduleDetail.id, 'meeting']));
+  //   dispatch(fetchAlarmChannelList(scheduleDetail.managerId));
+  //   dispatch(fetchGroupList());
+  //   handleToggleModal();
+  // };
+  const editMeeting = () => {
+    console.log(scheduleDetail);
   };
-
   const editSchedule = (scheduleDetail: tScheduleDetail) => {
     dispatch(setEditModalOpen([scheduleDetail.id, 'schedule']));
     // dispatch(fetchAlarmChannelList(scheduleDetail.userId));
@@ -46,6 +49,10 @@ const DetailModal = () => {
     dispatch(setDeleteModalOpen(['delete', 'schedule']));
     handleToggleModal();
   };
+
+  useEffect(() => {
+    console.log(scheduleDetail);
+  }, []);
 
   if (scheduleDetail) {
     return (
@@ -145,19 +152,24 @@ const DetailModal = () => {
                 </>
               )}
             </div>
-
-            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
+            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
               <div className={`${!scheduleDetail.content ? 'mt-[0px]' : 'mt-[20px]'} flex flex-col`}>
                 <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
                 <div className="flex justify-center gap-[20px] mt-[10px]">
-                  <div className="flex justify-center items-center gap-x-[50px]">
-                    <div className="flex flex-col justify-center items-center">
-                      <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
-                        <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.managerName}</p>
-                      </a>
+                  {scheduleDetail.diffWebex ? (
+                    <div className="flex justify-center items-center gap-x-[50px]">
+                      <div className="flex flex-col justify-center items-center">
+                        <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
+                          <img className="w-[50px]" src={webex} alt="webex" />
+                          <p className="font-bold">{scheduleDetail.managerName}</p>
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  ) : scheduleDetail.managerId !== myId ? null : (
+                    <div className="w-[200px] bborder-solid border-2 border-point rounded flex justify-center items-center">
+                      <a href="/settings">웹엑스 링크를 설정해주세요</a>
+                    </div>
+                  )}
                   {scheduleDetail.myWebex ? (
                     <div className="flex justify-center items-center gap-x-[50px]">
                       <div className="flex flex-col justify-center items-center">
@@ -192,13 +204,10 @@ const DetailModal = () => {
               </button>
             </div>
           ) : scheduleDetail.userId === myId ? (
-            <div
-              className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} ${
-                !scheduleDetail.diffWebex ? 'mt-[150px]' : 'mt-[40px]'
-              } flex justify-center items-center gap-[20px]`}
-            >
+            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
               <button
-                onClick={() => editMeeting(scheduleDetail)}
+                onClick={editMeeting}
+                // onClick={() => editMeeting(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
               >
                 미팅 수정하기
@@ -211,11 +220,7 @@ const DetailModal = () => {
               </button>
             </div>
           ) : scheduleDetail.managerId === myId ? (
-            <div
-              className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} ${
-                !scheduleDetail.diffWebex ? 'mt-[150px]' : 'mt-[40px]'
-              } flex justify-center items-center`}
-            >
+            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center`}>
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"
