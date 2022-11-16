@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { setEventModalOpen } from '../../stores/modules/modal';
+import { ModalSelector, setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import SingleSelect from '../common/SingleSelect';
@@ -123,10 +123,7 @@ const EventModal = () => {
       setNewGroupValue(value);
     }
   };
-  // useEffect(() => {
-  //   console.log('---have group?---');
-  //   console.log(groups.groups.length);
-  // });
+
   useEffect(() => {
     if (eventModalData !== null) {
       const { date, startTime } = eventModalData;
@@ -246,8 +243,9 @@ const EventModal = () => {
     options: channels.alarmChannels,
     getOptionLabel: (option: tAlarm) => option.displayName,
   };
+
   const flatProps = {
-    options: channels.alarmChannels.map((option: any) => option.displayname),
+    options: channels.alarmChannels && channels.alarmChannels.map((option: any) => option.displayname),
   };
   // const [value, setValue] = React.useState<tAlarm['meetupId'] | null>(null);
 
@@ -265,8 +263,10 @@ const EventModal = () => {
   const userId = params.userId;
 
   useEffect(() => {
-    dispatch(fetchAlarmChannelList(userId));
-    dispatch(fetchGroupList());
+    if (eventModalIsOpen) {
+      dispatch(fetchAlarmChannelList(userId));
+      dispatch(fetchGroupList());
+    }
   }, []);
 
   // 그 주의 일요일 구하기

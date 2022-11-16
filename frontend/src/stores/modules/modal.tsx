@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { tScheduleDetail } from '../../types/events';
 
 // 화면 위에 표시될 각 모달의 온오프 상태를 관리합니다.
 
