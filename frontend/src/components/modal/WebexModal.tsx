@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../stores/ConfigHooks';
-import { setWebexModalOpen } from '../../stores/modules/modal';
+import { ModalSelector, setWebexModalOpen } from '../../stores/modules/modal';
 import { axiosInstance } from '../auth/axiosConfig';
 
 function WebexModal() {
   const params = useParams();
   const dispatch = useAppDispatch();
+  const modalSelector = useAppSelector(ModalSelector);
 
   // 모달 온오프
   const { webexModalIsOpen } = useAppSelector((state) => state.modal);
@@ -20,14 +21,16 @@ function WebexModal() {
 
   useEffect(() => {
     const userId = params.userId;
-    axiosInstance.get(`/user/webex/${userId}`).then((res) => {
-      if (res.data.webexUrl !== null) {
-        setWebex(res.data.webexUrl);
-      }
-    });
-    axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
-      setNickname(res.data);
-    });
+    if (modalSelector.webexModalIsOpen) {
+      axiosInstance.get(`/user/webex/${userId}`).then((res) => {
+        if (res.data.webexUrl !== null) {
+          setWebex(res.data.webexUrl);
+        }
+      });
+      axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
+        setNickname(res.data);
+      });
+    }
   });
 
   // 웹엑스 이동 if
