@@ -30,6 +30,7 @@
     "react-scripts": "5.0.1",
     "sweetalert2": "^11.6.8",
     "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwind-scrollbar-variants": "^1.1.1",
     "typescript": "^4.8.4",
     "web-vitals": "^2.1.4"
   },
@@ -59,6 +60,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
-    "prettier": "2.7.1"
+    "prettier": "2.7.1",
+    "tailwind-scrollbar": "^2.0.1"
   }
 }
