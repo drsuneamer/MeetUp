@@ -7,7 +7,7 @@ import com.meetup.backend.dto.user.UserInfoDto;
 import com.meetup.backend.entity.schedule.ScheduleType;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.meeting.ScheduleService;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -17,8 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,8 +58,8 @@ public class ScheduleControllerDocsTest {
                 .partyName("2팀")
                 .title("내 스케줄")
                 .content("점심 약속")
-                .start(StringToLocalDateTime.strToLDT("2022-11-16 12:00:00"))
-                .end(StringToLocalDateTime.strToLDT("2022-11-16 13:00:00"))
+                .start(LocalDateUtil.strToLDT("2022-11-16 12:00:00"))
+                .end(LocalDateUtil.strToLDT("2022-11-16 13:00:00"))
                 .meetupId(3L)
                 .managerId("managerId")
                 .managerName("manager")

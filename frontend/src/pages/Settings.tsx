@@ -181,6 +181,9 @@ function Settings() {
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z"
               />
             </svg>
+            <span className="text-[8px] text-title font-bold pt-3 pl-1">
+              그룹 설정 후 미팅 신청 시 그룹을 선택하면 해당 그룹 멤버들의 캘린더에 일정이 공유됩니다.
+            </span>
           </div>
           <div className="flex flex-wrap mt-2">
             {groups.map((group: Group) => (

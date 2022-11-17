@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest
 class WebhookNoticeServiceImplTest {
-    @Autowired
-    private WebhookNoticeService webhookNoticeService;
-
-    @Test
-    @DisplayName("첫 로그인 웹훅 알림")
-    void firstLoginNotice() {
-        webhookNoticeService.firstLoginNotice("OOO 컨설턴트");
-    }
+//    @Autowired
+//    private WebhookNoticeService webhookNoticeService;
+//
+//    @Test
+//    @DisplayName("첫 로그인 웹훅 알림")
+//    void firstLoginNotice() {
+//        webhookNoticeService.firstLoginNotice("OOO 컨설턴트");
+//    }
 }

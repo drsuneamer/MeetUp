@@ -1,6 +1,5 @@
 package com.meetup.backend.entity.channel;
 
-import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * created by myeongseok on 2022/10/20
@@ -39,4 +39,16 @@ public class ChannelUser implements Serializable {
         this.channel = channel;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChannelUser that = (ChannelUser) o;
+        return Objects.equals(user, that.user) && Objects.equals(channel, that.channel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, channel);
+    }
 }

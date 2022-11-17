@@ -1,12 +1,12 @@
 package com.meetup.backend.entity.team;
 
-import com.meetup.backend.entity.*;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * created by seungyong on 2022/10/20
@@ -41,14 +41,20 @@ public class TeamUser implements Serializable {
         isActivate = true;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this.team.equals(((TeamUser) obj).getTeam()) && this.user.getId().equals(((TeamUser) obj).getUser().getId()))
-            return true;
-        return false;
-    }
-
     public void changeActivate() {
         this.isActivate = !this.isActivate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamUser teamUser = (TeamUser) o;
+        return Objects.equals(team, teamUser.team) && Objects.equals(user, teamUser.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(team, user);
     }
 }
