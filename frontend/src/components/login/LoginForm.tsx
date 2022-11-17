@@ -115,8 +115,9 @@ function LoginForm() {
         }
       })
       .catch((error) => {
+        console.log(error);
         // 오류 캐치시 로딩 페이지에서 로그인 페이지로 다시 전환
-        if (error.response.data.errorMessage === '인증 정보가 없습니다.') {
+        if (error.response.data.message.includes('401')) {
           setLoad(false);
           setCert(true); // 비밀번호 오류시 비밀번호 오류 안내
           setChecked(false);
