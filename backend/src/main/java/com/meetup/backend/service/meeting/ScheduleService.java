@@ -4,6 +4,7 @@ import com.meetup.backend.dto.schedule.AllScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleRequestDto;
 import com.meetup.backend.dto.schedule.ScheduleResponseDto;
 import com.meetup.backend.dto.schedule.ScheduleUpdateRequestDto;
+import com.meetup.backend.entity.schedule.Schedule;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,11 @@ public interface ScheduleService {
 
     void deleteSchedule(String userId, Long scheduleId);
 
-    AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p);
+    List<Schedule> getScheduleListWithLock(String date, String loginUserId, String targetUserId, int p);
+
+    List<Schedule> getScheduleListWithoutLock(String date, String loginUserId, String targetUserId, int p);
+
+    AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p, List<Schedule> schedules);
 
     void diffDurationCheck(LocalDateTime start, LocalDateTime end);
 }

@@ -109,8 +109,8 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ACCESS_DENIED);
 
         }
-        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, meetingRequestDto.getStart(), 1);
-        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1);
+        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, meetingRequestDto.getStart(), 1, scheduleService.getScheduleListWithLock(meetingRequestDto.getStart(), userId, userId, 1));
+        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(meetup.getManager().getId(), meetup.getManager().getId(), meetingRequestDto.getStart(), 1, scheduleService.getScheduleListWithLock(meetingRequestDto.getStart(), meetup.getManager().getId(), meetup.getManager().getId(), 1));
         // 일정 중복 확인
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end) || !managerAllScheduleResponseDto.isPossibleRegister(start, end)) {
             log.error("스케줄 중복");
@@ -152,8 +152,8 @@ public class MeetingServiceImpl implements MeetingService {
         scheduleService.diffDurationCheck(start, end);
 
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
-        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, date, 1);
-        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(userId, managerUser.getId(), date, 1);
+        AllScheduleResponseDto userAllScheduleResponseDto = scheduleService.getSchedule(userId, userId, date, 1, scheduleService.getScheduleListWithLock(date, userId, userId, 1));
+        AllScheduleResponseDto managerAllScheduleResponseDto = scheduleService.getSchedule(userId, managerUser.getId(), date, 1, scheduleService.getScheduleListWithLock(date, userId, managerUser.getId(), 1));
 
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()) || !managerAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);

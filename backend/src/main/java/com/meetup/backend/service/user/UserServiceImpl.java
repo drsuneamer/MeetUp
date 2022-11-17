@@ -83,10 +83,8 @@ public class UserServiceImpl implements UserService {
     @Value("${crypto.iv}")
     private String iv;
 
-    @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
-//    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
-    public synchronized LoginResponseDto login(LoginRequestDto requestDto) {
+    private synchronized LoginResponseDto syncLogin(LoginRequestDto requestDto) {
         decodePassword(requestDto);
         MmLoginInfo mmLoginInfo = mmLogin(requestDto);
 
@@ -124,6 +122,12 @@ public class UserServiceImpl implements UserService {
         return LoginResponseDto.of(user, tokenDto);
     }
 
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public LoginResponseDto login(LoginRequestDto requestDto) {
+        return syncLogin(requestDto);
+    }
+
     private MmLoginInfo mmLogin(LoginRequestDto requestDto) {
         String url = "https://meeting.ssafy.com/api/v4/users/login";
         HttpHeaders headers = new HttpHeaders();
@@ -141,7 +145,7 @@ public class UserServiceImpl implements UserService {
         Map body = res.getBody();
         switch (res.getStatusCodeValue()) {
             case 200:
-                if(body == null) {
+                if (body == null) {
                     throw new ApiException(MATTERMOST_EXCEPTION);
                 }
                 String id = (String) body.get("id");
@@ -217,9 +221,15 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
     @Override
     @Transactional
-    public synchronized void registerTeamAndChannel(String mmToken, String userId) {
+    public void registerTeamAndChannel(String mmToken, String userId) {
+        syncRegisterTeamAndChannel(mmToken, userId);
+    }
+
+    @Transactional
+    private synchronized void syncRegisterTeamAndChannel(String mmToken, String userId) {
         List<Team> teams = teamService.registerTeamFromMattermost(userId, mmToken); // 팀 등록
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(userId, mmToken, teams);

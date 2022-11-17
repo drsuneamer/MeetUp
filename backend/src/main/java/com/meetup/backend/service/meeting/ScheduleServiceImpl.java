@@ -22,9 +22,12 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.converter.LocalDateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockModeType;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,12 +86,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 해당 user, 캘린더 주인 id, date로 정보 가져오기
     @Override
     public AllScheduleResponseDto getScheduleByUserAndDate(String loginUserId, String targetUserId, String date) {
-        return getSchedule(loginUserId, targetUserId, date, 6);
+        return getSchedule(loginUserId, targetUserId, date, 6, getScheduleListWithoutLock(date, loginUserId, targetUserId, 6));
     }
 
     // 스케쥴 정보 등록
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.DEFAULT)
     public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         LocalDateTime start = LocalDateUtil.strToLDT(scheduleRequestDto.getStart());
@@ -98,7 +101,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
-        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
+        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1, getScheduleListWithLock(date, userId, userId, 1));
         if (!allScheduleResponseDto.isPossibleRegister(start, end))
             throw new ApiException(ExceptionEnum.DUPLICATE_INSERT_DATETIME);
 
@@ -125,7 +128,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         diffDurationCheck(start, end);
         // 일정 중복 체크
         String date = start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
-        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1);
+        AllScheduleResponseDto allScheduleResponseDto = getSchedule(userId, userId, date, 1, getScheduleListWithLock(date, userId, userId, 1));
         if (!allScheduleResponseDto.isPossibleRegister(start, end, scheduleUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
@@ -146,7 +149,23 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p) {
+    @Transactional
+    public List<Schedule> getScheduleListWithLock(String date, String loginUserId, String targetUserId, int p) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+
+        accessCheck(loginUserId, targetUserId, loginUser, targetUser);
+
+        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime to = from.plusDays(p);
+        if (p == 1) {
+            from = from.minusDays(p);
+        }
+        return scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
+    }
+
+    @Override
+    public List<Schedule> getScheduleListWithoutLock(String date, String loginUserId, String targetUserId, int p) {
         User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
 
@@ -157,8 +176,23 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (p == 1) {
             from = from.minusDays(p);
         }
+        return scheduleRepository.findByUser(from, to, targetUser);
+    }
 
-        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
+    @Override
+    public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p, List<Schedule> schedules) {
+//        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
+//
+//        accessCheck(loginUserId, targetUserId, loginUser, targetUser);
+//
+        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime to = from.plusDays(p);
+//        if (p == 1) {
+//            from = from.minusDays(p);
+//        }
+//
+//        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
 
         // 해당 스케줄 주인의 밋업 리스트
         List<Meetup> meetupList = meetupRepository.findByManager(targetUser);
