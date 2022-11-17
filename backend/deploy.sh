@@ -5,7 +5,7 @@ echo 'jar 파일 삭제'
 rm build/libs/*.jar
 
 echo '빌드 시작'
-./gradlew build -x test
+./gradlew build
 
 echo '컨테이너 중지'
 docker stop springbootapp
