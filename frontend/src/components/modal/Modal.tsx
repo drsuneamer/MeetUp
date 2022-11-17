@@ -338,6 +338,7 @@ const EventModal = () => {
               type="text"
               name="title"
               value={title}
+              maxLength={50}
               onChange={onTitleChange}
               className={`${
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
@@ -384,6 +385,7 @@ const EventModal = () => {
                     type="text"
                     name="title"
                     value={content}
+                    maxLength={110}
                     onChange={onContentChange}
                     className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                   />
@@ -403,7 +405,7 @@ const EventModal = () => {
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     value={alarmChannel}
                     // isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
-                    inputValue={alarmChannel.displayName}
+                    // inputValue={alarmChannel.displayName}
                     {...defaultProps}
                     id="select-channel"
                     renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
@@ -457,12 +459,15 @@ const EventModal = () => {
                 현재 시간 이전에는 등록할 수 없습니다
               </button>
             ) : myCalendar && !isPast() ? (
-              <button
-                onClick={handleSubmitToMe}
-                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
-              >
-                미팅 불가시간 설정하기
-              </button>
+              <div className="flex flex-col justify-center items-center">
+                <button
+                  onClick={handleSubmitToMe}
+                  className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
+                >
+                  내 스케줄 등록하기
+                </button>
+                <span className="text-xs text-label mt-[5px]">내 스케줄을 등록한 시간에는 다른 사람들이 미팅을 신청할 수 없습니다</span>
+              </div>
             ) : !myCalendar && isPast() ? (
               <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
                 현재 시간 이전에는 등록할 수 없습니다
