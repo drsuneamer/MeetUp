@@ -20,7 +20,7 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.JsonConverter;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
@@ -91,8 +93,8 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(DATE_FORMAT_EX);
         }
         User loginUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        LocalDateTime start = StringToLocalDateTime.strToLDT(meetingRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(meetingRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         scheduleService.diffDurationCheck(start, end);
 
@@ -123,6 +125,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         String startTime = meetingRequestDto.getStart().substring(5, 16);
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
@@ -143,8 +146,8 @@ public class MeetingServiceImpl implements MeetingService {
         if (!meeting.getMeetup().getManager().equals(user) && !meeting.getUser().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
-        LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         scheduleService.diffDurationCheck(start, end);
 
@@ -161,6 +164,7 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
         mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup.getManager().getId(), channel, message);
@@ -188,6 +192,7 @@ public class MeetingServiceImpl implements MeetingService {
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
 
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(meeting.getStart()) + ") ");
         String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {

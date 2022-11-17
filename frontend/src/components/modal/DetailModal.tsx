@@ -19,6 +19,7 @@ const DetailModal = () => {
   const detailModalSelector = useSelector(ModalSelector);
   const scheduleDetail = useSelector(detailSelector).scheduleModal.scheduleDetail;
   const myId = localStorage.getItem('id');
+  const params = useParams();
 
   const handleToggleModal = useCallback(() => {
     dispatch(setDetailModalOpen('close'));
@@ -30,7 +31,9 @@ const DetailModal = () => {
     dispatch(fetchGroupList());
     handleToggleModal();
   };
-
+  // const editMeeting = () => {
+  //   console.log(scheduleDetail);
+  // };
   const editSchedule = (scheduleDetail: tScheduleDetail) => {
     dispatch(setEditModalOpen([scheduleDetail.id, 'schedule']));
     // dispatch(fetchAlarmChannelList(scheduleDetail.userId));
@@ -47,12 +50,30 @@ const DetailModal = () => {
     handleToggleModal();
   };
 
+  // 컨설턴트 웹엑스 이동
+  const moveToManager = () => {
+    if (scheduleDetail.diffWebex.includes('https://') || scheduleDetail.diffWebex.includes('http://')) {
+      window.open(scheduleDetail.diffWebex, '_blank');
+    } else {
+      window.open('https://' + scheduleDetail.diffWebex);
+    }
+  };
+
+  // 학생(신청자) 웹엑스 이동
+  const moveToStudent = () => {
+    if (scheduleDetail.myWebex.includes('https://') || scheduleDetail.myWebex.includes('http://')) {
+      window.open(scheduleDetail.myWebex, '_blank');
+    } else {
+      window.open('https://' + scheduleDetail.myWebex);
+    }
+  };
+
   if (scheduleDetail) {
     return (
       <div className={`${detailModalSelector.detailModalIsOpen ? 'fixed' : 'hidden'} w-[100%] h-[100%] flex justify-center items-center z-30`}>
         <div
           className={`${
-            scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'w-[600px] h-[600px]' : 'w-[500px] h-[400px]'
+            scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'w-[600px] h-[600px]' : 'w-[500px] h-[350px]'
           } flex flex-col items-center bg-background z-10 rounded drop-shadow-shadow`}
           onClick={(e: React.MouseEvent<HTMLDivElement>) => {
             e.stopPropagation();
@@ -79,7 +100,7 @@ const DetailModal = () => {
                 </>
               ) : (
                 <>
-                  <div className="text-s text-title font-bold ml-[20px] mr-[15px]">제목</div>
+                  <div className="text-s text-title font-bold ml-[25px] mr-[15px] mb-[15px]">제목</div>
                   <p className="font-bold">{scheduleDetail.title}</p>
                 </>
               )}
@@ -103,7 +124,7 @@ const DetailModal = () => {
             <div className="mt-[20px] flex">
               <div
                 className={`${
-                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[20px]'
+                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[25px] mb-[15px]'
                 } text-s text-title font-bold mr-[15px]`}
               >
                 날짜
@@ -117,7 +138,7 @@ const DetailModal = () => {
             <div className="mt-[20px] flex">
               <div
                 className={`${
-                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[20px]'
+                  scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? 'ml-[0px]' : 'ml-[25px]'
                 } text-s text-title font-bold mr-[15px]`}
               >
                 시간
@@ -145,23 +166,28 @@ const DetailModal = () => {
                 </>
               )}
             </div>
-
-            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' && scheduleDetail.diffWebex ? (
+            {scheduleDetail && detailModalSelector.modalType === 'myMeeting' ? (
               <div className={`${!scheduleDetail.content ? 'mt-[0px]' : 'mt-[20px]'} flex flex-col`}>
                 <div className="text-s text-title font-bold mb-[20px]">웹엑스 미팅 참여하기</div>
                 <div className="flex justify-center gap-[20px] mt-[10px]">
-                  <div className="flex justify-center items-center gap-x-[50px]">
-                    <div className="flex flex-col justify-center items-center">
-                      <a href={scheduleDetail.diffWebex} className="flex flex-col justify-center items-center">
-                        <img className="w-[50px]" src={webex} alt="webex" />
-                        <p className="font-bold">{scheduleDetail.managerName}</p>
-                      </a>
+                  {scheduleDetail.diffWebex ? (
+                    <div className="flex justify-center items-center gap-x-[50px]">
+                      <div className="flex flex-col justify-center items-center">
+                        <a href="#" onClick={() => moveToManager()} className="flex flex-col justify-center items-center">
+                          <img className="w-[50px]" src={webex} alt="webex" />
+                          <p className="font-bold">{scheduleDetail.managerName}</p>
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  ) : scheduleDetail.managerId !== myId ? null : (
+                    <div className="w-[200px] bborder-solid border-2 border-point rounded flex justify-center items-center">
+                      <a href="/settings">웹엑스 링크를 설정해주세요</a>
+                    </div>
+                  )}
                   {scheduleDetail.myWebex ? (
                     <div className="flex justify-center items-center gap-x-[50px]">
                       <div className="flex flex-col justify-center items-center">
-                        <a href={scheduleDetail.myWebex} className="flex flex-col justify-center items-center">
+                        <a href="#" onClick={() => moveToStudent()} className="flex flex-col justify-center items-center">
                           <img className="w-[50px]" src={webex} alt="webex" />
                           <p className="font-bold">{scheduleDetail.userName}</p>
                         </a>
@@ -177,7 +203,7 @@ const DetailModal = () => {
             ) : null}
           </div>
           {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
-            <div className="flex justify-center items-center gap-[20px] mt-[40px]">
+            <div className="flex justify-center items-center gap-[20px] mt-[15px]">
               <button
                 onClick={() => editSchedule(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
@@ -192,11 +218,7 @@ const DetailModal = () => {
               </button>
             </div>
           ) : scheduleDetail.userId === myId ? (
-            <div
-              className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} ${
-                !scheduleDetail.diffWebex ? 'mt-[150px]' : 'mt-[40px]'
-              } flex justify-center items-center gap-[20px]`}
-            >
+            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
               <button
                 onClick={() => editMeeting(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
@@ -211,11 +233,7 @@ const DetailModal = () => {
               </button>
             </div>
           ) : scheduleDetail.managerId === myId ? (
-            <div
-              className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} ${
-                !scheduleDetail.diffWebex ? 'mt-[150px]' : 'mt-[40px]'
-              } flex justify-center items-center`}
-            >
+            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center`}>
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"

@@ -23,7 +23,7 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

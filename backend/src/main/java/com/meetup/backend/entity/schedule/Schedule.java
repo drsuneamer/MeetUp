@@ -5,7 +5,7 @@ import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.BaseEntity;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.util.converter.BooleanToYNConverter;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,8 +58,8 @@ public class Schedule extends BaseEntity {
     }
 
     public void update(ScheduleUpdateRequestDto scheduleUpdateRequestDto) {
-        this.start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
-        this.end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
+        this.start = LocalDateUtil.strToLDT(scheduleUpdateRequestDto.getStart());
+        this.end = LocalDateUtil.strToLDT(scheduleUpdateRequestDto.getEnd());
         this.title = scheduleUpdateRequestDto.getTitle();
         this.content = scheduleUpdateRequestDto.getContent();
         this.isOpen = scheduleUpdateRequestDto.isOpen();
@@ -67,8 +67,8 @@ public class Schedule extends BaseEntity {
     }
 
     public void update(MeetingUpdateRequestDto meetingUpdateRequestDto) {
-        this.start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
-        this.end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
+        this.start = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getStart());
+        this.end = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getEnd());
         this.title = meetingUpdateRequestDto.getTitle();
         this.content = meetingUpdateRequestDto.getContent();
         this.isOpen = meetingUpdateRequestDto.isOpen();
