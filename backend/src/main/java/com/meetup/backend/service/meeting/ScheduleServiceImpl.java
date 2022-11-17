@@ -19,7 +19,7 @@ import com.meetup.backend.repository.party.PartyUserRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
 import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.user.UserRepository;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -91,8 +91,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     public Long createSchedule(String userId, ScheduleRequestDto scheduleRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(scheduleRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(scheduleRequestDto.getEnd());
 
         diffDurationCheck(start, end);
 
@@ -119,8 +119,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (!user.getId().equals(schedule.getUser().getId())) {
             throw new ApiException(ACCESS_DENIED);
         }
-        LocalDateTime start = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(scheduleUpdateRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(scheduleUpdateRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(scheduleUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         diffDurationCheck(start, end);
         // 일정 중복 체크
@@ -152,7 +152,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         accessCheck(loginUserId, targetUserId, loginUser, targetUser);
 
-        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime from = LocalDateUtil.strToLDT(date);
         LocalDateTime to = from.plusDays(p);
         if (p == 1) {
             from = from.minusDays(p);

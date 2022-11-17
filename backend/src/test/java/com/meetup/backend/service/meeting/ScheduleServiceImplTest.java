@@ -23,7 +23,7 @@ import com.meetup.backend.repository.schedule.ScheduleRepository;
 import com.meetup.backend.repository.team.TeamRepository;
 import com.meetup.backend.repository.team.TeamUserRepository;
 import com.meetup.backend.repository.user.UserRepository;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -317,7 +317,7 @@ class ScheduleServiceImplTest {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
         assertThat(schedule.getTitle()).isEqualTo("modified title");
         assertThat(schedule.getContent()).isEqualTo("본문");
-        assertThat(schedule.getStart()).isEqualTo(StringToLocalDateTime.strToLDT("2022-10-30 15:00:00"));
+        assertThat(schedule.getStart()).isEqualTo(LocalDateUtil.strToLDT("2022-10-30 15:00:00"));
 
         assertThat(scheduleService.getScheduleByUserAndDate(user1.getId(), user1.getId(), "2022-10-30 00:00:00").getScheduleResponseList().size()).isEqualTo(2);
     }
