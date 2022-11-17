@@ -107,24 +107,27 @@ function Settings() {
         <div>
           <div className="flex items-center">
             <div className="font-bold text-title cursor-default">나의 Webex 주소 관리</div>
+          </div>
+          <div className="flex">
+            <input
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  submit();
+                }
+              }}
+              onChange={onInput}
+              type="text"
+              placeholder={url}
+              className="w-full text-center placeholder-label border-b-2 border-b-title py-1 px-2 mb-4 focus:outline-none focus:border-b-footer"
+            />
             <button
               onClick={submit}
-              className="ml-3 w-[80px] h-[23px] bg-background border-title border-solid border-[2px] text-[13px] drop-shadow-shadow rounded font-bold text-title align-middle"
+              className="mt-3 ml-3 w-[50px] h-[23px] bg-background border-title border-solid border-[2px] text-[13px] drop-shadow-shadow rounded font-bold text-title align-middle"
             >
               저장
             </button>
           </div>
-          <input
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                submit();
-              }
-            }}
-            onChange={onInput}
-            type="text"
-            placeholder={url}
-            className="w-full text-center placeholder-label border-b-2 border-b-title py-1 px-2 mb-4 focus:outline-none focus:border-b-footer"
-          />
+
           {done ? (
             <div className="absolute w-full">
               <Alert severity="success">저장이 완료되었습니다.</Alert>
