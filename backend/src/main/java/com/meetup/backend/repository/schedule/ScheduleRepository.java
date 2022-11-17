@@ -3,9 +3,11 @@ package com.meetup.backend.repository.schedule;
 import com.meetup.backend.entity.schedule.Schedule;
 import com.meetup.backend.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.LockModeType;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,6 +16,11 @@ import java.util.List;
  * updated by seongmin on 2022/11/06
  */
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM Schedule s WHERE s.user = :user AND s.start BETWEEN :from AND :to ")
     List<Schedule> findAllByStartBetweenAndUser(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("user") User user);
+
+    @Query("SELECT s FROM Schedule s WHERE s.user = :user AND s.start BETWEEN :from AND :to ")
+    List<Schedule> findByUser(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("user") User user);
 }
