@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/user/login/**", "/admin/signup/**", "/admin/login/**", "/swagger*/**", "/webjars/**", "/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs").permitAll()
                 .antMatchers("/admin", "/admin/signup").hasRole("Admin")
+                .antMatchers("/docs/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

@@ -149,38 +149,38 @@ class MeetingControllerDocsTest {
 //                );
 //    }
 
-    @Test
-    public void getMeeting() throws Exception {
-        // given
-        UserInfoDto userInfoDto = new UserInfoDto("syngasdfe", "hong");
-        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
-
-        // when, then
-        FieldDescriptor[] channel = new FieldDescriptor[]{
-                fieldWithPath("meetupId").description("meetup 아이디"),
-                fieldWithPath("displayName").description("채널 이름")};
-
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/meeting/channel/{managerId}", "managerId"))
-                .andExpect(status().isOk())
-                .andDo(document("channel-list-find-by-managerId",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("managerId").description("조회할 managerId")
-                        ),
-//                        responseFields(fieldWithPath("[]").description("An array of books"))
-//                                .andWithPrefix("[].", channel)));
-                        responseFields(
-                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 목록"))
-                                .andWithPrefix("[].",
-                                        fieldWithPath("meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
-                                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("채널 이름")
-//                                beneathPath("response"),
-//                                channel
-//                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 리스트"),
-//                                fieldWithPath("[].meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
-//                                fieldWithPath("[].displayName").type(JsonFieldType.STRING).description("채널 이름")
-                                )
-                ));
-    }
+//    @Test
+//    public void getMeeting() throws Exception {
+//        // given
+//        UserInfoDto userInfoDto = new UserInfoDto("syngasdfe", "hong");
+//        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
+//
+//        // when, then
+//        FieldDescriptor[] channel = new FieldDescriptor[]{
+//                fieldWithPath("meetupId").description("meetup 아이디"),
+//                fieldWithPath("displayName").description("채널 이름")};
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.get("/meeting/channel/{managerId}", "managerId"))
+//                .andExpect(status().isOk())
+//                .andDo(document("channel-list-find-by-managerId",
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        pathParameters(
+//                                parameterWithName("managerId").description("조회할 managerId")
+//                        ),
+////                        responseFields(fieldWithPath("[]").description("An array of books"))
+////                                .andWithPrefix("[].", channel)));
+//                        responseFields(
+//                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 목록"))
+//                                .andWithPrefix("[].",
+//                                        fieldWithPath("meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
+//                                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("채널 이름")
+////                                beneathPath("response"),
+////                                channel
+////                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 리스트"),
+////                                fieldWithPath("[].meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
+////                                fieldWithPath("[].displayName").type(JsonFieldType.STRING).description("채널 이름")
+//                                )
+//                ));
+//    }
 }
