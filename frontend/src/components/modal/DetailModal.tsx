@@ -208,17 +208,17 @@ const DetailModal = () => {
                 onClick={() => editSchedule(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"
               >
-                일정 수정하기
+                내 스케줄 수정하기
               </button>
               <button
                 onClick={deleteSchedule}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[200px] h-s drop-shadow-button"
               >
-                일정 삭제하기
+                내 스케줄 삭제하기
               </button>
             </div>
           ) : scheduleDetail.userId === myId ? (
-            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
+            <div className={`${scheduleDetail.partyName ? 'mt-[10px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
               <button
                 onClick={() => editMeeting(scheduleDetail)}
                 className="font-bold bg-title hover:bg-hover text-background rounded w-[200px] h-s drop-shadow-button"

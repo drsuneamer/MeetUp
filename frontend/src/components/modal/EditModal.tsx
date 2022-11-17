@@ -371,6 +371,7 @@ const EditModal = () => {
                 name="title"
                 // defaultValue={scheduleDetail.title || undefined}
                 value={title || ''}
+                maxLength={50}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
@@ -418,6 +419,7 @@ const EditModal = () => {
                       name="title"
                       // defaultValue={scheduleDetail.content || undefined}
                       value={content || ''}
+                      maxLength={110}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />
@@ -465,12 +467,15 @@ const EditModal = () => {
               )}
             </div>
             {modalSelector.editModalType === 'schedule' ? (
-              <button
-                onClick={handleEditSchedule}
-                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
-              >
-                일정 등록하기
-              </button>
+              <div className="flex flex-col justify-center items-center">
+                <button
+                  onClick={handleEditSchedule}
+                  className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
+                >
+                  내 스케줄 등록하기
+                </button>
+                <span className="text-xs text-label mt-[5px]">내 스케줄을 등록한 시간에는 다른 사람들이 미팅을 신청할 수 없습니다</span>
+              </div>
             ) : (
               <button
                 onClick={handleEditMeeting}
