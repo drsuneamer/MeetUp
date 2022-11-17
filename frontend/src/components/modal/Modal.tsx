@@ -458,12 +458,15 @@ const EventModal = () => {
                 현재 시간 이전에는 등록할 수 없습니다
               </button>
             ) : myCalendar && !isPast() ? (
-              <button
-                onClick={handleSubmitToMe}
-                className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
-              >
-                미팅 불가시간 설정하기
-              </button>
+              <div className="flex flex-col justify-center items-center">
+                <button
+                  onClick={handleSubmitToMe}
+                  className="font-bold bg-title hover:bg-hover text-background rounded w-[450px] h-s drop-shadow-button"
+                >
+                  내 스케줄 등록하기
+                </button>
+                <span className="text-xs text-label mt-[5px]">내 스케줄을 등록한 시간에는 다른 사람들이 미팅을 신청할 수 없습니다</span>
+              </div>
             ) : !myCalendar && isPast() ? (
               <button className="font-bold bg-disabled text-background rounded w-[450px] mb-[10px] h-s drop-shadow-button">
                 현재 시간 이전에는 등록할 수 없습니다
