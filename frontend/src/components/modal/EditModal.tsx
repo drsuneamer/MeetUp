@@ -371,6 +371,7 @@ const EditModal = () => {
                 name="title"
                 // defaultValue={scheduleDetail.title || undefined}
                 value={title || ''}
+                maxLength={50}
                 onChange={onTitleChange}
                 className={`${
                   editModalType === 'schedule' ? 'mb-[40px]' : 'mb-[0px]'
@@ -418,6 +419,7 @@ const EditModal = () => {
                       name="title"
                       // defaultValue={scheduleDetail.content || undefined}
                       value={content || ''}
+                      maxLength={110}
                       onChange={onContentChange}
                       className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                     />

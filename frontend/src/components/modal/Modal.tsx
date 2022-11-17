@@ -337,6 +337,7 @@ const EventModal = () => {
               type="text"
               name="title"
               value={title}
+              maxLength={50}
               onChange={onTitleChange}
               className={`${
                 myCalendar ? 'mb-[40px]' : 'mb-[0px]'
@@ -383,6 +384,7 @@ const EventModal = () => {
                     type="text"
                     name="title"
                     value={content}
+                    maxLength={110}
                     onChange={onContentChange}
                     className="w-[450px] h-[30px] outline-none border-solid border-b-2 border-title focus:border-b-point active:border-b-point"
                   />
