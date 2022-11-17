@@ -31,77 +31,77 @@ import static org.assertj.core.api.Assertions.*;
 @Slf4j
 class TeamUserServiceImplTest {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TeamUserService teamUserService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TeamRepository teamRepository;
-
-    @Autowired
-    private TeamUserRepository teamUserRepository;
-
-    @Autowired
-    private ChannelRepository channelRepository;
-
-    @Autowired
-    private ChannelUserRepository channelUserRepository;
-
-    @Value("${mattermost.id}")
-    private String id;
-
-    @Value("${mattermost.password}")
-    private String password;
-
-    private String mmId;
-
-    @BeforeEach
-    void before() {
-        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
-        mmId = loginResponse.getId();
-    }
-
-    @AfterEach
-    void After() {
-        channelUserRepository.deleteAll();
-        channelRepository.deleteAll();
-        teamUserRepository.deleteAll();
-        teamRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
-    @Test
-    @DisplayName("사용자가 포함된 팀 목록을 반환")
-    void getTeamByUser() {
-        assertThat(teamUserService.getTeamByUser(mmId).size()).isNotSameAs(0);
-    }
-
-    @Test
-    @DisplayName("사용자 별로 팀 비활성화 (밋업 생성시에 목록에 표시안됨) & 팀 활성화목록 가져오기")
-    void activateTeamUser() {
-
-        List<TeamActivateRequestDto> teamActivateRequestDtoList = new ArrayList<>();
-        List<TeamUser> teamUserList = teamUserRepository.findByUser(User.builder().id(mmId).build());
-
-        Random random = new Random();
-        for (TeamUser teamUser : teamUserList) {
-            if (random.nextBoolean())
-                teamActivateRequestDtoList.add(new TeamActivateRequestDto(teamUser.getTeam().getId()));
-        }
-
-        teamUserService.activateTeamUser(mmId, teamActivateRequestDtoList);
-        teamUserService.getActivateTeamByUser(mmId);
-        for (TeamActivateResponseDto teamActivateResponseDto : teamUserService.getActivateTeamByUser(mmId)) {
-            log.info("===== team name = {}, is activate= {} =====", teamActivateResponseDto.getDisplayName(), teamActivateResponseDto.getIsActivate());
-        }
-
-        assertThat(teamUserService.getActivateTeamByUser(mmId).size()).isNotSameAs(0);
-
-    }
+//    @Autowired
+//    private UserService userService;
+//
+//    @Autowired
+//    private TeamUserService teamUserService;
+//
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private TeamRepository teamRepository;
+//
+//    @Autowired
+//    private TeamUserRepository teamUserRepository;
+//
+//    @Autowired
+//    private ChannelRepository channelRepository;
+//
+//    @Autowired
+//    private ChannelUserRepository channelUserRepository;
+//
+//    @Value("${mattermost.id}")
+//    private String id;
+//
+//    @Value("${mattermost.password}")
+//    private String password;
+//
+//    private String mmId;
+//
+//    @BeforeEach
+//    void before() {
+//        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+//        mmId = loginResponse.getId();
+//    }
+//
+//    @AfterEach
+//    void After() {
+//        channelUserRepository.deleteAll();
+//        channelRepository.deleteAll();
+//        teamUserRepository.deleteAll();
+//        teamRepository.deleteAll();
+//        userRepository.deleteAll();
+//    }
+//
+//    @Test
+//    @DisplayName("사용자가 포함된 팀 목록을 반환")
+//    void getTeamByUser() {
+//        assertThat(teamUserService.getTeamByUser(mmId).size()).isNotSameAs(0);
+//    }
+//
+//    @Test
+//    @DisplayName("사용자 별로 팀 비활성화 (밋업 생성시에 목록에 표시안됨) & 팀 활성화목록 가져오기")
+//    void activateTeamUser() {
+//
+//        List<TeamActivateRequestDto> teamActivateRequestDtoList = new ArrayList<>();
+//        List<TeamUser> teamUserList = teamUserRepository.findByUser(User.builder().id(mmId).build());
+//
+//        Random random = new Random();
+//        for (TeamUser teamUser : teamUserList) {
+//            if (random.nextBoolean())
+//                teamActivateRequestDtoList.add(new TeamActivateRequestDto(teamUser.getTeam().getId()));
+//        }
+//
+//        teamUserService.activateTeamUser(mmId, teamActivateRequestDtoList);
+//        teamUserService.getActivateTeamByUser(mmId);
+//        for (TeamActivateResponseDto teamActivateResponseDto : teamUserService.getActivateTeamByUser(mmId)) {
+//            log.info("===== team name = {}, is activate= {} =====", teamActivateResponseDto.getDisplayName(), teamActivateResponseDto.getIsActivate());
+//        }
+//
+//        assertThat(teamUserService.getActivateTeamByUser(mmId).size()).isNotSameAs(0);
+//
+//    }
 
 }

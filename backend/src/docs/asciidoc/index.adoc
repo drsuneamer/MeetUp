@@ -1,0 +1,70 @@
+= Info`Mansion API Docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[introduction]]
+== 소개
+
+SSAFY 7기 서율 자율 1반 A102팀
+
+MeetUp REST API 명세서입니다.
+
+[[commont]]
+== 공통사항
+
+=== Header
+
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
+
+=== 공통 Response Body
+
+|===
+| field | 설명
+
+| `code`
+| 응답 코드
+
+| `message`
+| 예외사항 내용 등 응답 메세지
+
+| `data`
+| 실제 반환될 데이터
+|===
+
+---
+
+[[Meeting-API]]
+= Meeting-API
+
+[[Stuff-조회1]]
+== Stuff 조회
+
+stuffId로 Stuff를 조회하는 API
+
+=== Http Request
+
+include::{snippets}/meeting_create/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meeting_create/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meeting_create/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meeting_create/response-body.adoc[]
+
+
+---
