@@ -125,6 +125,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         String startTime = meetingRequestDto.getStart().substring(5, 16);
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
         String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
@@ -163,6 +164,7 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
         String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
         mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup.getManager().getId(), channel, message);
@@ -190,6 +192,7 @@ public class MeetingServiceImpl implements MeetingService {
         client.setAccessToken(authService.getMMSessionToken(userId));
         String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
 
+        startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(meeting.getStart()) + ") ");
         String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
