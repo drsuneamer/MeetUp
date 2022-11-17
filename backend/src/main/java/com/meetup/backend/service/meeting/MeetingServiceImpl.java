@@ -20,7 +20,7 @@ import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.util.converter.JsonConverter;
-import com.meetup.backend.util.converter.StringToLocalDateTime;
+import com.meetup.backend.util.converter.LocalDateUtil;
 import com.meetup.backend.util.exception.MattermostEx;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
@@ -91,8 +93,8 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(DATE_FORMAT_EX);
         }
         User loginUser = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-        LocalDateTime start = StringToLocalDateTime.strToLDT(meetingRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(meetingRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(meetingRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(meetingRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         scheduleService.diffDurationCheck(start, end);
 
@@ -143,8 +145,8 @@ public class MeetingServiceImpl implements MeetingService {
         if (!meeting.getMeetup().getManager().equals(user) && !meeting.getUser().equals(user)) {
             throw new ApiException(ACCESS_DENIED);
         }
-        LocalDateTime start = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getStart());
-        LocalDateTime end = StringToLocalDateTime.strToLDT(meetingUpdateRequestDto.getEnd());
+        LocalDateTime start = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getStart());
+        LocalDateTime end = LocalDateUtil.strToLDT(meetingUpdateRequestDto.getEnd());
         // 시작 시간과 종료 시간의 차이 검사 (30분 이상만 가능)
         scheduleService.diffDurationCheck(start, end);
 

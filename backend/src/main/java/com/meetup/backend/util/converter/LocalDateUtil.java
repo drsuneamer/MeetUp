@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
  * created by myeongseok on 2022/10/23
  */
 
-public class StringToLocalDateTime {
+public class LocalDateUtil {
     public static LocalDateTime strToLDT(String str) {
         LocalDateTime formatLocalDateTime =
                 LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
