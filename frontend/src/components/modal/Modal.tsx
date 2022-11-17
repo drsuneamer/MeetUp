@@ -402,7 +402,7 @@ const EventModal = () => {
                     ListboxProps={{ style: { maxHeight: '150px' } }}
                     value={alarmChannel}
                     // isOptionEqualToValue={(option, value) => option.meetupId === value.meetupId}
-                    inputValue={alarmChannel.displayName}
+                    // inputValue={alarmChannel.displayName}
                     {...defaultProps}
                     id="select-channel"
                     renderInput={(params) => <TextField {...params} label="채널 선택하기" variant="standard" />}
