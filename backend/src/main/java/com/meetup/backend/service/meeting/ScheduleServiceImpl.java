@@ -156,7 +156,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         accessCheck(loginUserId, targetUserId, loginUser, targetUser);
 
-        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime from = LocalDateUtil.strToLDT(date);
         LocalDateTime to = from.plusDays(p);
         if (p == 1) {
             from = from.minusDays(p);
@@ -186,7 +186,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 //
 //        accessCheck(loginUserId, targetUserId, loginUser, targetUser);
 //
-        LocalDateTime from = StringToLocalDateTime.strToLDT(date);
+        LocalDateTime from = LocalDateUtil.strToLDT(date);
         LocalDateTime to = from.plusDays(p);
 //        if (p == 1) {
 //            from = from.minusDays(p);

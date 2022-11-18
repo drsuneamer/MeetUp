@@ -10,6 +10,7 @@ import com.meetup.backend.service.auth.AuthService;
 import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -43,64 +44,67 @@ public class AdminControllerDocsTest {
     @MockBean
     private AuthService authService;
 
-    @Test
-    public void signup() throws Exception {
-        // given
-        SignUpDto signUpDto = SignUpDto.builder()
-                .id("admin")
-                .password("admin")
-                .key("asklfaejfkasldf")
-                .build();
+//    @Value("{admin.key}")
+//    private String adminKey;
 
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/signup")
-                        .content(objectMapper.writeValueAsString(signUpDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andDo(document("admin-signup",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("id").description("admin 계정 아이디"),
-                                fieldWithPath("password").description("admin 비밀번호"),
-                                fieldWithPath("key").description("admin key")
-                        )
-                ));
-    }
-
-    @Test
-    public void login() throws Exception {
-        // given
-        AdminLoginDto adminLoginDto = AdminLoginDto.builder()
-                .id("admin")
-                .password("admin")
-                .build();
-
-        TokenDto responseDto = TokenDto.builder()
-                .grantType("Bearer")
-                .accessToken("access-token")
-                .tokenExpiresIn(1999999999L)
-                .build();
-
-        given(adminService.login(anyString(), anyString())).willReturn(responseDto);
-
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/login")
-                        .content(objectMapper.writeValueAsString(adminLoginDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("admin-login",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("id").description("admin 계정 아이디"),
-                                fieldWithPath("password").description("admin 비밀번호")
-                        ),
-                        responseFields(
-                                fieldWithPath("grantType").type(JsonFieldType.STRING).description("토큰 타입"),
-                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
-                                fieldWithPath("tokenExpiresIn").type(JsonFieldType.NUMBER).description("토큰 만료 시간")
-                        )
-                ));
-    }
+//    @Test
+//    public void signup() throws Exception {
+//        // given
+//        SignUpDto signUpDto = SignUpDto.builder()
+//                .id("admin")
+//                .password("admin")
+//                .key(adminKey)
+//                .build();
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/signup")
+//                        .content(objectMapper.writeValueAsString(signUpDto))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isCreated())
+//                .andDo(document("admin-signup",
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("id").description("admin 계정 아이디"),
+//                                fieldWithPath("password").description("admin 비밀번호"),
+//                                fieldWithPath(adminKey).description("admin key")
+//                        )
+//                ));
+//    }
+//
+//    @Test
+//    public void login() throws Exception {
+//        // given
+//        AdminLoginDto adminLoginDto = AdminLoginDto.builder()
+//                .id("admin")
+//                .password("admin")
+//                .build();
+//
+//        TokenDto responseDto = TokenDto.builder()
+//                .grantType("Bearer")
+//                .accessToken("access-token")
+//                .tokenExpiresIn(1999999999L)
+//                .build();
+//
+//        given(adminService.login(anyString(), anyString())).willReturn(responseDto);
+//
+//        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/login")
+//                        .content(objectMapper.writeValueAsString(adminLoginDto))
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andDo(document("admin-login",
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("id").description("admin 계정 아이디"),
+//                                fieldWithPath("password").description("admin 비밀번호")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("grantType").type(JsonFieldType.STRING).description("토큰 타입"),
+//                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
+//                                fieldWithPath("tokenExpiresIn").type(JsonFieldType.NUMBER).description("토큰 만료 시간")
+//                        )
+//                ));
+//    }
 
     @Test
     public void changeRole() throws Exception {
