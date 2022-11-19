@@ -28,6 +28,7 @@ function Settings() {
   const [url, setUrl] = useState<string>('Webex Link');
   const [input, setInput] = useState<object>({ webexUrl: '' });
   const [done, setDone] = useState<boolean>(false);
+  const [teamSet, setTeamSet] = useState<boolean>(false);
   const [teamArray, setTeamArray] = useState<Team[]>([]);
   const [forUse, setForUse] = useState<Team[]>([]);
 
@@ -71,13 +72,25 @@ function Settings() {
   }, [teamArray]);
 
   const handleChange = (id: string) => {
-    axiosInstance.put('/meetup/team/activate', [{ teamId: id }]).then((res) => {});
+    axiosInstance.put('/meetup/team/activate', [{ teamId: id }]).then((res) => {
+      setTeamSet(true);
+    });
   };
 
   const buttonChange = (i: number) => {
     forUse[i].isActivate = !forUse[i].isActivate;
     setForUse([...forUse]);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTeamSet(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [teamSet]);
 
   // [3] 그룹 관리
   // 그룹 목록 가져옴
@@ -107,24 +120,27 @@ function Settings() {
         <div>
           <div className="flex items-center">
             <div className="font-bold text-title cursor-default">나의 Webex 주소 관리</div>
+          </div>
+          <div className="flex">
+            <input
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  submit();
+                }
+              }}
+              onChange={onInput}
+              type="text"
+              placeholder={url}
+              className="w-full text-center placeholder-label border-b-2 border-b-title py-1 px-2 mb-4 focus:outline-none focus:border-b-footer"
+            />
             <button
               onClick={submit}
-              className="ml-3 w-[80px] h-[23px] bg-background border-title border-solid border-[2px] text-[13px] drop-shadow-shadow rounded font-bold text-title align-middle"
+              className="mt-3 ml-3 w-[50px] h-[23px] bg-background border-title border-solid border-[2px] text-[13px] drop-shadow-shadow rounded font-bold text-title align-middle"
             >
               저장
             </button>
           </div>
-          <input
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                submit();
-              }
-            }}
-            onChange={onInput}
-            type="text"
-            placeholder={url}
-            className="w-full text-center placeholder-label border-b-2 border-b-title py-1 px-2 mb-4 focus:outline-none focus:border-b-footer"
-          />
+
           {done ? (
             <div className="absolute w-full">
               <Alert severity="success">저장이 완료되었습니다.</Alert>
@@ -163,6 +179,13 @@ function Settings() {
               ))}
             </div>
           </div>
+        )}
+        {teamSet ? (
+          <div className="absolute w-full">
+            <Alert severity="success">팀 설정이 저장되었습니다.</Alert>
+          </div>
+        ) : (
+          ''
         )}
         {/* 그룹 관리 */}
         <div>
