@@ -233,7 +233,7 @@ const DetailModal = () => {
               </button>
             </div>
           ) : scheduleDetail.managerId === myId ? (
-            <div className={`${scheduleDetail.partyName ? 'mt-[20px]' : 'mt-[40px]'} flex justify-center items-center`}>
+            <div className={`${scheduleDetail.partyName ? 'mt-[5px]' : 'mt-[40px]'} flex justify-center items-center`}>
               <button
                 onClick={deleteMeeting}
                 className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"
