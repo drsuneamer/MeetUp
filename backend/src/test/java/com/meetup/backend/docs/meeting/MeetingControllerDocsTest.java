@@ -2,6 +2,7 @@ package com.meetup.backend.docs.meeting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meetup.backend.controller.MeetingController;
+import com.meetup.backend.dto.schedule.meeting.MeetingChannelDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingRequestDto;
 import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.dto.user.UserInfoDto;
@@ -21,6 +22,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import springfox.documentation.spring.web.json.Json;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -61,7 +65,7 @@ class MeetingControllerDocsTest {
                 .open(true)
                 .partyId(null)
                 .build();
-        UserInfoDto userInfoDto = new UserInfoDto("11", "qwer");
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "hong");
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
         given(meetingService.createMeeting(anyString(), any(MeetingRequestDto.class)))
@@ -69,22 +73,22 @@ class MeetingControllerDocsTest {
 
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/meeting")
-                        .content(objectMapper.writeValueAsString(meetingRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(meetingRequestDto))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andDo(document("meeting_create",
-                                preprocessRequest(prettyPrint()),
-                                preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("title").description("미팅 제목"),
-                                        fieldWithPath("content").description("미팅 내용"),
-                                        fieldWithPath("start").description("미팅의 시작 시간"),
-                                        fieldWithPath("end").description("미팅의 종료 시간"),
-                                        fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
-                                        fieldWithPath("open").description("미팅의 공개 여부"),
-                                        fieldWithPath("partyId").description("미팅의 그룹 소속 ID")
-                                ),
-                                responseBody()
+                .andDo(document("meeting-create",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("title").description("미팅 제목"),
+                                fieldWithPath("content").description("미팅 내용"),
+                                fieldWithPath("start").description("미팅의 시작 시간"),
+                                fieldWithPath("end").description("미팅의 종료 시간"),
+                                fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
+                                fieldWithPath("open").description("미팅의 공개 여부"),
+                                fieldWithPath("partyId").description("미팅의 그룹 소속 ID")
+                        ),
+                        responseBody()
                         )
                 );
     }
@@ -101,7 +105,7 @@ class MeetingControllerDocsTest {
                 .meetupId(1L)
                 .open(true)
                 .build();
-        UserInfoDto userInfoDto = new UserInfoDto("syngasdfe", "hong");
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "hong");
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
         given(meetingService.updateMeeting(anyString(), any(MeetingUpdateRequestDto.class)))
@@ -109,78 +113,71 @@ class MeetingControllerDocsTest {
 
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/meeting")
-                        .content(objectMapper.writeValueAsString(meetingUpdateRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(meetingUpdateRequestDto))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect((status().isCreated()))
-                .andDo(document("meeting_update",
+                .andDo(document("meeting-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("id").description("미팅 아이디"),
+                                fieldWithPath("title").description("미팅 제목"),
+                                fieldWithPath("content").description("미팅 내용"),
+                                fieldWithPath("start").description("미팅의 시작 시간"),
+                                fieldWithPath("end").description("미팅의 종료 시간"),
+                                fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
+                                fieldWithPath("open").description("미팅의 공개 여부")
+                        ),
+                        responseBody()
+                        )
+                );
+    }
+
+    @Test
+    public void deleteMeeting() throws Exception {
+        // given
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "hong");
+        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
+
+        Long requestDto = 1L;
+        // when, then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/meeting/{meetingId}", requestDto))
+                .andExpect((status().isOk()))
+                .andDo(document("meeting_delete",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
-                                requestFields(
-                                        fieldWithPath("id").description("미팅 아이디"),
-                                        fieldWithPath("title").description("미팅 제목"),
-                                        fieldWithPath("content").description("미팅 내용"),
-                                        fieldWithPath("start").description("미팅의 시작 시간"),
-                                        fieldWithPath("end").description("미팅의 종료 시간"),
-                                        fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
-                                        fieldWithPath("open").description("미팅의 공개 여부")
-                                ),
                                 responseBody()
                         )
                 );
     }
 
-//    @Test
-//    public void deleteMeeting() throws Exception {
-//        // given
-//
-//        UserInfoDto userInfoDto = new UserInfoDto("syngasdfe", "hong");
-//        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
-//
-//        Long requestDto = 1L;
-//        // when, then
-//        mockMvc.perform(RestDocumentationRequestBuilders.delete("/meeting/{meetingId}", requestDto))
-//                .andExpect((status().isOk()))
-//                .andDo(document("meeting_delete",
-//                                preprocessRequest(prettyPrint()),
-//                                preprocessResponse(prettyPrint()),
-//                                pathPa
-//                                responseBody()
-//                        )
-//                );
-//    }
+    @Test
+    public void getAlertChannelList() throws Exception {
+        // given
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "hong");
+        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
-//    @Test
-//    public void getMeeting() throws Exception {
-//        // given
-//        UserInfoDto userInfoDto = new UserInfoDto("syngasdfe", "hong");
-//        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
-//
-//        // when, then
-//        FieldDescriptor[] channel = new FieldDescriptor[]{
-//                fieldWithPath("meetupId").description("meetup 아이디"),
-//                fieldWithPath("displayName").description("채널 이름")};
-//
-//        mockMvc.perform(RestDocumentationRequestBuilders.get("/meeting/channel/{managerId}", "managerId"))
-//                .andExpect(status().isOk())
-//                .andDo(document("channel-list-find-by-managerId",
-//                        preprocessRequest(prettyPrint()),
-//                        preprocessResponse(prettyPrint()),
-//                        pathParameters(
-//                                parameterWithName("managerId").description("조회할 managerId")
-//                        ),
-////                        responseFields(fieldWithPath("[]").description("An array of books"))
-////                                .andWithPrefix("[].", channel)));
-//                        responseFields(
-//                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 목록"))
-//                                .andWithPrefix("[].",
-//                                        fieldWithPath("meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
-//                                        fieldWithPath("displayName").type(JsonFieldType.STRING).description("채널 이름")
-////                                beneathPath("response"),
-////                                channel
-////                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("채널 리스트"),
-////                                fieldWithPath("[].meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
-////                                fieldWithPath("[].displayName").type(JsonFieldType.STRING).description("채널 이름")
-//                                )
-//                ));
-//    }
+        List<MeetingChannelDto> meetingChannelDtoList = new ArrayList<>();
+        meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(1L).displayName("1팀").build());
+        meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(2L).displayName("2팀").build());
+        meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(3L).displayName("3팀").build());
+        given(channelUserService.getMeetingChannelByUsers("userId", "managerId"))
+                .willReturn(meetingChannelDtoList);
+
+        // when, then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/meeting/channel/{managerId}", "managerId"))
+                .andExpect(status().isOk())
+                .andDo(document("channel-list-find-by-managerId",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("managerId").description("조회할 managerId")
+                        ),
+
+                        responseFields(
+                                fieldWithPath("[].meetupId").type(JsonFieldType.NUMBER).description("meetup 아이디"),
+                                fieldWithPath("[].displayName").type(JsonFieldType.STRING).description("채널 이름")
+                        )
+                ));
+    }
 }
