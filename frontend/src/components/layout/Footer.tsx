@@ -32,7 +32,7 @@ function Footer() {
         </div>
       </div>
       <div className="flex justify-end mr-[50px] mb-3">
-        <a href="https://www.instagram.com/hellossafy/">
+        <a href="https://www.instagram.com/meetup_a102/">
           <img className="w-[40px] mx-1.5" src={insta} alt="instagram" />
         </a>
         <a href="https://www.notion.so/MEET-UP-6622422c3f554e6e852e7996eefeec77">
