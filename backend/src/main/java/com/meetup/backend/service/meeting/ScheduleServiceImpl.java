@@ -86,7 +86,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     // 해당 user, 캘린더 주인 id, date로 정보 가져오기
     @Override
     public AllScheduleResponseDto getScheduleByUserAndDate(String loginUserId, String targetUserId, String date) {
-        return getSchedule(loginUserId, targetUserId, date, 6, getScheduleListWithoutLock(date, loginUserId, targetUserId, 6));
+        return getSchedule(loginUserId, targetUserId, date, 7, getScheduleListWithoutLock(date, loginUserId, targetUserId, 7));
     }
 
     // 스케쥴 정보 등록
@@ -181,35 +181,25 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public AllScheduleResponseDto getSchedule(String loginUserId, String targetUserId, String date, int p, List<Schedule> schedules) {
-//        User loginUser = userRepository.findById(loginUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         User targetUser = userRepository.findById(targetUserId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
-//
-//        accessCheck(loginUserId, targetUserId, loginUser, targetUser);
-//
         LocalDateTime from = LocalDateUtil.strToLDT(date);
         LocalDateTime to = from.plusDays(p);
-//        if (p == 1) {
-//            from = from.minusDays(p);
-//        }
-//
-//        List<Schedule> schedules = scheduleRepository.findAllByStartBetweenAndUser(from, to, targetUser);
-
         // 해당 스케줄 주인의 밋업 리스트
         List<Meetup> meetupList = meetupRepository.findByManager(targetUser);
         List<Meeting> meetingToMe = new ArrayList<>();
         if (meetupList.size() > 0) {
-            for (Meetup mu : meetupList) {
+            for (Meetup meetup : meetupList) {
                 // 스케줄 주인이 신청 받은 미팅(컨,프,코,교 시점)
-                meetingToMe.addAll(mu.getMeetings());
+                meetingToMe.addAll(meetingRepository.findByMeetUp(from, to, meetup));
             }
         }
         // 해당 스케쥴 주인이 속한 그룹 미팅의 리스트
         List<PartyUser> partyUserList = partyUserRepository.findByUser(targetUser);
         List<Party> partyList = partyUserList.stream().map(PartyUser::getParty).collect(Collectors.toList());
         List<Meeting> partyMeetingList = new ArrayList<>();
-
         for (Party party : partyList) {
-            partyMeetingList.addAll(meetingRepository.findAllByStartBetweenAndParty(from, to, party));
+            List<Meeting> allByStartBetweenAndParty = meetingRepository.findAllByStartBetweenAndParty(from, to, party);
+            partyMeetingList.addAll(allByStartBetweenAndParty);
         }
 
         return AllScheduleResponseDto.of(schedules, meetingToMe, partyMeetingList, loginUserId);
