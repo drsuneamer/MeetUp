@@ -3,6 +3,7 @@ package com.meetup.backend.dto.admin;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class AdminLoginDto {
     @NotEmpty(message = "id는 필수 입력 값입니다.")
     private String id;
