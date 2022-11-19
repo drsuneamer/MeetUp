@@ -52,7 +52,7 @@ public class AllScheduleResponseDto {
                 Meeting meeting = (Meeting) schedule;
                 // 만약 그룹에 속한 미팅에서 "내가 그룹장인 미팅"이 있다면 미팅 목록에서 제거
                 for (PartyMeetingResponse partyMeetingResponse : partyMeetingResponseList) {
-                    if (partyMeetingResponse.getId().equals(meeting.getId()))
+                    if (partyMeetingResponse.getId() != null && partyMeetingResponse.getId().equals(meeting.getId()))
                         continue;
                 }
                 // meeting id가 partyMeetingResponseList id에 있으면 continue;
