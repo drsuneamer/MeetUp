@@ -213,6 +213,10 @@ const EditModal = () => {
 
   useEffect(() => {
     newStartTime();
+    if (startTimeIndex > endTimeIndex) {
+      setEndTimeIndex(startTimeIndex);
+      setEndTime(startSelectOptions[startTimeIndex + 1]);
+    }
   }, [date, start]);
 
   useEffect(() => {
