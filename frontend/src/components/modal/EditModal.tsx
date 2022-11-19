@@ -347,7 +347,7 @@ const EditModal = () => {
         >
           <svg
             onClick={handleToggleModal}
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth="2.5"
@@ -399,7 +399,7 @@ const EditModal = () => {
                   <span className="mx-2">-</span>
                   <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns="https://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="2"
