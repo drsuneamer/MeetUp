@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * created by seongmin on 2022/10/21
- * updated by seongmin on 2022/11/14
+ * updated by seongmin on 2022/11/19
  */
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     List<Meeting> findByMeetup(Meetup meetup);
@@ -23,4 +23,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     @Query("SELECT m FROM Meeting m WHERE m.party = :party AND m.start BETWEEN :from AND :to ")
     List<Meeting> findAllByStartBetweenAndParty(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("party") Party party);
+
+    @Query("SELECT m FROM Meeting m WHERE m.meetup = :meetup AND m.start BETWEEN :from AND :to ")
+    List<Meeting> findByMeetUp(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("meetup") Meetup meetup);
 }
