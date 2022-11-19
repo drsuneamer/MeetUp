@@ -57,7 +57,6 @@ public class AdminControllerDocsTest {
 
     @Test
     public void signup() throws Exception {
-        System.out.println("adminKey = " + adminKey);
         // given
         SignUpDto signUpDto = SignUpDto.builder()
                 .id("admin")
@@ -156,7 +155,7 @@ public class AdminControllerDocsTest {
         userResponseDtoList.add(new UserResponseDto("consultant", "컨설턴트", ROLE_Consultant));
         userResponseDtoList.add(new UserResponseDto("student1", "학생1", ROLE_Student));
         userResponseDtoList.add(new UserResponseDto("student2", "학생2", ROLE_Student));
-        given(adminService.getUsers("admin")).willReturn(userResponseDtoList);
+        given(adminService.getUsers(anyString())).willReturn(userResponseDtoList);
 
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/admin"))
