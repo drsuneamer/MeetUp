@@ -36,8 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.meetup.backend.entity.user.RoleType.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -132,7 +131,7 @@ public class ScheduleControllerDocsTest {
                 .build();
 
         Long scheduleId = 1L;
-        given(scheduleService.createSchedule(userInfoDto.getId(), scheduleRequestDto)).willReturn(scheduleId);
+        given(scheduleService.createSchedule(anyString(), any(ScheduleRequestDto.class))).willReturn(scheduleId);
 
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/schedule")
@@ -169,7 +168,7 @@ public class ScheduleControllerDocsTest {
                 .build();
 
         Long scheduleId = 1L;
-        given(scheduleService.updateSchedule(userInfoDto.getId(), scheduleRequestDto)).willReturn(scheduleId);
+        given(scheduleService.updateSchedule(anyString(), any(ScheduleUpdateRequestDto.class))).willReturn(scheduleId);
 
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/schedule")
