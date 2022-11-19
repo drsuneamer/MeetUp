@@ -161,7 +161,7 @@ class MeetingControllerDocsTest {
         meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(1L).displayName("1팀").build());
         meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(2L).displayName("2팀").build());
         meetingChannelDtoList.add(MeetingChannelDto.builder().meetupId(3L).displayName("3팀").build());
-        given(channelUserService.getMeetingChannelByUsers("userId", "managerId"))
+        given(channelUserService.getMeetingChannelByUsers(anyString(), anyString()))
                 .willReturn(meetingChannelDtoList);
 
         // when, then
