@@ -92,7 +92,7 @@ const WeeklyCalendarBody = () => {
     if (userId && sunday) {
       dispatch(fetchSchedule(thunkAPI));
     }
-  }, []);
+  }, [sunday]);
 
   function renderHoliday() {
     const holidayResult: Week[] = [];
