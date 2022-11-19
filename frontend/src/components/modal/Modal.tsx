@@ -58,9 +58,8 @@ const EventModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
 
-  const startTimeValue = startTime.value;
-
   const newStartTime = () => {
+    const startTimeValue = startTime.value;
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
       const hour = startTimeNewValue.slice(0, 2) + ':';
@@ -76,8 +75,8 @@ const EventModal = () => {
     return start;
   };
 
-  const endTimeValue = endTime.value;
   const newEndTime = () => {
+    const endTimeValue = endTime.value;
     if (endTimeValue.length === 3) {
       const endTimeNewValue = '0' + endTimeValue;
       const hour = endTimeNewValue.slice(0, 2) + ':';
@@ -105,6 +104,7 @@ const EventModal = () => {
     setContent(e.currentTarget.value);
   };
 
+  // 참여하고 있는 채널
   const onAlarmChannel = (e: any, value: any) => {
     if (value !== null) {
       const alarmChannelValue = value.meetupId || '';
@@ -113,10 +113,12 @@ const EventModal = () => {
     }
   };
 
+  // 공개, 비공개 여부
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
 
+  // 그룹
   const onGroupChange = (e: any, value: any) => {
     if (value !== null) {
       const partyValue = value.id || undefined;
@@ -148,7 +150,6 @@ const EventModal = () => {
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    handleResetInput();
     handleResetInput();
     setAlarmChannelId(0);
     setAlarmChannel({ meetupId: 0, displayName: '' });
