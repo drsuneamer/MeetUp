@@ -41,7 +41,7 @@ const EventModal = () => {
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [alarmChannels, setAlarmChannels] = useState([]);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(true);
   const [groupId, setGroupId] = useState<number>(0);
   const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
