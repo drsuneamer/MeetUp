@@ -125,7 +125,7 @@ public class UserControllerDocsTest {
     }
 
     @Test
-    public void getWebex() throws Exception {
+    public void getMyWebex() throws Exception {
         UserInfoDto userInfoDto = new UserInfoDto("userId", "userNickname");
         UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
@@ -134,6 +134,23 @@ public class UserControllerDocsTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex"))
                 .andExpect(status().isOk())
                 .andDo(document("webex-read",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("webexUrl").description("현재 로그인중인 user의 webex URL")
+                        )
+                ));
+
+    }
+
+    @Test
+    public void getWebex() throws Exception {
+        UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
+        given(userService.getWebexUrl("userId")).willReturn(userWebexInfoDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex/userId"))
+                .andExpect(status().isOk())
+                .andDo(document("webex-read-by-userId",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(

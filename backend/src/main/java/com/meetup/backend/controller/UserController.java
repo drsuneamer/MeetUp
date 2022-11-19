@@ -1,6 +1,7 @@
 package com.meetup.backend.controller;
 
 import com.meetup.backend.dto.user.LoginRequestDto;
+import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.user.UserService;
@@ -26,9 +27,10 @@ public class UserController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDto requestDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto requestDto) {
         log.info("login");
-        return ResponseEntity.status(OK).body(userService.login(requestDto));
+        LoginResponseDto loginResponseDto = userService.login(requestDto);
+        return ResponseEntity.status(OK).body(loginResponseDto);
     }
 
     @GetMapping("/logout")
@@ -44,17 +46,20 @@ public class UserController {
     }
 
     @GetMapping("/webex")
-    public ResponseEntity<?> getMyWebex() {
-        return ResponseEntity.status(OK).body(userService.getWebexUrl(authService.getMyInfoSecret().getId()));
+    public ResponseEntity<UserWebexInfoDto> getMyWebex() {
+        UserWebexInfoDto userWebexInfoDto = userService.getWebexUrl(authService.getMyInfoSecret().getId());
+        return ResponseEntity.status(OK).body(userWebexInfoDto);
     }
 
     @GetMapping("/webex/{userId}")
-    public ResponseEntity<?> getWebex(@PathVariable("userId") String userId) {
-        return ResponseEntity.status(OK).body(userService.getWebexUrl(userId));
+    public ResponseEntity<UserWebexInfoDto> getWebex(@PathVariable("userId") String userId) {
+        UserWebexInfoDto userWebexInfoDto = userService.getWebexUrl(userId);
+        return ResponseEntity.status(OK).body(userWebexInfoDto);
     }
 
     @GetMapping("/nickname/{userId}")
-    public ResponseEntity<?> getUserNickname(@PathVariable("userId") String userId) {
-        return ResponseEntity.status(OK).body(userService.getNickname(userId, authService.getMMSessionToken(authService.getMyInfoSecret().getId())));
+    public ResponseEntity<String> getUserNickname(@PathVariable("userId") String userId) {
+        String nickName = userService.getNickname(userId, authService.getMMSessionToken(authService.getMyInfoSecret().getId()));
+        return ResponseEntity.status(OK).body(nickName);
     }
 }
