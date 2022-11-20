@@ -1,4 +1,4 @@
-= Info`Mansion API Docs
+= MeetUp API Docs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -25,46 +25,396 @@ MeetUp REST API 명세서입니다.
 | API를 사용하기 위한 인증 키
 |===
 
-=== 공통 Response Body
-
-|===
-| field | 설명
-
-| `code`
-| 응답 코드
-
-| `message`
-| 예외사항 내용 등 응답 메세지
-
-| `data`
-| 실제 반환될 데이터
-|===
-
 ---
 
 [[Meeting-API]]
-= Meeting-API
+= Meeting API
 
-[[Stuff-조회1]]
-== Stuff 조회
+[[Meeting-신청]]
+== Meeting 신청
 
-stuffId로 Stuff를 조회하는 API
+Meeting을 신청하는 API
 
 === Http Request
 
-include::{snippets}/meeting_create/http-request.adoc[]
+include::{snippets}/meeting-create/http-request.adoc[]
 
 === Request Body
 
-include::{snippets}/meeting_create/request-fields.adoc[]
+include::{snippets}/meeting-create/request-fields.adoc[]
 
 === Http Response
 
-include::{snippets}/meeting_create/http-response.adoc[]
+include::{snippets}/meeting-create/http-response.adoc[]
 
 === Response fields
 
-include::{snippets}/meeting_create/response-body.adoc[]
+include::{snippets}/meeting-create/response-body.adoc[]
 
+---
+
+[[Meeting-수정]]
+== Meeting 수정
+
+Meeting을 수정하는 API
+
+=== Http Request
+
+include::{snippets}/meeting-update/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meeting-update/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meeting-update/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meeting-update/response-body.adoc[]
+
+---
+
+[[Meeting-삭제]]
+== Meeting 삭제
+
+Meeting을 삭제하는 API
+
+=== Http Request
+
+include::{snippets}/meeting-delete/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/meeting-delete/http-response.adoc[]
+
+---
+
+[[MeetUp-관리자-채널-목록]]
+== MeetUp 관리자의 채널 목록
+
+MeetUp 관리자의 채널 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/channel-list-find-by-managerId/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/channel-list-find-by-managerId/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/channel-list-find-by-managerId/response-body.adoc[]
+
+---
+
+[[Schedule-API]]
+= Schedule API
+
+[[Schedule-생성]]
+== Schedule 생성
+
+Schedule 생성하는 API
+
+=== Http Request
+
+include::{snippets}/schedule-create/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/schedule-create/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/schedule-create/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/schedule-create/response-body.adoc[]
+
+---
+
+[[Schedule-삭제]]
+== Schedule 삭제
+
+Schedule 삭제하는 API
+
+=== Http Request
+
+include::{snippets}/schedule-delete/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/schedule-delete/http-response.adoc[]
+
+---
+
+[[Schedule-수정]]
+== Schedule 수정
+
+Schedule 수정하는 API
+
+=== Http Request
+
+include::{snippets}/schedule-update/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/schedule-update/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/schedule-update/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/schedule-update/response-body.adoc[]
+
+---
+
+[[Schedule-Meeting-디테일-조회]]
+== Schedule&Meeting 디테일 조회
+
+Schedule & Meeting 디테일 조회하는 API
+
+=== Http Request
+
+include::{snippets}/schedule(meeting)-detail-by-scheduleId/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/schedule(meeting)-detail-by-scheduleId/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/schedule(meeting)-detail-by-scheduleId/response-body.adoc[]
+
+---
+
+[[대상-Schedule-Meeting-1주일-조회]]
+== 대상의 Schedule&Meeting 1주일 조회
+
+대상(targetId)의 Schedule & Meeting을 1주일 조회하는 API
+
+=== Http Request
+
+include::{snippets}/target-user-schedule-list/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/target-user-schedule-list/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/target-user-schedule-list/response-body.adoc[]
+
+---
+
+[[Group-API]]
+= Group API
+
+[[Group-생성]]
+== Group 생성
+
+Group을 생성하는 API
+
+=== Http Request
+
+include::{snippets}/group-create/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/group-create/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/group-create/http-response.adoc[]
+
+---
+
+[[Group-삭제]]
+== Group 삭제
+
+Group을 삭제하는 API
+
+=== Http Request
+
+include::{snippets}/group-delete/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/group-delete/http-response.adoc[]
+
+---
+
+[[Group-멤버-조회]]
+== Group 멤버 조회
+
+Group의 멤버를 조회하는 API
+
+=== Http Request
+
+include::{snippets}/group-member-list/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/group-member-list/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/group-member-list/response-body.adoc[]
+
+---
+
+[[Group-목록-조회]]
+== Group 목록 조회
+
+내 Group의 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/my-group-list/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/my-group-list/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/my-group-list/response-body.adoc[]
+
+---
+
+[[Admin-API]]
+= Admin API
+
+[[Admin-회원가입]]
+== Admin 회원가입
+
+관리자 회원가입 API
+
+=== Http Request
+
+include::{snippets}/admin-signup/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/admin-signup/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/admin-signup/http-response.adoc[]
+
+---
+
+[[Admin-로그인]]
+== Admin 로그인
+
+관리자 로그인 API
+
+=== Http Request
+
+include::{snippets}/admin-login/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/admin-login/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/admin-login/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/admin-login/response-body.adoc[]
+
+---
+
+[[Admin이-User-권한-변경]]
+== Admin이 User의 권한 변경
+
+관리자가 사용자의 권한을 변경하는 API
+
+=== Http Request
+
+include::{snippets}/admin-change-role/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/admin-change-role/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/admin-change-role/http-response.adoc[]
+
+---
+
+[[User-권한-정보-목록]]
+== Admin이 User의 권한 정보 목록 조회
+
+관리자가 사용자의 권한 정보 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/get-user-role-list-by-admin/http-request.adoc[]
+
+=== Http Response
+
+include::{snippets}/get-user-role-list-by-admin/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/get-user-role-list-by-admin/response-body.adoc[]
+
+---
+
+[[User-API]]
+= User API
+
+[[User-로그인]]
+== User 로그인
+
+User 로그인 API
+
+=== Http Request
+
+include::{snippets}/user-login/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/user-login/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/user-login/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/user-login/response-body.adoc[]
+
+---
+
+[[User-로그아웃]]
+== User 로그아웃
+
+User 로그아웃 API
+
+=== Http Request
+
+include::{snippets}/user-logout/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/user-logout/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/user-logout/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/user-logout/response-body.adoc[]
 
 ---

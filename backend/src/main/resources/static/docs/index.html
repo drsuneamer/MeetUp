@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Info`Mansion API Docs</title>
+<title>MeetUp API Docs</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,7 +439,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>Info`Mansion API Docs</h1>
+<h1>MeetUp API Docs</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
@@ -450,17 +450,161 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#commont">공통사항</a>
 <ul class="sectlevel2">
 <li><a href="#_header">Header</a></li>
-<li><a href="#_공통_response_body">공통 Response Body</a></li>
 </ul>
 </li>
-<li><a href="#Meeting-API">Meeting-API</a>
+<li><a href="#Meeting-API">Meeting API</a>
 <ul class="sectlevel1">
-<li><a href="#Stuff-조회1">Stuff 조회</a>
+<li><a href="#Meeting-신청">Meeting 신청</a>
 <ul class="sectlevel2">
 <li><a href="#_http_request">Http Request</a></li>
 <li><a href="#_request_body">Request Body</a></li>
 <li><a href="#_http_response">Http Response</a></li>
 <li><a href="#_response_fields">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Meeting-수정">Meeting 수정</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_2">Http Request</a></li>
+<li><a href="#_request_body_2">Request Body</a></li>
+<li><a href="#_http_response_2">Http Response</a></li>
+<li><a href="#_response_fields_2">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Meeting-삭제">Meeting 삭제</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_3">Http Request</a></li>
+<li><a href="#_http_response_3">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#MeetUp-관리자-채널-목록">MeetUp 관리자의 채널 목록</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_4">Http Request</a></li>
+<li><a href="#_http_response_4">Http Response</a></li>
+<li><a href="#_response_fields_3">Response fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Schedule-API">Schedule API</a>
+<ul class="sectlevel1">
+<li><a href="#Schedule-생성">Schedule 생성</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_5">Http Request</a></li>
+<li><a href="#_request_body_3">Request Body</a></li>
+<li><a href="#_http_response_5">Http Response</a></li>
+<li><a href="#_response_fields_4">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Schedule-삭제">Schedule 삭제</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_6">Http Request</a></li>
+<li><a href="#_http_response_6">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#Schedule-수정">Schedule 수정</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_7">Http Request</a></li>
+<li><a href="#_request_body_4">Request Body</a></li>
+<li><a href="#_http_response_7">Http Response</a></li>
+<li><a href="#_response_fields_5">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Schedule-Meeting-디테일-조회">Schedule&amp;Meeting 디테일 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_8">Http Request</a></li>
+<li><a href="#_http_response_8">Http Response</a></li>
+<li><a href="#_response_fields_6">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#대상-Schedule-Meeting-1주일-조회">대상의 Schedule&amp;Meeting 1주일 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_9">Http Request</a></li>
+<li><a href="#_http_response_9">Http Response</a></li>
+<li><a href="#_response_fields_7">Response fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Group-API">Group API</a>
+<ul class="sectlevel1">
+<li><a href="#Group-생성">Group 생성</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_10">Http Request</a></li>
+<li><a href="#_request_body_5">Request Body</a></li>
+<li><a href="#_http_response_10">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#Group-삭제">Group 삭제</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_11">Http Request</a></li>
+<li><a href="#_http_response_11">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#Group-멤버-조회">Group 멤버 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_12">Http Request</a></li>
+<li><a href="#_http_response_12">Http Response</a></li>
+<li><a href="#_response_fields_8">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Group-목록-조회">Group 목록 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_13">Http Request</a></li>
+<li><a href="#_http_response_13">Http Response</a></li>
+<li><a href="#_response_fields_9">Response fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Admin-API">Admin API</a>
+<ul class="sectlevel1">
+<li><a href="#Admin-회원가입">Admin 회원가입</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_14">Http Request</a></li>
+<li><a href="#_request_body_6">Request Body</a></li>
+<li><a href="#_http_response_14">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#Admin-로그인">Admin 로그인</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_15">Http Request</a></li>
+<li><a href="#_request_body_7">Request Body</a></li>
+<li><a href="#_http_response_15">Http Response</a></li>
+<li><a href="#_response_fields_10">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#Admin이-User-권한-변경">Admin이 User의 권한 변경</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_16">Http Request</a></li>
+<li><a href="#_request_body_8">Request Body</a></li>
+<li><a href="#_http_response_16">Http Response</a></li>
+</ul>
+</li>
+<li><a href="#User-권한-정보-목록">Admin이 User의 권한 정보 목록 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_17">Http Request</a></li>
+<li><a href="#_http_response_17">Http Response</a></li>
+<li><a href="#_response_fields_11">Response fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#User-API">User API</a>
+<ul class="sectlevel1">
+<li><a href="#User-로그인">User 로그인</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_18">Http Request</a></li>
+<li><a href="#_request_body_9">Request Body</a></li>
+<li><a href="#_http_response_18">Http Response</a></li>
+<li><a href="#_response_fields_12">Response fields</a></li>
+</ul>
+</li>
+<li><a href="#User-로그아웃">User 로그아웃</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_19">Http Request</a></li>
+<li><a href="#_request_body_10">Request Body</a></li>
+<li><a href="#_http_response_19">Http Response</a></li>
+<li><a href="#_response_fields_13">Response fields</a></li>
 </ul>
 </li>
 </ul>
@@ -503,45 +647,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tr>
 </tbody>
 </table>
-</div>
-<div class="sect2">
-<h3 id="_공통_response_body"><a class="link" href="#_공통_response_body">공통 Response Body</a></h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">field</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">예외사항 내용 등 응답 메세지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">실제 반환될 데이터</p></td>
-</tr>
-</tbody>
-</table>
 <hr>
 </div>
 </div>
 </div>
-<h1 id="Meeting-API" class="sect0"><a class="link" href="#Meeting-API">Meeting-API</a></h1>
+<h1 id="Meeting-API" class="sect0"><a class="link" href="#Meeting-API">Meeting API</a></h1>
 <div class="sect1">
-<h2 id="Stuff-조회1"><a class="link" href="#Stuff-조회1">Stuff 조회</a></h2>
+<h2 id="Meeting-신청"><a class="link" href="#Meeting-신청">Meeting 신청</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>stuffId로 Stuff를 조회하는 API</p>
+<p>Meeting을 신청하는 API</p>
 </div>
 <div class="sect2">
 <h3 id="_http_request"><a class="link" href="#_http_request">Http Request</a></h3>
@@ -644,11 +759,1379 @@ Content-Length: 1
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Meeting-수정"><a class="link" href="#Meeting-수정">Meeting 수정</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Meeting을 수정하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_2"><a class="link" href="#_http_request_2">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /meeting HTTP/1.1
+Content-Type: application/json
+Content-Length: 185
+Host: localhost:8080
+
+{
+  "id" : 1,
+  "start" : "2022-11-15T16:00:00",
+  "end" : "2022-11-15T18:00:00",
+  "title" : "미팅 제목",
+  "content" : "미팅 내용",
+  "meetupId" : 1,
+  "open" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_2"><a class="link" href="#_request_body_2">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅의 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅의 종료 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>meetupId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">해당 미팅의 밋업 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>open</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미팅의 공개 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_2"><a class="link" href="#_http_response_2">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 1
+
+1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_2"><a class="link" href="#_response_fields_2">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">1</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Meeting-삭제"><a class="link" href="#Meeting-삭제">Meeting 삭제</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Meeting을 삭제하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_3"><a class="link" href="#_http_request_3">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /meeting/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_3"><a class="link" href="#_http_response_3">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="MeetUp-관리자-채널-목록"><a class="link" href="#MeetUp-관리자-채널-목록">MeetUp 관리자의 채널 목록</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MeetUp 관리자의 채널 목록을 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_4"><a class="link" href="#_http_request_4">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /meeting/channel/managerId HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_4"><a class="link" href="#_http_response_4">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 155
+
+[ {
+  "meetupId" : 1,
+  "displayName" : "1팀"
+}, {
+  "meetupId" : 2,
+  "displayName" : "2팀"
+}, {
+  "meetupId" : 3,
+  "displayName" : "3팀"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_3"><a class="link" href="#_response_fields_3">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
+  "meetupId" : 1,
+  "displayName" : "1��"
+}, {
+  "meetupId" : 2,
+  "displayName" : "2��"
+}, {
+  "meetupId" : 3,
+  "displayName" : "3��"
+} ]</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<h1 id="Schedule-API" class="sect0"><a class="link" href="#Schedule-API">Schedule API</a></h1>
+<div class="sect1">
+<h2 id="Schedule-생성"><a class="link" href="#Schedule-생성">Schedule 생성</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Schedule 생성하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_5"><a class="link" href="#_http_request_5">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /schedule HTTP/1.1
+Content-Type: application/json
+Content-Length: 156
+Host: localhost:8080
+
+{
+  "start" : "2022-11-18 12:00:00",
+  "end" : "2022-11-18 13:00:00",
+  "title" : "스케줄 제목",
+  "content" : "점심 시간",
+  "open" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_3"><a class="link" href="#_request_body_3">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 끝나는 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>open</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 공개 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_5"><a class="link" href="#_http_response_5">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 1
+
+1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_4"><a class="link" href="#_response_fields_4">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">1</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Schedule-삭제"><a class="link" href="#Schedule-삭제">Schedule 삭제</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Schedule 삭제하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_6"><a class="link" href="#_http_request_6">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /schedule/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_6"><a class="link" href="#_http_response_6">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Schedule-수정"><a class="link" href="#Schedule-수정">Schedule 수정</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Schedule 수정하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_7"><a class="link" href="#_http_request_7">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /schedule HTTP/1.1
+Content-Type: application/json
+Content-Length: 169
+Host: localhost:8080
+
+{
+  "id" : 1,
+  "start" : "2022-11-18 12:00:00",
+  "end" : "2022-11-18 13:00:00",
+  "title" : "스케줄 제목",
+  "content" : "점심 시간",
+  "open" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_4"><a class="link" href="#_request_body_4">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>start</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 시작 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 끝나는 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>open</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스케줄 공개 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_7"><a class="link" href="#_http_response_7">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 1
+
+1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">1</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Schedule-Meeting-디테일-조회"><a class="link" href="#Schedule-Meeting-디테일-조회">Schedule&amp;Meeting 디테일 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Schedule &amp; Meeting 디테일 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_8"><a class="link" href="#_http_request_8">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /schedule/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_8"><a class="link" href="#_http_response_8">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 432
+
+{
+  "id" : 1,
+  "type" : "Schedule",
+  "start" : "2022-11-16T12:00:00",
+  "end" : "2022-11-16T13:00:00",
+  "title" : "내 스케줄",
+  "content" : "점심 약속",
+  "open" : true,
+  "managerId" : "managerId",
+  "managerName" : "manager",
+  "userId" : "userId",
+  "userName" : "hong",
+  "myWebex" : "www.myWebex.com",
+  "diffWebex" : "www.diffWebex.com",
+  "meetupId" : 3,
+  "partyId" : 2,
+  "partyName" : "2팀"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "id" : 1,
+  "type" : "Schedule",
+  "start" : "2022-11-16T12:00:00",
+  "end" : "2022-11-16T13:00:00",
+  "title" : "�궡 �뒪耳�以�",
+  "content" : "�젏�떖 �빟�냽",
+  "open" : true,
+  "managerId" : "managerId",
+  "managerName" : "manager",
+  "userId" : "userId",
+  "userName" : "hong",
+  "myWebex" : "www.myWebex.com",
+  "diffWebex" : "www.diffWebex.com",
+  "meetupId" : 3,
+  "partyId" : 2,
+  "partyName" : "2��"
+}</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="대상-Schedule-Meeting-1주일-조회"><a class="link" href="#대상-Schedule-Meeting-1주일-조회">대상의 Schedule&amp;Meeting 1주일 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>대상(targetId)의 Schedule &amp; Meeting을 1주일 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_9"><a class="link" href="#_http_request_9">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /schedule?targetId=coach1&amp;date=2022-11-13+00%3A00%3A00 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_9"><a class="link" href="#_http_response_9">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 2265
+
+{
+  "meetingFromMe" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-15T11:00:00",
+    "end" : "2022-11-15T12:00:00",
+    "title" : "개인 미팅 신청",
+    "content" : "개인 미팅 신청합니다.",
+    "userId" : "userId",
+    "userName" : "hong",
+    "meetupName" : "전체",
+    "meetupColor" : "#FFFFF"
+  } ],
+  "meetingToMe" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T15:00:00",
+    "end" : "2022-11-16T16:00:00",
+    "title" : "개인 미팅 신청",
+    "content" : "개인 미팅 신청합니다.",
+    "userId" : "user2",
+    "userName" : "user2",
+    "meetupName" : "2팀",
+    "meetupColor" : "#FFFFF"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T17:00:00",
+    "end" : "2022-11-16T18:00:00",
+    "title" : "개인 미팅",
+    "content" : "개인 미팅 신청합니다.",
+    "userId" : "user3",
+    "userName" : "user3",
+    "meetupName" : "3팀",
+    "meetupColor" : "#FFFFF"
+  } ],
+  "scheduleResponseList" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-15T13:00:00",
+    "end" : "2022-11-15T14:00:00",
+    "title" : "점심 약속",
+    "content" : "점심",
+    "userId" : "userId",
+    "userName" : "hong"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T15:00:00",
+    "end" : "2022-11-16T16:00:00",
+    "title" : "개인 스케줄",
+    "content" : "개인 스케줄입니다.",
+    "userId" : "userId",
+    "userName" : "hong"
+  } ],
+  "partyMeetingResponseList" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-17T15:00:00",
+    "end" : "2022-11-17T16:00:00",
+    "title" : "2팀 미팅 신청",
+    "content" : "기획 피드백",
+    "userId" : "user2",
+    "userName" : "user2",
+    "meetupName" : "2팀",
+    "meetupColor" : "#FFFFF",
+    "partyId" : null,
+    "partyName" : "2팀"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-18T15:00:00",
+    "end" : "2022-11-18T16:00:00",
+    "title" : "3팀 미팅 신청",
+    "content" : "주제 피드백",
+    "userId" : "user7",
+    "userName" : "user7",
+    "meetupName" : "7팀",
+    "meetupColor" : "#FFFFF",
+    "partyId" : null,
+    "partyName" : "7팀"
+  } ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "meetingFromMe" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-15T11:00:00",
+    "end" : "2022-11-15T12:00:00",
+    "title" : "媛쒖씤 誘명똿 �떊泥�",
+    "content" : "媛쒖씤 誘명똿 �떊泥��빀�땲�떎.",
+    "userId" : "userId",
+    "userName" : "hong",
+    "meetupName" : "�쟾泥�",
+    "meetupColor" : "#FFFFF"
+  } ],
+  "meetingToMe" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T15:00:00",
+    "end" : "2022-11-16T16:00:00",
+    "title" : "媛쒖씤 誘명똿 �떊泥�",
+    "content" : "媛쒖씤 誘명똿 �떊泥��빀�땲�떎.",
+    "userId" : "user2",
+    "userName" : "user2",
+    "meetupName" : "2��",
+    "meetupColor" : "#FFFFF"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T17:00:00",
+    "end" : "2022-11-16T18:00:00",
+    "title" : "媛쒖씤 誘명똿",
+    "content" : "媛쒖씤 誘명똿 �떊泥��빀�땲�떎.",
+    "userId" : "user3",
+    "userName" : "user3",
+    "meetupName" : "3��",
+    "meetupColor" : "#FFFFF"
+  } ],
+  "scheduleResponseList" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-15T13:00:00",
+    "end" : "2022-11-15T14:00:00",
+    "title" : "�젏�떖 �빟�냽",
+    "content" : "�젏�떖",
+    "userId" : "userId",
+    "userName" : "hong"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-16T15:00:00",
+    "end" : "2022-11-16T16:00:00",
+    "title" : "媛쒖씤 �뒪耳�以�",
+    "content" : "媛쒖씤 �뒪耳�以꾩엯�땲�떎.",
+    "userId" : "userId",
+    "userName" : "hong"
+  } ],
+  "partyMeetingResponseList" : [ {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-17T15:00:00",
+    "end" : "2022-11-17T16:00:00",
+    "title" : "2�� 誘명똿 �떊泥�",
+    "content" : "湲고쉷 �뵾�뱶諛�",
+    "userId" : "user2",
+    "userName" : "user2",
+    "meetupName" : "2��",
+    "meetupColor" : "#FFFFF",
+    "partyId" : null,
+    "partyName" : "2��"
+  }, {
+    "id" : null,
+    "open" : true,
+    "start" : "2022-11-18T15:00:00",
+    "end" : "2022-11-18T16:00:00",
+    "title" : "3�� 誘명똿 �떊泥�",
+    "content" : "二쇱젣 �뵾�뱶諛�",
+    "userId" : "user7",
+    "userName" : "user7",
+    "meetupName" : "7��",
+    "meetupColor" : "#FFFFF",
+    "partyId" : null,
+    "partyName" : "7��"
+  } ]
+}</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<h1 id="Group-API" class="sect0"><a class="link" href="#Group-API">Group API</a></h1>
+<div class="sect1">
+<h2 id="Group-생성"><a class="link" href="#Group-생성">Group 생성</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Group을 생성하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_10"><a class="link" href="#_http_request_10">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /group HTTP/1.1
+Content-Type: application/json
+Content-Length: 69
+Host: localhost:8080
+
+{
+  "name" : "2팀",
+  "members" : [ "user1", "user2", "user3" ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_5"><a class="link" href="#_request_body_5">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">그룹 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>members[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">그룹에 초대할 사용자들</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_10"><a class="link" href="#_http_response_10">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Group-삭제"><a class="link" href="#Group-삭제">Group 삭제</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Group을 삭제하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_11"><a class="link" href="#_http_request_11">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /group/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_11"><a class="link" href="#_http_response_11">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Group-멤버-조회"><a class="link" href="#Group-멤버-조회">Group 멤버 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Group의 멤버를 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_12"><a class="link" href="#_http_request_12">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /group/1 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_12"><a class="link" href="#_http_response_12">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 144
+
+[ {
+  "id" : "user1",
+  "nickname" : "kim"
+}, {
+  "id" : "user2",
+  "nickname" : "lee"
+}, {
+  "id" : "user3",
+  "nickname" : "park"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_8"><a class="link" href="#_response_fields_8">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
+  "id" : "user1",
+  "nickname" : "kim"
+}, {
+  "id" : "user2",
+  "nickname" : "lee"
+}, {
+  "id" : "user3",
+  "nickname" : "park"
+} ]</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Group-목록-조회"><a class="link" href="#Group-목록-조회">Group 목록 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>내 Group의 목록을 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_13"><a class="link" href="#_http_request_13">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /group HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_13"><a class="link" href="#_http_response_13">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 178
+
+[ {
+  "id" : 1,
+  "name" : "1팀",
+  "leader" : true
+}, {
+  "id" : 2,
+  "name" : "2팀",
+  "leader" : false
+}, {
+  "id" : 2,
+  "name" : "3팀",
+  "leader" : false
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_9"><a class="link" href="#_response_fields_9">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
+  "id" : 1,
+  "name" : "1��",
+  "leader" : true
+}, {
+  "id" : 2,
+  "name" : "2��",
+  "leader" : false
+}, {
+  "id" : 2,
+  "name" : "3��",
+  "leader" : false
+} ]</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<h1 id="Admin-API" class="sect0"><a class="link" href="#Admin-API">Admin API</a></h1>
+<div class="sect1">
+<h2 id="Admin-회원가입"><a class="link" href="#Admin-회원가입">Admin 회원가입</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>관리자 회원가입 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_14"><a class="link" href="#_http_request_14">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /admin/signup HTTP/1.1
+Content-Type: application/json
+Content-Length: 77
+Host: localhost:8080
+
+{
+  "id" : "admin",
+  "password" : "admin",
+  "key" : "asklfaejfkasldf"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_6"><a class="link" href="#_request_body_6">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin 계정 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin 비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>key</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin key</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_14"><a class="link" href="#_http_response_14">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Admin-로그인"><a class="link" href="#Admin-로그인">Admin 로그인</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>관리자 로그인 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_15"><a class="link" href="#_http_request_15">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /admin/login HTTP/1.1
+Content-Type: application/json
+Content-Length: 47
+Host: localhost:8080
+
+{
+  "id" : "admin",
+  "password" : "admin"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_7"><a class="link" href="#_request_body_7">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin 계정 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_15"><a class="link" href="#_http_response_15">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 99
+
+{
+  "grantType" : "Bearer",
+  "accessToken" : "access-token",
+  "tokenExpiresIn" : 1999999999
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_10"><a class="link" href="#_response_fields_10">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "grantType" : "Bearer",
+  "accessToken" : "access-token",
+  "tokenExpiresIn" : 1999999999
+}</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="Admin이-User-권한-변경"><a class="link" href="#Admin이-User-권한-변경">Admin이 User의 권한 변경</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>관리자가 사용자의 권한을 변경하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_16"><a class="link" href="#_http_request_16">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /admin/role HTTP/1.1
+Content-Type: application/json
+Content-Length: 170
+Host: localhost:8080
+
+[ {
+  "id" : "coach",
+  "roleType" : "ROLE_Coach"
+}, {
+  "id" : "consultant",
+  "roleType" : "ROLE_Consultant"
+}, {
+  "id" : "pro",
+  "roleType" : "ROLE_Pro"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_8"><a class="link" href="#_request_body_8">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한을 변경할 사용자 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].roleType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">변경할 권한</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_16"><a class="link" href="#_http_response_16">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="User-권한-정보-목록"><a class="link" href="#User-권한-정보-목록">Admin이 User의 권한 정보 목록 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>관리자가 사용자의 권한 정보 목록을 조회하는 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_17"><a class="link" href="#_http_request_17">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /admin HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_17"><a class="link" href="#_http_response_17">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 406
+
+[ {
+  "id" : "coach",
+  "nickname" : "코치",
+  "role" : "ROLE_Coach"
+}, {
+  "id" : "pro",
+  "nickname" : "프로",
+  "role" : "ROLE_Pro"
+}, {
+  "id" : "consultant",
+  "nickname" : "컨설턴트",
+  "role" : "ROLE_Consultant"
+}, {
+  "id" : "student1",
+  "nickname" : "학생1",
+  "role" : "ROLE_Student"
+}, {
+  "id" : "student2",
+  "nickname" : "학생2",
+  "role" : "ROLE_Student"
+} ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_11"><a class="link" href="#_response_fields_11">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">[ {
+  "id" : "coach",
+  "nickname" : "肄붿튂",
+  "role" : "ROLE_Coach"
+}, {
+  "id" : "pro",
+  "nickname" : "�봽濡�",
+  "role" : "ROLE_Pro"
+}, {
+  "id" : "consultant",
+  "nickname" : "而⑥꽕�꽩�듃",
+  "role" : "ROLE_Consultant"
+}, {
+  "id" : "student1",
+  "nickname" : "�븰�깮1",
+  "role" : "ROLE_Student"
+}, {
+  "id" : "student2",
+  "nickname" : "�븰�깮2",
+  "role" : "ROLE_Student"
+} ]</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<h1 id="User-API" class="sect0"><a class="link" href="#User-API">User API</a></h1>
+<div class="sect1">
+<h2 id="User-로그인"><a class="link" href="#User-로그인">User 로그인</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>User 로그인 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_18"><a class="link" href="#_http_request_18">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /user/login HTTP/1.1
+Content-Type: application/json
+Content-Length: 61
+Host: localhost:8080
+
+{
+  "id" : "mattermost@test.com",
+  "password" : "mmpwd"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_9"><a class="link" href="#_request_body_9">Request Body</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mattermost 계정 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mattermost 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_http_response_18"><a class="link" href="#_http_response_18">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+Content-Length: 202
+
+{
+  "id" : "mmid",
+  "nickname" : "hong",
+  "roleType" : "ROLE_Student",
+  "tokenDto" : {
+    "grantType" : "Bearer",
+    "accessToken" : "access-token",
+    "tokenExpiresIn" : 1999999999
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_12"><a class="link" href="#_response_fields_12">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "id" : "mmid",
+  "nickname" : "hong",
+  "roleType" : "ROLE_Student",
+  "tokenDto" : {
+    "grantType" : "Bearer",
+    "accessToken" : "access-token",
+    "tokenExpiresIn" : 1999999999
+  }
+}</code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="User-로그아웃"><a class="link" href="#User-로그아웃">User 로그아웃</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>User 로그아웃 API</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_19"><a class="link" href="#_http_request_19">Http Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /user/logout HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_body_10"><a class="link" href="#_request_body_10">Request Body</a></h3>
+<div class="paragraph">
+<p>Unresolved directive in index.adoc - include::C:\projects\S07P31A102\backend\build\generated-snippets/user-logout/request-fields.adoc[]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_19"><a class="link" href="#_http_response_19">Http Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_13"><a class="link" href="#_response_fields_13">Response fields</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs"></code></pre>
+</div>
+</div>
+<hr>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-11-17 09:25:08 +0900
+Last updated 2022-11-20 16:44:02 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
