@@ -110,7 +110,7 @@ public class MeetupControllerDocsTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/channel"))
                 .andExpect(status().isOk())
-                .andDo(document("channel(activated)-read",
+                .andDo(document("channel-activate-read",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
