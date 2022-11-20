@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.meetup.backend.entity.user.RoleType.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -129,7 +130,7 @@ public class UserControllerDocsTest {
         UserInfoDto userInfoDto = new UserInfoDto("userId", "userNickname");
         UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
-        given(userService.getWebexUrl("userId")).willReturn(userWebexInfoDto);
+        given(userService.getWebexUrl(anyString())).willReturn(userWebexInfoDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex"))
                 .andExpect(status().isOk())
@@ -146,7 +147,7 @@ public class UserControllerDocsTest {
     @Test
     public void getWebex() throws Exception {
         UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
-        given(userService.getWebexUrl("userId")).willReturn(userWebexInfoDto);
+        given(userService.getWebexUrl(anyString())).willReturn(userWebexInfoDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex/userId"))
                 .andExpect(status().isOk())

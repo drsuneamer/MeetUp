@@ -436,10 +436,6 @@ include::{snippets}/webex-update/request-fields.adoc[]
 
 include::{snippets}/webex-update/http-response.adoc[]
 
-=== Response fields
-
-include::{snippets}/webex-update/response-body.adoc[]
-
 ---
 
 [[User-웹엑스-조회]]
@@ -450,10 +446,6 @@ User 웹엑스를 조회하는 API
 === Http Request
 
 include::{snippets}/webex-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/webex-read/request-fields.adoc[]
 
 === Http Response
 
@@ -473,10 +465,6 @@ include::{snippets}/webex-read/response-body.adoc[]
 === Http Request
 
 include::{snippets}/webex-read-by-userId/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/webex-read-by-userId/request-fields.adoc[]
 
 === Http Response
 
@@ -500,10 +488,6 @@ Meetup 등록을 위해 활성화 상태인 소속된 Team 목록을 조회하�
 
 include::{snippets}/team-activate-read/http-request.adoc[]
 
-=== Request Body
-
-include::{snippets}/team-activate-read/request-fields.adoc[]
-
 === Http Response
 
 include::{snippets}/team-activate-read/http-response.adoc[]
@@ -522,10 +506,6 @@ Meetup 등록을 위해 활성화 상태인 소속된 Channel 목록을 조회�
 === Http Request
 
 include::{snippets}/channel-activate-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/channel-activate-read/request-fields.adoc[]
 
 === Http Response
 
@@ -554,10 +534,6 @@ include::{snippets}/meetup-create/request-fields.adoc[]
 
 include::{snippets}/meetup-create/http-response.adoc[]
 
-=== Response fields
-
-include::{snippets}/meetup-create/response-body.adoc[]
-
 ---
 
 [[Meetup-상세-조회]]
@@ -568,10 +544,6 @@ Meetup을 상세 조회하는 API
 === Http Request
 
 include::{snippets}/meetup-detail-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/meetup-detail-read/request-fields.adoc[]
 
 === Http Response
 
@@ -600,10 +572,6 @@ include::{snippets}/meetup-update/request-fields.adoc[]
 
 include::{snippets}/meetup-update/http-response.adoc[]
 
-=== Response fields
-
-include::{snippets}/meetup-update/response-body.adoc[]
-
 ---
 
 [[Meetup-삭제]]
@@ -615,17 +583,9 @@ Meetup을 삭제하는 API
 
 include::{snippets}/meetup-delete/http-request.adoc[]
 
-=== Request Body
-
-include::{snippets}/meetup-delete/request-fields.adoc[]
-
 === Http Response
 
 include::{snippets}/meetup-delete/http-response.adoc[]
-
-=== Response fields
-
-include::{snippets}/meetup-delete/response-body.adoc[]
 
 ---
 
@@ -637,10 +597,6 @@ include::{snippets}/meetup-delete/response-body.adoc[]
 === Http Request
 
 include::{snippets}/calendar-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/calendar-read/request-fields.adoc[]
 
 === Http Response
 
@@ -661,10 +617,6 @@ include::{snippets}/calendar-read/response-body.adoc[]
 
 include::{snippets}/meetup-read/http-request.adoc[]
 
-=== Request Body
-
-include::{snippets}/meetup-read/request-fields.adoc[]
-
 === Http Response
 
 include::{snippets}/meetup-read/http-response.adoc[]
@@ -684,10 +636,6 @@ Meetup에 참여중인 User의 목록을 조회하는 API
 
 include::{snippets}/meetup-users-read/http-request.adoc[]
 
-=== Request Body
-
-include::{snippets}/meetup-users-read/request-fields.adoc[]
-
 === Http Response
 
 include::{snippets}/meetup-users-read/http-response.adoc[]
@@ -705,19 +653,15 @@ include::{snippets}/meetup-users-read/response-body.adoc[]
 
 === Http Request
 
-include::{snippets}/meetup-in-team-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/meetup-in-team-read/request-fields.adoc[]
+include::{snippets}/users-in-team-read/http-request.adoc[]
 
 === Http Response
 
-include::{snippets}/meetup-in-team-read/http-response.adoc[]
+include::{snippets}/users-in-team-read/http-response.adoc[]
 
 === Response fields
 
-include::{snippets}/meetup-in-team-read/response-body.adoc[]
+include::{snippets}/users-in-team-read/response-body.adoc[]
 
 ---
 
@@ -738,10 +682,6 @@ include::{snippets}/channel-create/request-fields.adoc[]
 
 include::{snippets}/channel-create/http-response.adoc[]
 
-=== Response fields
-
-include::{snippets}/channel-create/response-body.adoc[]
-
 ---
 
 [[all-Team-목록-조회]]
@@ -752,10 +692,6 @@ Team비활성화 기능을 위해 모든 Team 목록을 조회하는 API
 === Http Request
 
 include::{snippets}/team-all-read/http-request.adoc[]
-
-=== Request Body
-
-include::{snippets}/team-all-read/request-fields.adoc[]
 
 === Http Response
 
@@ -783,9 +719,5 @@ include::{snippets}/team-activate-update/request-fields.adoc[]
 === Http Response
 
 include::{snippets}/team-activate-update/http-response.adoc[]
-
-=== Response fields
-
-include::{snippets}/team-activate-update/response-body.adoc[]
 
 ---
