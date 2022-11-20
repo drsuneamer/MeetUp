@@ -11,20 +11,14 @@ import { editMeetingDetail, editScheduleDetail } from '../../stores/modules/sche
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import { detailSelector, fetchScheduleDetail } from '../../stores/modules/schedules';
+import Swal from 'sweetalert2';
+
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
-import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
-import Swal from 'sweetalert2';
-import { tScheduleDetail } from '../../types/events';
 
-interface Group {
-  id: number;
-  leader: boolean;
-  name: string;
-}
 
 const EditModal = () => {
   // userId
@@ -33,21 +27,21 @@ const EditModal = () => {
   const dispatch = useAppDispatch();
 
   const channels = useAppSelector(alarmChannelSelector);
-  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
-  const modalSelector = useAppSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
   const { editModalType } = useAppSelector((state) => state.modal);
-
-  const [meetupId, setMeetupId] = useState<number | null>(null);
+  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
+  const modalSelector = useAppSelector(ModalSelector);
+  
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [alarmChannels, setAlarmChannels] = useState([]);
+  const [meetupId, setMeetupId] = useState<number | null>(null);
+  
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
   const { currentDate } = useAppSelector((state) => state.dates);
 
   const weekly = useMemo(() => {

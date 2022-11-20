@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { ModalSelector, setEventModalOpen } from '../../stores/modules/modal';
+import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import SingleSelect from '../common/SingleSelect';
@@ -11,10 +11,10 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { tAlarm } from '../../types/channels';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 import Swal from 'sweetalert2';
 
-import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { getNow } from '../../utils/GetNow';
