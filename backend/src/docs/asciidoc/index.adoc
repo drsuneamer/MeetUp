@@ -418,3 +418,374 @@ include::{snippets}/user-logout/http-response.adoc[]
 include::{snippets}/user-logout/response-body.adoc[]
 
 ---
+
+[[User-웹엑스-설정]]
+== User 웹엑스 설정
+
+User 웹엑스를 설정하는 API
+
+=== Http Request
+
+include::{snippets}/webex-update/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/webex-update/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/webex-update/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/webex-update/response-body.adoc[]
+
+---
+
+[[User-웹엑스-조회]]
+== User 웹엑스 조회
+
+User 웹엑스를 조회하는 API
+
+=== Http Request
+
+include::{snippets}/webex-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/webex-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/webex-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/webex-read/response-body.adoc[]
+
+---
+
+[[대상-User-웹엑스-조회]]
+== 대상 User 웹엑스 조회
+
+대상인 User 웹엑스를 조회하는 API
+
+=== Http Request
+
+include::{snippets}/webex-read-by-userId/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/webex-read-by-userId/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/webex-read-by-userId/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/webex-read-by-userId/response-body.adoc[]
+
+---
+
+[[Meetup-API]]
+= Meetup API
+
+[[Meetup-Team-activate-목록-조회]]
+== Meetup Team activate 목록 조회
+
+Meetup 등록을 위해 활성화 상태인 소속된 Team 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/team-activate-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/team-activate-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/team-activate-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/team-activate-read/response-body.adoc[]
+
+---
+
+[[Meetup-channel-activate-목록-조회]]
+== Meetup channel activate 목록 조회
+
+Meetup 등록을 위해 활성화 상태인 소속된 Channel 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/channel-activate-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/channel-activate-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/channel-activate-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/channel-activate-read/response-body.adoc[]
+
+---
+
+[[Meetup-등록]]
+== Meetup 등록
+
+Meetup을 등록하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-create/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-create/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-create/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-create/response-body.adoc[]
+
+---
+
+[[Meetup-상세-조회]]
+== Meetup 상세 조회
+
+Meetup을 상세 조회하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-detail-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-detail-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-detail-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-detail-read/response-body.adoc[]
+
+---
+
+[[Meetup-수정]]
+== Meetup 수정
+
+Meetup을 수정하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-update/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-update/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-update/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-update/response-body.adoc[]
+
+---
+
+[[Meetup-삭제]]
+== Meetup 삭제
+
+Meetup을 삭제하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-delete/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-delete/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-delete/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-delete/response-body.adoc[]
+
+---
+
+[[Meetup-calendar-목록-조회]]
+== Meetup calendar 목록 조회
+
+현재 참여중인 Meetup으로 등록된 캘린더의 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/calendar-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/calendar-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/calendar-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/calendar-read/response-body.adoc[]
+
+---
+
+[[Meetup-목록-조회]]
+== Meetup 목록 조회
+
+현재 관리중인 Meetup 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-read/response-body.adoc[]
+
+---
+
+[[Meetup-User-목록-조회]]
+== Meetup User 목록 조회
+
+Meetup에 참여중인 User의 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-users-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-users-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-users-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-users-read/response-body.adoc[]
+
+---
+
+[[Users-in-Team-목록-조회]]
+== Users in Team 목록 조회
+
+새로운 채널 생성을 위해 선택된 Team에 속한 User 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/meetup-in-team-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/meetup-in-team-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/meetup-in-team-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/meetup-in-team-read/response-body.adoc[]
+
+---
+
+[[mattermost-new-Channel-생성]]
+== mattermost new Channel 생성
+
+mattermost에서 새로운 Channel을 생성하는 API
+
+=== Http Request
+
+include::{snippets}/channel-create/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/channel-create/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/channel-create/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/channel-create/response-body.adoc[]
+
+---
+
+[[all-Team-목록-조회]]
+== all Team 목록 조회
+
+Team비활성화 기능을 위해 모든 Team 목록을 조회하는 API
+
+=== Http Request
+
+include::{snippets}/team-all-read/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/team-all-read/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/team-all-read/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/team-all-read/response-body.adoc[]
+
+---
+
+[[Team-activate-수정]]
+== Team activate 수정
+
+Team을 활성화/비활성화 수정하는 API
+
+=== Http Request
+
+include::{snippets}/team-activate-update/http-request.adoc[]
+
+=== Request Body
+
+include::{snippets}/team-activate-update/request-fields.adoc[]
+
+=== Http Response
+
+include::{snippets}/team-activate-update/http-response.adoc[]
+
+=== Response fields
+
+include::{snippets}/team-activate-update/response-body.adoc[]
+
+---
