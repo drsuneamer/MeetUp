@@ -5,11 +5,12 @@ import lombok.Getter;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/10/31
  */
 @Getter
 @AllArgsConstructor
 public enum RoleType {
-    Consultant("CON"), Coach("CO"), Pro("P"), Student("S"), Professor("PF");
+    ROLE_Consultant("CON"), ROLE_Coach("CO"), ROLE_Pro("P"), ROLE_Student("S"), ROLE_Professor("PF"), ROLE_Admin("A");
 
     private final String code;
 
@@ -19,6 +20,6 @@ public enum RoleType {
                 return type;
             }
         }
-        return RoleType.Student;
+        return RoleType.ROLE_Student;
     }
 }

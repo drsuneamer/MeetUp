@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * created by myeongseok on 2022/10/23
+ * created by meyeongseok on 2022/11/11
  */
 @Data
 @Builder
@@ -28,11 +28,12 @@ public class MeetingRequestDto {
 
     private String content;
 
-    @NotBlank(message = "미팅의 managerId는 필수 입니다.")
-    private String managerId;
-
-    @NotBlank(message = "미팅의 meetupId는 필수 입니다.")
+    @NotNull(message = "미팅의 meetupId는 필수 입니다.")
     private Long meetupId;
+
+    private Long partyId;
+
+    private boolean open;
 
 
 }

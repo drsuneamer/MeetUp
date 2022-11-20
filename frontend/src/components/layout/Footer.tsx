@@ -15,7 +15,7 @@ function Footer() {
           <a href="https://github.com/drsuneamer">신선영</a>
           <a href="https://github.com/silversalmon216">연승용</a>
           <a href="https://github.com/qminlee723">이규민</a>
-          <p>채민진</p>
+          <a href="https://github.com/MinjinChae">채민진</a>
         </div>
 
         <div className="cursor-default pt-3">
@@ -32,7 +32,7 @@ function Footer() {
         </div>
       </div>
       <div className="flex justify-end mr-[50px] mb-3">
-        <a href="https://www.instagram.com/hellossafy/">
+        <a href="https://www.instagram.com/meetup_ssafy/">
           <img className="w-[40px] mx-1.5" src={insta} alt="instagram" />
         </a>
         <a href="https://www.notion.so/MEET-UP-6622422c3f554e6e852e7996eefeec77">

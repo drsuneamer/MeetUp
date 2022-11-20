@@ -9,13 +9,14 @@ import javax.validation.constraints.NotBlank;
 
 /**
  * created by myeongseok on 2022/10/24
- * updated by myeongseok on 2022/10/24
+ * updated by seongmin on 2022/11/06
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleRequestDto {
+public class
+ScheduleRequestDto {
     @NotBlank(message = "일정의 시작 시간은 필수입니다.")
     private String start;
 
@@ -26,5 +27,7 @@ public class ScheduleRequestDto {
     private String title;
 
     private String content;
+
+    private boolean open;
 
 }

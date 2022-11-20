@@ -1,68 +1,28 @@
-import LogoImage from '../../assets/logo_title.png';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { useState, useCallback } from 'react';
 import DeleteModal from '../modal/DeleteModal';
+import CreateGroupModal from '../modal/CreateGroupModal';
+import MemberListModal from '../../components/modal/MemberListModal';
+import Modal from '../../components/modal/Modal';
+import DetailModal from '../../components/modal/DetailModal';
+import WebexModal from '../../components/modal/WebexModal';
+import EditModal from '../../components/modal/EditModal';
+import HeaderLayout from './HeaderLayout';
 
 function Header() {
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
-  const [modalType, setModalType] = useState('')
-  const onClickToggleModal = useCallback(() => {
-    setIsOpenModal(!isOpenModal);
-  }, [isOpenModal]);
-
-
-  const logout = async () => {
-  await axios
-    .get('http://localhost:8080/api/user/logout', {
-      headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
-      },
-    })
-    .then((res) => {
-      console.log(res);
-    });
-};
-  const nickname = window.localStorage.getItem('nickname');
-  
-  function logoutProps() {
-    setModalType('logout')
-    onClickToggleModal()
-  }
-
   return (
-    <div className="w-[100%] h-[100%] flex flex-col items-center">
-      {isOpenModal && (
-          <DeleteModal onClickToggleModal={onClickToggleModal} props={modalType} submit={logout}>
-          </DeleteModal>
-        )}
-      <div className="fixed flex items-center justify-between bg-[white] w-full h-l border-b-2 border-line z-50">
-        <div>
-          <Link to="/">
-            <img className="h-s ml-2" src={LogoImage} alt="logo" />
-          </Link>
-        </div>
-
-        <div className="flex mr-2">
-          <div className="font-bold pr-1">{nickname}</div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6 pt-0.5 cursor-pointer"
-            onClick={logoutProps}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
-            />
-          </svg>
-        </div>
+    <>
+      <div className="relative z-50 w-[100%] h-[100%] flex flex-col items-center">
+        <MemberListModal />
+        <CreateGroupModal />
+        <DeleteModal />
+        <Modal />
+        <DetailModal />
+        <EditModal />
+        <WebexModal />
       </div>
-    </div>
+      <div className="relative z-30 w-[100%] h-[100%] flex flex-col items-center">
+        <HeaderLayout />
+      </div>
+    </>
   );
 }
 

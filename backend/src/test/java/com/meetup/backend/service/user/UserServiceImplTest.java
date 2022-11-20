@@ -2,53 +2,142 @@ package com.meetup.backend.service.user;
 
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
+import com.meetup.backend.repository.channel.ChannelRepository;
+import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.team.TeamRepository;
+import com.meetup.backend.repository.team.TeamUserRepository;
+import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.util.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
 class UserServiceImplTest {
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RedisUtil redisUtil;
-
-    @Value("${mattermost.id}")
-    private String id;
-
-    @Value("${mattermost.password}")
-    private String password;
-
-    private String mmId;
-
-    @Test
-    @DisplayName("로그인")
-    void login() {
-        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
-        mmId = loginResponse.getId();
-        assertThat(loginResponse).isNotNull();
-    }
-
-    @Test
-    @DisplayName("로그아웃")
-    void logout() {
-        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
-        mmId = loginResponse.getId();
-
-        String mmSessionToken = redisUtil.getData(mmId);
-        log.info("mmSessionToken = {}", mmSessionToken);
-        userService.logout(mmSessionToken);
-    }
+//
+//    @Autowired
+//    private UserService userService;
+//
+//    @Autowired
+//    private RedisUtil redisUtil;
+//
+//    @Autowired
+//    private UserRepository userRepository;
+//
+//    @Autowired
+//    private TeamRepository teamRepository;
+//
+//    @Autowired
+//    private TeamUserRepository teamUserRepository;
+//
+//    @Autowired
+//    private ChannelRepository channelRepository;
+//
+//    @Autowired
+//    private ChannelUserRepository channelUserRepository;
+//
+//    @Value("${mattermost.id}")
+//    private String id;
+//
+//    @Value("${mattermost.password}")
+//    private String password;
+//
+//    @Value("${crypto.secret}")
+//    private String secretKey;
+//
+//    @Value("${crypto.iv}")
+//    private String iv;
+//
+//    private String mmId;
+//
+//    private String mmSessionToken;
+//
+//    @BeforeEach
+//    void Before() {
+//        String encryptPassword;
+//        try {
+//            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+//            cipher.init(Cipher.ENCRYPT_MODE,
+//                    new SecretKeySpec(secretKey.getBytes(), "AES"),
+//                    new IvParameterSpec(iv.getBytes()));
+//
+//            encryptPassword = new String(Base64.getEncoder().encode(cipher.doFinal(password.getBytes("UTF-8"))));
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, encryptPassword));
+//        mmId = loginResponse.getId();
+//        mmSessionToken = redisUtil.getData(mmId);
+//    }
+//
+//    @AfterEach
+//    void After() {
+//        channelUserRepository.deleteAll();
+//        channelRepository.deleteAll();
+//        teamUserRepository.deleteAll();
+//        teamRepository.deleteAll();
+//        userRepository.deleteAll();
+//
+//    }
+//
+//    @Test
+//    @DisplayName("로그인")
+//    void login() {
+//        LoginResponseDto loginResponse = userService.login(new LoginRequestDto(id, password));
+//        mmId = loginResponse.getId();
+//        assertThat(loginResponse).isNotNull();
+//
+//        assertThat(teamRepository.findAll().size()).isNotSameAs(0);
+//
+//        assertThat(teamUserRepository.findAll().size()).isNotSameAs(0);
+//
+//        assertThat(channelRepository.findAll().size()).isNotSameAs(0);
+//
+//        assertThat(channelUserRepository.findAll().size()).isNotSameAs(0);
+//
+//        assertThat(userRepository.findAll().size()).isNotSameAs(0);
+//    }
+//
+//    @Test
+//    @DisplayName("로그아웃")
+//    void logout() {
+//
+//        String mmSessionToken = redisUtil.getData(mmId);
+//        log.info("mmSessionToken = {}", mmSessionToken);
+//        userService.logout(mmSessionToken);
+//    }
+//
+//    @Test
+//    @DisplayName("웹엑스 주소 바꾸기 & 가져오기")
+//    void changeAndGetWebexUrl() {
+//        String webexUrl = "웹엑스 주소";
+//        userService.changeWebexUrl(mmId, webexUrl);
+//        String webex = userService.getWebexUrl(mmId).getWebexUrl();
+//        assertThat(webex).isEqualTo(webexUrl);
+//    }
+//
+//    @Test
+//    @DisplayName("닉네임 불러오기")
+//    void getNickname() {
+//        assertThat(userService.getNickname(mmId, mmSessionToken)).isEqualTo(userRepository.findById(mmId).get().getNickname());
+//
+//    }
 
 }

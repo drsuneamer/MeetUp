@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Damion&display=swap');
-@import url('http://fonts.googleapis.com/earlyaccess/notosanskr.css');
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/variable/pretendardvariable-dynamic-subset.css');
+@import url('https://fonts.cdnfonts.com/css/raleway-dots');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
 
 body {
   margin: 0;

@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.4'
 	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 	id 'java'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.meetup'
@@ -9,11 +10,14 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
+	asciidoctorExtensions
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
 }
-
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
 repositories {
 	mavenCentral()
 }
@@ -68,12 +72,47 @@ dependencies {
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-multipart', version: '3.0.4'
 
 	implementation group: 'javax.annotation', name: 'javax.annotation-api'
-}
 
+	// swagger -> https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+	// spring rest docs
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+asciidoctor {
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExtensions'
+	dependsOn test
+}
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "build/docs/asciidoc"
+		into "src/main/resources/static/docs"
+	}
+}
+test {
+	outputs.dir snippetsDir
+	finalizedBy 'asciidoctor'
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
 jar {
-	enabled = false
+    enabled = false
 }

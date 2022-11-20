@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * created by seongmin on 2022/10/20
+ * updated by seongmin on 2022/11/01
  */
 @RequiredArgsConstructor
 @Configuration
@@ -29,6 +30,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -43,7 +45,9 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/user/login/**", "/admin/signup/**", "/admin/login/**", "/swagger*/**", "/webjars/**", "/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs").permitAll()
+                .antMatchers("/admin", "/admin/signup").hasRole("Admin")
+                .antMatchers("/docs/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

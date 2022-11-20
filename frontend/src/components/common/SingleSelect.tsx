@@ -44,9 +44,9 @@ const SingleSelect = ({
   };
 
   return (
-    <div className={`relative min-w-32 w-[7rem] ${className}`}>
+    <div className={`relative min-w-32 w-[20rem] ${className}`}>
       <button
-        className={'relative p-1 flex items-center w-full h-full border rounded-lg'}
+        className={'relative p-1 flex items-center w-full h-full'}
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen((prev) => !prev);
@@ -55,16 +55,20 @@ const SingleSelect = ({
         <div className="overflow-hidden truncate text-left w-full">{handlePlaceHolder()}</div>
 
         {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-4">
+          <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
           </svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-4">
+          <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         )}
       </button>
-      <ul className={`${isOpen ? 'block' : 'hidden'} absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border rounded-lg h-40 overflow-y-scroll w-full`}>
+      <ul
+        className={`${
+          isOpen ? 'block' : 'hidden'
+        } bg-background absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border border-line rounded-[5px] h-32 scrollbar scrollbar-thumb-rounded-[5px] scrollbar-thumb-placeholder scrollbar-track-rounded-[5px] scrollbar-track-line overflow-y-scroll w-[130px]`}
+      >
         {options.map((list, index) => {
           return (
             <li

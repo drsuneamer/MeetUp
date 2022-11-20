@@ -17,6 +17,7 @@ module.exports = {
       footer: '#AEC2FA',
       cancel: '#B70038', // error
       cancelhover: '#B70038',
+      disabled: '#AEC2FA', // disabled
       text: {
         DEFAULT: '#191F28',
         label: '#737475',
@@ -25,7 +26,8 @@ module.exports = {
     fontFamily: {
       pre: ['Pretendard Variable'],
       damion: ['Damion'], // meetup logo
-      noto: ['Noto Sans KR'], // body
+      dots: ['Raleway Dots'], // version
+      script: ['Nanum Pen Script'],
     },
     fontSize: {
       xs: '15px', // meetup title
@@ -60,12 +62,23 @@ module.exports = {
         shadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
         button: '0px 2.5px 2.5px rgba(0, 0, 0, 0.2)',
       },
+      boxShadow: {
+        shadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        button: '0px 2.5px 2.5px rgba(0, 0, 0, 0.2)',
+      },
       borderRadius: {
         DEFAULT: '8px',
         login: '15px',
       },
+      animation: {
+        'bounce-late': 'bounce 2s linear infinite',
+      },
     },
   },
-  plugins: [require('tailwind-scrollbar-hide')],
+  plugins: [require('tailwind-scrollbar-hide'),
+require('tailwind-scrollbar')({ nocompatible: true }),],
+  variants: {
+    scrollbar: ['rounded']
+},
   important: true,
 };

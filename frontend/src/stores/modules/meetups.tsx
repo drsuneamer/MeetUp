@@ -1,54 +1,57 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { tMeetup } from '../../types/channels';
-import axios from 'axios';
+import { RootState } from '../ConfigStore';
+import { axiosInstance } from '../../components/auth/axiosConfig';
 
-interface meetupState extends tMeetup {
+// 여기서 밋업이란 캘린더를 말함
+type calendarInitialState = {
   loading: boolean;
-}
-const initialState: meetupState = {
-  manager_id: 0,
-  name: '',
-  loading: false,
+  calendars: Array<tMeetup>;
+  nickname: string;
 };
 
-export const fetchMeetupList = createAsyncThunk('meetup/fetch', async (thunkAPI) => {
+const initialState: calendarInitialState = {
+  loading: false,
+  nickname: '',
+  calendars: [{ id: '', userName: '' }],
+};
+
+export const fetchCalendarList = createAsyncThunk('calendar', async () => {
   try {
-    const res = await axios({
-      url: '/api/meetup',
-      method: 'get',
-      headers: {
-        Authorization: `Bearer `,
-      },
-    }).then((res) => {
-      console.log('meetup data fetched: ', res);
+    const res = await axiosInstance.get('/meetup/calendar').then((res) => {
+      // console.log('calendar data fetched: ', res.data);
+      return res.data;
     });
     return res;
   } catch (err) {
-    return thunkAPI;
+    console.log(err);
   }
 });
 
-const meetupSlice = createSlice({
-  name: 'meetup',
+const calendarSlice = createSlice({
+  name: 'calendar',
   initialState,
-  reducers: {},
+  reducers: {
+    setUserNickName(state, action) {
+      state.nickname = action.payload;
+      // console.log('nickname', state.nickname);
+    },
+  },
   extraReducers: {
-    [fetchMeetupList.pending.toString()]: (state) => {
+    [fetchCalendarList.pending.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching pending');
     },
-    [fetchMeetupList.fulfilled.toString()]: (state, action) => {
+    [fetchCalendarList.fulfilled.toString()]: (state, action) => {
       state.loading = true;
-      console.log(action.payload);
-      console.log('fetching fulfilled');
+      state.calendars = action.payload;
     },
-    [fetchMeetupList.rejected.toString()]: (state) => {
+    [fetchCalendarList.rejected.toString()]: (state) => {
       state.loading = false;
-      console.log('fetching rejected');
     },
   },
 });
 
-const { reducer } = meetupSlice;
-export const meetupSelector = (state: meetupState) => state;
+const { reducer } = calendarSlice;
+export const { setUserNickName } = calendarSlice.actions;
+export const calendarSelector = (state: RootState) => state.calendars;
 export default reducer;

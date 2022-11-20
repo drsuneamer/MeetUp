@@ -1,26 +1,30 @@
 import MeetupListItem from './MeetupListItem';
 import { tMeetup } from '../types/channels';
-
-let meetupArray: Array<tMeetup> = [
-  {
-  manager_id: 1,
-  name: '이태희(컨설턴트)',
-},
-  {
-  manager_id: 2,
-  name: '당현아[서울]실습코치',
-},
-]
+import Spinner from './common/Spinner';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
+import { useEffect } from 'react';
+import { fetchCalendarList, calendarSelector } from '../stores/modules/meetups';
 
 function MeetupList() {
+  const dispatch = useAppDispatch();
+  const calendar = useAppSelector(calendarSelector);
+
+  useEffect(() => {
+    dispatch(fetchCalendarList());
+  }, []);
+
+  if (!calendar.loading) {
+    return <Spinner />;
+  }
+  if (!calendar.calendars) {
+    return null;
+  }
   return (
     <div className="MeetupList">
       <h1 className="text-xl font-bold mb-[10px]">참여중인 달력</h1>
-      {
-        meetupArray.map((value:tMeetup, index: number) =>
-        <MeetupListItem meetup={value} />
-         )
-      }
+      {calendar.calendars.map((value: tMeetup, index: number) => (
+        <MeetupListItem key={index} meetup={value} />
+      ))}
     </div>
   );
 }

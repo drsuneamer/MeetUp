@@ -1,14 +1,12 @@
 package com.meetup.backend.dto.meetup;
 
-import com.meetup.backend.entity.channel.Channel;
-import com.meetup.backend.entity.user.User;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * created by seungyong on 2022/10/22
@@ -19,13 +17,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class MeetupRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "제목은 필수 입력 값입니다.")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "밋업 색은 필수 입력 값입니다.")
     private String color;
 
-    @NotBlank
+    @NotBlank(message = "채널 아이디는 필수 입력 값입니다.")
     private String channelId;
 
 }

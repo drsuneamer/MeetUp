@@ -1,14 +1,45 @@
-import React, { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Button from './common/Button';
 import IconLeft from './common/IconLeft';
 import IconRight from './common/IconRight';
-import { useAppDispatch, useAppSelector } from '../stores/ConfigHooks';
+import { useAppSelector, useAppDispatch } from '../stores/ConfigHooks';
 import { setCurrentDate, setToday } from '../stores/modules/dates';
-// import { getStringDateFormat } from '../utils/GetStringDateFormat';
+import { setMyCalendar, toCurrentTime } from '../stores/modules/mycalendar';
+// import { calendarSelector } from '../stores/modules/meetups';
+import { axiosInstance } from './auth/axiosConfig';
+import { useParams } from 'react-router-dom';
+import webexIcon from '../assets/webex_icon.png';
+import { setWebexModalOpen } from '../stores/modules/modal';
 
 const Header = () => {
+  const params = useParams();
   const { currentDate } = useAppSelector((state) => state.dates);
   const dispatch = useAppDispatch();
+  // const [isMyCalendar, setIsMyCalendar] = useState(false)
+  const { myCalendar } = useAppSelector((state) => state.mycalendar);
+
+  const toTime = () => {
+    dispatch(toCurrentTime(true));
+  };
+
+  const userId = window.localStorage.getItem('id');
+  const url = `/calendar/${userId}`;
+
+  useEffect(() => {
+    if (params.userId === `${localStorage.getItem('id')}`) {
+      // setIsMyCalendar(true)
+      dispatch(setMyCalendar());
+    }
+  }, [window.location.href]);
+
+  const [nickname, setNickname] = useState('');
+
+  useEffect(() => {
+    const userId = params.userId;
+    axiosInstance.get(`/user/nickname/${userId}`).then((res) => {
+      setNickname(res.data);
+    });
+  }, [nickname]);
 
   const displayDate = useMemo(() => {
     const date = new Date(currentDate);
@@ -40,9 +71,31 @@ const Header = () => {
     dispatch(setCurrentDate(nextWeek.toLocaleDateString()));
   };
 
+  // 웹엑스 모달 온오프
+  const handleWebexModal = () => {
+    dispatch(setWebexModalOpen());
+  };
+
   return (
     <>
-      <header className="flex flex-col items-center px-4 justify-center w-full h-[80px] mt-[50px]">
+      <header className="flex flex-col relative items-center px-4 justify-center w-full h-[80px] mt-[50px]">
+        <img src={webexIcon} alt="webex-icon" className="absolute left-0 w-9 cursor-pointer" onClick={handleWebexModal} />
+        {myCalendar ? (
+          <div className="absolute left-10 text-title font-semibold py-1 px-2">나의 캘린더</div>
+        ) : (
+          <>
+            <div className="absolute left-9 w-[27%] text-center absolute left-10 text-title font-semibold py-1 px-2 truncate">
+              {nickname}의 캘린더
+            </div>
+            <a
+              href={url}
+              className="absolute right-3 top-6 text-center py-1 px-4 drop-shadow-button rounded text-background truncate bg-point font-semibold cursor-pointer"
+            >
+              🗓️ 내 캘린더로 돌아가기
+            </a>
+          </>
+        )}
+
         <div className="flex items-center">
           <Button className="p-1 sm:mx-1 hover:bg-line hover:rounded-full" onClick={handlePrevWeek}>
             <IconLeft className="w-8 h-8" />
@@ -54,10 +107,16 @@ const Header = () => {
             <IconRight className="w-8 h-8" />
           </Button>
         </div>
-        <Button onClick={handleTodayBtnClick} className="group rounded px-3 mr-5 ml-5 hover:bg-hover bg-primary text-[white]">
-          오늘
-          {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
-        </Button>
+        <div className="flex justify-center items-center text-center gap-1">
+          <Button onClick={handleTodayBtnClick} className="group rounded px-3 hover:bg-hover bg-primary text-[white]">
+            오늘
+            {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
+          </Button>
+          <Button onClick={toTime} className="group rounded px-3 hover:bg-hover bg-primary text-[white]">
+            현재시간
+            {/* <p className="absolute text-body rounded hidden text-center group-hover:block">{getStringDateFormat(new Date(), '-')}</p> */}
+          </Button>
+        </div>
       </header>
     </>
   );

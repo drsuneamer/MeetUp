@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  EventDetail,
-  EventModalData,
-  NewEvent,
-  SelectedEvent,
-} from '../../types/events';
+import { EventDetail, EventModalData, NewEvent, SelectedEvent } from '../../types/events';
 
 type EventsInitialState = {
   events: { [key: string]: EventDetail[] };
@@ -20,10 +15,7 @@ const eventsSlice = createSlice({
   name: 'events',
   initialState,
   reducers: {
-    setEventModalData: (
-      state,
-      action: PayloadAction<EventModalData | null>,
-    ) => {
+    setEventModalData: (state, action: PayloadAction<EventModalData | null>) => {
       const data = action.payload;
       if (data !== null) {
         state.eventModalData = data;
@@ -39,6 +31,7 @@ const eventsSlice = createSlice({
 
       state.eventModalData = null;
       state.events[date].push(eventDetail);
+      // console.log(state.events[date])
     },
     deleteEvent: (state, action: PayloadAction<SelectedEvent>) => {
       const { date, index } = action.payload;
