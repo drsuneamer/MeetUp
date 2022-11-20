@@ -492,7 +492,7 @@ include::{snippets}/webex-read-by-userId/response-body.adoc[]
 = Meetup API
 
 [[Meetup-Team-activate-목록-조회]]
-== Meetup Team activate 목록 로그인
+== Meetup Team activate 목록 조회
 
 Meetup 등록을 위해 활성화 상태인 소속된 Team 목록을 조회하는 API
 
@@ -515,7 +515,7 @@ include::{snippets}/team-activate-read/response-body.adoc[]
 ---
 
 [[Meetup-channel-activate-목록-조회]]
-== Meetup channel activate 목록 로그인
+== Meetup channel activate 목록 조회
 
 Meetup 등록을 위해 활성화 상태인 소속된 Channel 목록을 조회하는 API
 
