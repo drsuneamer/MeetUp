@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -80,7 +81,7 @@ public class MeetupControllerDocsTest {
                 .displayName("teamDisplayName")
                 .type(TeamType.Open)
                 .build());
-        given(teamUserService.getTeamByUser(userInfoDto.getId())).willReturn(teamResponseDtoList);
+        given(teamUserService.getTeamByUser(anyString())).willReturn(teamResponseDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/team"))
                 .andExpect(status().isOk())
@@ -106,7 +107,7 @@ public class MeetupControllerDocsTest {
                 .displayName("channelDisplayName")
                 .TeamId("teamId")
                 .build());
-        given(channelUserService.getActivatedChannelByUser(userInfoDto.getId())).willReturn(channelResponseDtoList);
+        given(channelUserService.getActivatedChannelByUser(anyString())).willReturn(channelResponseDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/channel"))
                 .andExpect(status().isOk())
@@ -156,7 +157,7 @@ public class MeetupControllerDocsTest {
                 .teamName("meetupTeamName")
                 .channelName("meetupChannelName")
                 .build();
-        given(meetupService.getMeetupInfo(11L)).willReturn(responseDto);
+        given(meetupService.getMeetupInfo(anyLong())).willReturn(responseDto);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/11"))
                 .andExpect(status().isOk())
@@ -216,7 +217,7 @@ public class MeetupControllerDocsTest {
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
         List<ChannelUser> channelUserList = new ArrayList<>();
-        given(channelUserService.getChannelUserByUser(userInfoDto.getId())).willReturn(channelUserList);
+        given(channelUserService.getChannelUserByUser(anyString())).willReturn(channelUserList);
 
         List<CalendarResponseDto> calendarResponseDtoList = new ArrayList<>();
         calendarResponseDtoList.add(CalendarResponseDto.builder()
@@ -249,7 +250,7 @@ public class MeetupControllerDocsTest {
                 .color("meetupColor")
                 .channelName("meetupChannelName")
                 .build());
-        given(meetupService.getResponseDtoList(userInfoDto.getId())).willReturn(meetupResponseDtoList);
+        given(meetupService.getResponseDtoList(anyString())).willReturn(meetupResponseDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup"))
                 .andExpect(status().isOk())
@@ -277,11 +278,11 @@ public class MeetupControllerDocsTest {
                 .type(ChannelType.Open)
                 .team(Team.builder().build())
                 .build();
-        given(meetupService.getMeetupChannelById(11L)).willReturn(channel);
+        given(meetupService.getMeetupChannelById(anyLong())).willReturn(channel);
 
         List<UserInfoDto> userInfoDtoList = new ArrayList<>();
         userInfoDtoList.add(userInfoDto);
-        given(channelUserService.getMeetupUserByChannel(channel, userInfoDto.getId())).willReturn(userInfoDtoList);
+        given(channelUserService.getMeetupUserByChannel(any(Channel.class), anyString())).willReturn(userInfoDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/users/11"))
                 .andExpect(status().isOk())
@@ -301,11 +302,11 @@ public class MeetupControllerDocsTest {
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
         String mmSessionToken = "mmSessionToken";
-        given(authService.getMMSessionToken(userInfoDto.getId())).willReturn(mmSessionToken);
+        given(authService.getMMSessionToken(anyString())).willReturn(mmSessionToken);
 
         List<UserInfoDto> userInfoDtoList = new ArrayList<>();
         userInfoDtoList.add(userInfoDto);
-        given(teamUserService.getUserByTeam(mmSessionToken, "teamId")).willReturn(userInfoDtoList);
+        given(teamUserService.getUserByTeam(anyString(), anyString())).willReturn(userInfoDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/userList/teamId"))
                 .andExpect(status().isOk())
@@ -333,7 +334,7 @@ public class MeetupControllerDocsTest {
         given(authService.getMyInfoSecret()).willReturn(userInfoDto);
 
         String mmSessionToken = "mmSessionToken";
-        given(authService.getMMSessionToken(userInfoDto.getId())).willReturn(mmSessionToken);
+        given(authService.getMMSessionToken(anyString())).willReturn(mmSessionToken);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/meetup/channel")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -363,7 +364,7 @@ public class MeetupControllerDocsTest {
                 .displayName("teamDisplayName")
                 .isActivate(false)
                 .build());
-        given(teamUserService.getActivateTeamByUser(userInfoDto.getId())).willReturn(teamActivateResponseDtoList);
+        given(teamUserService.getActivateTeamByUser(anyString())).willReturn(teamActivateResponseDtoList);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/meetup/team/activate"))
                 .andExpect(status().isOk())
