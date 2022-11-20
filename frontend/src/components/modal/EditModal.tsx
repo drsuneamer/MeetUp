@@ -210,10 +210,18 @@ const EditModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-
   useEffect(() => {
     newStartTime();
   }, [date, start]);
+
+  useEffect(() => {
+    if (startTimeIndex < 47 && startTimeIndex > endTimeIndex) {
+      setEndTimeIndex(startTimeIndex);
+      setEndTime(startSelectOptions[startTimeIndex + 1]);
+    } else if (startTimeIndex === 47) {
+      setEndTime({ value: '2330', label: '신청 불가능' });
+    }
+  }, [startTimeIndex]);
 
   useEffect(() => {
     newEndTime();
@@ -303,6 +311,8 @@ const EditModal = () => {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
       Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedMeetingData.start === parsedMeetingData.end || parsedMeetingData.start > parsedMeetingData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
@@ -326,6 +336,8 @@ const EditModal = () => {
 
     if (!parsedData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedData.start === parsedData.end || parsedData.start > parsedData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(editScheduleDetail(parsedData));
       if (isFulfilled(action)) {

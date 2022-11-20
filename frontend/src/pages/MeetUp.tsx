@@ -69,12 +69,12 @@ const MeetUp = () => {
               </button>
             </li>
             {/* 튜토리얼 */}
-            <li className={`float-right ml-2 ${fab ? '' : 'opacity-0'}`}>
+            <li className={`float-right ml-2 ${fab ? '' : 'hidden'}`}>
               <div
                 onClick={() => window.open('https://meetup.gitbook.io/meetup-docs/', '_blank')}
                 className="tutorial bg-point w-12 h-12 rounded-full drop-shadow-lg flex justify-center items-center text-xl hover:bg-blue-700 hover:drop-shadow-2xl animate-bounce-late text-background cursor-pointer"
               >
-                <div className="absolute pb-[70px] text-body text-[10px] opacity-0 ease-out hover:opacity-100">튜토리얼</div>
+                <div className="absolute pb-[70px] text-body text-[10px] hidden ease-out hover:opacity-100">튜토리얼</div>
                 <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                   <path
                     strokeLinecap="round"
@@ -85,7 +85,7 @@ const MeetUp = () => {
               </div>
             </li>
             {/* mattermost와 동기화하기 */}
-            <li className={`float-right ${fab ? '' : 'opacity-0'}`}>
+            <li className={`float-right ${fab ? '' : 'hidden'}`}>
               <div
                 onClick={syncRequest}
                 className="sync bg-title w-12 h-12 rounded-full drop-shadow-lg flex justify-center items-center text-xl hover:bg-blue-700 hover:drop-shadow-2xl animate-bounce duration-200 text-background cursor-pointer"
@@ -109,7 +109,7 @@ const MeetUp = () => {
                       </div>
                     ) : (
                       <div>
-                        <div className="absolute bottom-[10px] pb-[40px] w-full left-1 text-body text-[10px] opacity-0 ease-out hover:opacity-100">
+                        <div className="absolute bottom-[10px] pb-[40px] w-full left-1 text-body text-[10px] hidden ease-out hover:opacity-100">
                           MM 동기화
                         </div>
 
