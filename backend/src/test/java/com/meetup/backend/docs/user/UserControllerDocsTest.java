@@ -153,10 +153,9 @@ public class UserControllerDocsTest {
                 .andDo(document("webex-read-by-userId",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("webexUrl").description("현재 로그인중인 user의 webex URL")
-                        )
+                        responseBody()
                 ));
 
     }
+
 }
