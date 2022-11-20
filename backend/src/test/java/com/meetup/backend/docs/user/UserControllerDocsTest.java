@@ -6,7 +6,7 @@ import com.meetup.backend.dto.token.TokenDto;
 import com.meetup.backend.dto.user.LoginRequestDto;
 import com.meetup.backend.dto.user.LoginResponseDto;
 import com.meetup.backend.dto.user.UserInfoDto;
-import com.meetup.backend.entity.user.RoleType;
+import com.meetup.backend.dto.user.UserWebexInfoDto;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.service.auth.AuthService;
 import com.meetup.backend.service.user.UserService;
@@ -28,8 +28,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 
 @WebMvcTest(UserController.class)
 @AutoConfigureRestDocs
@@ -102,6 +102,60 @@ public class UserControllerDocsTest {
                 .andDo(document("user-logout",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())
-                        ));
+                ));
     }
+
+    @Test
+    public void setWebex() throws Exception {
+        UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("https://webexUrl");
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "userNickname");
+        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/user/webex")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userWebexInfoDto)))
+                .andExpect(status().isCreated())
+                .andDo(document("webex-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("webexUrl").description("적용할 webex URL")
+                        )
+                ));
+    }
+
+    @Test
+    public void getMyWebex() throws Exception {
+        UserInfoDto userInfoDto = new UserInfoDto("userId", "userNickname");
+        UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
+        given(authService.getMyInfoSecret()).willReturn(userInfoDto);
+        given(userService.getWebexUrl("userId")).willReturn(userWebexInfoDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex"))
+                .andExpect(status().isOk())
+                .andDo(document("webex-read",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("webexUrl").description("현재 로그인중인 user의 webex URL")
+                        )
+                ));
+
+    }
+
+    @Test
+    public void getWebex() throws Exception {
+        UserWebexInfoDto userWebexInfoDto = new UserWebexInfoDto("webexUrl");
+        given(userService.getWebexUrl("userId")).willReturn(userWebexInfoDto);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/user/webex/userId"))
+                .andExpect(status().isOk())
+                .andDo(document("webex-read-by-userId",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseBody()
+                ));
+
+    }
+
 }
