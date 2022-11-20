@@ -70,7 +70,7 @@ public class UserControllerDocsTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andExpect(status().isOk())
-                .andDo(document("user_login",
+                .andDo(document("user-login",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
