@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 public class ScheduleUpdateRequestDto {
 
     @NotNull
-    private Long Id;
+    private Long id;
 
     @NotBlank(message = "일정의 시작 시간은 필수입니다.")
     private String start;

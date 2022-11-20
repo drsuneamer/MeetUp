@@ -11,20 +11,14 @@ import { editMeetingDetail, editScheduleDetail } from '../../stores/modules/sche
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
 import { tAlarm } from '../../types/channels';
 import { detailSelector, fetchScheduleDetail } from '../../stores/modules/schedules';
+import Swal from 'sweetalert2';
+
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
-import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
-import Swal from 'sweetalert2';
-import { tScheduleDetail } from '../../types/events';
 
-interface Group {
-  id: number;
-  leader: boolean;
-  name: string;
-}
 
 const EditModal = () => {
   // userId
@@ -33,21 +27,21 @@ const EditModal = () => {
   const dispatch = useAppDispatch();
 
   const channels = useAppSelector(alarmChannelSelector);
-  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
-  const modalSelector = useAppSelector(ModalSelector);
   const { editModalIsOpen } = useAppSelector((state) => state.modal);
   const { editModalType } = useAppSelector((state) => state.modal);
-
-  const [meetupId, setMeetupId] = useState<number | null>(null);
+  const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
+  const modalSelector = useAppSelector(ModalSelector);
+  
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [alarmChannels, setAlarmChannels] = useState([]);
+  const [meetupId, setMeetupId] = useState<number | null>(null);
+  
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
-
   const { currentDate } = useAppSelector((state) => state.dates);
 
   const weekly = useMemo(() => {
@@ -210,10 +204,18 @@ const EditModal = () => {
     const end = date + ' ' + endTimeResult;
     return end;
   };
-
   useEffect(() => {
     newStartTime();
   }, [date, start]);
+
+  useEffect(() => {
+    if (startTimeIndex < 47 && startTimeIndex > endTimeIndex) {
+      setEndTimeIndex(startTimeIndex);
+      setEndTime(startSelectOptions[startTimeIndex + 1]);
+    } else if (startTimeIndex === 47) {
+      setEndTime({ value: '2330', label: '신청 불가능' });
+    }
+  }, [startTimeIndex]);
 
   useEffect(() => {
     newEndTime();
@@ -303,6 +305,8 @@ const EditModal = () => {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
       Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedMeetingData.start === parsedMeetingData.end || parsedMeetingData.start > parsedMeetingData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(editMeetingDetail(parsedMeetingData));
       if (isFulfilled(action)) {
@@ -326,6 +330,8 @@ const EditModal = () => {
 
     if (!parsedData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedData.start === parsedData.end || parsedData.start > parsedData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(editScheduleDetail(parsedData));
       if (isFulfilled(action)) {
@@ -347,7 +353,7 @@ const EditModal = () => {
         >
           <svg
             onClick={handleToggleModal}
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth="2.5"
@@ -399,7 +405,7 @@ const EditModal = () => {
                   <span className="mx-2">-</span>
                   <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns="https://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="2"

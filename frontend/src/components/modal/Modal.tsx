@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../stores/ConfigHooks';
-import { ModalSelector, setEventModalOpen } from '../../stores/modules/modal';
+import { setEventModalOpen } from '../../stores/modules/modal';
 import { getStringDateFormat } from '../../utils/GetStringDateFormat';
 import { createTimeOptions, Option } from '../../utils/CreateTimeOptions';
 import SingleSelect from '../common/SingleSelect';
@@ -11,10 +11,10 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { addSchedule, fetchSchedule, scheduleSelector } from '../../stores/modules/schedules';
 import { addMeeting } from '../../stores/modules/schedules';
 import { alarmChannelSelector, fetchAlarmChannelList } from '../../stores/modules/channelAlarm';
+import { tAlarm } from '../../types/channels';
 import { fetchGroupList, groupSelector } from '../../stores/modules/groups';
 import Swal from 'sweetalert2';
 
-import { tAlarm } from '../../types/channels';
 import Switch from '@mui/material/Switch';
 import { getThisWeek } from '../../utils/GetThisWeek';
 import { getNow } from '../../utils/GetNow';
@@ -41,7 +41,7 @@ const EventModal = () => {
   const [alarmChannelId, setAlarmChannelId] = useState<number>(0);
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [alarmChannels, setAlarmChannels] = useState([]);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(true);
   const [groupId, setGroupId] = useState<number>(0);
   const [newGroupValue, setNewGroupValue] = useState<Group>({ id: 0, leader: false, name: '' });
   const [partyId, setPartyId] = useState<number | null>(0);
@@ -58,9 +58,8 @@ const EventModal = () => {
   const [endTimeIndex, setEndTimeIndex] = useState<number>(0);
   const [endTime, setEndTime] = useState<Option>(endSelectOptions[0]);
 
-  const startTimeValue = startTime.value;
-
   const newStartTime = () => {
+    const startTimeValue = startTime.value;
     if (startTimeValue.length === 3) {
       const startTimeNewValue = '0' + startTimeValue;
       const hour = startTimeNewValue.slice(0, 2) + ':';
@@ -76,8 +75,8 @@ const EventModal = () => {
     return start;
   };
 
-  const endTimeValue = endTime.value;
   const newEndTime = () => {
+    const endTimeValue = endTime.value;
     if (endTimeValue.length === 3) {
       const endTimeNewValue = '0' + endTimeValue;
       const hour = endTimeNewValue.slice(0, 2) + ':';
@@ -105,6 +104,7 @@ const EventModal = () => {
     setContent(e.currentTarget.value);
   };
 
+  // 참여하고 있는 채널
   const onAlarmChannel = (e: any, value: any) => {
     if (value !== null) {
       const alarmChannelValue = value.meetupId || '';
@@ -113,10 +113,12 @@ const EventModal = () => {
     }
   };
 
+  // 공개, 비공개 여부
   const switchHandler = (e: any) => {
     setChecked(e.target.checked);
   };
 
+  // 그룹
   const onGroupChange = (e: any, value: any) => {
     if (value !== null) {
       const partyValue = value.id || undefined;
@@ -140,15 +142,16 @@ const EventModal = () => {
   useEffect(() => {
     setStartTime(startSelectOptions[startTimeIndex]);
 
-    if (startTimeIndex > endTimeIndex) {
+    if (startTimeIndex < 47 && startTimeIndex > endTimeIndex) {
       setEndTimeIndex(startTimeIndex);
       setEndTime(startSelectOptions[startTimeIndex + 1]);
+    } else {
+      setEndTime({ value: '2330', label: '신청 불가능' });
     }
   }, [startTimeIndex]);
 
   const handleToggleModal = useCallback(() => {
     dispatch(setEventModalOpen());
-    handleResetInput();
     handleResetInput();
     setAlarmChannelId(0);
     setAlarmChannel({ meetupId: 0, displayName: '' });
@@ -186,6 +189,8 @@ const EventModal = () => {
   const handleSubmitToMe = async () => {
     if (!parsedData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedData.start === parsedData.end || parsedData.start > parsedData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedData) {
       const action = await dispatch(addSchedule(parsedData));
       if (isFulfilled(action)) {
@@ -203,6 +208,8 @@ const EventModal = () => {
       Swal.fire({ text: '미팅명은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (!parsedMeetingData.meetupId) {
       Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
+    } else if (parsedMeetingData.start === parsedMeetingData.end || parsedMeetingData.start > parsedMeetingData.end) {
+      Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {
       const action = await dispatch(addMeeting(parsedMeetingData));
       if (isFulfilled(action)) {
@@ -314,7 +321,7 @@ const EventModal = () => {
       >
         <svg
           onClick={handleToggleModal}
-          xmlns="http://www.w3.org/2000/svg"
+          xmlns="https://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="2.5"
@@ -365,7 +372,7 @@ const EventModal = () => {
                 <span className="mx-2">-</span>
                 <SingleSelect className="text-sm w-[180px]" options={endSelectOptions} onChange={handleEndSelectClick} selected={endTime} />
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns="https://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="2"

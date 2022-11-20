@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * created by seongmin on 2022/10/31
@@ -51,7 +52,7 @@ public class AllScheduleResponseDto {
                 Meeting meeting = (Meeting) schedule;
                 // 만약 그룹에 속한 미팅에서 "내가 그룹장인 미팅"이 있다면 미팅 목록에서 제거
                 for (PartyMeetingResponse partyMeetingResponse : partyMeetingResponseList) {
-                    if (partyMeetingResponse.getId().equals(meeting.getId()))
+                    if (partyMeetingResponse.getId() != null && partyMeetingResponse.getId().equals(meeting.getId()))
                         continue;
                 }
                 // meeting id가 partyMeetingResponseList id에 있으면 continue;
@@ -72,7 +73,7 @@ public class AllScheduleResponseDto {
         }
         // 2. 타인 -> 나 신청 미팅 목록
         for (Meeting meeting : meetings) {
-            if (!meeting.isOpen() && !me.equals(meeting.getMeetup().getManager().getId()) && !me.equals(meeting.getUser().getId())) {
+            if (!meeting.isOpen() && !me.equals(meeting.getMeetup().getManager().getId()) && !me.equals(meeting.getUser().getId()) && !meeting.getParty().getPartyUsers().stream().map(partyUser -> partyUser.getUser().getId()).collect(Collectors.toList()).contains(me)) {
                 meetingToMe.add(new MeetingResponse(meeting.getId(), false, meeting.getStart(), meeting.getEnd()));
             } else {
                 meetingToMe.add(new MeetingResponse(meeting.getId(), true, meeting.getStart(), meeting.getEnd(), meeting.getTitle(), meeting.getContent(), meeting.getUser().getId(), meeting.getUser().getNickname(), meeting.getMeetup().getTitle(), meeting.getMeetup().getColor()));

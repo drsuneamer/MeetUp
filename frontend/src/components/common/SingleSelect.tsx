@@ -55,11 +55,11 @@ const SingleSelect = ({
         <div className="overflow-hidden truncate text-left w-full">{handlePlaceHolder()}</div>
 
         {isOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+          <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
           </svg>
         ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+          <svg xmlns="https://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         )}
@@ -67,7 +67,7 @@ const SingleSelect = ({
       <ul
         className={`${
           isOpen ? 'block' : 'hidden'
-        } absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border border-line rounded-[5px] h-32 scrollbar scrollbar-thumb-rounded-[5px] scrollbar-thumb-placeholder scrollbar-track-rounded-[5px] scrollbar-track-line overflow-y-scroll w-[130px]`}
+        } bg-background absolute z-10 t-100 l-1 w-calc[100%-2px] p-0 border border-line rounded-[5px] h-32 scrollbar scrollbar-thumb-rounded-[5px] scrollbar-thumb-placeholder scrollbar-track-rounded-[5px] scrollbar-track-line overflow-y-scroll w-[130px]`}
       >
         {options.map((list, index) => {
           return (

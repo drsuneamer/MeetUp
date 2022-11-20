@@ -30,7 +30,7 @@
 
 
 
-🔗 **[MeetUp 노션 바로가기](https://www.notion.so/MEET-UP-6622422c3f554e6e852e7996eefeec77) **
+🔗 **[MeetUp 노션 바로가기](https://www.notion.so/MEET-UP-6622422c3f554e6e852e7996eefeec77)**
 
 🔗 **[MeetUp GitBook 바로가기](https://meetup.gitbook.io/meetup-docs/)**
 
@@ -38,7 +38,7 @@
 
 🔗 [**릴리즈 노트 바로가기**](https://meetup.gitbook.io/meetup-docs/release-notes/meetup-1.x)
 
-[**🔗**](https://github.com/ssafy-mate/ssafy-mate_back-end_with-chatting) **[유저 시나리오-컨설턴트](https://meetup.gitbook.io/meetup-docs/user-scenario/consultant) |  [유저 시나리오-학생](https://meetup.gitbook.io/meetup-docs/user-scenario/student)**
+🔗 **[유저 시나리오-컨설턴트](https://meetup.gitbook.io/meetup-docs/user-scenario/consultant) |  [유저 시나리오-학생](https://meetup.gitbook.io/meetup-docs/user-scenario/student)**
 
 
 
