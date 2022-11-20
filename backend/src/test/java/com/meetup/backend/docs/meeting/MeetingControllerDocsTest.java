@@ -143,7 +143,7 @@ class MeetingControllerDocsTest {
         // when, then
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/meeting/{meetingId}", requestDto))
                 .andExpect((status().isOk()))
-                .andDo(document("meeting_delete",
+                .andDo(document("meeting-delete",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 responseBody()
