@@ -141,10 +141,11 @@ const EventModal = () => {
 
   useEffect(() => {
     setStartTime(startSelectOptions[startTimeIndex]);
-
-    if (startTimeIndex < 47 && startTimeIndex > endTimeIndex) {
-      setEndTimeIndex(startTimeIndex);
-      setEndTime(startSelectOptions[startTimeIndex + 1]);
+    if (startTimeIndex < 47) {
+      if (startTimeIndex >= endTimeIndex) {
+        setEndTimeIndex(startTimeIndex);
+        setEndTime(startSelectOptions[startTimeIndex + 1]);
+      }
     } else {
       setEndTime({ value: '2330', label: '신청 불가능' });
     }
