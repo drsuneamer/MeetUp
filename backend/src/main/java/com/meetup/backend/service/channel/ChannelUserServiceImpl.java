@@ -127,38 +127,19 @@ public class ChannelUserServiceImpl implements ChannelUserService {
                 for (int l = 0; l < userArray.length(); l++) {
 
                     String userId = userArray.getJSONObject(l).getString("user_id");
-//                    User user = userRepository.findById(userId).orElseGet(
-//                            () -> userRepository.save(
-//                                    User.builder()
-//                                            .id(userId)
-//                                            .firstLogin(false)
-//                                            .role(RoleType.Student)
-//                                            .build()
-//                            )
-//                    );
                     userList.add(userRepository.findById(userId).orElse(User.builder()
                             .id(userId)
                             .firstLogin(false)
                             .role(RoleType.ROLE_Student)
                             .build()));
-//                    if (channelUserRepository.findByChannelAndUser(channel, user).isEmpty()) {
-//                        ChannelUser channelUser = ChannelUser.builder().channel(channel).user(user).build();
-//                        channelUserRepository.save(channelUser);
-//                    }
                 }
-
             }
             Set<ChannelUser> channelUserSet = new HashSet<>(channelUserRepository.findByChannel(channel));
 
-
-//            channelUserRepository.saveAll(userList.stream().filter(user -> !channelUserRepository.existsByChannelAndUser(channel, user))
-//                    .map(user -> ChannelUser.builder().channel(channel).user(user).build())
-//                    .collect(Collectors.toList()));
             channelUserRepository.saveAll(userList.stream().map(user -> ChannelUser.builder().channel(channel).user(user).build())
                     .filter(channelUser -> !channelUserSet.contains(channelUser))
                     .collect(Collectors.toList()));
         }
-
     }
 
     @Override

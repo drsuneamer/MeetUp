@@ -118,7 +118,6 @@ public class UserServiceImpl implements UserService {
 
         TokenDto tokenDto = jwtTokenProvider.generateJwtToken(authentication, mmLoginInfo.getMmToken());
 
-//        redisUtil.setData(authentication.getName(), mmToken, TimeUnit.MILLISECONDS.toSeconds(tokenDto.getTokenExpiresIn()), TimeUnit.SECONDS);
         return LoginResponseDto.of(user, tokenDto);
     }
 
@@ -198,7 +197,6 @@ public class UserServiceImpl implements UserService {
         client.setAccessToken(mmSessionToken);
         int status = client.logout().getRawResponse().getStatus();
         MattermostEx.apiException(status);
-//        redisUtil.deleteData(id);
     }
 
     @Override

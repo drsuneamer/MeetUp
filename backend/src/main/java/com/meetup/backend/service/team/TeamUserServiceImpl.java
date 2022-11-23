@@ -101,8 +101,6 @@ public class TeamUserServiceImpl implements TeamUserService {
 
                     String userId = userArray.getJSONObject(l).getString("user_id");
 
-                    // @id 값을 알고있기 때문에 persist()가 아닌 merge()를 함.
-                    // insert 쿼리 전 select 실행?
                     userList.add(userRepository.findById(userId).orElse(User.builder()
                             .id(userId)
                             .firstLogin(false)
