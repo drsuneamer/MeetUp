@@ -36,16 +36,4 @@ public class AsyncService {
         }
         return new AsyncResult<>(user);
     }
-
-    @Async
-    public ListenableFuture<String> print(String message, CountDownLatch latch) throws InterruptedException {
-        log.info("Task Start - {}", message);
-        log.info("1thread name = {}", Thread.currentThread().getName());
-        Thread.sleep(2000);
-        log.info("thread.sleep 종료 latch count = {}", latch.getCount());
-        latch.countDown();
-        log.info("thread.sleep 종료 latch countDown 후 latch count = {}", latch.getCount());
-
-        return new AsyncResult<>("meetup-" + message);
-    }
 }
