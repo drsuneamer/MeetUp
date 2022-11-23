@@ -157,12 +157,9 @@ public class TeamUserServiceImpl implements TeamUserService {
             userResponse.addCallback(u -> {
                 if (u != null && u.getNickname() != null && !u.getNickname().equals(""))
                     result.add(u);
-                latch.countDown();
             }, ex -> {
                 log.error("ex message : " + ex.getMessage());
-                latch.countDown();
             });
-
         }
         latch.await();
         return result;

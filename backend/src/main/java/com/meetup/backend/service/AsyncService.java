@@ -33,6 +33,8 @@ public class AsyncService {
             userObj = JsonConverter.toJson((BufferedInputStream) response.getEntity());
             user.setNickname(userObj.getString("nickname"));
             return new AsyncResult<>(user);
+        } finally {
+            latch.countDown();
         }
         return new AsyncResult<>(user);
     }
