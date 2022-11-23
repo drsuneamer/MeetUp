@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService {
     @Value("${crypto.iv}")
     private String iv;
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    private synchronized LoginResponseDto syncLogin(LoginRequestDto requestDto) {
+    @Transactional
+    private LoginResponseDto syncLogin(LoginRequestDto requestDto) {
         decodePassword(requestDto);
         MmLoginInfo mmLoginInfo = mmLogin(requestDto);
 
@@ -122,8 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public LoginResponseDto login(LoginRequestDto requestDto) {
+    public synchronized LoginResponseDto login(LoginRequestDto requestDto) {
         return syncLogin(requestDto);
     }
 
@@ -221,13 +220,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public void registerTeamAndChannel(String mmToken, String userId) {
+    public synchronized void registerTeamAndChannel(String mmToken, String userId) {
         syncRegisterTeamAndChannel(mmToken, userId);
     }
 
     @Transactional
-    private synchronized void syncRegisterTeamAndChannel(String mmToken, String userId) {
+    private void syncRegisterTeamAndChannel(String mmToken, String userId) {
         List<Team> teams = teamService.registerTeamFromMattermost(userId, mmToken); // 팀 등록
         teamUserService.registerTeamUserFromMattermost(mmToken, teams);
         List<Channel> channels = channelService.registerChannelFromMattermost(userId, mmToken, teams);
