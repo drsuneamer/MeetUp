@@ -19,7 +19,6 @@ import { useParams } from 'react-router-dom';
 import { fetchSchedule } from '../../stores/modules/schedules';
 import { getSundayOfWeek } from '../../utils/GetSundayOfWeek';
 
-
 const EditModal = () => {
   // userId
   const params = useParams();
@@ -31,7 +30,7 @@ const EditModal = () => {
   const { editModalType } = useAppSelector((state) => state.modal);
   const scheduleDetail = useAppSelector(detailSelector).scheduleModal.scheduleDetail;
   const modalSelector = useAppSelector(ModalSelector);
-  
+
   const [title, setTitle] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -39,7 +38,7 @@ const EditModal = () => {
   const [alarmChannel, setAlarmChannel] = useState<tAlarm>({ meetupId: 0, displayName: '' });
   const [alarmChannels, setAlarmChannels] = useState([]);
   const [meetupId, setMeetupId] = useState<number | null>(null);
-  
+
   const startSelectOptions: Option[] = useMemo(() => createTimeOptions(), []);
   const [startTimeIndex, setStartTimeIndex] = useState<number>(0);
   const { currentDate } = useAppSelector((state) => state.dates);
@@ -209,10 +208,12 @@ const EditModal = () => {
   }, [date, start]);
 
   useEffect(() => {
-    if (startTimeIndex < 47 && startTimeIndex > endTimeIndex) {
-      setEndTimeIndex(startTimeIndex);
-      setEndTime(startSelectOptions[startTimeIndex + 1]);
-    } else if (startTimeIndex === 47) {
+    if (startTimeIndex < 47) {
+      if (startTimeIndex >= endTimeIndex) {
+        setEndTimeIndex(startTimeIndex);
+        setEndTime(startSelectOptions[startTimeIndex + 1]);
+      }
+    } else {
       setEndTime({ value: '2330', label: '신청 불가능' });
     }
   }, [startTimeIndex]);

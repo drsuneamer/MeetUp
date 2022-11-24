@@ -84,9 +84,7 @@ const Header = () => {
           <div className="absolute left-10 text-title font-semibold py-1 px-2">나의 캘린더</div>
         ) : (
           <>
-            <div className="absolute left-9 w-[27%] text-center absolute left-10 text-title font-semibold py-1 px-2 truncate">
-              {nickname}의 캘린더
-            </div>
+            <div className="absolute left-10 text-center absolute text-title font-semibold py-1 px-2 truncate">{nickname}의 캘린더</div>
             <a
               href={url}
               className="absolute right-3 top-6 text-center py-1 px-4 drop-shadow-button rounded text-background truncate bg-point font-semibold cursor-pointer"
