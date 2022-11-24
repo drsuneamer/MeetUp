@@ -71,6 +71,8 @@ public enum ExceptionEnum {
     DUPLICATE_MEETUP(CONFLICT, "40906", "해당 채널은 이미 생성된 밋업이 있습니다."),
     DUPLICATE_GROUP(CONFLICT, "40907", "그룹(내가 리더인 그룹) 이름이 중복됩니다."),
 
+    MEETUP_DELETED(CONFLICT, "41001", "삭제된 밋업의 일정은 수정할 수 없습니다. 밋업관리자에게 문의해주세요."),
+
     MATTERMOST_EXCEPTION(INTERNAL_SERVER_ERROR, "50001", "매터모스트 에러, 잠시 후 다시 시도해주세요."),
     PASSWORD_DECRYPTION_ERROR(INTERNAL_SERVER_ERROR, "50002", "비밀번호 복호화 에러");
 

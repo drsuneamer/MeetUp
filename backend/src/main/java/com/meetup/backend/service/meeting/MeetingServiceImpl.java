@@ -7,6 +7,7 @@ import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.party.Party;
+import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -35,6 +36,7 @@ import java.io.BufferedInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
@@ -71,8 +73,20 @@ public class MeetingServiceImpl implements MeetingService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
         Meetup meetup = meeting.getMeetup(); // 해당 미팅의 밋업
-        // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아닌경우 접근 불가
-        if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
+        // 해당 미팅이 그룹에 속해 있는가
+        boolean chkGroupIn = false;
+        if (meeting.getParty() != null) {
+            // 현재 로그인 유저가 미팅의 그룹에 속해있는가?
+            List<PartyUser> partyUsers = meeting.getParty().getPartyUsers();
+            for (PartyUser partyUser : partyUsers) {
+                if (partyUser.getUser().getId().equals(userId)) {
+                    chkGroupIn = true;
+                    break;
+                }
+            }
+        }
+        // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아니거나,그룹에 속해있지 않다면 접근 불가
+        if (!(meeting.getUser().getId().equals(user.getId()) || meeting.getMeetup().getManager().equals(user) || chkGroupIn)) {
             throw new ApiException(ACCESS_DENIED);
         }
         // 만약 해당 미팅이 그룹 소속 되어 있는 미팅이라면
@@ -127,7 +141,7 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meetingRequestDto.getStart().substring(5, 16);
         startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
         String endTime = meetingRequestDto.getEnd().substring(11, 16);
-        String message = "### :meetup: " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+        String message = "### [:meetup:](https://meet-up.co.kr) " + meetingRequestDto.getTitle() + " \n ###### :bookmark: " + meetingRequestDto.getContent() + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
         mmNotice(meetingRequestDto.isOpen(), loginUser, meetup.getManager().getId(), channel, message);
 
@@ -158,14 +172,18 @@ public class MeetingServiceImpl implements MeetingService {
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()) || !managerAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
-        Meetup meetup = meetupRepository.findById(meetingUpdateRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        Meetup meetup = meetupRepository.findById(meeting.getMeetup().getId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        if (meetup.isDelete()) {
+            throw new ApiException(MEETUP_DELETED);
+        }
+
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
         String endTime = meetingUpdateRequestDto.getEnd().substring(11, 16);
 
         startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(start) + ") ");
-        String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### :meetup: " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### :meetup: " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
+        String message = "##### :star2: 미팅 신청이 수정되었습니다. :star2: \n" + "#### 수정 전 \n" + "### [:meetup:](https://meet-up.co.kr) " + meeting.getTitle() + " \n ###### :bookmark: " + (meeting.getContent() == null ? "" : meeting.getContent()) + " \n ###### :date: " + meeting.getStart().toString().substring(5, 16).replaceAll("T", " ") + " ~ " + meeting.getEnd().toString().substring(11, 16) + "\n------ \n" + "#### 수정 후 \n" + "### [:meetup:](https://meet-up.co.kr) " + meetingUpdateRequestDto.getTitle() + " \n ###### :bookmark: " + (meetingUpdateRequestDto.getContent() == null ? "" : meetingUpdateRequestDto.getContent()) + " \n ###### :date: " + startTime + " ~ " + endTime + "\n------";
 
         mmNotice(meetingUpdateRequestDto.isOpen(), user, meetup.getManager().getId(), channel, message);
 
@@ -193,7 +211,7 @@ public class MeetingServiceImpl implements MeetingService {
         String startTime = meeting.getStart().toString().substring(5, 16).replaceAll("T", " ").replaceAll("-", "일").replaceAll(" ", "일 ");
 
         startTime = startTime.replaceAll(" ", " (" + LocalDateUtil.getDay(meeting.getStart()) + ") ");
-        String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### :meetup: " + meeting.getTitle() + "\n------";
+        String message = "### :boom: 미팅 취소 알림 :boom: \n" + "##### " + startTime + " 미팅이 취소되었습니다.\n" + "#### [:meetup:](https://meet-up.co.kr) " + meeting.getTitle() + "\n------";
 
         if (meeting.getStart().compareTo(LocalDateTime.now()) > 0) {
             if (user == meeting.getMeetup().getManager()) {
