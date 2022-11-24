@@ -102,7 +102,6 @@ class MeetingControllerDocsTest {
                 .content("미팅 내용")
                 .start("2022-11-15T16:00:00")
                 .end("2022-11-15T18:00:00")
-                .meetupId(1L)
                 .open(true)
                 .build();
         UserInfoDto userInfoDto = new UserInfoDto("userId", "hong");
