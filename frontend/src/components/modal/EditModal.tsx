@@ -298,14 +298,11 @@ const EditModal = () => {
       content: content,
       start: newStartTime(),
       end: newEndTime(),
-      meetupId: alarmChannel.meetupId,
       open: checked,
     };
 
     if (!parsedMeetingData.title) {
       Swal.fire({ text: '제목은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
-    } else if (!parsedMeetingData.meetupId) {
-      Swal.fire({ text: '참여중인 밋업은 필수 입력사항입니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData.start === parsedMeetingData.end || parsedMeetingData.start > parsedMeetingData.end) {
       Swal.fire({ text: '이 시간에는 등록할 수 없습니다.', icon: 'error', confirmButtonColor: '#0552AC' });
     } else if (parsedMeetingData) {

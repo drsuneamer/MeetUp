@@ -96,6 +96,7 @@ const initialState: scheduleInitialState = {
       open: false,
       partyId: 0,
       partyName: '',
+      isDelete: false,
     },
   },
 };

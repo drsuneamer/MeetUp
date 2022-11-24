@@ -202,7 +202,7 @@ const DetailModal = () => {
               </div>
             ) : null}
           </div>
-          {scheduleDetail && detailModalSelector.modalType === 'myCalendar' ? (
+          {scheduleDetail && detailModalSelector.modalType === 'myCalendar' && !scheduleDetail.isDelete ? (
             <div className="flex justify-center items-center gap-[20px] mt-[15px]">
               <button
                 onClick={() => editSchedule(scheduleDetail)}
