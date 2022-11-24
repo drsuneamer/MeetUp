@@ -67,8 +67,25 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         if (schedule.getType().equals(ScheduleType.Meeting)) {
             // 내가 미팅을 신청한 사람이 아니고, 내가 미팅을 신청받은 사람도 아니다
+            boolean chkAccess = true;
             Meeting meeting = (Meeting) schedule;
             if (!meeting.isOpen() && meeting.getUser() != user && meeting.getMeetup().getManager() != user) {
+                chkAccess = false;
+            }
+            // 그외 상황 : 내가 그룹에 속해 있는가?
+            boolean chkGroupIn = false;
+            if (meeting.getParty() != null) {
+                // 현재 로그인 유저가 미팅의 그룹에 속해있는가?
+                List<PartyUser> partyUsers = meeting.getParty().getPartyUsers();
+                for (PartyUser partyUser : partyUsers) {
+                    if (partyUser.getUser().getId().equals(userId)) {
+                        chkGroupIn = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!chkAccess && !chkGroupIn) {
                 throw new ApiException(ACCESS_DENIED_THIS_SCHEDULE);
             }
         }
