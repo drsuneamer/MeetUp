@@ -7,6 +7,7 @@ import com.meetup.backend.dto.schedule.meeting.MeetingUpdateRequestDto;
 import com.meetup.backend.entity.channel.Channel;
 import com.meetup.backend.entity.meetup.Meetup;
 import com.meetup.backend.entity.party.Party;
+import com.meetup.backend.entity.party.PartyUser;
 import com.meetup.backend.entity.schedule.Meeting;
 import com.meetup.backend.entity.user.User;
 import com.meetup.backend.exception.ApiException;
@@ -35,6 +36,7 @@ import java.io.BufferedInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
@@ -73,7 +75,21 @@ public class MeetingServiceImpl implements MeetingService {
         Meetup meetup = meeting.getMeetup(); // 해당 미팅의 밋업
         // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아닌경우 접근 불가
         if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
-            throw new ApiException(ACCESS_DENIED);
+            // 현재 미팅이 그룹 소속 미팅인가?
+            if (meeting.getParty() != null) {
+                // 현재 로그인 유저가 미팅의 그룹에 속해있는가?
+                List<PartyUser> partyUsers = meeting.getParty().getPartyUsers();
+                boolean chkGroupIn = false;
+                for (PartyUser partyUser : partyUsers) {
+                    if (partyUser.getUser().getId().equals(userId)) {
+                        chkGroupIn = true;
+                        break;
+                    }
+                }
+                if (!chkGroupIn)
+                    throw new ApiException(ACCESS_DENIED);
+            } else
+                throw new ApiException(ACCESS_DENIED);
         }
         // 만약 해당 미팅이 그룹 소속 되어 있는 미팅이라면
         if (meeting.getParty() != null) {
