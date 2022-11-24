@@ -29,8 +29,5 @@ public class MeetingUpdateRequestDto {
 
     private String content;
 
-    @NotNull(message = "미팅의 meetupId는 필수 입니다.")
-    private Long meetupId;
-
     private boolean open;
 }
