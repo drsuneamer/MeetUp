@@ -124,7 +124,7 @@ class MeetingControllerDocsTest {
                                 fieldWithPath("content").description("미팅 내용"),
                                 fieldWithPath("start").description("미팅의 시작 시간"),
                                 fieldWithPath("end").description("미팅의 종료 시간"),
-                                fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
+//                                fieldWithPath("meetupId").description("해당 미팅의 밋업 ID"),
                                 fieldWithPath("open").description("미팅의 공개 여부")
                         ),
                         responseBody()
