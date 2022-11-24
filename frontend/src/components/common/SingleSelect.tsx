@@ -39,7 +39,6 @@ const SingleSelect = ({
   const handleSelectedClick = (index: number) => {
     const selected = options[index];
     onChange(selected, index);
-
     setIsOpen((prev) => !prev);
   };
 
