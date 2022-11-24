@@ -173,6 +173,10 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
         Meetup meetup = meetupRepository.findById(meeting.getMeetup().getId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        if (meetup.isDelete()) {
+            throw new ApiException(MEETUP_DELETED);
+        }
+
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
