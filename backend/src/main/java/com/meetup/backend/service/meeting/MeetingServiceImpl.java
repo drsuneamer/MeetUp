@@ -73,23 +73,21 @@ public class MeetingServiceImpl implements MeetingService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(USER_NOT_FOUND));
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new ApiException(MEETING_NOT_FOUND));
         Meetup meetup = meeting.getMeetup(); // 해당 미팅의 밋업
-        // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아닌경우 접근 불가
-        if (!meeting.getUser().getId().equals(user.getId()) && !meeting.getMeetup().getManager().equals(user)) {
-            // 현재 미팅이 그룹 소속 미팅인가?
-            if (meeting.getParty() != null) {
-                // 현재 로그인 유저가 미팅의 그룹에 속해있는가?
-                List<PartyUser> partyUsers = meeting.getParty().getPartyUsers();
-                boolean chkGroupIn = false;
-                for (PartyUser partyUser : partyUsers) {
-                    if (partyUser.getUser().getId().equals(userId)) {
-                        chkGroupIn = true;
-                        break;
-                    }
+        // 해당 미팅이 그룹에 속해 있는가
+        boolean chkGroupIn = false;
+        if (meeting.getParty() != null) {
+            // 현재 로그인 유저가 미팅의 그룹에 속해있는가?
+            List<PartyUser> partyUsers = meeting.getParty().getPartyUsers();
+            for (PartyUser partyUser : partyUsers) {
+                if (partyUser.getUser().getId().equals(userId)) {
+                    chkGroupIn = true;
+                    break;
                 }
-                if (!chkGroupIn)
-                    throw new ApiException(ACCESS_DENIED);
-            } else
-                throw new ApiException(ACCESS_DENIED);
+            }
+        }
+        // 현재 로그인 유저가 채널에 속해있지 않거나, 미팅 관리자가 아니거나,그룹에 속해있지 않다면 접근 불가
+        if (!(meeting.getUser().getId().equals(user.getId()) || meeting.getMeetup().getManager().equals(user) || chkGroupIn)) {
+            throw new ApiException(ACCESS_DENIED);
         }
         // 만약 해당 미팅이 그룹 소속 되어 있는 미팅이라면
         if (meeting.getParty() != null) {
@@ -174,7 +172,7 @@ public class MeetingServiceImpl implements MeetingService {
         if (!userAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()) || !managerAllScheduleResponseDto.isPossibleRegister(start, end, meetingUpdateRequestDto.getId()))
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
-        Meetup meetup = meetupRepository.findById(meetingUpdateRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        Meetup meetup = meetupRepository.findById(meeting.getMeetup().getId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
