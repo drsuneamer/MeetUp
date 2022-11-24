@@ -111,7 +111,8 @@ public class ScheduleControllerDocsTest {
                                 fieldWithPath("diffWebex").type(JsonFieldType.STRING).description("스케줄 받은 사람 웹엑스"),
                                 fieldWithPath("type").type(JsonFieldType.STRING).description("스케줄 타입 (스케줄 or 미팅)"),
                                 fieldWithPath("userId").type(JsonFieldType.STRING).description("스케줄(미팅) 신청한 사람 아이디"),
-                                fieldWithPath("userName").type(JsonFieldType.STRING).description("스케줄(미팅) 신청한 사람 이름")
+                                fieldWithPath("userName").type(JsonFieldType.STRING).description("스케줄(미팅) 신청한 사람 이름"),
+                                fieldWithPath("delete").type(JsonFieldType.BOOLEAN).description("삭제 여부")
                         )
                 ));
     }
