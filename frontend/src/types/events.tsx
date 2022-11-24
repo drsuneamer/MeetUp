@@ -53,6 +53,7 @@ export type tScheduleDetail = {
   open: boolean;
   partyId: number;
   partyName: string;
+  isDelete: boolean;
 };
 
 export type Day = {

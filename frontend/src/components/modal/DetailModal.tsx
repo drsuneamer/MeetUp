@@ -217,6 +217,15 @@ const DetailModal = () => {
                 내 스케줄 삭제하기
               </button>
             </div>
+          ) : !scheduleDetail.isDelete ? (
+            <div className={`${scheduleDetail.partyName ? 'mt-[5px]' : 'mt-[40px]'} flex justify-center items-center`}>
+              <button
+                onClick={deleteMeeting}
+                className="text-[16px] font-bold bg-background border-solid border-2 border-cancel text-cancel hover:bg-cancelhover hover:text-background rounded w-[450px] h-s drop-shadow-button"
+              >
+                미팅 삭제하기
+              </button>
+            </div>
           ) : scheduleDetail.userId === myId ? (
             <div className={`${scheduleDetail.partyName ? 'mt-[10px]' : 'mt-[40px]'} flex justify-center items-center gap-[20px]`}>
               <button
