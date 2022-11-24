@@ -52,6 +52,8 @@ public class ScheduleResponseDto {
 
     private String partyName;
 
+    private boolean isDelete;
+
     public static ScheduleResponseDto of(Schedule schedule, User user) {
         ScheduleResponseDto result = ScheduleResponseDto.builder()
                 .id(schedule.getId())
@@ -64,6 +66,7 @@ public class ScheduleResponseDto {
                 .userId(schedule.getUser().getId())
                 .userName(schedule.getUser().getNickname())
                 .myWebex(schedule.getUser().getWebex())
+                .isDelete(false)
                 .build();
 
         if (schedule.getType().equals(ScheduleType.Meeting)) {
@@ -72,6 +75,7 @@ public class ScheduleResponseDto {
             result.setManagerName(meeting.getMeetup().getManager().getNickname());
             result.setDiffWebex(meeting.getMeetup().getManager().getWebex());
             result.setMeetupId(meeting.getMeetup().getId());
+            result.setDelete(meeting.getMeetup().isDelete());
             if (meeting.getParty() != null) {
                 result.setPartyId(meeting.getParty().getId());
                 result.setPartyName(meeting.getParty().getName());

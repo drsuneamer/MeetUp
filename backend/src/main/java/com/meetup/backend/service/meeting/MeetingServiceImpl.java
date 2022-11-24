@@ -14,9 +14,9 @@ import com.meetup.backend.exception.ApiException;
 import com.meetup.backend.exception.ExceptionEnum;
 import com.meetup.backend.repository.channel.ChannelRepository;
 import com.meetup.backend.repository.channel.ChannelUserRepository;
+import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.party.PartyRepository;
 import com.meetup.backend.repository.schedule.MeetingRepository;
-import com.meetup.backend.repository.meetup.MeetupRepository;
 import com.meetup.backend.repository.user.UserRepository;
 import com.meetup.backend.service.Client;
 import com.meetup.backend.service.auth.AuthService;
@@ -35,9 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 import static com.meetup.backend.exception.ExceptionEnum.*;
 
@@ -175,6 +173,10 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ApiException(ExceptionEnum.DUPLICATE_UPDATE_DATETIME);
 
         Meetup meetup = meetupRepository.findById(meetingUpdateRequestDto.getMeetupId()).orElseThrow(() -> new ApiException(MEETUP_NOT_FOUND));
+        if(meetup.isDelete()){
+            throw new ApiException(MEETUP_DELETED);
+        }
+
         Channel channel = channelRepository.findById(meetup.getChannel().getId()).orElseThrow(() -> new ApiException(CHANNEL_NOT_FOUND));
 
         String startTime = meetingUpdateRequestDto.getStart().substring(5, 16);
